@@ -1,0 +1,807 @@
+/* === CSS Reset/Normalize (Basic) === */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+    /* Prevents layout shift from scrollbar appearing/disappearing */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    line-height: 1.6;
+    background-color: var(--body-bg-color);
+    color: var(--text-primary-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: var(--accent-color);
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--accent-color-dark);
+}
+
+img,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+    border-radius: var(--border-radius-sm);
+}
+
+button {
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    color: inherit;
+    /* Inherit text color by default for button text */
+}
+
+/* === CSS Custom Properties (Theme Variables) === */
+:root {
+    /* Core Palette */
+    --accent-color: #007bff;
+    /* Primary interactive color */
+    --accent-color-dark: #0056b3;
+    /* Darker shade for hover/active */
+    --accent-color-light: #66b3ff;
+    /* Lighter shade for backgrounds/subtle accents */
+    --accent-color-rgb: 0, 123, 255;
+
+    --neutral-dark: #343a40;
+    /* For dark backgrounds like header/footer */
+    --neutral-medium: #6c757d;
+    /* For secondary text, borders */
+    --neutral-light: #adb5bd;
+    /* For muted text on dark backgrounds */
+    --neutral-very-light: #eef2f7;
+    /* For subtle backgrounds, off-white */
+    --neutral-white: #ffffff;
+
+    /* Semantic Colors */
+    --success-color: #28a745;
+    --error-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+
+    /* Backgrounds */
+    --body-bg-color: var(--neutral-very-light);
+    --surface-bg-color: var(--neutral-white);
+    /* Cards, modals, dropdowns */
+    --input-bg-color: var(--neutral-white);
+    --disabled-bg-color: #e9ecef;
+
+    /* Text */
+    --text-primary-color: #212529;
+    --text-secondary-color: var(--neutral-medium);
+    --text-on-dark-bg: var(--neutral-white);
+    --text-on-accent-bg: var(--neutral-white);
+
+    /* Borders */
+    --border-color: #ced4da;
+    /* Standard border for elements */
+    --border-color-strong: #adb5bd;
+    /* A more visible border */
+    --input-border-color: var(--border-color);
+    --focus-ring-color: rgba(var(--accent-color-rgb), 0.25);
+
+    /* Shadows (subtle, for depth) */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.03);
+    --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.07);
+    --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.1);
+
+    /* Spacing & Radii */
+    --spacing-xs: 0.25rem;
+    /* 4px */
+    --spacing-sm: 0.5rem;
+    /* 8px */
+    --spacing-md: 1rem;
+    /* 16px */
+    --spacing-lg: 1.5rem;
+    /* 24px */
+    --spacing-xl: 2rem;
+    /* 32px */
+
+    --border-radius-sm: 0.25rem;
+    /* 4px */
+    --border-radius-md: 0.5rem;
+    /* 8px */
+    --border-radius-lg: 0.75rem;
+    /* 12px */
+
+    --font-family-monospace: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+}
+
+/* === Header === */
+header {
+    background-color: var(--neutral-dark);
+    color: var(--text-on-dark-bg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    z-index: 100;
+    /* High enough for dropdowns within to not be overlapped by main content scrollbars etc. */
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    border-bottom: 3px solid var(--accent-color);
+}
+
+.header-brand h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-on-dark-bg);
+}
+
+.header-brand p {
+    font-size: 0.8rem;
+    color: var(--neutral-light);
+    margin: 0;
+}
+
+.category-list {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.category-item {
+    position: relative;
+    /* Essential for absolute positioning of its dropdown menu */
+}
+
+.category-button {
+    font-weight: 500;
+    color: var(--text-on-dark-bg);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    border: 1px solid transparent;
+    /* For layout consistency on hover/focus */
+}
+
+.category-button:hover,
+.category-button:focus,
+.category-button[aria-expanded="true"] {
+    background-color: var(--accent-color);
+    color: var(--text-on-accent-bg);
+    outline: none;
+    border-color: var(--accent-color-dark);
+    /* Subtle border on active/hover */
+}
+
+.dropdown-arrow {
+    transition: transform 0.2s ease-in-out;
+    fill: currentColor;
+    /* Ensures arrow matches button text color */
+}
+
+.category-button[aria-expanded="true"] .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    display: none;
+    /* Hidden by default */
+    position: absolute;
+    top: calc(100% + var(--spacing-xs) + 2px);
+    /* Position below button, accounting for button's potential border */
+    left: 0;
+    background-color: var(--surface-bg-color);
+    border: 1px solid var(--border-color-strong);
+    border-top: 3px solid var(--accent-color);
+    /* Accent on top of dropdown */
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-lg);
+    /* More prominent shadow for dropdowns */
+    min-width: 250px;
+    /* Accommodate icons and text */
+    z-index: 101;
+    /* Must be higher than header's z-index if it can visually overlap other parts of header, or if header has transformed children. */
+    padding: var(--spacing-sm) 0;
+    animation: fadeInDropdown 0.15s ease-out forwards;
+}
+
+.dropdown-menu.show {
+    display: block;
+    /* This is the key to show the menu */
+}
+
+@keyframes fadeInDropdown {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tool-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: var(--spacing-md);
+    object-fit: contain;
+    flex-shrink: 0;
+    /* Prevent icon from shrinking if text is long */
+}
+
+.dropdown-menu li a.tool-link {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    color: var(--text-primary-color);
+    font-weight: 500;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, color 0.2s ease, border-left-color 0.2s ease;
+    border-left: 4px solid transparent;
+    /* Indication strip */
+}
+
+.dropdown-menu li a.tool-link:hover,
+.dropdown-menu li a.tool-link:focus {
+    background-color: var(--accent-color-light);
+    color: var(--accent-color-dark);
+    /* Darker text on light accent bg for contrast */
+    outline: none;
+    border-left-color: var(--accent-color);
+}
+
+.dropdown-menu li a.tool-link.active-link {
+    background-color: var(--accent-color);
+    color: var(--text-on-accent-bg);
+    font-weight: 600;
+    border-left-color: var(--accent-color-dark);
+}
+
+/* === Content Wrapper & Main Content Area === */
+.content-wrapper {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    /* Important if main itself has overflow-y: auto */
+}
+
+main#tool-container {
+    flex-grow: 1;
+    padding: var(--spacing-xl);
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Prevent accidental horizontal scroll */
+}
+
+.tool-content {
+    display: none;
+    /* Active tool shown by JS */
+    background-color: var(--surface-bg-color);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    margin-bottom: var(--spacing-xl);
+    /* If you ever show multiple, for spacing */
+    animation: fadeInPageContent 0.3s ease-out;
+}
+
+.tool-content.active {
+    display: block;
+}
+
+@keyframes fadeInPageContent {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tool-content h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--accent-color-dark);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--accent-color-light);
+}
+
+/* === General Form & UI Element Styling === */
+.tool-placeholder div:not(.pg-checkbox-group):not(.pg-min-input-group):not(.pg-password-wrapper):not(.psc-strength-meter) {
+    margin-bottom: var(--spacing-lg);
+}
+
+.tool-placeholder label,
+.pg-result-area label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary-color);
+}
+
+input[type="number"],
+input[type="text"] {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--input-border-color);
+    background-color: var(--input-bg-color);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: var(--shadow-xs);
+    /* Subtle depth */
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--focus-ring-color);
+    outline: none;
+}
+
+input[type="number"]:disabled,
+input[type="text"]:disabled {
+    background-color: var(--disabled-bg-color);
+    color: var(--text-secondary-color);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* === Password Generator Specific Styles === */
+.pg-options {
+    margin-bottom: var(--spacing-xl);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.pg-option,
+.pg-option-group {
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background-color: var(--neutral-very-light);
+    /* Slightly off-white background for these groups */
+    box-shadow: var(--shadow-sm);
+}
+
+.pg-option-group {
+    gap: var(--spacing-md);
+    /* Space between checkbox group and min-input group */
+}
+
+.pg-checkbox-group {
+    display: flex;
+    align-items: center;
+}
+
+.pg-checkbox-group input[type="checkbox"] {
+    width: 1.25em;
+    height: 1.25em;
+    margin-right: var(--spacing-sm);
+    accent-color: var(--accent-color);
+    /* Modern way to color checkboxes */
+    border: 1px solid var(--border-color-strong);
+    /* Ensure border is visible if accent-color isn't applied by browser */
+    flex-shrink: 0;
+    transition: transform 0.1s ease;
+}
+
+.pg-checkbox-group input[type="checkbox"]:checked {
+    transform: scale(1.05);
+}
+
+.pg-checkbox-group input[type="checkbox"]:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.pg-checkbox-group label {
+    margin-bottom: 0;
+    font-weight: 500;
+    color: var(--text-primary-color);
+    cursor: pointer;
+}
+
+.pg-min-input-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.pg-min-input-group label {
+    margin-bottom: 0;
+    font-size: 0.9em;
+    color: var(--text-secondary-color);
+    flex-shrink: 0;
+}
+
+.pg-min-input-group input[type="number"] {
+    width: 75px;
+    /* Slightly wider for better click target */
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.9em;
+    background-color: var(--input-bg-color);
+    border-color: var(--input-border-color);
+}
+
+button.pg-generate-button {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-weight: 600;
+    font-size: 1.05rem;
+    border-radius: var(--border-radius-md);
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    border: none;
+    background-color: var(--accent-color);
+    color: var(--text-on-accent-bg);
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    margin: var(--spacing-xl) auto var(--spacing-lg) auto;
+    box-shadow: var(--shadow-sm);
+}
+
+button.pg-generate-button:hover {
+    background-color: var(--accent-color-dark);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+button.pg-generate-button:active {
+    transform: translateY(0px) scale(0.98);
+    box-shadow: var(--shadow-xs);
+}
+
+button.pg-generate-button:disabled {
+    background-color: var(--neutral-medium);
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.pg-result-area {
+    margin-top: var(--spacing-lg);
+    background-color: var(--neutral-very-light);
+    padding: var(--spacing-lg);
+    /* More padding */
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.pg-password-display-box {
+    flex-grow: 1;
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color-strong);
+    /* Stronger border */
+    border-right: none;
+    border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
+    background-color: var(--input-bg-color);
+    font-family: var(--font-family-monospace);
+    font-size: 1.15rem;
+    /* Slightly larger generated password text */
+    min-height: calc(1.15rem * 1.6 + (var(--spacing-md) * 2) + 2px);
+    line-height: 1.6;
+    word-break: break-all;
+    display: flex;
+    align-items: center;
+    color: var(--text-primary-color);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+    cursor: text;
+}
+
+.pg-password-placeholder {
+    color: var(--text-secondary-color);
+    font-size: 0.9em;
+    pointer-events: none;
+}
+
+.char-symbol {
+    color: var(--error-color);
+    font-weight: bold;
+}
+
+.char-number {
+    color: var(--info-color);
+    font-weight: bold;
+}
+
+/* Consider adding styles for uppercase/lowercase if you want to differentiate them more */
+/* .char-uppercase { color: var(--accent-color-dark); } */
+
+#pg-copy-btn {
+    background-color: var(--neutral-medium);
+    color: var(--text-on-dark-bg);
+    border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+    /* Match display box */
+    border: 1px solid var(--neutral-medium);
+    border-left: none;
+    /* Avoid double border with display box */
+    padding: var(--spacing-sm) var(--spacing-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    flex-shrink: 0;
+}
+
+#pg-copy-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+#pg-copy-btn:hover {
+    background-color: var(--neutral-dark);
+    transform: scale(1.05);
+}
+
+#pg-copy-btn:active {
+    transform: scale(1);
+}
+
+.pg-error-message {
+    color: var(--error-color);
+    font-weight: 500;
+    /* Other styles remain */
+}
+
+.pg-copy-feedback {
+    color: var(--success-color);
+    /* Other styles remain */
+}
+
+/* === Password Strength Checker Specific Styles === */
+.psc-strength-meter {
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    background-color: var(--neutral-very-light);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.psc-strength-bar {
+    width: 0%;
+    /* JS will set width */
+    height: 12px;
+    background-color: var(--border-color);
+    /* Track color */
+    border-radius: var(--border-radius-sm);
+    transition: background-color 0.3s ease, width 0.3s ease;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.psc-strength-bar.very-weak {
+    background-color: var(--error-color);
+}
+
+.psc-strength-bar.weak {
+    background-color: var(--warning-color);
+}
+
+.psc-strength-bar.moderate {
+    background-color: var(--info-color);
+}
+
+.psc-strength-bar.strong {
+    background-color: var(--success-color);
+}
+
+.psc-strength-bar.very-strong {
+    background-color: #1e7e34;
+}
+
+/* Darker green */
+
+.psc-strength-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary-color);
+    text-align: right;
+    margin-top: var(--spacing-xs);
+    font-weight: 500;
+}
+
+.psc-feedback-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: var(--spacing-md);
+    font-size: 0.9rem;
+}
+
+.psc-feedback-list li {
+    margin-bottom: var(--spacing-sm);
+    padding: var(--spacing-xs) 0 var(--spacing-xs) 2em;
+    /* More padding for icon */
+    position: relative;
+    border-bottom: 1px dashed var(--input-border-color);
+}
+
+.psc-feedback-list li:last-child {
+    border-bottom: none;
+}
+
+.psc-feedback-list li::before {
+    content: '';
+    position: absolute;
+    left: 0.25em;
+    /* Align icon better with padding */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.2em;
+    height: 1.2em;
+    border-radius: 50%;
+    font-size: 1em;
+    /* Icon size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.psc-feedback-list li.valid::before {
+    content: '✓';
+    color: var(--success-color);
+    background-color: #e6f7ec;
+    /* Light green background */
+}
+
+.psc-feedback-list li.invalid::before {
+    content: '✗';
+    color: var(--error-color);
+    background-color: #fdecea;
+    /* Light red background */
+}
+
+/* === Footer === */
+footer {
+    background-color: var(--neutral-dark);
+    color: var(--neutral-light);
+    text-align: center;
+    padding: var(--spacing-lg) 0;
+    /* More padding */
+    font-size: 0.85rem;
+    border-top: 3px solid var(--accent-color-dark);
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow upwards */
+}
+
+/* === Responsive Adjustments === */
+@media (max-width: 768px) {
+    html {
+        font-size: 15px;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: var(--spacing-md);
+        gap: var(--spacing-md);
+        border-bottom-width: 2px;
+    }
+
+    #top-navigation {
+        width: 100%;
+    }
+
+    .category-list {
+        flex-direction: column;
+        width: 100%;
+        gap: var(--spacing-xs);
+    }
+
+    .category-item {
+        width: 100%;
+    }
+
+    .category-button {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .dropdown-menu {
+        position: static;
+        /* Crucial change for mobile dropdowns */
+        width: 100%;
+        box-shadow: none;
+        border-top-width: 1px;
+        border-left: none;
+        border-right: none;
+        border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
+        margin-top: 0;
+        /* Remove margin as it's static */
+        animation: none;
+        /* Disable animation on mobile */
+        /* display: none; is still the base, JS toggles .show */
+    }
+
+    .dropdown-menu.show {
+        display: block;
+        /* Ensure it still becomes block */
+    }
+
+    .dropdown-menu li a.tool-link {
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-left-width: 3px;
+    }
+
+    main#tool-container {
+        padding: var(--spacing-lg);
+    }
+
+    .tool-content {
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius-md);
+    }
+
+    .tool-content h2 {
+        font-size: 1.6rem;
+        border-bottom-width: 1px;
+    }
+
+    .pg-options {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    .pg-result-area {
+        padding: var(--spacing-md);
+    }
+
+    button.pg-generate-button {
+        padding: var(--spacing-sm) var(--spacing-lg);
+        font-size: 1rem;
+        max-width: 100%;
+    }
+
+    .psc-strength-meter {
+        padding: var(--spacing-sm);
+    }
+
+    .psc-feedback-list li {
+        padding-left: 1.8em;
+    }
+
+    .psc-feedback-list li::before {
+        font-size: 0.9em;
+        left: 0.15em;
+    }
+
+    footer {
+        border-top-width: 2px;
+        padding: var(--spacing-md) 0;
+    }
+}
