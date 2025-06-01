@@ -1,0 +1,93 @@
+/* === Header === */
+header {
+    background-color: var(--neutral-dark);
+    color: var(--text-on-dark-bg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    z-index: 100;
+    /* High enough for dropdowns within to not be overlapped by main content scrollbars etc. */
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    border-bottom: 3px solid var(--accent-color);
+}
+
+.header-brand h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-on-dark-bg);
+}
+
+.header-brand p {
+    font-size: 0.8rem;
+    color: var(--neutral-light);
+    margin: 0;
+}
+
+/* === Content Wrapper & Main Content Area === */
+.content-wrapper {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    /* Important if main itself has overflow-y: auto */
+}
+
+main#tool-container {
+    flex-grow: 1;
+    padding: var(--spacing-xl);
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Prevent accidental horizontal scroll */
+}
+
+.tool-content {
+    display: none;
+    /* Active tool shown by JS */
+    background-color: var(--surface-bg-color);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    margin-bottom: var(--spacing-xl);
+    /* If you ever show multiple, for spacing */
+    animation: fadeInPageContent 0.3s ease-out;
+}
+
+.tool-content.active {
+    display: block;
+}
+
+@keyframes fadeInPageContent {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tool-content h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--accent-color-dark);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--accent-color-light);
+}
+
+/* === Footer === */
+footer {
+    background-color: var(--neutral-dark);
+    color: var(--neutral-light);
+    text-align: center;
+    padding: var(--spacing-lg) 0;
+    /* More padding */
+    font-size: 0.85rem;
+    border-top: 3px solid var(--accent-color-dark);
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow upwards */
+}

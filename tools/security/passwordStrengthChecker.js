@@ -5,92 +5,168 @@ const psc = {
     strengthText: document.getElementById('psc-strength-text'),
     feedbackList: document.getElementById('psc-feedback-list'),
 
-    checkPasswordStrength: function (password) {
-        let positiveScore = 0;
-        let totalDeductionScore = 0; // Renamed for clarity
-        const feedback = [];
-        const MIN_LENGTH = 8;
-        const IDEAL_LENGTH = 12;
-        const VERY_GOOD_LENGTH = 16;
-        const SUPER_STRONG_POSITIVE_THRESHOLD = 9; // Max positive score
-        const STRONG_POSITIVE_THRESHOLD = 7;
+    // --- Configuration Constants ---
+    MIN_LENGTH: 8,
+    IDEAL_LENGTH: 12,
+    VERY_GOOD_LENGTH: 16,
+    SUPER_STRONG_POSITIVE_THRESHOLD: 9, // Max positive score before deductions
+    STRONG_POSITIVE_THRESHOLD: 7,       // Strong positive score before deductions
 
-
-        if (!password || password.length === 0) {
-            return { score: 0, text: 'N/A', barClass: '', barWidth: 0, feedback: [{ text: 'Enter a password to check its strength.', valid: false }] };
-        }
-
+    /**
+     * Gets basic properties of the password.
+     * @param {string} password - The password string.
+     * @returns {object} An object containing length, hasUpper, hasLower, hasNumbers, hasSymbols, typesCount.
+     */
+    _getPasswordProperties: function (password) {
         const length = password.length;
         const hasUpper = /[A-Z]/.test(password);
         const hasLower = /[a-z]/.test(password);
         const hasNumbers = /[0-9]/.test(password);
         const hasSymbols = /[^A-Za-z0-9]/.test(password);
         const typesCount = (hasUpper ? 1 : 0) + (hasLower ? 1 : 0) + (hasNumbers ? 1 : 0) + (hasSymbols ? 1 : 0);
+        return { length, hasUpper, hasLower, hasNumbers, hasSymbols, typesCount };
+    },
 
-        // --- 1. Length Scoring (Positive) ---
-        if (length >= MIN_LENGTH) positiveScore += 1;
-        if (length >= IDEAL_LENGTH) positiveScore += 1;
-        if (length >= VERY_GOOD_LENGTH) positiveScore += 1;
+    /**
+     * Calculates score and feedback based on password length.
+     * @param {number} length - The length of the password.
+     * @param {Array<object>} feedback - The feedback array to push messages to.
+     * @returns {number} The score based on length.
+     */
+    _scoreLength: function (length, feedback) {
+        let score = 0;
+        if (length >= this.MIN_LENGTH) score += 1;
+        if (length >= this.IDEAL_LENGTH) score += 1;
+        if (length >= this.VERY_GOOD_LENGTH) score += 1;
 
-        if (length < MIN_LENGTH) feedback.push({ text: `Too short (minimum ${MIN_LENGTH} characters).`, valid: false });
-        else if (length >= VERY_GOOD_LENGTH) feedback.push({ text: `Excellent length (${length} characters).`, valid: true });
-        else if (length >= IDEAL_LENGTH) feedback.push({ text: `Good length (${length} characters).`, valid: true });
-        else feedback.push({ text: `Meets minimum length (${length} characters).`, valid: true });
-
-        // --- 2. Character Type Presence Scoring (Positive) & Feedback ---
-        if (hasUpper) { positiveScore += 1; feedback.push({ text: 'Contains uppercase letters (A-Z).', valid: true }); }
-        else feedback.push({ text: 'Missing uppercase letters.', valid: false });
-        if (hasLower) { positiveScore += 1; feedback.push({ text: 'Contains lowercase letters (a-z).', valid: true }); }
-        else feedback.push({ text: 'Missing lowercase letters.', valid: false });
-        if (hasNumbers) { positiveScore += 1; feedback.push({ text: 'Contains numbers (0-9).', valid: true }); }
-        else feedback.push({ text: 'Missing numbers.', valid: false });
-        if (hasSymbols) { positiveScore += 1; feedback.push({ text: 'Contains symbols (e.g., !@#$%).', valid: true }); }
-        else feedback.push({ text: 'Missing symbols.', valid: false });
-
-        // --- 3. Complexity/Variety Bonus (Positive) ---
-        if (typesCount >= 3) positiveScore += 1;
-        if (typesCount === 4) positiveScore += 1; // Total +2 for all 4 types
-        if (typesCount === 4) feedback.push({ text: 'Excellent mix: All 4 character types used.', valid: true });
-        else if (typesCount === 3) feedback.push({ text: 'Good mix: 3 character types used.', valid: true });
-
-
-        // --- 4. Deductions for Weaknesses ---
-        let repetitionDeduction = 0;
-        let sequenceDeduction = 0;
-        let singleTypeDeduction = 0;
-
-        // Deduction: Only one type of character (if long enough)
-        if (length >= MIN_LENGTH && typesCount === 1) {
-            singleTypeDeduction = 2; // This is a significant flaw
-            feedback.push({ text: 'Weakness: Uses only one type of character.', valid: false });
+        if (length < this.MIN_LENGTH) {
+            feedback.push({ text: `Too short (minimum ${this.MIN_LENGTH} characters).`, valid: false });
+        } else if (length >= this.VERY_GOOD_LENGTH) {
+            feedback.push({ text: `Excellent length (${length} characters).`, valid: true });
+        } else if (length >= this.IDEAL_LENGTH) {
+            feedback.push({ text: `Good length (${length} characters).`, valid: true });
+        } else {
+            feedback.push({ text: `Meets minimum length (${length} characters).`, valid: true });
         }
+        return score;
+    },
 
-        // Deduction: Repetitive characters (e.g., "aaa", "1111")
+    /**
+     * Calculates score and feedback based on character types present.
+     * @param {object} properties - Password properties from _getPasswordProperties.
+     * @param {Array<object>} feedback - The feedback array.
+     * @returns {number} The score based on character types.
+     */
+    _scoreCharacterTypes: function (properties, feedback) {
+        let score = 0;
+        if (properties.hasUpper) {
+            score += 1;
+            feedback.push({ text: 'Contains uppercase letters (A-Z).', valid: true });
+        } else {
+            feedback.push({ text: 'Missing uppercase letters.', valid: false });
+        }
+        if (properties.hasLower) {
+            score += 1;
+            feedback.push({ text: 'Contains lowercase letters (a-z).', valid: true });
+        } else {
+            feedback.push({ text: 'Missing lowercase letters.', valid: false });
+        }
+        if (properties.hasNumbers) {
+            score += 1;
+            feedback.push({ text: 'Contains numbers (0-9).', valid: true });
+        } else {
+            feedback.push({ text: 'Missing numbers.', valid: false });
+        }
+        if (properties.hasSymbols) {
+            score += 1;
+            feedback.push({ text: 'Contains symbols (e.g., !@#$%).', valid: true });
+        } else {
+            feedback.push({ text: 'Missing symbols.', valid: false });
+        }
+        return score;
+    },
+
+    /**
+     * Calculates score and feedback based on character type variety.
+     * @param {object} properties - Password properties.
+     * @param {Array<object>} feedback - The feedback array.
+     * @returns {number} The score based on variety.
+     */
+    _scoreVariety: function (properties, feedback) {
+        let score = 0;
+        if (properties.typesCount >= 3) score += 1;
+        if (properties.typesCount === 4) score += 1; // Total +2 for all 4 types
+
+        if (properties.typesCount === 4) {
+            feedback.push({ text: 'Excellent mix: All 4 character types used.', valid: true });
+        } else if (properties.typesCount === 3) {
+            feedback.push({ text: 'Good mix: 3 character types used.', valid: true });
+        }
+        return score;
+    },
+
+    /**
+     * Calculates deduction for using only one character type.
+     * @param {object} properties - Password properties.
+     * @param {Array<object>} feedback - The feedback array.
+     * @returns {number} The deduction score.
+     */
+    _deductForSingleType: function (properties, feedback) {
+        if (properties.length >= this.MIN_LENGTH && properties.typesCount === 1) {
+            feedback.push({ text: 'Weakness: Uses only one type of character.', valid: false });
+            return 2; // Significant flaw
+        }
+        return 0;
+    },
+
+    /**
+     * Calculates deduction for repetitive characters.
+     * @param {string} password - The password string.
+     * @param {number} positiveScore - The current positive score before deductions.
+     * @param {Array<object>} feedback - The feedback array.
+     * @returns {number} The deduction score for repetitions.
+     */
+    _deductForRepetitions: function (password, positiveScore, feedback) {
+        let deduction = 0;
         let consecutiveIdenticalCharsCount = 0;
-        if (length > 2) {
-            for (let i = 0; i < length - 2; i++) {
+        if (password.length > 2) {
+            for (let i = 0; i < password.length - 2; i++) {
                 if (password[i] === password[i + 1] && password[i] === password[i + 2]) {
                     consecutiveIdenticalCharsCount++;
                 }
             }
         }
-        if (consecutiveIdenticalCharsCount > 0) {
-            if (positiveScore >= SUPER_STRONG_POSITIVE_THRESHOLD) { // Base is superb
-                repetitionDeduction = Math.min(consecutiveIdenticalCharsCount, 1); // Max -1 deduction
-            } else if (positiveScore >= STRONG_POSITIVE_THRESHOLD) { // Base is strong
-                repetitionDeduction = Math.min(consecutiveIdenticalCharsCount, 2); // Max -2 deduction
-            } else { // Base is not that strong, penalize more
-                repetitionDeduction = Math.min(consecutiveIdenticalCharsCount, 3); // Max -3, or 1 per instance up to 3
-            }
-            if (repetitionDeduction > 0) feedback.push({ text: `Repetitive sequences found (e.g., "aaa"). Weakens password.`, valid: false });
-        }
 
-        // Deduction: Sequential characters (e.g., "abc", "123", "CBA" - basic cases)
+        if (consecutiveIdenticalCharsCount > 0) {
+            if (positiveScore >= this.SUPER_STRONG_POSITIVE_THRESHOLD) {
+                deduction = Math.min(consecutiveIdenticalCharsCount, 1);
+            } else if (positiveScore >= this.STRONG_POSITIVE_THRESHOLD) {
+                deduction = Math.min(consecutiveIdenticalCharsCount, 2);
+            } else {
+                deduction = Math.min(consecutiveIdenticalCharsCount, 3);
+            }
+            if (deduction > 0) {
+                feedback.push({ text: `Repetitive sequences found (e.g., "aaa"). Weakens password.`, valid: false });
+            }
+        }
+        return deduction;
+    },
+
+    /**
+     * Calculates deduction for sequential characters.
+     * @param {string} password - The password string.
+     * @param {number} positiveScore - The current positive score before deductions.
+     * @param {Array<object>} feedback - The feedback array.
+     * @returns {number} The deduction score for sequences.
+     */
+    _deductForSequences: function (password, positiveScore, feedback) {
+        let deduction = 0;
         let sequentialCharsCount = 0;
         const sequences = ["abcdefghijklmnopqrstuvwxyz", "0123456789", "qwertyuiop", "asdfghjkl"];
         const lowerPassword = password.toLowerCase();
-        if (length > 2) {
-            for (let i = 0; i < length - 2; i++) {
+
+        if (password.length > 2) {
+            for (let i = 0; i < password.length - 2; i++) {
                 let sub3 = lowerPassword.substring(i, i + 3);
                 for (const seq of sequences) {
                     if (seq.includes(sub3) || seq.split("").reverse().join("").includes(sub3)) {
@@ -100,33 +176,38 @@ const psc = {
                 }
             }
         }
+
         if (sequentialCharsCount > 0) {
-            if (positiveScore >= SUPER_STRONG_POSITIVE_THRESHOLD) {
-                sequenceDeduction = Math.min(sequentialCharsCount, 1);
-            } else if (positiveScore >= STRONG_POSITIVE_THRESHOLD) {
-                sequenceDeduction = Math.min(sequentialCharsCount, 2);
+            if (positiveScore >= this.SUPER_STRONG_POSITIVE_THRESHOLD) {
+                deduction = Math.min(sequentialCharsCount, 1);
+            } else if (positiveScore >= this.STRONG_POSITIVE_THRESHOLD) {
+                deduction = Math.min(sequentialCharsCount, 2);
             } else {
-                sequenceDeduction = Math.min(sequentialCharsCount, 3);
+                deduction = Math.min(sequentialCharsCount, 3);
             }
-            if (sequenceDeduction > 0) feedback.push({ text: `Common keyboard sequences found (e.g., "abc"). Weakens password.`, valid: false });
+            if (deduction > 0) {
+                feedback.push({ text: `Common keyboard sequences found (e.g., "abc"). Weakens password.`, valid: false });
+            }
         }
+        return deduction;
+    },
 
-        totalDeductionScore = singleTypeDeduction + repetitionDeduction + sequenceDeduction;
-
-        // --- Calculate Final Score ---
-        let finalScore = positiveScore - totalDeductionScore;
-        finalScore = Math.max(0, finalScore); // Ensure score doesn't go below 0
-
-        // --- 5. Determine Strength Text, Bar Class, and Bar Width based on finalScore ---
+    /**
+     * Determines the strength text, bar class, and bar width based on the final score.
+     * @param {number} finalScore - The calculated final score for the password.
+     * @param {number} length - The length of the password.
+     * @returns {object} Object containing strengthDescription, barClass, barWidthPercentage.
+     */
+    _determineStrengthPresentation: function (finalScore, length) {
         let strengthDescription = '';
         let barClass = '';
         let barWidthPercentage = 0;
 
         // Max Positive Score is 9 (3 length + 4 types + 2 variety)
         // Tiers based on a potential score of 0-9
-        if (length === 0) {
+        if (length === 0) { // This case is handled earlier, but good for completeness
             strengthDescription = 'N/A'; barClass = ''; barWidthPercentage = 0;
-        } else if (length < MIN_LENGTH) {
+        } else if (length < this.MIN_LENGTH) {
             strengthDescription = 'Very Weak'; barClass = 'very-weak'; barWidthPercentage = 10;
         } else if (finalScore <= 2) { // 0, 1, 2
             strengthDescription = 'Very Weak'; barClass = 'very-weak'; barWidthPercentage = 25;
@@ -139,20 +220,61 @@ const psc = {
         } else { // finalScore >= 9
             strengthDescription = 'Very Strong'; barClass = 'very-strong'; barWidthPercentage = 100;
         }
+        return { strengthDescription, barClass, barWidthPercentage };
+    },
 
-        // If "Too short" is in feedback, ensure description matches, overriding other scores.
+    /**
+     * The main function to check password strength.
+     * @param {string} password - The password to check.
+     * @returns {object} An object containing the score, text, barClass, barWidth, and feedback.
+     */
+    checkPasswordStrength: function (password) {
+        if (!password || password.length === 0) {
+            return {
+                score: 0,
+                text: 'N/A',
+                barClass: '',
+                barWidth: 0,
+                feedback: [{ text: 'Enter a password to check its strength.', valid: false }]
+            };
+        }
+
+        const feedback = [];
+        const properties = this._getPasswordProperties(password);
+
+        let positiveScore = 0;
+        positiveScore += this._scoreLength(properties.length, feedback);
+        positiveScore += this._scoreCharacterTypes(properties, feedback);
+        positiveScore += this._scoreVariety(properties, feedback);
+
+        let totalDeductionScore = 0;
+        totalDeductionScore += this._deductForSingleType(properties, feedback);
+        totalDeductionScore += this._deductForRepetitions(password, positiveScore, feedback);
+        totalDeductionScore += this._deductForSequences(password, positiveScore, feedback);
+
+        const finalScore = Math.max(0, positiveScore - totalDeductionScore);
+
+        let { strengthDescription, barClass, barWidthPercentage } = this._determineStrengthPresentation(finalScore, properties.length);
+
+        // Override strength if "Too short" feedback is present, as it's a fundamental weakness.
         if (feedback.some(f => f.text.startsWith("Too short"))) {
-            strengthDescription = 'Very Weak'; barClass = 'very-weak'; barWidthPercentage = 10;
-            // No need to add "Too short" again if it's already there due to initial length check.
+            strengthDescription = 'Very Weak';
+            barClass = 'very-weak';
+            barWidthPercentage = 10;
         }
 
         // Sort feedback: invalid items first for prominence
-        feedback.sort((a, b) => a.valid === b.valid ? 0 : a.valid ? 1 : -1);
+        feedback.sort((a, b) => (a.valid === b.valid) ? 0 : (a.valid ? 1 : -1));
 
-        return { score: finalScore, text: strengthDescription, barClass: barClass, barWidth: barWidthPercentage, feedback };
+        return {
+            score: finalScore,
+            text: strengthDescription,
+            barClass: barClass,
+            barWidth: barWidthPercentage,
+            feedback: feedback
+        };
     },
 
-    // updateUI and init methods remain the same
     updateUI: function (password) {
         const strength = this.checkPasswordStrength(password);
 

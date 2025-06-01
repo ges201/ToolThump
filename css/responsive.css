@@ -1,0 +1,106 @@
+/* === Responsive Adjustments === */
+@media (max-width: 768px) {
+    html {
+        font-size: 15px;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: var(--spacing-md);
+        gap: var(--spacing-md);
+        border-bottom-width: 2px;
+    }
+
+    #top-navigation {
+        width: 100%;
+    }
+
+    .category-list {
+        flex-direction: column;
+        width: 100%;
+        gap: var(--spacing-xs);
+    }
+
+    .category-item {
+        width: 100%;
+    }
+
+    .category-button {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .dropdown-menu {
+        position: static;
+        /* Crucial change for mobile dropdowns */
+        width: 100%;
+        box-shadow: none;
+        border-top-width: 1px;
+        border-left: none;
+        border-right: none;
+        border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
+        margin-top: 0;
+        /* Remove margin as it's static */
+        animation: none;
+        /* Disable animation on mobile */
+        /* display: none; is still the base, JS toggles .show */
+    }
+
+    .dropdown-menu.show {
+        display: block;
+        /* Ensure it still becomes block */
+    }
+
+    .dropdown-menu li a.tool-link {
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-left-width: 3px;
+    }
+
+    main#tool-container {
+        padding: var(--spacing-lg);
+    }
+
+    .tool-content {
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius-md);
+    }
+
+    .tool-content h2 {
+        font-size: 1.6rem;
+        border-bottom-width: 1px;
+    }
+
+    .pg-options {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    .pg-result-area {
+        padding: var(--spacing-md);
+    }
+
+    button.pg-generate-button {
+        padding: var(--spacing-sm) var(--spacing-lg);
+        font-size: 1rem;
+        max-width: 100%;
+    }
+
+    .psc-strength-meter {
+        padding: var(--spacing-sm);
+    }
+
+    .psc-feedback-list li {
+        padding-left: 1.8em;
+    }
+
+    .psc-feedback-list li::before {
+        font-size: 0.9em;
+        left: 0.15em;
+    }
+
+    footer {
+        border-top-width: 2px;
+        padding: var(--spacing-md) 0;
+    }
+}
