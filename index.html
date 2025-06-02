@@ -4,14 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToolThump - Your Online Utilities</title>
+    <meta name="description"
+        content="ToolThump offers a collection of free, client-side online utilities including password tools, text manipulators, image converters, and much more. Secure and easy to use.">
+    <title>ToolThump - Your Online Utilities Hub</title> <!-- Slightly updated title for homepage -->
     <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/components.css">
+    <!-- Removed tool-specific CSS:
     <link rel="stylesheet" href="css/tools/password-generator.css">
     <link rel="stylesheet" href="css/tools/password-strength-checker.css">
+    -->
     <link rel="stylesheet" href="css/responsive.css">
+    <!-- Optional: Add a specific CSS file for homepage styles if needed -->
+    <!-- <link rel="stylesheet" href="css/home.css"> -->
 </head>
 
 <body>
@@ -21,7 +27,7 @@
             <p>Online Utilities</p>
         </div>
         <nav id="top-navigation">
-            <ul class="category-list">
+            <ul class="category-list"> <!-- Changed from dropdown-menu to category-list -->
                 <li class="category-item">
                     <button class="category-button" aria-haspopup="true" aria-expanded="false"
                         aria-controls="security-tools">
@@ -34,14 +40,17 @@
                     </button>
                     <ul class="dropdown-menu" id="security-tools" role="menu">
                         <li role="none">
-                            <a href="#passwordGenerator" role="menuitem" class="tool-link">
-                                <img src="icons/password-generator-color.png" alt="" class="tool-icon">
+                            <a href="tools/security/html/password-generator.html" role="menuitem" class="tool-link">
+                                <img src="icons/password-generator-color.png" alt="Password Generator Tool"
+                                    class="tool-icon">
                                 Password Generator
                             </a>
                         </li>
                         <li role="none">
-                            <a href="#passwordStrengthChecker" role="menuitem" class="tool-link">
-                                <img src="icons/password-strength-color.png" alt="" class="tool-icon">
+                            <a href="tools/security/html/password-strength-checker.html" role="menuitem"
+                                class="tool-link">
+                                <img src="icons/password-strength-color.png" alt="Password Strength Checker Tool"
+                                    class="tool-icon">
                                 Password Strength Checker
                             </a>
                         </li>
@@ -55,118 +64,36 @@
                         <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M7 10l5 5 5-5H7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
                     </button>
                     <ul class="dropdown-menu" id="text-tools" role="menu">
-                        <li role="none"><a href="#someTextTool" role="menuitem" class="tool-link"><img src="icons/text-tool-color.png" alt="" class="tool-icon">Some Text Tool</a></li>
+                        <li role="none"><a href="tools/text/html/some-text-tool.html" role="menuitem" class="tool-link"><img src="icons/text-tool-color.png" alt="Some Text Tool Icon" class="tool-icon">Some Text Tool</a></li>
                     </ul>
                 </li>
                 -->
             </ul>
         </nav>
-        <!-- Any items that should truly be on the far right could go in a separate div here, and header flex properties adjusted -->
     </header>
 
     <div class="content-wrapper">
         <main id="tool-container">
-            <section id="home" class="tool-content">
-                <h2>Welcome to ToolThump!</h2>
-                <p>Select a tool from the navigation menu to get started.</p>
+            <!-- This ID might not be strictly needed here anymore if no JS targets it directly on home -->
+            <section id="home" class="tool-content active"> <!-- 'active' makes it visible by default -->
+                <h2>Welcome to ToolThump: Your Hub for Free Online Utilities!</h2>
+                <p>ToolThump provides a growing collection of simple, effective, and client-side tools designed to make
+                    your online tasks easier and more secure. Whether you need to generate a strong password, check your
+                    password's strength, or perform other common web tasks, ToolThump has you covered.</p>
+                <p>All our tools run directly in your browser, ensuring your data stays private. Explore our utilities
+                    using the navigation menu and discover how ToolThump can simplify your digital life!</p>
+
+                <h3>Featured Tools:</h3>
+                <ul class="featured-tools-list">
+                    <li><a href="tools/security/html/password-generator.html">Generate Secure Passwords</a></li>
+                    <li><a href="tools/security/html/password-strength-checker.html">Check Password Strength</a></li>
+                    <!-- Add more links as you add tools -->
+                </ul>
             </section>
 
-            <section id="passwordGenerator" class="tool-content">
-                <h2>Password Generator</h2>
-                <div class="tool-placeholder">
-                    <div class="pg-options">
-                        <div class="pg-option">
-                            <label for="pg-length">Total Password Length:</label>
-                            <input type="number" id="pg-length" name="length" min="8" max="64" value="16">
-                        </div>
+            <!-- Tool sections (passwordGenerator, passwordStrengthChecker) have been REMOVED from index.html -->
+            <!-- They now reside in their own HTML files. -->
 
-                        <div class="pg-option-group">
-                            <div class="pg-checkbox-group">
-                                <input type="checkbox" id="pg-include-uppercase" name="include-uppercase" checked>
-                                <label for="pg-include-uppercase">Include Uppercase (A-Z)</label>
-                            </div>
-                            <div class="pg-min-input-group">
-                                <label for="pg-min-uppercase">Min Uppercase:</label>
-                                <input type="number" id="pg-min-uppercase" name="min-uppercase" min="1" value="1">
-                            </div>
-                        </div>
-
-                        <div class="pg-option-group">
-                            <div class="pg-checkbox-group">
-                                <input type="checkbox" id="pg-include-lowercase" name="include-lowercase" checked>
-                                <label for="pg-include-lowercase">Include Lowercase (a-z)</label>
-                            </div>
-                            <div class="pg-min-input-group">
-                                <label for="pg-min-lowercase">Min Lowercase:</label>
-                                <input type="number" id="pg-min-lowercase" name="min-lowercase" min="1" value="1">
-                            </div>
-                        </div>
-
-                        <div class="pg-option-group">
-                            <div class="pg-checkbox-group">
-                                <input type="checkbox" id="pg-include-numbers" name="include-numbers" checked>
-                                <label for="pg-include-numbers">Include Numbers (0-9)</label>
-                            </div>
-                            <div class="pg-min-input-group">
-                                <label for="pg-min-numbers">Min Numbers:</label>
-                                <input type="number" id="pg-min-numbers" name="min-numbers" min="1" value="1">
-                            </div>
-                        </div>
-
-                        <div class="pg-option-group">
-                            <div class="pg-checkbox-group">
-                                <input type="checkbox" id="pg-include-symbols" name="include-symbols" checked>
-                                <label for="pg-include-symbols">Include Symbols (!@#$%)</label>
-                            </div>
-                            <div class="pg-min-input-group">
-                                <label for="pg-min-symbols">Min Symbols:</label>
-                                <input type="number" id="pg-min-symbols" name="min-symbols" min="1" value="1">
-                            </div>
-                        </div>
-                    </div>
-
-                    <button id="pg-generate-btn" class="pg-generate-button">Generate Password</button>
-
-                    <div class="pg-result-area">
-                        <label for="pg-generated-password-display">Generated Password:</label>
-                        <div class="pg-password-wrapper">
-                            <div id="pg-generated-password-display" class="pg-password-display-box" aria-live="polite"
-                                tabindex="0">
-                                <span class="pg-password-placeholder">Click 'Generate Password'</span>
-                            </div>
-                            <button id="pg-copy-btn" title="Copy to Clipboard">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960"
-                                    width="20px" fill="currentColor">
-                                    <path
-                                        d="M360-240q-27.63 0-46.82-19.18Q294-278.37 294-306v-474q0-27.63 19.18-46.82Q332.37-846 360-846h360q27.63 0 46.82 19.18Q786-807.63 786-780v474q0 27.63-19.18 46.82Q747.63-240 720-240H360Zm0-60h360v-474H360v474Zm-60 60q-27.63 0-46.82-19.18Q174-178.37 174-206v-534h60v534h402v60H300Zm60-60v-474 474Z" />
-                                </svg>
-                                <span class="pg-copy-tooltip">Copy</span>
-                            </button>
-                        </div>
-                        <span id="pg-error-message" class="pg-error-message"></span>
-                        <span id="pg-copy-feedback" class="pg-copy-feedback"></span>
-                    </div>
-                </div>
-            </section>
-
-            <section id="passwordStrengthChecker" class="tool-content">
-                <h2>Password Strength Checker</h2>
-                <div class="tool-placeholder">
-                    <div>
-                        <label for="psc-password-input">Enter Password:</label>
-                        <input type="text" id="psc-password-input" placeholder="Type your password here...">
-                    </div>
-                    <div class="psc-strength-meter">
-                        <div id="psc-strength-bar" class="psc-strength-bar"></div>
-                        <p id="psc-strength-text" class="psc-strength-text">Strength: N/A</p>
-                    </div>
-                    <ul id="psc-feedback-list" class="psc-feedback-list">
-                        <!-- Feedback items will be populated by JavaScript -->
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Add more tool sections here -->
         </main>
     </div>
 
@@ -174,9 +101,8 @@
         <p>© <span id="current-year"></span> ToolThump. All rights reserved.</p>
     </footer>
 
-    <script src="tools/security/passwordGenerator.js"></script>
-    <script src="tools/security/passwordStrengthChecker.js"></script>
     <script src="main.js"></script>
+    <!-- Tool-specific JS files are NOT loaded on index.html anymore -->
 </body>
 
 </html>

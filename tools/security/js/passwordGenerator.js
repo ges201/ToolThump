@@ -1,22 +1,22 @@
-// --- Password Generator Logic ---
+// tools/security/js/passwordGenerator.js
 const pg = {
-    lengthInput: document.getElementById('pg-length'),
-    uppercaseCheckbox: document.getElementById('pg-include-uppercase'),
-    lowercaseCheckbox: document.getElementById('pg-include-lowercase'),
-    numbersCheckbox: document.getElementById('pg-include-numbers'),
-    symbolsCheckbox: document.getElementById('pg-include-symbols'),
-    minUppercaseInput: document.getElementById('pg-min-uppercase'),
-    minLowercaseInput: document.getElementById('pg-min-lowercase'),
-    minNumbersInput: document.getElementById('pg-min-numbers'),
-    minSymbolsInput: document.getElementById('pg-min-symbols'),
-
-    generateBtn: document.getElementById('pg-generate-btn'),
-    passwordDisplay: document.getElementById('pg-generated-password-display'),
-    passwordPlaceholder: document.querySelector('.pg-password-placeholder'),
-    copyBtn: document.getElementById('pg-copy-btn'),
-    copyFeedback: document.getElementById('pg-copy-feedback'),
-    copyTooltip: document.querySelector('#pg-copy-btn .pg-copy-tooltip'),
-    errorMessage: document.getElementById('pg-error-message'),
+    // Re-fetch elements on init as they are page-specific
+    lengthInput: null,
+    uppercaseCheckbox: null,
+    lowercaseCheckbox: null,
+    numbersCheckbox: null,
+    symbolsCheckbox: null,
+    minUppercaseInput: null,
+    minLowercaseInput: null,
+    minNumbersInput: null,
+    minSymbolsInput: null,
+    generateBtn: null,
+    passwordDisplay: null,
+    passwordPlaceholderSpan: null, // Renamed for clarity
+    copyBtn: null,
+    copyFeedback: null,
+    copyTooltip: null,
+    errorMessage: null,
 
     plainPassword: '',
     maxLength: 64,
@@ -29,16 +29,36 @@ const pg = {
         symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
     },
 
+    fetchElements: function () {
+        this.lengthInput = document.getElementById('pg-length');
+        this.uppercaseCheckbox = document.getElementById('pg-include-uppercase');
+        this.lowercaseCheckbox = document.getElementById('pg-include-lowercase');
+        this.numbersCheckbox = document.getElementById('pg-include-numbers');
+        this.symbolsCheckbox = document.getElementById('pg-include-symbols');
+        this.minUppercaseInput = document.getElementById('pg-min-uppercase');
+        this.minLowercaseInput = document.getElementById('pg-min-lowercase');
+        this.minNumbersInput = document.getElementById('pg-min-numbers');
+        this.minSymbolsInput = document.getElementById('pg-min-symbols');
+        this.generateBtn = document.getElementById('pg-generate-btn');
+        this.passwordDisplay = document.getElementById('pg-generated-password-display');
+        this.passwordPlaceholderSpan = this.passwordDisplay ? this.passwordDisplay.querySelector('.pg-password-placeholder') : null;
+        this.copyBtn = document.getElementById('pg-copy-btn');
+        this.copyFeedback = document.getElementById('pg-copy-feedback');
+        this.copyTooltip = this.copyBtn ? this.copyBtn.querySelector('.pg-copy-tooltip') : null;
+        this.errorMessage = document.getElementById('pg-error-message');
+    },
+
     getRandomChar: function (charSet) {
         return charSet[Math.floor(Math.random() * charSet.length)];
     },
 
     updateValidationState: function () {
+        if (!this.lengthInput) return false; // Elements not fetched yet
+
         let isFormValidForButton = true;
         let primaryErrorForDisplay = '';
         let lengthCorrectionInfo = '';
 
-        // --- 1. Validate Total Length ---
         const totalLength = parseInt(this.lengthInput.value);
 
         if (isNaN(totalLength)) {
@@ -48,19 +68,16 @@ const pg = {
             if (totalLength > this.maxLength) {
                 this.lengthInput.value = this.maxLength;
                 lengthCorrectionInfo = `Length reset to max ${this.maxLength}.`;
-                // Button might still be valid if minLength <= maxLength
                 if (this.maxLength < this.minLength) isFormValidForButton = false;
-
             } else if (totalLength < this.minLength) {
                 primaryErrorForDisplay = `Length must be at least ${this.minLength}.`;
                 isFormValidForButton = false;
             }
         }
 
-        // --- 2. Calculate Sum of Minimums and Validate Min Inputs ---
         let currentMinSum = 0;
         let minSumValidationError = '';
-        const currentDisplayLength = parseInt(this.lengthInput.value); // Re-parse, could have been corrected
+        const currentDisplayLength = parseInt(this.lengthInput.value);
 
         const optionsForMinValidation = [
             { include: this.uppercaseCheckbox.checked, minInput: this.minUppercaseInput, type: 'uppercase' },
@@ -70,7 +87,7 @@ const pg = {
         ];
 
         for (const opt of optionsForMinValidation) {
-            if (opt.include) {
+            if (opt.include && opt.minInput) { // Added check for opt.minInput
                 let minVal = parseInt(opt.minInput.value);
                 if (isNaN(minVal) || minVal < 1) {
                     minVal = 1;
@@ -79,30 +96,19 @@ const pg = {
                 currentMinSum += minVal;
             }
         }
-        
+
         if (!isNaN(currentDisplayLength) && currentDisplayLength >= this.minLength) {
             if (currentMinSum > currentDisplayLength) {
                 minSumValidationError = `Sum of minimums (${currentMinSum}) exceeds total length (${currentDisplayLength}).`;
                 isFormValidForButton = false;
             }
-        } else if (isFormValidForButton) { // If length was valid before this sum check, but now currentDisplayLength is not valid (e.g. NaN or < minLength due to other checks)
-            // This might happen if totalLength was initially NaN or became so and wasn't caught by the first block.
-            // Or if totalLength was < minLength.
-            isFormValidForButton = false; // Ensure button is disabled.
+        } else if (isFormValidForButton) {
+            isFormValidForButton = false;
             if (!primaryErrorForDisplay && !minSumValidationError) primaryErrorForDisplay = "Invalid length for sum calculation.";
         }
 
-
-        // --- 3. Determine final error message and button state ---
-        if (minSumValidationError) {
-            this.errorMessage.textContent = minSumValidationError;
-        } else if (primaryErrorForDisplay) {
-            this.errorMessage.textContent = primaryErrorForDisplay;
-        } else if (lengthCorrectionInfo) {
-            this.errorMessage.textContent = lengthCorrectionInfo;
-        } else {
-            this.errorMessage.textContent = '';
-        }
+        const finalError = minSumValidationError || primaryErrorForDisplay || lengthCorrectionInfo || '';
+        this.errorMessage.textContent = finalError;
 
         if (this.generateBtn) {
             this.generateBtn.disabled = !isFormValidForButton;
@@ -112,20 +118,25 @@ const pg = {
     },
 
     generatePassword: function () {
+        if (!this.passwordDisplay) return; // Elements not fetched
+
         if (this.errorMessage.textContent.startsWith('Length reset to max')) {
-            this.errorMessage.textContent = ''; // Clear transient message
+            this.errorMessage.textContent = '';
         }
 
-        if (this.passwordPlaceholder) this.passwordPlaceholder.style.display = 'none';
+        // Ensure placeholder is handled correctly
+        if (this.passwordPlaceholderSpan) this.passwordPlaceholderSpan.style.display = 'none';
+        this.passwordDisplay.innerHTML = ''; // Clear previous password content first
 
-        if (!this.updateValidationState()) { // Re-validate before generating
-            this.passwordDisplay.innerHTML = ''; // Clear display
-            if (this.passwordPlaceholder) this.passwordPlaceholder.style.display = 'inline';
+        if (!this.updateValidationState()) {
+            if (this.passwordPlaceholderSpan) {
+                this.passwordDisplay.appendChild(this.passwordPlaceholderSpan); // Re-add placeholder
+                this.passwordPlaceholderSpan.style.display = 'inline';
+            }
             return;
         }
 
         const totalLength = parseInt(this.lengthInput.value);
-
         const optionsForGeneration = [
             { type: 'uppercase', include: this.uppercaseCheckbox.checked, minInput: this.minUppercaseInput, set: this.charSets.uppercase },
             { type: 'lowercase', include: this.lowercaseCheckbox.checked, minInput: this.minLowercaseInput, set: this.charSets.lowercase },
@@ -138,14 +149,14 @@ const pg = {
         let currentMinSumForGeneration = 0;
 
         for (const opt of optionsForGeneration) {
-            let minVal = parseInt(opt.minInput.value);
-            if (opt.include && (isNaN(minVal) || minVal < 1)) {
-                minVal = 1;
-                opt.minInput.value = "1";
-            } else if (!opt.include) {
-                minVal = 0;
+            let minVal = 0; // Default to 0 if not included or invalid
+            if (opt.include && opt.minInput) { // Added check for opt.minInput
+                minVal = parseInt(opt.minInput.value);
+                if (isNaN(minVal) || minVal < 1) {
+                    minVal = 1;
+                    opt.minInput.value = "1";
+                }
             }
-
 
             if (opt.include) {
                 characterPool += opt.set;
@@ -153,39 +164,32 @@ const pg = {
                 for (let i = 0; i < minVal; i++) {
                     if (opt.set.length > 0) {
                         guaranteedChars.push(this.getRandomChar(opt.set));
-                    } else { // Should not happen with predefined charsets
+                    } else {
                         this.errorMessage.textContent = `Error: Charset for ${opt.type} is empty.`;
-                        this.passwordDisplay.innerHTML = '';
-                        if (this.passwordPlaceholder) this.passwordPlaceholder.style.display = 'inline';
+                        if (this.passwordPlaceholderSpan) this.passwordPlaceholderSpan.style.display = 'inline';
                         return;
                     }
                 }
             }
-            // No explicit error here if !opt.include and minInput.value > 0, as updateValidationState handles sums of *active* minimums.
-            // The checkbox disabling the minInput is the primary UI cue.
         }
 
         if (characterPool === '') {
             this.errorMessage.textContent = 'Select at least one character type.';
-            this.passwordDisplay.innerHTML = '';
-            if (this.passwordPlaceholder) this.passwordPlaceholder.style.display = 'inline';
+            if (this.passwordPlaceholderSpan) this.passwordPlaceholderSpan.style.display = 'inline';
             return;
         }
-        // This check should ideally be covered by updateValidationState, but as a safeguard:
         if (currentMinSumForGeneration > totalLength) {
             this.errorMessage.textContent = `Sum of minimums (${currentMinSumForGeneration}) > total length (${totalLength}). Fix options.`;
-            this.passwordDisplay.innerHTML = '';
-            if (this.passwordPlaceholder) this.passwordPlaceholder.style.display = 'inline';
+            if (this.passwordPlaceholderSpan) this.passwordPlaceholderSpan.style.display = 'inline';
             return;
         }
 
         let remainingLength = totalLength - guaranteedChars.length;
         let randomFillChars = [];
         for (let i = 0; i < remainingLength; i++) {
-            if (characterPool.length === 0) { // Should not happen if initial check passed
+            if (characterPool.length === 0) {
                 this.errorMessage.textContent = "Error: Character pool became empty unexpectedly.";
-                this.passwordDisplay.innerHTML = '';
-                if (this.passwordPlaceholder) this.passwordPlaceholder.style.display = 'inline';
+                if (this.passwordPlaceholderSpan) this.passwordPlaceholderSpan.style.display = 'inline';
                 return;
             }
             randomFillChars.push(this.getRandomChar(characterPool));
@@ -195,16 +199,16 @@ const pg = {
         this.plainPassword = finalPasswordArray.join('');
 
         this.displayStyledPassword(this.plainPassword);
-        // Clear errors that were resolved by generation (like sum errors if length was adjusted etc.)
         if (this.errorMessage.textContent.toLowerCase().includes('length must be') ||
             this.errorMessage.textContent.toLowerCase().includes('sum of minimums')) {
-             this.errorMessage.textContent = '';
+            this.errorMessage.textContent = '';
         }
         this.copyFeedback.textContent = '';
         this.updateCopyButtonTooltip('Copy');
     },
 
     displayStyledPassword: function (password) {
+        if (!this.passwordDisplay) return;
         let styledHtml = '';
         for (const char of password) {
             if (this.charSets.numbers.includes(char)) {
@@ -212,10 +216,10 @@ const pg = {
             } else if (this.charSets.symbols.includes(char)) {
                 styledHtml += `<span class="char-symbol">${char}</span>`;
             } else {
-                styledHtml += `<span>${char}</span>`; // Wrap all chars for consistency if needed
+                styledHtml += `<span>${char}</span>`;
             }
         }
-        this.passwordDisplay.innerHTML = styledHtml;
+        this.passwordDisplay.innerHTML = styledHtml; // This replaces the placeholder if it was there
     },
 
     shuffleArray: function (array) {
@@ -227,12 +231,14 @@ const pg = {
     },
 
     copyToClipboard: async function () {
+        if (!this.copyFeedback) return;
+
         if (!this.plainPassword) {
             this.copyFeedback.textContent = 'Nothing to copy!';
-            this.copyFeedback.style.color = 'var(--error-color)'; // Use CSS var
+            this.copyFeedback.style.color = 'var(--error-color)';
             setTimeout(() => {
                 this.copyFeedback.textContent = '';
-                this.copyFeedback.style.color = ''; // Reset color
+                this.copyFeedback.style.color = '';
             }, 2000);
             return;
         }
@@ -246,15 +252,12 @@ const pg = {
             console.error('Failed to copy: ', err);
             this.copyFeedback.textContent = 'Copy failed!';
             this.copyFeedback.style.color = 'var(--error-color)';
-            // Fallback for older browsers or if clipboard API fails
-            try {
+            try { // Fallback
                 const tempInput = document.createElement('textarea');
-                tempInput.style.position = 'absolute'; // Hide it
-                tempInput.style.left = '-9999px';
+                tempInput.style.position = 'absolute'; tempInput.style.left = '-9999px';
                 tempInput.value = this.plainPassword;
                 document.body.appendChild(tempInput);
-                tempInput.select();
-                tempInput.setSelectionRange(0, 99999); /* For mobile devices */
+                tempInput.select(); tempInput.setSelectionRange(0, 99999);
                 document.execCommand('copy');
                 document.body.removeChild(tempInput);
                 this.copyFeedback.textContent = 'Copied (fallback)!';
@@ -263,7 +266,6 @@ const pg = {
             } catch (execErr) {
                 console.error('Fallback copy failed: ', execErr);
                 this.copyFeedback.textContent = 'Automatic copy failed. Please copy manually.';
-                // Keep error color for this message
             }
         }
 
@@ -271,7 +273,7 @@ const pg = {
             if (this.copyFeedback.textContent !== 'Automatic copy failed. Please copy manually.') {
                 this.copyFeedback.textContent = '';
             }
-            this.updateCopyButtonTooltip('Copy'); // Reset tooltip regardless
+            this.updateCopyButtonTooltip('Copy');
         }, 2000);
     },
 
@@ -297,60 +299,65 @@ const pg = {
         ];
 
         optionInputs.forEach(opt => {
-            if (opt.cb && opt.minIn) { // Ensure elements exist
+            if (opt.cb && opt.minIn) {
                 opt.minIn.disabled = !opt.cb.checked;
                 if (opt.cb.checked && (parseInt(opt.minIn.value) < 1 || isNaN(parseInt(opt.minIn.value)))) {
                     opt.minIn.value = "1";
                 }
-                // If unchecked, we don't reset its value, just disable it.
-                // User might re-check and want their previous min value.
             }
         });
         this.updateValidationState();
     },
 
     init: function () {
+        this.fetchElements(); // Fetch elements once the DOM is ready for this page
+
         // Ensure all elements are present before adding listeners
-        if (this.generateBtn) {
-            this.generateBtn.addEventListener('click', () => this.generatePassword());
+        if (!this.generateBtn || !this.copyBtn || !this.lengthInput /* add more checks if crucial */) {
+            console.error("PG_INIT: Could not find all required elements for Password Generator. Aborting init.");
+            return;
         }
-        if (this.copyBtn) {
-            this.copyBtn.addEventListener('click', () => this.copyToClipboard().catch(err => console.error("Copy error:", err)));
-        }
+
+        this.generateBtn.addEventListener('click', () => this.generatePassword());
+        this.copyBtn.addEventListener('click', () => this.copyToClipboard().catch(err => console.error("Copy error:", err)));
 
         const allOptionInputsAndCheckboxes = [
             this.uppercaseCheckbox, this.lowercaseCheckbox, this.numbersCheckbox, this.symbolsCheckbox,
             this.minUppercaseInput, this.minLowercaseInput, this.minNumbersInput, this.minSymbolsInput,
-            this.lengthInput // Add lengthInput to the list for consistent handling if needed
+            this.lengthInput
         ];
-        
+
         allOptionInputsAndCheckboxes.forEach(input => {
-            if (input) { // Check if element exists
+            if (input) {
                 if (input.type === 'checkbox') {
                     input.addEventListener('change', () => this.handleCheckboxChange());
-                } else if (input.type === 'number') { // This now covers lengthInput and min count inputs
+                } else if (input.type === 'number') {
                     input.addEventListener('input', () => this.updateValidationState());
-                    input.addEventListener('change', () => { // On change (e.g., blur, arrow clicks)
-                        if (input !== this.lengthInput && !input.disabled) { // Min count inputs that are active
+                    input.addEventListener('change', () => {
+                        if (input !== this.lengthInput && !input.disabled) {
                             if (parseInt(input.value) < 1 || isNaN(parseInt(input.value))) {
-                                input.value = "1"; // Enforce min 1 if active
+                                input.value = "1";
                             }
                         }
-                        this.updateValidationState(); // Always re-validate
+                        this.updateValidationState();
                     });
                 }
             }
         });
 
-        // Initial setup
-        this.handleCheckboxChange(); // Set initial state of min inputs based on checkboxes
-        this.updateValidationState(); // Perform initial validation
+        this.handleCheckboxChange();
+        this.updateValidationState();
 
-        // Set initial placeholder visibility
-        if (this.passwordPlaceholder && this.passwordDisplay) {
-            this.passwordDisplay.innerHTML = ''; // Clear any potential old content
-            this.passwordDisplay.appendChild(this.passwordPlaceholder);
-            this.passwordPlaceholder.style.display = 'inline';
+        if (this.passwordPlaceholderSpan && this.passwordDisplay) {
+            this.passwordDisplay.innerHTML = ''; // Clear
+            this.passwordDisplay.appendChild(this.passwordPlaceholderSpan);
+            this.passwordPlaceholderSpan.style.display = 'inline';
         }
+        console.log("Password Generator Initialized on its page.");
     }
 };
+
+// Self-initialize when the script is loaded on a page containing the password generator
+if (document.getElementById('passwordGenerator')) { // Check for the main section ID
+    pg.init();
+}

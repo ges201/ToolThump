@@ -1,22 +1,23 @@
-// --- Password Strength Checker Logic ---
+// tools/security/js/passwordStrengthChecker.js
 const psc = {
-    passwordInput: document.getElementById('psc-password-input'),
-    strengthBar: document.getElementById('psc-strength-bar'),
-    strengthText: document.getElementById('psc-strength-text'),
-    feedbackList: document.getElementById('psc-feedback-list'),
+    passwordInput: null,
+    strengthBar: null,
+    strengthText: null,
+    feedbackList: null,
 
-    // --- Configuration Constants ---
     MIN_LENGTH: 8,
     IDEAL_LENGTH: 12,
     VERY_GOOD_LENGTH: 16,
-    SUPER_STRONG_POSITIVE_THRESHOLD: 9, // Max positive score before deductions
-    STRONG_POSITIVE_THRESHOLD: 7,       // Strong positive score before deductions
+    SUPER_STRONG_POSITIVE_THRESHOLD: 9,
+    STRONG_POSITIVE_THRESHOLD: 7,
 
-    /**
-     * Gets basic properties of the password.
-     * @param {string} password - The password string.
-     * @returns {object} An object containing length, hasUpper, hasLower, hasNumbers, hasSymbols, typesCount.
-     */
+    fetchElements: function () {
+        this.passwordInput = document.getElementById('psc-password-input');
+        this.strengthBar = document.getElementById('psc-strength-bar');
+        this.strengthText = document.getElementById('psc-strength-text');
+        this.feedbackList = document.getElementById('psc-feedback-list');
+    },
+
     _getPasswordProperties: function (password) {
         const length = password.length;
         const hasUpper = /[A-Z]/.test(password);
@@ -27,12 +28,6 @@ const psc = {
         return { length, hasUpper, hasLower, hasNumbers, hasSymbols, typesCount };
     },
 
-    /**
-     * Calculates score and feedback based on password length.
-     * @param {number} length - The length of the password.
-     * @param {Array<object>} feedback - The feedback array to push messages to.
-     * @returns {number} The score based on length.
-     */
     _scoreLength: function (length, feedback) {
         let score = 0;
         if (length >= this.MIN_LENGTH) score += 1;
@@ -51,12 +46,6 @@ const psc = {
         return score;
     },
 
-    /**
-     * Calculates score and feedback based on character types present.
-     * @param {object} properties - Password properties from _getPasswordProperties.
-     * @param {Array<object>} feedback - The feedback array.
-     * @returns {number} The score based on character types.
-     */
     _scoreCharacterTypes: function (properties, feedback) {
         let score = 0;
         if (properties.hasUpper) {
@@ -86,16 +75,10 @@ const psc = {
         return score;
     },
 
-    /**
-     * Calculates score and feedback based on character type variety.
-     * @param {object} properties - Password properties.
-     * @param {Array<object>} feedback - The feedback array.
-     * @returns {number} The score based on variety.
-     */
     _scoreVariety: function (properties, feedback) {
         let score = 0;
         if (properties.typesCount >= 3) score += 1;
-        if (properties.typesCount === 4) score += 1; // Total +2 for all 4 types
+        if (properties.typesCount === 4) score += 1;
 
         if (properties.typesCount === 4) {
             feedback.push({ text: 'Excellent mix: All 4 character types used.', valid: true });
@@ -105,27 +88,14 @@ const psc = {
         return score;
     },
 
-    /**
-     * Calculates deduction for using only one character type.
-     * @param {object} properties - Password properties.
-     * @param {Array<object>} feedback - The feedback array.
-     * @returns {number} The deduction score.
-     */
     _deductForSingleType: function (properties, feedback) {
         if (properties.length >= this.MIN_LENGTH && properties.typesCount === 1) {
             feedback.push({ text: 'Weakness: Uses only one type of character.', valid: false });
-            return 2; // Significant flaw
+            return 2;
         }
         return 0;
     },
 
-    /**
-     * Calculates deduction for repetitive characters.
-     * @param {string} password - The password string.
-     * @param {number} positiveScore - The current positive score before deductions.
-     * @param {Array<object>} feedback - The feedback array.
-     * @returns {number} The deduction score for repetitions.
-     */
     _deductForRepetitions: function (password, positiveScore, feedback) {
         let deduction = 0;
         let consecutiveIdenticalCharsCount = 0;
@@ -152,13 +122,6 @@ const psc = {
         return deduction;
     },
 
-    /**
-     * Calculates deduction for sequential characters.
-     * @param {string} password - The password string.
-     * @param {number} positiveScore - The current positive score before deductions.
-     * @param {Array<object>} feedback - The feedback array.
-     * @returns {number} The deduction score for sequences.
-     */
     _deductForSequences: function (password, positiveScore, feedback) {
         let deduction = 0;
         let sequentialCharsCount = 0;
@@ -192,42 +155,29 @@ const psc = {
         return deduction;
     },
 
-    /**
-     * Determines the strength text, bar class, and bar width based on the final score.
-     * @param {number} finalScore - The calculated final score for the password.
-     * @param {number} length - The length of the password.
-     * @returns {object} Object containing strengthDescription, barClass, barWidthPercentage.
-     */
     _determineStrengthPresentation: function (finalScore, length) {
         let strengthDescription = '';
         let barClass = '';
         let barWidthPercentage = 0;
 
-        // Max Positive Score is 9 (3 length + 4 types + 2 variety)
-        // Tiers based on a potential score of 0-9
-        if (length === 0) { // This case is handled earlier, but good for completeness
+        if (length === 0) {
             strengthDescription = 'N/A'; barClass = ''; barWidthPercentage = 0;
         } else if (length < this.MIN_LENGTH) {
             strengthDescription = 'Very Weak'; barClass = 'very-weak'; barWidthPercentage = 10;
-        } else if (finalScore <= 2) { // 0, 1, 2
+        } else if (finalScore <= 2) {
             strengthDescription = 'Very Weak'; barClass = 'very-weak'; barWidthPercentage = 25;
-        } else if (finalScore <= 4) { // 3, 4
+        } else if (finalScore <= 4) {
             strengthDescription = 'Weak'; barClass = 'weak'; barWidthPercentage = 45;
-        } else if (finalScore <= 6) { // 5, 6
+        } else if (finalScore <= 6) {
             strengthDescription = 'Moderate'; barClass = 'moderate'; barWidthPercentage = 65;
-        } else if (finalScore <= 8) { // 7, 8
+        } else if (finalScore <= 8) {
             strengthDescription = 'Strong'; barClass = 'strong'; barWidthPercentage = 85;
-        } else { // finalScore >= 9
+        } else {
             strengthDescription = 'Very Strong'; barClass = 'very-strong'; barWidthPercentage = 100;
         }
         return { strengthDescription, barClass, barWidthPercentage };
     },
 
-    /**
-     * The main function to check password strength.
-     * @param {string} password - The password to check.
-     * @returns {object} An object containing the score, text, barClass, barWidth, and feedback.
-     */
     checkPasswordStrength: function (password) {
         if (!password || password.length === 0) {
             return {
@@ -253,17 +203,13 @@ const psc = {
         totalDeductionScore += this._deductForSequences(password, positiveScore, feedback);
 
         const finalScore = Math.max(0, positiveScore - totalDeductionScore);
-
         let { strengthDescription, barClass, barWidthPercentage } = this._determineStrengthPresentation(finalScore, properties.length);
 
-        // Override strength if "Too short" feedback is present, as it's a fundamental weakness.
         if (feedback.some(f => f.text.startsWith("Too short"))) {
             strengthDescription = 'Very Weak';
             barClass = 'very-weak';
             barWidthPercentage = 10;
         }
-
-        // Sort feedback: invalid items first for prominence
         feedback.sort((a, b) => (a.valid === b.valid) ? 0 : (a.valid ? 1 : -1));
 
         return {
@@ -276,39 +222,40 @@ const psc = {
     },
 
     updateUI: function (password) {
+        if (!this.strengthText || !this.strengthBar || !this.feedbackList) return; // Elements not fetched
+
         const strength = this.checkPasswordStrength(password);
-
-        if (this.strengthText) {
-            this.strengthText.textContent = `Strength: ${strength.text}`;
+        this.strengthText.textContent = `Strength: ${strength.text}`;
+        this.strengthBar.className = 'psc-strength-bar';
+        if (strength.barClass) {
+            this.strengthBar.classList.add(strength.barClass);
         }
-
-        if (this.strengthBar) {
-            this.strengthBar.className = 'psc-strength-bar'; // Reset classes
-            if (strength.barClass) {
-                this.strengthBar.classList.add(strength.barClass);
-            }
-            this.strengthBar.style.width = `${strength.barWidth}%`;
-        }
-
-        if (this.feedbackList) {
-            this.feedbackList.innerHTML = ''; // Clear old feedback
-            strength.feedback.forEach(item => {
-                const li = document.createElement('li');
-                li.textContent = item.text;
-                li.classList.add(item.valid ? 'valid' : 'invalid');
-                this.feedbackList.appendChild(li);
-            });
-        }
+        this.strengthBar.style.width = `${strength.barWidth}%`;
+        this.feedbackList.innerHTML = '';
+        strength.feedback.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item.text;
+            li.classList.add(item.valid ? 'valid' : 'invalid');
+            this.feedbackList.appendChild(li);
+        });
     },
 
     init: function () {
+        this.fetchElements();
+
         if (this.passwordInput) {
             this.passwordInput.addEventListener('input', (e) => {
                 this.updateUI(e.target.value);
             });
             this.updateUI(this.passwordInput.value); // Initial check
+            console.log("Password Strength Checker Initialized on its page.");
         } else {
-            console.error("Password Strength Checker: Input field not found.");
+            console.error("PSC_INIT: Password Strength Checker: Input field not found. Aborting init.");
         }
     }
 };
+
+// Self-initialize when the script is loaded on a page containing the password strength checker
+if (document.getElementById('passwordStrengthChecker')) { // Check for the main section ID
+    psc.init();
+}

@@ -1,27 +1,4 @@
-// Function to show the selected tool and hide others
-function showTool(toolId) {
-    const toolContents = document.querySelectorAll('.tool-content');
-    const toolLinks = document.querySelectorAll('#top-navigation .tool-link'); // Updated selector
-
-    toolContents.forEach(content => {
-        content.classList.remove('active');
-    });
-    toolLinks.forEach(link => {
-        link.classList.remove('active-link');
-    });
-
-    const activeToolId = toolId || 'home';
-
-    const selectedTool = document.getElementById(activeToolId);
-    if (selectedTool) {
-        selectedTool.classList.add('active');
-    }
-
-    const activeLink = document.querySelector(`#top-navigation .tool-link[href="#${activeToolId}"]`); // Updated selector
-    if (activeLink) {
-        activeLink.classList.add('active-link');
-    }
-}
+// main.js - Updated for Multi-Page Application (MPA) structure
 
 // Update the current year in the footer
 function updateCopyrightYear() {
@@ -44,7 +21,7 @@ function setupDropdowns() {
         }
 
         button.addEventListener('click', (event) => {
-            event.stopPropagation(); // VERY IMPORTANT: Prevent click from bubbling to document
+            event.stopPropagation(); // Prevent click from bubbling to document
             const isExpanded = button.getAttribute('aria-expanded') === 'true';
 
             // Close all other open dropdowns first
@@ -59,7 +36,7 @@ function setupDropdowns() {
             });
 
             // Toggle current dropdown
-            button.setAttribute('aria-expanded', String(!isExpanded)); // Explicitly use String()
+            button.setAttribute('aria-expanded', String(!isExpanded));
             dropdown.classList.toggle('show', !isExpanded);
         });
     });
@@ -78,11 +55,11 @@ function setupDropdowns() {
     // Prevent dropdowns from closing when clicking inside them
     document.querySelectorAll('.dropdown-menu').forEach(menu => {
         menu.addEventListener('click', (event) => {
-            event.stopPropagation(); // VERY IMPORTANT
+            event.stopPropagation();
         });
     });
 
-    // Close dropdown when a tool link is clicked and navigate
+    // Close dropdown when a tool link is clicked (navigation will happen via href)
     document.querySelectorAll('#top-navigation .tool-link').forEach(link => {
         link.addEventListener('click', function () { // Using function() to get `this`
             const parentDropdown = this.closest('.dropdown-menu');
@@ -93,7 +70,7 @@ function setupDropdowns() {
                 }
                 parentDropdown.classList.remove('show');
             }
-            // Hash change will be handled by the global listener to show the tool
+            // The browser will handle navigation to the link's href attribute
         });
     });
 }
@@ -104,21 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCopyrightYear();
     setupDropdowns(); // Initialize dropdown functionality
 
-    // Initialize Password Generator
-    if (typeof pg !== 'undefined' && document.getElementById('passwordGenerator')) {
-        pg.init();
-    }
+    // Tool-specific initializations (like pg.init() or psc.init())
+    // should now be handled on their respective tool pages or within
+    // their dedicated JS files (e.g., passwordGenerator.js might call pg.init() itself).
 
-    // Initialize Password Strength Checker
-    if (typeof psc !== 'undefined' && document.getElementById('passwordStrengthChecker')) {
-        psc.init();
-    }
-
-    function handleHashChange() {
-        const currentHash = window.location.hash.substring(1);
-        showTool(currentHash || 'home');
-    }
-
-    window.addEventListener('hashchange', handleHashChange, false);
-    handleHashChange(); // Initial tool display
-});
+    // For example, on tools/security/html/password-generator.html,
+    // you might have a script tag that calls:
+    // if (typeof pg !== 'undefined') {
+    //     pg.init();
+    // }
+    // Or, more simply, passwordGenerator.js itself could just run the init code
+    // when it's loaded on the correct page.
+});I
