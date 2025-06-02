@@ -1,0 +1,50 @@
+<!-- This is the content for _includes/header.html -->
+<div class="header-brand">
+    <a href="index.html" class="logo-link"> <!-- Path relative to site root -->
+        <img src="ToolThump.png" alt="ToolThump Logo" id="header-logo"> <!-- Path relative to site root -->
+    </a>
+</div>
+<nav id="top-navigation">
+    <ul class="category-list">
+        <li class="category-item">
+            <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="security-tools">
+                Security
+                <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16"
+                    height="16" fill="currentColor">
+                    <path d="M7 10l5 5 5-5H7z" />
+                    <path d="M0 0h24v24H0z" fill="none" />
+                </svg>
+            </button>
+            <ul class="dropdown-menu" id="security-tools" role="menu">
+                <li role="none">
+                    <a href="tools/security/html/password-generator.html" role="menuitem" class="tool-link">
+                        <!-- Path relative to site root -->
+                        <img src="icons/password-generator-color.png" alt="Password Generator Tool" class="tool-icon">
+                        <!-- Path relative to site root -->
+                        Password Generator
+                    </a>
+                </li>
+                <li role="none">
+                    <a href="tools/security/html/password-strength-checker.html" role="menuitem" class="tool-link">
+                        <!-- Path relative to site root -->
+                        <img src="icons/password-strength-color.png" alt="Password Strength Checker Tool"
+                            class="tool-icon"> <!-- Path relative to site root -->
+                        Password Strength Checker
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- Add more <li class="category-item"> here for future categories, using paths relative to site root -->
+        <!-- Example:
+        <li class="category-item">
+            <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="text-tools">
+                Text Tools
+                <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M7 10l5 5 5-5H7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+            </button>
+            <ul class="dropdown-menu" id="text-tools" role="menu">
+                <li role="none"><a href="tools/text/html/some-text-tool.html" role="menuitem" class="tool-link"><img src="icons/text-tool-color.png" alt="Some Text Tool Icon" class="tool-icon">Some Text Tool</a></li>
+            </ul>
+        </li>
+        -->
+    </ul>
+</nav>

@@ -1,16 +1,33 @@
+/* ToolThump/css/layout.css */
+
 /* === Header === */
 header {
     background-color: var(--neutral-dark);
     color: var(--text-on-dark-bg);
     padding: var(--spacing-md) var(--spacing-lg);
+    /* This padding affects overall header height */
     box-shadow: var(--shadow-md);
     z-index: 100;
     /* High enough for dropdowns within to not be overlapped by main content scrollbars etc. */
     display: flex;
     align-items: center;
+    /* Vertically aligns items in the header, including logo and nav */
     gap: var(--spacing-lg);
     border-bottom: 3px solid var(--accent-color);
 }
+
+/* Styles for the .header-brand div, which now contains the logo */
+.header-brand {
+    /* If the logo is the only item, you might not need specific styles here.
+       It will be aligned by the parent <header>'s 'align-items: center'.
+       'line-height: 0;' can sometimes help remove unexpected space around image links. */
+    line-height: 0;
+}
+
+/*
+    The following styles for h1 and p within .header-brand are likely no longer needed
+    as the text title has been replaced by the image logo.
+    Commented out for now. You can delete them if they are not used elsewhere.
 
 .header-brand h1 {
     font-size: 1.5rem;
@@ -24,6 +41,27 @@ header {
     color: var(--neutral-light);
     margin: 0;
 }
+*/
+
+/* Styles for the logo link (the <a> tag) */
+.logo-link {
+    display: inline-block;
+    /* Allows link to behave like a block for sizing but flow inline */
+    text-decoration: none;
+    /* Removes underline from the link if it appears */
+    /* vertical-align: middle; /* Can be useful if other elements are directly next to it and not using flex align-items */
+}
+
+/* Styles for the logo image itself (the <img> tag with id="header-logo") */
+#header-logo {
+    height: 150px;
+    /* <<< ADJUST THIS VALUE to make the logo smaller or larger */
+    width: auto;
+    /* This maintains the aspect ratio of your logo */
+    display: block;
+    /* Removes any extra space below the image that might occur if it's treated as inline */
+}
+
 
 /* === Content Wrapper & Main Content Area === */
 .content-wrapper {
