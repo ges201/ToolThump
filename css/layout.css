@@ -54,7 +54,7 @@ header {
 
 /* Styles for the logo image itself (the <img> tag with id="header-logo") */
 #header-logo {
-    height: 150px;
+    height: 100px;
     /* <<< ADJUST THIS VALUE to make the logo smaller or larger */
     width: auto;
     /* This maintains the aspect ratio of your logo */
