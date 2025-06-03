@@ -1,0 +1,167 @@
+/* === Text Comparison Specific Styles === */
+.tc-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.tc-input-area {
+    display: grid;
+    grid-template-columns: 1fr; /* Stack on small screens */
+    gap: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+    .tc-input-area {
+        grid-template-columns: 1fr 1fr; /* Side-by-side on larger screens */
+    }
+}
+
+.tc-input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.tc-input-group label {
+    margin-bottom: var(--spacing-xs);
+    font-weight: 500;
+    color: var(--text-primary-color);
+}
+
+.tc-input-group textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--border-radius-sm);
+    font-family: var(--font-family-monospace);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    background-color: var(--input-bg-color);
+    color: var(--text-primary-color);
+    box-shadow: var(--shadow-xs-inset);
+    resize: vertical;
+}
+
+.tc-input-group textarea:focus {
+    outline: 2px solid var(--accent-color);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px var(--accent-color-alpha-30), var(--shadow-xs-inset);
+}
+
+button.tc-compare-button {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: var(--border-radius-md);
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    border: none;
+    background-color: var(--accent-color);
+    color: var(--text-on-accent-bg);
+    display: block;
+    width: 100%;
+    max-width: 280px;
+    margin: var(--spacing-md) auto var(--spacing-lg) auto;
+    box-shadow: var(--shadow-sm);
+}
+
+button.tc-compare-button:hover {
+    background-color: var(--accent-color-dark);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+button.tc-compare-button:active {
+    transform: translateY(0px) scale(0.98);
+    box-shadow: var(--shadow-xs);
+}
+
+.tc-results-area {
+    margin-top: var(--spacing-md);
+    background-color: var(--neutral-very-light);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.tc-results-area h3 {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    color: var(--text-primary-color);
+}
+
+.tc-diff-output-box {
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color-strong);
+    border-radius: var(--border-radius-sm);
+    background-color: #fdfdfd; /* Or var(--input-bg-color) */
+    min-height: 100px;
+    font-family: var(--font-family-monospace);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-primary-color);
+    overflow-x: auto;
+}
+
+/* Styling for the <pre> tag that will contain the diff */
+.tc-diff-output-box pre {
+    margin: 0;
+    white-space: pre-wrap; /* Allow lines to wrap but preserve spaces and newlines */
+    word-break: break-all; /* Break words if they are too long to fit */
+    color: var(--text-primary-color); /* Default text color for unchanged words */
+}
+
+.tc-results-placeholder, .tc-error {
+    color: var(--text-secondary-color);
+    font-style: italic;
+    padding: var(--spacing-md);
+    text-align: center;
+    white-space: normal; /* Placeholder text should wrap */
+}
+.tc-error { /* Ensure tc-error within pre also behaves as expected */
+    color: var(--error-color);
+    font-weight: bold;
+    display: block; /* if it's the only content */
+}
+
+.tc-no-diff { /* Ensure tc-no-diff within pre also behaves as expected */
+    color: var(--success-color-dark);
+    font-weight: normal;
+    text-align: center;
+    padding: var(--spacing-md);
+    display: block; /* if it's the only content */
+    white-space: normal;
+}
+
+
+/* Word-by-word diff styling */
+.tc-word-added {
+    background-color: var(--success-color-alpha-30, #d4ffd9); /* Light green */
+    color: var(--success-color-dark, #22863a);
+    padding: 1px 0; /* Minimal vertical padding */
+    border-radius: var(--border-radius-xs);
+}
+
+.tc-word-removed {
+    background-color: var(--error-color-alpha-20, #ffdce0); /* Light red */
+    color: var(--error-color-dark, #d73a49);
+    text-decoration: line-through;
+    padding: 1px 0; /* Minimal vertical padding */
+    border-radius: var(--border-radius-xs);
+}
+
+/* For the sample text in the description */
+.tc-sample-added {
+    background-color: var(--success-color-alpha-30, #d4ffd9);
+    color: var(--success-color-dark, #22863a);
+    padding: 1px 2px;
+    border-radius: var(--border-radius-xs);
+}
+.tc-sample-removed {
+    background-color: var(--error-color-alpha-20, #ffdce0);
+    color: var(--error-color-dark, #d73a49);
+    text-decoration: line-through;
+    padding: 1px 2px;
+    border-radius: var(--border-radius-xs);
+}

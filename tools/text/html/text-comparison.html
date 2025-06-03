@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Comparison Tool - ToolThump</title>
+    <meta name="description"
+        content="Compare two blocks of text to find differences with ToolThump's free online text comparison utility. Highlights changes word by word.">
+    <meta property="og:site_name" content="ToolThump" />
+
+    <!-- Common Stylesheets (paths relative to this file's location) -->
+    <link rel="stylesheet" href="../../../css/theme.css">
+    <link rel="stylesheet" href="../../../css/base.css">
+    <link rel="stylesheet" href="../../../css/layout.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    <link rel="stylesheet" href="../../../css/responsive.css">
+
+    <!-- Tool-Specific Stylesheet -->
+    <link rel="stylesheet" href="../../../css/tools/text-comparison.css">
+
+    <!-- Schema.org for a specific tool page -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Text Comparison Tool - ToolThump",
+      "description": "Compare two blocks of text to find differences with ToolThump's free online text comparison utility. Highlights added and removed words.",
+      "url": "https://ges201.github.io/ToolThump/tools/text/html/text-comparison.html",
+      "isPartOf": {
+        "@type": "WebSite",
+        "url": "https://ges201.github.io/ToolThump/",
+        "name": "ToolThump"
+      }
+    }
+    </script>
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/ToolThump/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/ToolThump/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/ToolThump/favicon-16x16.png">
+    <link rel="manifest" href="/ToolThump/site.webmanifest">
+    <link rel="shortcut icon" href="/ToolThump/favicon.ico">
+</head>
+
+<body>
+    <header data-include="main-header"></header>
+    <div class="content-wrapper">
+        <main id="tool-container">
+            <section id="textComparison" class="tool-content active">
+                <h2>Text Comparison</h2>
+                <p style="margin-bottom: 1em;">Enter two sets of text below. Differences will be highlighted: <span class="tc-sample-added">added words</span> will have a green background, and <span class="tc-sample-removed">removed words</span> will have a red background and strikethrough.</p>
+
+                <div class="tool-placeholder tc-container">
+                    <div class="tc-input-area">
+                        <div class="tc-input-group">
+                            <label for="tc-text1">Text 1 (Old/Original):</label>
+                            <textarea id="tc-text1" rows="10" placeholder="Paste the first text here..."></textarea>
+                        </div>
+                        <div class="tc-input-group">
+                            <label for="tc-text2">Text 2 (New/Changed):</label>
+                            <textarea id="tc-text2" rows="10" placeholder="Paste the second text here..."></textarea>
+                        </div>
+                    </div>
+
+                    <button id="tc-compare-btn" class="tc-compare-button">Compare Texts</button>
+
+                    <div class="tc-results-area">
+                        <h3>Comparison Results:</h3>
+                        <div id="tc-diff-output" class="tc-diff-output-box">
+                            <pre class="tc-results-placeholder">Results will appear here after comparison.</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>© <span id="current-year"></span> ToolThump. All rights reserved.</p>
+    </footer>
+
+    <!-- JSDiff Library (ensure this is available) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.1.0/diff.min.js"></script>
+    <!-- Or your local path to jsdiff.min.js -->
+
+    <script src="../js/textComparison.js"></script>
+    <script src="../../../main.js"></script>
+</body>
+
+</html>
