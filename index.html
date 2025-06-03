@@ -4,31 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolThump - Your Online Utilities Hub</title>
     <meta name="description"
         content="ToolThump offers a collection of free, client-side online utilities including password tools, text manipulators, image converters, and much more. Secure and easy to use.">
     <meta property="og:site_name" content="ToolThump" />
-    <title>ToolThump - Your Online Utilities Hub</title>
+
+    <!-- Common Stylesheets (paths relative to root) -->
     <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- Schema.org for homepage -->
     <script type="application/ld+json">
-{
-  "@context" : "https://schema.org",
-  "@type" : "WebSite",
-  "name" : "ToolThump",
-  "url" : "https://ges201.github.io/ToolThump/"
-}
-</script>
+    {
+      "@context" : "https://schema.org",
+      "@type" : "WebSite",
+      "name" : "ToolThump",
+      "url" : "https://ges201.github.io/ToolThump/"
+    }
+    </script>
 </head>
 
 <body>
     <header data-include="main-header"></header>
     <div class="content-wrapper">
         <main id="tool-container">
-            <!-- This ID might not be strictly needed here anymore if no JS targets it directly on home -->
-            <section id="home" class="tool-content active"> <!-- 'active' makes it visible by default -->
+            <section id="home" class="tool-content active">
                 <h2>Welcome to ToolThump: Your Hub for Free Online Utilities!</h2>
                 <p>ToolThump provides a growing collection of simple, effective, and client-side tools designed to make
                     your online tasks easier and more secure. Whether you need to generate a strong password, check your
@@ -40,13 +43,8 @@
                 <ul class="featured-tools-list">
                     <li><a href="tools/security/html/password-generator.html">Generate Secure Passwords</a></li>
                     <li><a href="tools/security/html/password-strength-checker.html">Check Password Strength</a></li>
-                    <!-- Add more links as you add tools -->
                 </ul>
             </section>
-
-            <!-- Tool sections (passwordGenerator, passwordStrengthChecker) have been REMOVED from index.html -->
-            <!-- They now reside in their own HTML files. -->
-
         </main>
     </div>
 
