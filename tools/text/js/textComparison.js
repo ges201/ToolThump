@@ -16,15 +16,14 @@ const tc = {
         }
     },
 
-    escapeHtml: function(unsafe) {
+    escapeHtml: function (unsafe) {
         if (unsafe === null || unsafe === undefined) return '';
-        // Preserve spaces and newlines, only escape HTML metacharacters
         return unsafe
-             .replace(/&/g, "&")
-             .replace(/</g, "<")
-             .replace(/>/g, ">")
-             .replace(/"/g, "&quot;")
-             .replace(/'/g, "'");
+            .replace(/&/g, "&")  // Corrected
+            .replace(/</g, "<")   // Corrected
+            .replace(/>/g, ">")   // Corrected
+            .replace(/"/g, "&quot;") // Corrected
+            .replace(/'/g, "'"); // Corrected (or ')
     },
 
     compareTexts: function () {
@@ -35,10 +34,20 @@ const tc = {
             return;
         }
 
-        if (typeof Diff === 'undefined') {
-            console.error("TC_COMPARE: JSDiff (Diff) library not loaded.");
-            if (this.diffPlaceholder) this.diffPlaceholder.style.display = 'block';
-            this.diffOutput.innerHTML = '<p class="tc-error">Error: Diff library not loaded. Please check console.</p>';
+        // CORRECTED: Check for JsDiff
+        if (typeof JsDiff === 'undefined') {
+            console.error("TC_COMPARE: JSDiff library not loaded. Global 'JsDiff' is undefined.");
+            if (this.diffPlaceholder) {
+                this.diffPlaceholder.style.display = 'block';
+                // Ensure the error message uses pre if the placeholder is pre
+                if (this.diffPlaceholder.tagName.toLowerCase() === 'pre') {
+                    this.diffPlaceholder.textContent = 'Error: Diff library (JsDiff) not loaded. Please check console.';
+                    this.diffOutput.innerHTML = '';
+                    this.diffOutput.appendChild(this.diffPlaceholder);
+                } else {
+                    this.diffOutput.innerHTML = '<p class="tc-error">Error: Diff library (JsDiff) not loaded. Please check console.</p>';
+                }
+            }
             return;
         }
 
@@ -48,15 +57,23 @@ const tc = {
         if (this.diffPlaceholder) this.diffPlaceholder.style.display = 'none';
         this.diffOutput.innerHTML = ''; // Clear previous results
 
-        // Using diffWordsWithSpace to correctly handle spaces between words
-        const diff = Diff.diffWordsWithSpace(oldText, newText);
-        let fragment = document.createDocumentFragment(); // More efficient for building HTML
+        // CORRECTED: Use JsDiff.diffWordsWithSpace
+        const diff = JsDiff.diffWordsWithSpace(oldText, newText);
+        let fragment = document.createDocumentFragment();
 
         if (diff.length === 1 && !diff[0].added && !diff[0].removed) {
-            const p = document.createElement('p');
-            p.className = 'tc-no-diff';
-            p.textContent = 'The texts are identical.';
-            fragment.appendChild(p);
+            // For "no diff", use a <p> or a <pre> consistently with placeholder
+            if (this.diffPlaceholder && this.diffPlaceholder.tagName.toLowerCase() === 'pre') {
+                const pre = document.createElement('pre');
+                pre.className = 'tc-no-diff';
+                pre.textContent = 'The texts are identical.';
+                fragment.appendChild(pre);
+            } else {
+                const p = document.createElement('p');
+                p.className = 'tc-no-diff';
+                p.textContent = 'The texts are identical.';
+                fragment.appendChild(p);
+            }
         } else {
             const pre = document.createElement('pre');
             diff.forEach((part) => {
@@ -65,19 +82,8 @@ const tc = {
                     span.className = 'tc-word-added';
                 } else if (part.removed) {
                     span.className = 'tc-word-removed';
-                } else {
-                    // For unchanged parts, no specific class needed unless for default styling
-                    // span.className = 'tc-word-same'; // Optional
                 }
-                // Use innerHTML for escaped text to render newlines correctly within <pre>
-                // JSDiff parts preserve newlines as '\n'. <pre> handles them.
-                span.innerHTML = this.escapeHtml(part.value).replace(/\n/g, '<br>'); // Replace \n with <br> if not using <pre>
-                                                                                // With <pre>, escapeHtml is enough
-                // If using <pre> and escapeHtml, newlines are preserved.
-                // If not using <pre>, newlines should be converted to <br>.
-                // For simplicity with <pre> already in HTML, we'll put content inside it.
-                // Let's adjust: the main diffOutput is a div, we'll build a <pre> inside it.
-                span.textContent = part.value; // JSDiff values are already text
+                span.textContent = part.value;
                 pre.appendChild(span);
             });
             fragment.appendChild(pre);
@@ -91,66 +97,68 @@ const tc = {
 
         if (!this.compareBtn || !this.text1Input || !this.text2Input || !this.diffOutput) {
             console.error("TC_INIT: Could not find all required elements. Aborting init.");
-            if(this.diffOutput && this.diffPlaceholder) {
+            if (this.diffOutput && this.diffPlaceholder) {
                 const placeholderParent = this.diffPlaceholder.parentElement;
-                placeholderParent.innerHTML = ''; // Clear parent
-                placeholderParent.appendChild(this.diffPlaceholder);
-                this.diffPlaceholder.style.display = 'block';
-                this.diffPlaceholder.textContent = "Error initializing tool. Check console.";
-                 if(this.diffPlaceholder.tagName.toLowerCase() !== 'pre'){
-                    // If placeholder was not pre, ensure it is for consistency now
+                placeholderParent.innerHTML = '';
+                if (this.diffPlaceholder.tagName.toLowerCase() !== 'pre') {
                     const newPlaceholder = document.createElement('pre');
                     newPlaceholder.className = 'tc-results-placeholder tc-error';
                     newPlaceholder.textContent = "Error initializing tool. Check console.";
-                    placeholderParent.innerHTML = '';
                     placeholderParent.appendChild(newPlaceholder);
                     this.diffPlaceholder = newPlaceholder;
+                } else {
+                    this.diffPlaceholder.classList.add('tc-error');
+                    this.diffPlaceholder.textContent = "Error initializing tool. Check console.";
+                    placeholderParent.appendChild(this.diffPlaceholder);
                 }
+                this.diffPlaceholder.style.display = 'block';
             }
             return;
         }
-        
+
         this.compareBtn.addEventListener('click', () => this.compareTexts());
 
         if (this.diffPlaceholder && this.diffOutput) {
-            // Ensure placeholder is a <pre> element if it's not already
             if (this.diffPlaceholder.tagName.toLowerCase() !== 'pre') {
                 const newPlaceholder = document.createElement('pre');
                 newPlaceholder.className = 'tc-results-placeholder';
-                newPlaceholder.textContent = this.diffPlaceholder.textContent;
+                newPlaceholder.textContent = this.diffPlaceholder.textContent; // Preserve original text if any
                 this.diffPlaceholder.parentElement.replaceChild(newPlaceholder, this.diffPlaceholder);
                 this.diffPlaceholder = newPlaceholder;
             }
-            this.diffOutput.innerHTML = ''; // Clear
+            this.diffOutput.innerHTML = '';
             this.diffOutput.appendChild(this.diffPlaceholder);
             this.diffPlaceholder.style.display = 'block';
+            this.diffPlaceholder.classList.remove('tc-error');
+            this.diffPlaceholder.textContent = "Results will appear here after comparison.";
         }
         console.log("Text Comparison Tool Initialized on its page.");
     }
 };
 
-// Self-initialize when the script is loaded on a page containing the text comparison tool
-if (document.getElementById('textComparison')) { // Check for the main section ID
-    if (typeof Diff !== 'undefined') {
+// CORRECTED: Check for JsDiff in the initialization logic
+if (document.getElementById('textComparison')) {
+    // Try to initialize immediately if JsDiff is already available
+    if (typeof JsDiff !== 'undefined') {
         tc.init();
     } else {
+        // Fallback to DOMContentLoaded if JsDiff might load later (e.g. script tag is async/defer or placed after this script)
         document.addEventListener('DOMContentLoaded', () => {
-            if (typeof Diff !== 'undefined') {
-                 tc.init();
+            if (typeof JsDiff !== 'undefined') {
+                tc.init();
             } else {
-                console.error("JSDiff library not found after DOMContentLoaded.");
+                console.error("JSDiff library not found after DOMContentLoaded. Global 'JsDiff' is undefined.");
                 const tcOutput = document.getElementById('tc-diff-output');
                 if (tcOutput) {
                     let placeholder = tcOutput.querySelector('.tc-results-placeholder');
-                    if (!placeholder) {
-                        placeholder = document.createElement('pre'); // ensure pre for consistency
+                    if (!placeholder || placeholder.tagName.toLowerCase() !== 'pre') {
+                        placeholder = document.createElement('pre');
                         placeholder.className = 'tc-results-placeholder';
+                        tcOutput.innerHTML = '';
                         tcOutput.appendChild(placeholder);
                     }
                     placeholder.classList.add('tc-error');
                     placeholder.textContent = "Error: JSDiff library could not be loaded. Text comparison is unavailable.";
-                    tcOutput.innerHTML = ''; // Clear then add
-                    tcOutput.appendChild(placeholder);
                 }
             }
         });
