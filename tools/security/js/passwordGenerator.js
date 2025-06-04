@@ -12,13 +12,12 @@ const pg = {
     minSymbolsInput: null,
     generateBtn: null,
     passwordDisplay: null,
-    passwordPlaceholderSpan: null, // Renamed for clarity
-    copyBtn: null,
-    copyFeedback: null,
-    copyTooltip: null,
+    passwordPlaceholderSpan: null,
     errorMessage: null,
+    copyBtn: null, // New element for the copy button
+    copyFeedbackTimeout: null, // For "Copied!" message timeout
 
-    plainPassword: '',
+    plainPassword: '', // Stores the generated password as a plain string
     maxLength: 64,
     minLength: 8,
 
@@ -42,10 +41,8 @@ const pg = {
         this.generateBtn = document.getElementById('pg-generate-btn');
         this.passwordDisplay = document.getElementById('pg-generated-password-display');
         this.passwordPlaceholderSpan = this.passwordDisplay ? this.passwordDisplay.querySelector('.pg-password-placeholder') : null;
-        this.copyBtn = document.getElementById('pg-copy-btn');
-        this.copyFeedback = document.getElementById('pg-copy-feedback');
-        this.copyTooltip = this.copyBtn ? this.copyBtn.querySelector('.pg-copy-tooltip') : null;
         this.errorMessage = document.getElementById('pg-error-message');
+        this.copyBtn = document.getElementById('pg-copy-btn'); // Fetch the copy button
     },
 
     getRandomChar: function (charSet) {
@@ -87,7 +84,7 @@ const pg = {
         ];
 
         for (const opt of optionsForMinValidation) {
-            if (opt.include && opt.minInput) { // Added check for opt.minInput
+            if (opt.include && opt.minInput) {
                 let minVal = parseInt(opt.minInput.value);
                 if (isNaN(minVal) || minVal < 1) {
                     minVal = 1;
@@ -118,21 +115,32 @@ const pg = {
     },
 
     generatePassword: function () {
-        if (!this.passwordDisplay) return; // Elements not fetched
+        if (!this.passwordDisplay) return;
+
+        // Reset copy button state if it was 'Copied!' or 'Failed!'
+        if (this.copyBtn) {
+            if (this.copyBtn.classList.contains('copied') || this.copyBtn.textContent === 'Failed!') {
+                this.copyBtn.textContent = 'Copy';
+                this.copyBtn.classList.remove('copied');
+                if (this.copyFeedbackTimeout) clearTimeout(this.copyFeedbackTimeout);
+            }
+            this.copyBtn.disabled = true; // Disable copy button until new password generated
+        }
 
         if (this.errorMessage.textContent.startsWith('Length reset to max')) {
             this.errorMessage.textContent = '';
         }
 
-        // Ensure placeholder is handled correctly
         if (this.passwordPlaceholderSpan) this.passwordPlaceholderSpan.style.display = 'none';
-        this.passwordDisplay.innerHTML = ''; // Clear previous password content first
+        this.passwordDisplay.innerHTML = '';
+        this.plainPassword = ''; // Clear plain password
 
         if (!this.updateValidationState()) {
             if (this.passwordPlaceholderSpan) {
-                this.passwordDisplay.appendChild(this.passwordPlaceholderSpan); // Re-add placeholder
+                this.passwordDisplay.appendChild(this.passwordPlaceholderSpan);
                 this.passwordPlaceholderSpan.style.display = 'inline';
             }
+            // Copy button remains disabled (set at the start of this function)
             return;
         }
 
@@ -149,8 +157,8 @@ const pg = {
         let currentMinSumForGeneration = 0;
 
         for (const opt of optionsForGeneration) {
-            let minVal = 0; // Default to 0 if not included or invalid
-            if (opt.include && opt.minInput) { // Added check for opt.minInput
+            let minVal = 0;
+            if (opt.include && opt.minInput) {
                 minVal = parseInt(opt.minInput.value);
                 if (isNaN(minVal) || minVal < 1) {
                     minVal = 1;
@@ -167,7 +175,7 @@ const pg = {
                     } else {
                         this.errorMessage.textContent = `Error: Charset for ${opt.type} is empty.`;
                         if (this.passwordPlaceholderSpan) this.passwordPlaceholderSpan.style.display = 'inline';
-                        return;
+                        return; // Copy button remains disabled
                     }
                 }
             }
@@ -175,13 +183,19 @@ const pg = {
 
         if (characterPool === '') {
             this.errorMessage.textContent = 'Select at least one character type.';
-            if (this.passwordPlaceholderSpan) this.passwordPlaceholderSpan.style.display = 'inline';
-            return;
+            if (this.passwordPlaceholderSpan) {
+                this.passwordDisplay.appendChild(this.passwordPlaceholderSpan);
+                this.passwordPlaceholderSpan.style.display = 'inline';
+            }
+            return; // Copy button remains disabled
         }
         if (currentMinSumForGeneration > totalLength) {
             this.errorMessage.textContent = `Sum of minimums (${currentMinSumForGeneration}) > total length (${totalLength}). Fix options.`;
-            if (this.passwordPlaceholderSpan) this.passwordPlaceholderSpan.style.display = 'inline';
-            return;
+            if (this.passwordPlaceholderSpan) {
+                this.passwordDisplay.appendChild(this.passwordPlaceholderSpan);
+                this.passwordPlaceholderSpan.style.display = 'inline';
+            }
+            return; // Copy button remains disabled
         }
 
         let remainingLength = totalLength - guaranteedChars.length;
@@ -189,8 +203,11 @@ const pg = {
         for (let i = 0; i < remainingLength; i++) {
             if (characterPool.length === 0) {
                 this.errorMessage.textContent = "Error: Character pool became empty unexpectedly.";
-                if (this.passwordPlaceholderSpan) this.passwordPlaceholderSpan.style.display = 'inline';
-                return;
+                if (this.passwordPlaceholderSpan) {
+                    this.passwordDisplay.appendChild(this.passwordPlaceholderSpan);
+                    this.passwordPlaceholderSpan.style.display = 'inline';
+                }
+                return; // Copy button remains disabled
             }
             randomFillChars.push(this.getRandomChar(characterPool));
         }
@@ -199,12 +216,14 @@ const pg = {
         this.plainPassword = finalPasswordArray.join('');
 
         this.displayStyledPassword(this.plainPassword);
+        if (this.copyBtn) {
+            this.copyBtn.disabled = false; // Enable copy button
+        }
+
         if (this.errorMessage.textContent.toLowerCase().includes('length must be') ||
             this.errorMessage.textContent.toLowerCase().includes('sum of minimums')) {
             this.errorMessage.textContent = '';
         }
-        this.copyFeedback.textContent = '';
-        this.updateCopyButtonTooltip('Copy');
     },
 
     displayStyledPassword: function (password) {
@@ -219,7 +238,7 @@ const pg = {
                 styledHtml += `<span>${char}</span>`;
             }
         }
-        this.passwordDisplay.innerHTML = styledHtml; // This replaces the placeholder if it was there
+        this.passwordDisplay.innerHTML = styledHtml;
     },
 
     shuffleArray: function (array) {
@@ -228,66 +247,6 @@ const pg = {
             [array[i], array[j]] = [array[j], array[i]];
         }
         return array;
-    },
-
-    copyToClipboard: async function () {
-        if (!this.copyFeedback) return;
-
-        if (!this.plainPassword) {
-            this.copyFeedback.textContent = 'Nothing to copy!';
-            this.copyFeedback.style.color = 'var(--error-color)';
-            setTimeout(() => {
-                this.copyFeedback.textContent = '';
-                this.copyFeedback.style.color = '';
-            }, 2000);
-            return;
-        }
-
-        try {
-            await navigator.clipboard.writeText(this.plainPassword);
-            this.copyFeedback.textContent = 'Copied!';
-            this.copyFeedback.style.color = 'var(--success-color)';
-            this.updateCopyButtonTooltip('Copied!');
-        } catch (err) {
-            console.error('Failed to copy: ', err);
-            this.copyFeedback.textContent = 'Copy failed!';
-            this.copyFeedback.style.color = 'var(--error-color)';
-            try { // Fallback
-                const tempInput = document.createElement('textarea');
-                tempInput.style.position = 'absolute'; tempInput.style.left = '-9999px';
-                tempInput.value = this.plainPassword;
-                document.body.appendChild(tempInput);
-                tempInput.select(); tempInput.setSelectionRange(0, 99999);
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                this.copyFeedback.textContent = 'Copied (fallback)!';
-                this.copyFeedback.style.color = 'var(--success-color)';
-                this.updateCopyButtonTooltip('Copied!');
-            } catch (execErr) {
-                console.error('Fallback copy failed: ', execErr);
-                this.copyFeedback.textContent = 'Automatic copy failed. Please copy manually.';
-            }
-        }
-
-        setTimeout(() => {
-            if (this.copyFeedback.textContent !== 'Automatic copy failed. Please copy manually.') {
-                this.copyFeedback.textContent = '';
-            }
-            this.updateCopyButtonTooltip('Copy');
-        }, 2000);
-    },
-
-    updateCopyButtonTooltip: function (text) {
-        if (this.copyTooltip) {
-            this.copyTooltip.textContent = text;
-            const successTexts = ['Copied!', 'Copied (fallback)!'];
-            if (successTexts.includes(text)) {
-                this.copyTooltip.classList.add('show');
-                setTimeout(() => this.copyTooltip.classList.remove('show'), 2000);
-            } else {
-                this.copyTooltip.classList.remove('show');
-            }
-        }
     },
 
     handleCheckboxChange: function () {
@@ -309,17 +268,53 @@ const pg = {
         this.updateValidationState();
     },
 
-    init: function () {
-        this.fetchElements(); // Fetch elements once the DOM is ready for this page
+    copyPasswordToClipboard: function () {
+        if (!this.plainPassword || !this.copyBtn || this.copyBtn.disabled) return;
 
-        // Ensure all elements are present before adding listeners
-        if (!this.generateBtn || !this.copyBtn || !this.lengthInput /* add more checks if crucial */) {
+        navigator.clipboard.writeText(this.plainPassword)
+            .then(() => {
+                const originalButtonText = "Copy";
+                this.copyBtn.textContent = 'Copied!';
+                this.copyBtn.classList.add('copied');
+                this.copyBtn.disabled = true; // Temporarily disable to prevent spamming and show feedback
+
+                if (this.copyFeedbackTimeout) clearTimeout(this.copyFeedbackTimeout);
+
+                this.copyFeedbackTimeout = setTimeout(() => {
+                    this.copyBtn.textContent = originalButtonText;
+                    this.copyBtn.classList.remove('copied');
+                    // Re-enable only if there's still a password to copy
+                    this.copyBtn.disabled = !this.plainPassword;
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('PG_COPY_ERROR: Could not copy text: ', err);
+                const originalButtonText = "Copy";
+                this.copyBtn.textContent = 'Failed!';
+                // Keep class 'copied' removed or add a 'failed' class if desired
+                this.copyBtn.classList.remove('copied');
+                this.copyBtn.disabled = true; // Temporarily disable
+
+                if (this.copyFeedbackTimeout) clearTimeout(this.copyFeedbackTimeout);
+
+                this.copyFeedbackTimeout = setTimeout(() => {
+                    this.copyBtn.textContent = originalButtonText;
+                    // Re-enable only if there's still a password to copy
+                    this.copyBtn.disabled = !this.plainPassword;
+                }, 2000);
+            });
+    },
+
+    init: function () {
+        this.fetchElements();
+
+        if (!this.generateBtn || !this.lengthInput || !this.passwordDisplay || !this.copyBtn) { // Added copyBtn to check
             console.error("PG_INIT: Could not find all required elements for Password Generator. Aborting init.");
             return;
         }
 
         this.generateBtn.addEventListener('click', () => this.generatePassword());
-        this.copyBtn.addEventListener('click', () => this.copyToClipboard().catch(err => console.error("Copy error:", err)));
+        this.copyBtn.addEventListener('click', () => this.copyPasswordToClipboard()); // Add listener for copy button
 
         const allOptionInputsAndCheckboxes = [
             this.uppercaseCheckbox, this.lowercaseCheckbox, this.numbersCheckbox, this.symbolsCheckbox,
@@ -345,13 +340,17 @@ const pg = {
             }
         });
 
-        this.handleCheckboxChange();
-        this.updateValidationState();
+        this.handleCheckboxChange(); // This calls updateValidationState
+        // this.updateValidationState(); // Called by handleCheckboxChange
 
         if (this.passwordPlaceholderSpan && this.passwordDisplay) {
             this.passwordDisplay.innerHTML = ''; // Clear
             this.passwordDisplay.appendChild(this.passwordPlaceholderSpan);
             this.passwordPlaceholderSpan.style.display = 'inline';
+        }
+
+        if (this.copyBtn) { // Initial state for copy button
+            this.copyBtn.disabled = true;
         }
         console.log("Password Generator Initialized on its page.");
     }
