@@ -19,11 +19,11 @@ const tc = {
     escapeHtml: function (unsafe) {
         if (unsafe === null || unsafe === undefined) return '';
         return unsafe
-            .replace(/&/g, "&")  // Corrected
-            .replace(/</g, "<")   // Corrected
-            .replace(/>/g, ">")   // Corrected
-            .replace(/"/g, "&quot;") // Corrected
-            .replace(/'/g, "'"); // Corrected (or ')
+            .replace(/&/g, "&")
+            .replace(/</g, "<")
+            .replace(/>/g, ">")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "'");
     },
 
     compareTexts: function () {
@@ -34,12 +34,10 @@ const tc = {
             return;
         }
 
-        // CORRECTED: Check for JsDiff
         if (typeof JsDiff === 'undefined') {
             console.error("TC_COMPARE: JSDiff library not loaded. Global 'JsDiff' is undefined.");
             if (this.diffPlaceholder) {
                 this.diffPlaceholder.style.display = 'block';
-                // Ensure the error message uses pre if the placeholder is pre
                 if (this.diffPlaceholder.tagName.toLowerCase() === 'pre') {
                     this.diffPlaceholder.textContent = 'Error: Diff library (JsDiff) not loaded. Please check console.';
                     this.diffOutput.innerHTML = '';
@@ -57,12 +55,50 @@ const tc = {
         if (this.diffPlaceholder) this.diffPlaceholder.style.display = 'none';
         this.diffOutput.innerHTML = ''; // Clear previous results
 
-        // CORRECTED: Use JsDiff.diffWordsWithSpace
-        const diff = JsDiff.diffWordsWithSpace(oldText, newText);
+        const rawDiff = JsDiff.diffWordsWithSpace(oldText, newText);
+        let processedDiff = [];
+        let i = 0;
+        while (i < rawDiff.length) {
+            const currentPart = rawDiff[i];
+            const nextPart = (i + 1 < rawDiff.length) ? rawDiff[i + 1] : null;
+
+            // Check for adjacent removed and added parts that are purely whitespace
+            if (currentPart.removed && nextPart && nextPart.added &&
+                /^\s+$/.test(currentPart.value) && /^\s+$/.test(nextPart.value)) {
+
+                const s1 = currentPart.value; // removed spaces block
+                const s2 = nextPart.value;   // added spaces block
+
+                let commonPrefixLength = 0;
+                while (commonPrefixLength < s1.length && commonPrefixLength < s2.length && s1[commonPrefixLength] === s2[commonPrefixLength]) {
+                    commonPrefixLength++;
+                }
+
+                if (commonPrefixLength > 0) {
+                    processedDiff.push({ value: s1.substring(0, commonPrefixLength) }); // Common part
+                }
+
+                const s1_remainder = s1.substring(commonPrefixLength);
+                const s2_remainder = s2.substring(commonPrefixLength);
+
+                if (s1_remainder.length > 0) {
+                    processedDiff.push({ value: s1_remainder, removed: true });
+                }
+                if (s2_remainder.length > 0) {
+                    processedDiff.push({ value: s2_remainder, added: true });
+                }
+
+                i += 2; // Consumed two parts (currentPart and nextPart)
+            } else {
+                processedDiff.push(currentPart);
+                i += 1;
+            }
+        }
+
+        const diff = processedDiff; // Use the post-processed diff parts
         let fragment = document.createDocumentFragment();
 
         if (diff.length === 1 && !diff[0].added && !diff[0].removed) {
-            // For "no diff", use a <p> or a <pre> consistently with placeholder
             if (this.diffPlaceholder && this.diffPlaceholder.tagName.toLowerCase() === 'pre') {
                 const pre = document.createElement('pre');
                 pre.className = 'tc-no-diff';
@@ -83,6 +119,7 @@ const tc = {
                 } else if (part.removed) {
                     span.className = 'tc-word-removed';
                 }
+                // Using textContent is safe and handles HTML entities correctly for display
                 span.textContent = part.value;
                 pre.appendChild(span);
             });
@@ -122,7 +159,7 @@ const tc = {
             if (this.diffPlaceholder.tagName.toLowerCase() !== 'pre') {
                 const newPlaceholder = document.createElement('pre');
                 newPlaceholder.className = 'tc-results-placeholder';
-                newPlaceholder.textContent = this.diffPlaceholder.textContent; // Preserve original text if any
+                newPlaceholder.textContent = this.diffPlaceholder.textContent;
                 this.diffPlaceholder.parentElement.replaceChild(newPlaceholder, this.diffPlaceholder);
                 this.diffPlaceholder = newPlaceholder;
             }
@@ -136,13 +173,10 @@ const tc = {
     }
 };
 
-// CORRECTED: Check for JsDiff in the initialization logic
 if (document.getElementById('textComparison')) {
-    // Try to initialize immediately if JsDiff is already available
     if (typeof JsDiff !== 'undefined') {
         tc.init();
     } else {
-        // Fallback to DOMContentLoaded if JsDiff might load later (e.g. script tag is async/defer or placed after this script)
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof JsDiff !== 'undefined') {
                 tc.init();
