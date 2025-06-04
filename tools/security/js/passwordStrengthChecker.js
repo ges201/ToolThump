@@ -1,4 +1,3 @@
-// tools/security/js/passwordStrengthChecker.js
 const psc = {
     passwordInput: null,
     strengthBar: null,
@@ -244,10 +243,53 @@ const psc = {
         this.fetchElements();
 
         if (this.passwordInput) {
-            this.passwordInput.addEventListener('input', (e) => {
-                this.updateUI(e.target.value);
+            // Event listener to prevent space character from being typed
+            this.passwordInput.addEventListener('keydown', (e) => {
+                // Check for space key (e.key for modern, e.code for physical key, e.keyCode for legacy)
+                if (e.key === ' ' || e.code === 'Space' || e.keyCode === 32) {
+                    e.preventDefault(); // Prevent the space character from being inserted
+                }
             });
-            this.updateUI(this.passwordInput.value); // Initial check
+
+            // Event listener to handle input changes (e.g., paste)
+            // and ensure no spaces are present. Also updates UI.
+            this.passwordInput.addEventListener('input', (e) => {
+                const inputElement = e.target;
+                let currentValue = inputElement.value;
+
+                if (currentValue.includes(' ')) {
+                    // If spaces are found (e.g., from a paste), remove them
+                    const originalSelectionStart = inputElement.selectionStart;
+
+                    // Count spaces before the cursor in the string that includes pasted spaces
+                    const textBeforeSelection = currentValue.substring(0, originalSelectionStart);
+                    const spacesRemovedBeforeCursor = (textBeforeSelection.match(/ /g) || []).length;
+
+                    const newValue = currentValue.replace(/ /g, '');
+                    inputElement.value = newValue;
+
+                    // Adjust cursor position:
+                    // New position is original position minus the count of spaces removed before it.
+                    const newCursorPosition = originalSelectionStart - spacesRemovedBeforeCursor;
+                    inputElement.setSelectionRange(newCursorPosition, newCursorPosition);
+
+                    this.updateUI(newValue); // Update strength based on the sanitized value
+                } else {
+                    this.updateUI(currentValue); // Update strength based on the current value (no spaces)
+                }
+            });
+
+            // Initial check: Sanitize the pre-filled value of the input field, if any.
+            // This handles cases where the input field might have a default value with spaces.
+            let initialValue = this.passwordInput.value;
+            if (initialValue.includes(' ')) {
+                const newValue = initialValue.replace(/ /g, '');
+                this.passwordInput.value = newValue;
+                this.updateUI(newValue); // Update UI with sanitized initial value
+            } else {
+                this.updateUI(initialValue); // Perform initial UI update with original value
+            }
+
             console.log("Password Strength Checker Initialized on its page.");
         } else {
             console.error("PSC_INIT: Password Strength Checker: Input field not found. Aborting init.");
