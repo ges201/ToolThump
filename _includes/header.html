@@ -1,7 +1,6 @@
-<!-- This is the content for _includes/header.html -->
 <div class="header-brand">
-    <a href="index.html" class="logo-link"> <!-- Path relative to site root -->
-        <img src="ToolThump.png" alt="ToolThump Logo" id="header-logo"> <!-- Path relative to site root -->
+    <a href="/ToolThump/" class="logo-link"> <!-- Site root -->
+        <img src="/ToolThump/ToolThump.png" alt="ToolThump Logo" id="header-logo"> <!-- Site root asset -->
     </a>
 </div>
 <nav id="top-navigation">
@@ -17,24 +16,22 @@
             </button>
             <ul class="dropdown-menu" id="security-tools" role="menu">
                 <li role="none">
-                    <a href="tools/security/html/password-generator.html" role="menuitem" class="tool-link">
-                        <!-- Path relative to site root -->
-                        <img src="icons/password-generator-color.png" alt="Password Generator Tool" class="tool-icon">
-                        <!-- Path relative to site root -->
+                    <a href="/ToolThump/tools/security/html/password-generator.html" role="menuitem" class="tool-link">
+                        <img src="/ToolThump/icons/password-generator-color.png" alt="Password Generator Tool"
+                            class="tool-icon">
                         Password Generator
                     </a>
                 </li>
                 <li role="none">
-                    <a href="tools/security/html/password-strength-checker.html" role="menuitem" class="tool-link">
-                        <!-- Path relative to site root -->
-                        <img src="icons/password-strength-color.png" alt="Password Strength Checker Tool"
-                            class="tool-icon"> <!-- Path relative to site root -->
+                    <a href="/ToolThump/tools/security/html/password-strength-checker.html" role="menuitem"
+                        class="tool-link">
+                        <img src="/ToolThump/icons/password-strength-color.png" alt="Password Strength Checker Tool"
+                            class="tool-icon">
                         Password Strength Checker
                     </a>
                 </li>
             </ul>
         </li>
-        <!-- New Text Tools Category -->
         <li class="category-item">
             <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="text-tools">
                 Text Tools
@@ -46,15 +43,13 @@
             </button>
             <ul class="dropdown-menu" id="text-tools" role="menu">
                 <li role="none">
-                    <a href="tools/text/html/text-comparison.html" role="menuitem" class="tool-link">
-                        <img src="icons/text-comparison-color.png" alt="Text Comparison Tool" class="tool-icon">
-                        <!-- Assumed icon path -->
+                    <a href="/ToolThump/tools/text/html/text-comparison.html" role="menuitem" class="tool-link">
+                        <img src="/ToolThump/icons/text-comparison-color.png" alt="Text Comparison Tool"
+                            class="tool-icon">
                         Text Comparison
                     </a>
                 </li>
-                <!-- Add more text tools here in the future -->
             </ul>
         </li>
-        <!-- Add more <li class="category-item"> here for future categories, using paths relative to site root -->
     </ul>
 </nav>

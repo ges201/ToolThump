@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ges201.github.io/ToolThump/sitemap.xml
