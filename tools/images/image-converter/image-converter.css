@@ -71,17 +71,46 @@
     margin-top: var(--spacing-xs);
 }
 
-/* Note for folder selection on mobile */
+/* Note for folder selection on mobile - styled as a warning */
 .ic-folder-note {
-    display: block;
-    /* Or inline-block if preferred */
-    font-size: 0.9em;
-    /* Relative to parent .ic-input-hint */
-    color: var(--text-secondary-color);
-    /* Using existing variable for consistency */
-    font-style: italic;
-    margin-top: var(--spacing-xs);
-    /* Add a little space if it's a new block */
+    display: flex;
+    align-items: flex-start;
+    /* Align icon to the top of the text block */
+    background-color: var(--warning-bg-color, #FFFBEB);
+    /* e.g., Amber 50 */
+    color: var(--warning-text-color, #78350F);
+    /* e.g., Amber 800 for dark yellow text */
+    border: 1px solid var(--warning-border-color, #FDE68A);
+    /* e.g., Amber 300 */
+    border-left-width: 4px;
+    border-left-color: var(--warning-accent-color, #F59E0B);
+    /* e.g., Amber 500 for accent */
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    margin-top: var(--spacing-sm);
+    /* Space above the note */
+    font-size: 1em;
+    /* Relative to parent .ic-input-hint's font size (0.85em of base) */
+    line-height: 1.5;
+}
+
+.ic-folder-note-icon {
+    fill: var(--warning-accent-color, #F59E0B);
+    /* Use accent color for the icon */
+    width: 1.125em;
+    /* Approx 15-18px, relative to note's font size */
+    height: 1.125em;
+    margin-right: var(--spacing-sm);
+    /* Space between icon and text */
+    flex-shrink: 0;
+    /* Prevent icon from shrinking if text is long */
+    margin-top: 0.1em;
+    /* Fine-tune vertical alignment with the first line of text */
+}
+
+.ic-folder-note-text {
+    flex-grow: 1;
+    /* Allow text to take available space */
 }
 
 
@@ -93,7 +122,6 @@
 }
 
 .ic-button.ic-file-select-btn {
-    /* More specific selector for file button */
     padding: var(--spacing-sm) var(--spacing-md);
     background-color: var(--accent-color);
     color: var(--text-on-accent-bg);
@@ -121,7 +149,6 @@
     min-width: 0;
     border: 1px solid var(--input-border-color);
     padding: var(--spacing-sm) var(--spacing-md);
-    /* Match input field padding */
     border-radius: var(--border-radius-sm);
     background-color: var(--input-bg-color);
     box-sizing: border-box;
@@ -146,12 +173,10 @@
     box-shadow: var(--shadow-xs);
     appearance: none;
     background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23555555%22/%3E%3C/svg%3E');
-    /* Using a slightly darker fill for better contrast on white bg */
     background-repeat: no-repeat;
     background-position: right var(--spacing-md) center;
     background-size: 12px;
     padding-right: calc(var(--spacing-md) * 2 + 12px);
-    /* space for arrow */
 }
 
 .ic-select:focus {
@@ -162,7 +187,6 @@
 
 /* Image preview */
 .ic-image-preview-section {
-    /* Similar to ic-section but can have unique tweaks */
     background-color: var(--surface-bg-color);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
@@ -196,7 +220,6 @@
 #imagePreview {
     max-width: 100%;
     max-height: 250px;
-    /* Increased max height */
     margin-bottom: var(--spacing-sm);
     border-radius: var(--border-radius-xs);
     border: 1px solid var(--border-color);
@@ -222,7 +245,6 @@
     font-size: 0.95em;
     color: var(--accent-color-dark);
     background-color: var(--accent-color-light-alpha, rgba(0, 123, 255, 0.1));
-    /* Add --accent-color-light-alpha to theme.css or use rgba */
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--border-radius-sm);
     border-left: 4px solid var(--accent-color);
@@ -239,18 +261,14 @@
 
 .ic-button.ic-convert-btn {
     padding: var(--spacing-md) var(--spacing-xl);
-    /* Larger padding */
     font-weight: 600;
     font-size: 1.05rem;
     border-radius: var(--border-radius-md);
     transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
     border: none;
     background-color: var(--success-color);
-    /* Using success color for "Convert" */
     color: var(--text-on-accent-bg);
-    /* Assuming white text on success color */
     display: inline-flex;
-    /* For icon alignment */
     align-items: center;
     justify-content: center;
     min-width: 200px;
@@ -259,7 +277,6 @@
 
 .ic-button.ic-convert-btn:hover:not(:disabled) {
     background-color: var(--success-color-dark, #1e7e34);
-    /* Add --success-color-dark or use fallback */
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
 }
@@ -285,13 +302,11 @@
 
 /* Status section and area */
 .ic-status-section {
-    /* Similar to ic-section but can have unique tweaks */
     background-color: var(--surface-bg-color);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
     padding: var(--spacing-lg);
     margin-bottom: var(--spacing-lg);
-    /* Consistent margin */
     box-shadow: var(--shadow-sm);
 }
 
@@ -307,26 +322,20 @@
 
 .ic-status-area.ic-status-info {
     background-color: var(--info-color-light, #e2f3f5);
-    /* Define in theme.css or use fallback */
     border-left-color: var(--info-color);
     color: var(--info-color-dark, #0c5460);
-    /* Define in theme.css or use fallback */
 }
 
 .ic-status-area.ic-status-success {
     background-color: var(--success-color-light, #d1e7dd);
-    /* Define in theme.css or use fallback */
     border-left-color: var(--success-color);
     color: var(--success-color-dark, #0f5132);
-    /* Define in theme.css or use fallback */
 }
 
 .ic-status-area.ic-status-error {
     background-color: var(--error-color-light, #f8d7da);
-    /* Define in theme.css or use fallback */
     border-left-color: var(--error-color);
     color: var(--error-color-dark, #721c24);
-    /* Define in theme.css or use fallback */
 }
 
 /* Responsive adjustments for Image Converter */
@@ -334,7 +343,6 @@
     .ic-file-input-controls {
         flex-direction: column;
         align-items: stretch;
-        /* Make button and text full width */
     }
 
     .ic-button.ic-file-select-btn {
@@ -344,7 +352,6 @@
 
     .ic-file-select-text {
         text-align: center;
-        /* Center placeholder text when stacked */
     }
 
     .ic-button.ic-convert-btn {
