@@ -70,12 +70,19 @@ function updateUIState() {
             imagePreviewContainer.setAttribute("aria-hidden", "true")
             imagePreview.src = "#"
             previewFileName.textContent = ""
-            let folderDisplayName = "folder"
-            if (selectedFiles[0]?.relativePath) {
-                const firstPath = selectedFiles[0].relativePath
-                folderDisplayName = firstPath.split("/")[0] || folderDisplayName
+
+            // Determine if it's a true folder selection for summary text
+            let isActualFolder = selectedFiles.some(f => f.relativePath && f.relativePath !== f.file.name);
+            const numFiles = selectedFiles.length;
+            const filesNoun = numFiles === 1 ? "image" : "images";
+
+            if (isActualFolder) {
+                // customFolderText should contain the folder name here (set by folderInput handler)
+                fileSummary.textContent = `Selected folder: "${customFolderText.textContent}" (${numFiles} ${filesNoun} found).`;
+            } else {
+                // customFolderText should contain "X file(s)" here (set by folderInput handler)
+                fileSummary.textContent = `Selected ${customFolderText.textContent} for batch processing.`;
             }
-            fileSummary.textContent = `Selected folder: "${folderDisplayName}" (${selectedFiles.length} image(s) found).`
             folderGroup.classList.add(activeInputClass)
             singleFileGroup.classList.remove(activeInputClass)
         }
@@ -99,8 +106,7 @@ function resetSelections() {
     folderInput.value = ""   // Clear folder input value
     customSingleFileText.textContent = defaultSingleFileText
     customFolderText.textContent = defaultFolderText
-    // Placeholder class is managed by updateUIState based on text content
-    updateUIState() // This will also call showStatus and handle active classes & summary visibility
+    updateUIState()
 }
 
 customSingleFileBtn.addEventListener("click", () => {
@@ -116,11 +122,10 @@ singleFileInput.addEventListener("change", event => {
     const files = inputElement.files
 
     if (!files || files.length === 0) {
-        // If user cancels file dialog, reset if no file was previously selected for this method
         if (currentConversionType === "single" || !selectedFiles.length) {
             resetSelections()
         }
-        inputElement.value = "" // Ensure it's cleared for next change event
+        inputElement.value = ""
         return
     }
 
@@ -130,15 +135,15 @@ singleFileInput.addEventListener("change", event => {
             `Error: Unsupported file type (${file.type}). Please select JPG, PNG, GIF, or WEBP.`,
             "error"
         )
-        resetSelections() // Reset everything on error
+        resetSelections()
         return
     }
 
     selectedFiles = [{ file }]
     currentConversionType = "single"
     customSingleFileText.textContent = file.name
-    customFolderText.textContent = defaultFolderText // Reset other custom text
-    folderInput.value = "" // Clear the other file input
+    customFolderText.textContent = defaultFolderText
+    folderInput.value = ""
     updateUIState()
     showStatus(`File "${file.name}" selected. Ready to convert.`, "info")
 })
@@ -148,55 +153,66 @@ folderInput.addEventListener("change", event => {
     const files = inputElement.files
 
     if (!files || files.length === 0) {
-        // If user cancels folder dialog, reset if no folder was previously selected for this method
         if (currentConversionType === "folder" || !selectedFiles.length) {
             resetSelections()
         }
-        inputElement.value = "" // Ensure it's cleared for next change event
+        inputElement.value = ""
         return
     }
 
     const newSelectedFiles = []
-    // files is a FileList, not an array, so use a standard for loop.
     for (let i = 0; i < files.length; i++) {
         const file = files[i]
-        // Check if webkitRelativePath exists and is not empty for folder context
-        if (isValidImageType(file.type) && file.webkitRelativePath) {
-            newSelectedFiles.push({ file, relativePath: file.webkitRelativePath })
-        } else if (isValidImageType(file.type) && !file.webkitRelativePath && files.length === 1) {
-            // Fallback for browsers that might not support webkitRelativePath fully but allow single file from "folder" pick
-            // This case is less common for true folder selections.
-            newSelectedFiles.push({ file, relativePath: file.name })
+        if (isValidImageType(file.type)) {
+            // If webkitRelativePath is present and not empty, it's a true folder selection.
+            // Otherwise, fallback to using file.name (for flat structure, e.g., on mobile).
+            const relativePath = file.webkitRelativePath || file.name;
+            newSelectedFiles.push({ file, relativePath: relativePath });
         }
     }
 
     if (newSelectedFiles.length === 0) {
         showStatus(
-            "No valid image files (JPG, PNG, GIF, WEBP) found in the selected folder or its subdirectories.",
+            "No valid image files (JPG, PNG, GIF, WEBP) found in the selection.",
             "error"
         )
-        resetSelections() // Reset everything on error
+        resetSelections()
         return
     }
 
     selectedFiles = newSelectedFiles
     currentConversionType = "folder"
 
-    let folderDisplayName = "Selected Folder"
-    // Extract folder name from the first file's relative path
-    if (selectedFiles[0]?.relativePath) {
-        const firstPath = selectedFiles[0].relativePath
-        folderDisplayName = firstPath.split("/")[0] || folderDisplayName
-    }
-    customFolderText.textContent = folderDisplayName
-    customSingleFileText.textContent = defaultSingleFileText // Reset other custom text
-    singleFileInput.value = "" // Clear the other file input
+    // Determine if this was a "true" folder selection by checking if any file has a path component
+    let isActualFolderSelection = selectedFiles.some(f => f.relativePath && f.relativePath.includes('/'));
 
-    updateUIState()
-    showStatus(
-        `${selectedFiles.length} image(s) from folder "${folderDisplayName}" selected. Ready to convert.`,
-        "info"
-    )
+    let folderDisplayName;
+    if (isActualFolderSelection && selectedFiles[0]?.relativePath) {
+        const firstPath = selectedFiles[0].relativePath;
+        folderDisplayName = firstPath.split("/")[0] || "Selected Folder";
+    } else if (newSelectedFiles.length > 0) {
+        folderDisplayName = `${newSelectedFiles.length} file(s)`;
+    } else { // Should not be reached due to checks above
+        folderDisplayName = defaultFolderText;
+    }
+
+    customFolderText.textContent = folderDisplayName
+    customSingleFileText.textContent = defaultSingleFileText
+    singleFileInput.value = ""
+
+    updateUIState() // This will now use the updated customFolderText for its summary
+
+    if (isActualFolderSelection) {
+        showStatus(
+            `${selectedFiles.length} image(s) from folder "${folderDisplayName}" selected. Ready to convert.`,
+            "info"
+        );
+    } else {
+        showStatus(
+            `${selectedFiles.length} file(s) selected for batch conversion. Ready to convert.`,
+            "info"
+        );
+    }
 })
 
 function isValidImageType(mimeType) {
@@ -268,7 +284,6 @@ convertBtn.addEventListener("click", async () => {
             for (let i = 0; i < selectedFiles.length; i++) {
                 const { file, relativePath } = selectedFiles[i]
                 try {
-                    // Update status for each file in folder processing
                     showStatus(
                         `Converting image ${i + 1} of ${selectedFiles.length}: ${file.name
                         }...`,
@@ -283,36 +298,24 @@ convertBtn.addEventListener("click", async () => {
                         const newFileName = `${originalNameWithoutExt}.${outputExtension}`
 
                         let pathInZip = newFileName
-                        if (relativePath) {
+                        // Only create directory structure if relativePath indicates it (i.e., contains '/')
+                        if (relativePath && relativePath.includes('/') && relativePath !== file.name) {
                             const dirPath = relativePath.substring(
                                 0,
                                 relativePath.lastIndexOf("/") + 1
                             )
                             pathInZip = dirPath + newFileName
                         }
-
                         zip.file(pathInZip, convertedBlob)
                         convertedCount++
                     } else {
                         console.warn(`Skipped ${file.name} as conversion returned null.`)
-                        if (!zip.files["conversion_notes.txt"]) {
-                            zip.file(
-                                `conversion_notes.txt`,
-                                `Skipped files (conversion resulted in null, possibly unsupported format or corrupted):\n`
-                            )
-                        }
-                        // Use `zip.files["conversion_notes.txt"].async("string").then(...)` to append safely if needed,
-                        // but for simple appends, JSZip handles multiple .file calls by overwriting or creating.
-                        // For appending content to an existing file, one must read, append, then write.
-                        // Simple approach: log each skipped file on a new line. If file created first time, it's header + first entry.
                         const currentNotes = zip.files["conversion_notes.txt"] ? await zip.files["conversion_notes.txt"].async("string") : `Skipped files (conversion resulted in null, possibly unsupported format or corrupted):\n`;
                         zip.file(`conversion_notes.txt`, currentNotes + `- ${file.name}\n`);
 
                     }
                 } catch (imgError) {
                     console.error(`Error converting ${file.name}:`, imgError)
-                    // Show error for individual file, but continue processing others
-                    // The overall status will be updated at the end. We could accumulate these errors.
                     const currentErrors = zip.files["conversion_errors.txt"] ? await zip.files["conversion_errors.txt"].async("string") : `Files skipped due to errors during conversion processing:\n`;
                     zip.file(`conversion_errors.txt`, currentErrors + `- ${file.name}: ${imgError.message}\n`);
                 }
@@ -324,12 +327,14 @@ convertBtn.addEventListener("click", async () => {
                     "info"
                 )
                 const zipBlob = await zip.generateAsync({ type: "blob" })
-                let folderName = "converted_images"
-                if (selectedFiles[0]?.relativePath) {
-                    const firstPath = selectedFiles[0].relativePath
-                    folderName = firstPath.split("/")[0] || folderName
+
+                let archiveBaseName = "converted_images";
+                if (selectedFiles[0]?.relativePath && selectedFiles.some(f => f.relativePath && f.relativePath.includes('/'))) {
+                    const firstPath = selectedFiles[0].relativePath;
+                    archiveBaseName = firstPath.split("/")[0] || archiveBaseName;
                 }
-                downloadBlob(zipBlob, `${folderName}_${outputExtension}.zip`)
+
+                downloadBlob(zipBlob, `${archiveBaseName}_${outputExtension}.zip`)
                 let successMessage = `${convertedCount} image(s) converted and zipped. Downloading...`
                 if (
                     convertedCount < selectedFiles.length &&
@@ -342,7 +347,7 @@ convertBtn.addEventListener("click", async () => {
                 showStatus(successMessage, "success")
             } else {
                 let noConversionMessage = "No images were successfully converted."
-                if (Object.keys(zip.files).length > 0) { // If only error/notes files exist
+                if (Object.keys(zip.files).length > 0) {
                     const zipBlob = await zip.generateAsync({ type: "blob" })
                     downloadBlob(zipBlob, `conversion_report_empty.zip`)
                     noConversionMessage +=
@@ -358,9 +363,6 @@ convertBtn.addEventListener("click", async () => {
             "error"
         )
     } finally {
-        // Reset UI for next operation, happens after success or error message shown
-        // Consider a slight delay or user action before resetting if messages are important to read.
-        // For now, direct reset is fine.
         resetSelections()
     }
 })
@@ -371,7 +373,7 @@ function processImage(file, outputMimeType) {
         reader.onload = event => {
             if (!event.target?.result) {
                 console.warn(`Failed to read file data for ${file.name}.`);
-                return resolve(null); // Resolve with null for graceful skipping
+                return resolve(null);
             }
             const img = new Image()
             img.onload = () => {
@@ -381,57 +383,61 @@ function processImage(file, outputMimeType) {
                 const ctx = canvas.getContext("2d")
                 if (!ctx) {
                     console.warn(`Could not get canvas context for ${file.name}.`);
-                    return resolve(null); // Resolve with null
+                    return resolve(null);
                 }
 
-                // Handle transparency: if converting to JPEG (which doesn't support alpha),
-                // draw a white background first.
-                // Only do this if the original image might have transparency (e.g. PNG, GIF, WEBP)
-                // and the target is JPEG.
                 const potentiallyTransparentSource = ['image/png', 'image/gif', 'image/webp'].includes(file.type.toLowerCase());
                 if (outputMimeType === "image/jpeg" && potentiallyTransparentSource) {
-                    ctx.fillStyle = "#ffffff"; // White background
+                    ctx.fillStyle = "#ffffff";
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                 }
 
                 ctx.drawImage(img, 0, 0)
 
-                let quality = 0.92 // Default quality for lossy formats
+                let quality = 0.92
                 if (
                     outputMimeType === "image/jpeg" ||
-                    outputMimeType === "image/webp" // WEBP can be lossy or lossless, canvas.toBlob defaults to lossy
+                    outputMimeType === "image/webp"
                 ) {
                     canvas.toBlob(blob => resolve(blob), outputMimeType, quality)
-                } else { // PNG, GIF
+                } else {
                     canvas.toBlob(blob => resolve(blob), outputMimeType)
                 }
             }
             img.onerror = (err) => {
                 console.error(`Image load error for ${file.name}:`, err)
-                resolve(null); // Resolve with null for graceful skipping
+                resolve(null);
             }
             img.src = event.target.result
         }
         reader.onerror = (err) => {
             console.error(`FileReader error for ${file.name}:`, err);
-            resolve(null); // Resolve with null
+            resolve(null);
         }
         reader.readAsDataURL(file)
     })
 }
 
 function downloadBlob(blob, filename) {
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = filename
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.style.display = "none"; // Hide the element from view
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+
+    // Delay revoking the object URL to allow time for the download to initiate,
+    // especially important on some mobile browsers.
+    setTimeout(() => {
+        if (document.body.contains(a)) { // Check if element still exists
+            document.body.removeChild(a);
+        }
+        URL.revokeObjectURL(url);
+    }, 100); // 100ms delay
 }
 
 // Initial UI state setup
 document.addEventListener('DOMContentLoaded', () => {
-    resetSelections(); // Set initial state correctly
+    resetSelections();
 });

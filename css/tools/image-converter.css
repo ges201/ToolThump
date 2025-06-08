@@ -71,6 +71,20 @@
     margin-top: var(--spacing-xs);
 }
 
+/* Note for folder selection on mobile */
+.ic-folder-note {
+    display: block;
+    /* Or inline-block if preferred */
+    font-size: 0.9em;
+    /* Relative to parent .ic-input-hint */
+    color: var(--text-secondary-color);
+    /* Using existing variable for consistency */
+    font-style: italic;
+    margin-top: var(--spacing-xs);
+    /* Add a little space if it's a new block */
+}
+
+
 /* Custom file input styling */
 .ic-file-input-controls {
     display: flex;
