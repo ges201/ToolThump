@@ -1,0 +1,340 @@
+/* === Image Converter Specific Styles === */
+
+/* General section styling (replaces .card) */
+.ic-section {
+    background-color: var(--surface-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.ic-section h3 {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    font-size: 1.3rem;
+    /* Adjusted from general h2 */
+    color: var(--text-primary-color);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color-strong);
+}
+
+.tool-description {
+    font-size: 1rem;
+    color: var(--text-secondary-color);
+    margin-bottom: var(--spacing-lg);
+    background-color: var(--surface-bg-color);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    border-left: 4px solid var(--accent-color);
+}
+
+
+/* Input groups and labels */
+.ic-input-group {
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    /* Default border for all groups */
+    border-radius: var(--border-radius-sm);
+    background-color: var(--input-bg-color);
+    /* Consistent background for input areas */
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ic-input-group:last-child {
+    margin-bottom: 0;
+}
+
+/* Style for the active (selected) input group */
+.ic-input-group.input-active {
+    border-color: var(--accent-color);
+    background-color: var(--accent-color-light-alpha, rgba(0, 123, 255, 0.07));
+    /* Subtle tint */
+    box-shadow: 0 0 0 2px var(--focus-ring-color);
+    /* Mimics a focus state */
+}
+
+
+.ic-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary-color);
+}
+
+.ic-input-hint {
+    font-size: 0.85em;
+    color: var(--text-secondary-color);
+    display: block;
+    margin-top: var(--spacing-xs);
+}
+
+/* Custom file input styling */
+.ic-file-input-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.ic-button.ic-file-select-btn {
+    /* More specific selector for file button */
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--accent-color);
+    color: var(--text-on-accent-bg);
+    border: 1px solid var(--accent-color-dark);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    font-size: 0.9em;
+    flex-shrink: 0;
+    font-weight: 500;
+}
+
+.ic-button.ic-file-select-btn:hover {
+    background-color: var(--accent-color-dark);
+    border-color: var(--accent-color-dark);
+}
+
+.ic-file-select-text {
+    font-size: 0.9em;
+    color: var(--text-secondary-color);
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    border: 1px solid var(--input-border-color);
+    padding: var(--spacing-sm) var(--spacing-md);
+    /* Match input field padding */
+    border-radius: var(--border-radius-sm);
+    background-color: var(--input-bg-color);
+    box-sizing: border-box;
+}
+
+.ic-file-select-text.text-placeholder {
+    font-style: italic;
+    color: var(--text-secondary-color);
+}
+
+/* Select element styling */
+.ic-select {
+    display: block;
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--input-bg-color);
+    color: var(--text-primary-color);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font: inherit;
+    box-shadow: var(--shadow-xs);
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23555555%22/%3E%3C/svg%3E');
+    /* Using a slightly darker fill for better contrast on white bg */
+    background-repeat: no-repeat;
+    background-position: right var(--spacing-md) center;
+    background-size: 12px;
+    padding-right: calc(var(--spacing-md) * 2 + 12px);
+    /* space for arrow */
+}
+
+.ic-select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--focus-ring-color);
+    outline: none;
+}
+
+/* Image preview */
+.ic-image-preview-section {
+    /* Similar to ic-section but can have unique tweaks */
+    background-color: var(--surface-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.ic-image-preview-section[aria-hidden="true"] {
+    display: none;
+}
+
+.ic-image-preview-section[aria-hidden="false"] {
+    display: block;
+}
+
+.ic-image-preview-box {
+    margin-top: var(--spacing-sm);
+    text-align: center;
+    border: 1px dashed var(--border-color-strong);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--neutral-very-light);
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#imagePreview {
+    max-width: 100%;
+    max-height: 250px;
+    /* Increased max height */
+    margin-bottom: var(--spacing-sm);
+    border-radius: var(--border-radius-xs);
+    border: 1px solid var(--border-color);
+}
+
+.ic-preview-filename {
+    font-size: 0.9em;
+    color: var(--text-secondary-color);
+    word-break: break-all;
+    margin-top: var(--spacing-xs);
+}
+
+/* File summary */
+.ic-file-summary-container {
+    margin-bottom: var(--spacing-lg);
+}
+
+.ic-file-summary-container[aria-hidden="true"] {
+    display: none;
+}
+
+.ic-file-summary {
+    font-size: 0.95em;
+    color: var(--accent-color-dark);
+    background-color: var(--accent-color-light-alpha, rgba(0, 123, 255, 0.1));
+    /* Add --accent-color-light-alpha to theme.css or use rgba */
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    border-left: 4px solid var(--accent-color);
+    min-height: 1.2em;
+    font-weight: 500;
+}
+
+/* Action section and convert button */
+.ic-action-section {
+    text-align: center;
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.ic-button.ic-convert-btn {
+    padding: var(--spacing-md) var(--spacing-xl);
+    /* Larger padding */
+    font-weight: 600;
+    font-size: 1.05rem;
+    border-radius: var(--border-radius-md);
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    border: none;
+    background-color: var(--success-color);
+    /* Using success color for "Convert" */
+    color: var(--text-on-accent-bg);
+    /* Assuming white text on success color */
+    display: inline-flex;
+    /* For icon alignment */
+    align-items: center;
+    justify-content: center;
+    min-width: 200px;
+    box-shadow: var(--shadow-sm);
+}
+
+.ic-button.ic-convert-btn:hover:not(:disabled) {
+    background-color: var(--success-color-dark, #1e7e34);
+    /* Add --success-color-dark or use fallback */
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.ic-button.ic-convert-btn:active:not(:disabled) {
+    transform: translateY(0px) scale(0.98);
+    box-shadow: var(--shadow-xs);
+}
+
+.ic-button.ic-convert-btn:disabled {
+    background-color: var(--neutral-medium);
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    color: var(--neutral-light);
+}
+
+.ic-button.ic-convert-btn:disabled svg {
+    fill: var(--neutral-light);
+}
+
+
+/* Status section and area */
+.ic-status-section {
+    /* Similar to ic-section but can have unique tweaks */
+    background-color: var(--surface-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    /* Consistent margin */
+    box-shadow: var(--shadow-sm);
+}
+
+.ic-status-area {
+    margin: 0;
+    font-size: 0.95em;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    border-left-width: 4px;
+    border-left-style: solid;
+    transition: background-color 0.3s ease, border-left-color 0.3s ease, color 0.3s ease;
+}
+
+.ic-status-area.ic-status-info {
+    background-color: var(--info-color-light, #e2f3f5);
+    /* Define in theme.css or use fallback */
+    border-left-color: var(--info-color);
+    color: var(--info-color-dark, #0c5460);
+    /* Define in theme.css or use fallback */
+}
+
+.ic-status-area.ic-status-success {
+    background-color: var(--success-color-light, #d1e7dd);
+    /* Define in theme.css or use fallback */
+    border-left-color: var(--success-color);
+    color: var(--success-color-dark, #0f5132);
+    /* Define in theme.css or use fallback */
+}
+
+.ic-status-area.ic-status-error {
+    background-color: var(--error-color-light, #f8d7da);
+    /* Define in theme.css or use fallback */
+    border-left-color: var(--error-color);
+    color: var(--error-color-dark, #721c24);
+    /* Define in theme.css or use fallback */
+}
+
+/* Responsive adjustments for Image Converter */
+@media (max-width: 768px) {
+    .ic-file-input-controls {
+        flex-direction: column;
+        align-items: stretch;
+        /* Make button and text full width */
+    }
+
+    .ic-button.ic-file-select-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .ic-file-select-text {
+        text-align: center;
+        /* Center placeholder text when stacked */
+    }
+
+    .ic-button.ic-convert-btn {
+        width: 100%;
+        padding: var(--spacing-md);
+    }
+}
