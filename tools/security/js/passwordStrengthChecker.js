@@ -83,7 +83,7 @@ const psc = {
         // Add entropy feedback
         this._addEntropyFeedback(finalEntropy, charSpaceSize, feedback);
 
-        return Math.round(finalEntropy * 10) / 10; // Round to 1 decimal place
+        return finalEntropy; // Return raw value, formatting handled in feedback
     },
 
     _calculateSequentialPenalty: function (password) {
@@ -122,33 +122,39 @@ const psc = {
 
         let timeString = this._formatCrackTime(secondsToCrack);
 
+        // Combined entropy feedback with descriptive text
+        let entropyDescription = "";
+        let entropyValid = false;
+
+        if (entropy < this.ENTROPY_THRESHOLDS.VERY_WEAK) {
+            entropyDescription = "very low - highly predictable";
+            entropyValid = false;
+        } else if (entropy < this.ENTROPY_THRESHOLDS.WEAK) {
+            entropyDescription = "low - easily guessable";
+            entropyValid = false;
+        } else if (entropy < this.ENTROPY_THRESHOLDS.MODERATE) {
+            entropyDescription = "moderate - consider more diversity";
+            entropyValid = false;
+        } else if (entropy < this.ENTROPY_THRESHOLDS.STRONG) {
+            entropyDescription = "good - reasonably secure";
+            entropyValid = true;
+        } else if (entropy < this.ENTROPY_THRESHOLDS.VERY_STRONG) {
+            entropyDescription = "strong - well protected";
+            entropyValid = true;
+        } else {
+            entropyDescription = "excellent - highly unpredictable";
+            entropyValid = true;
+        }
+
         feedback.push({
-            text: `Entropy: ${entropy} bits (Character space: ${charSpaceSize})`,
-            valid: entropy >= this.ENTROPY_THRESHOLDS.MODERATE
+            text: `Entropy: ${entropy.toFixed(1)} bits (${entropyDescription})`,
+            valid: entropyValid
         });
 
         feedback.push({
             text: `Estimated crack time: ${timeString}`,
             valid: entropy >= this.ENTROPY_THRESHOLDS.STRONG
         });
-
-        // Entropy-specific recommendations
-        if (entropy < this.ENTROPY_THRESHOLDS.WEAK) {
-            feedback.push({
-                text: "Very low entropy - password is highly predictable",
-                valid: false
-            });
-        } else if (entropy < this.ENTROPY_THRESHOLDS.MODERATE) {
-            feedback.push({
-                text: "Low entropy - consider adding more diverse characters",
-                valid: false
-            });
-        } else if (entropy >= this.ENTROPY_THRESHOLDS.VERY_STRONG) {
-            feedback.push({
-                text: "Excellent entropy - highly unpredictable password",
-                valid: true
-            });
-        }
     },
 
     _formatCrackTime: function (seconds) {
