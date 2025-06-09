@@ -19,6 +19,24 @@ const psc = {
         VERY_STRONG: 80   // 65+ bits
     },
 
+    // --- Start of New Pattern Recognition Data ---
+    commonPasswords: [
+        '123456', 'password', '123456789', '12345678', '12345', '111111', '1234567', 'qwerty',
+        '123123', '987654321', 'admin', 'letmein', 'secret', 'iloveyou', 'welcome', 'football'
+    ],
+
+    commonWords: [
+        'apple', 'banana', 'password', 'admin', 'manager', 'user', 'test', 'guest', 'login',
+        'master', 'sunshine', 'monkey', 'dragon', 'shadow', 'ninja', 'secret', 'qwerty', 'company',
+        'football', 'baseball', 'welcome', 'family', 'friend'
+    ],
+
+    l33tMap: {
+        'a': ['@', '4'], 'e': ['3'], 'i': ['1', 'l', '!'], 'o': ['0'],
+        's': ['$', '5'], 't': ['7']
+    },
+    // --- End of New Pattern Recognition Data ---
+
     fetchElements: function () {
         this.passwordInput = document.getElementById('psc-password-input');
         this.strengthBar = document.getElementById('psc-strength-bar');
@@ -227,6 +245,48 @@ const psc = {
         return score;
     },
 
+    // --- Start of New and Enhanced Deduction Functions ---
+
+    _unleet: function (password) {
+        let unleetedPassword = password.toLowerCase();
+        for (const [letter, subs] of Object.entries(this.l33tMap)) {
+            for (const sub of subs) {
+                unleetedPassword = unleetedPassword.replace(new RegExp('\\' + sub, 'g'), letter);
+            }
+        }
+        return unleetedPassword;
+    },
+
+    _deductForCommonPassword: function (password, feedback) {
+        if (this.commonPasswords.includes(password.toLowerCase())) {
+            feedback.push({ text: 'This is a very common password and is insecure.', valid: false, isCommon: true });
+            return 10; // High deduction to ensure it's weak
+        }
+        return 0;
+    },
+
+    _deductForDictionaryWord: function (password, feedback) {
+        const lowerPassword = password.toLowerCase();
+        const unleetedPassword = this._unleet(password);
+
+        for (const word of this.commonWords) {
+            if (lowerPassword.includes(word) || unleetedPassword.includes(word)) {
+                feedback.push({ text: `Contains a common word ('${word}').`, valid: false });
+                return 3; // Deduction for containing a dictionary word
+            }
+        }
+        return 0;
+    },
+
+    _deductForDate: function (password, feedback) {
+        // Matches 4-digit numbers that look like years (e.g., 19xx, 20xx)
+        if (/\b(19|20)\d{2}\b/.test(password)) {
+            feedback.push({ text: 'Contains a year, which can be easy to guess.', valid: false });
+            return 2;
+        }
+        return 0;
+    },
+
     _deductForSingleType: function (properties, feedback) {
         if (properties.length >= this.MIN_LENGTH && properties.typesCount === 1) {
             feedback.push({ text: 'Weakness: Uses only one type of character.', valid: false });
@@ -236,26 +296,19 @@ const psc = {
     },
 
     _deductForRepetitions: function (password, positiveScore, feedback) {
+        // This function now checks for repeated sequences (e.g., 'ababab')
         let deduction = 0;
-        let consecutiveIdenticalCharsCount = 0;
-        if (password.length > 2) {
-            for (let i = 0; i < password.length - 2; i++) {
-                if (password[i] === password[i + 1] && password[i] === password[i + 2]) {
-                    consecutiveIdenticalCharsCount++;
+        const lowerPassword = password.toLowerCase();
+        for (let i = 0; i < lowerPassword.length / 2; i++) {
+            const sub = lowerPassword.substring(i, i + Math.floor(lowerPassword.length / 3));
+            if (sub.length < 2) continue;
+            const occurrences = (lowerPassword.match(new RegExp(sub.replace(/[^a-zA-Z0-9]/g, '\\$&'), 'g')) || []).length;
+            if (occurrences > 1) {
+                deduction = Math.min(occurrences - 1, 3);
+                if (deduction > 0) {
+                    feedback.push({ text: `Repetitive patterns found (e.g., "${sub}..."). Weakens password.`, valid: false });
+                    return deduction;
                 }
-            }
-        }
-
-        if (consecutiveIdenticalCharsCount > 0) {
-            if (positiveScore >= this.SUPER_STRONG_POSITIVE_THRESHOLD) {
-                deduction = Math.min(consecutiveIdenticalCharsCount, 1);
-            } else if (positiveScore >= this.STRONG_POSITIVE_THRESHOLD) {
-                deduction = Math.min(consecutiveIdenticalCharsCount, 2);
-            } else {
-                deduction = Math.min(consecutiveIdenticalCharsCount, 3);
-            }
-            if (deduction > 0) {
-                feedback.push({ text: `Repetitive sequences found (e.g., "aaa"). Weakens password.`, valid: false });
             }
         }
         return deduction;
@@ -293,15 +346,16 @@ const psc = {
         }
         return deduction;
     },
+    // --- End of New and Enhanced Deduction Functions ---
 
-    _determineStrengthPresentation: function (finalScore, length, entropy) {
+    _determineStrengthPresentation: function (finalScore, length, entropy, isCommonPassword) {
         let strengthDescription = '';
         let barClass = '';
         let barWidthPercentage = 0;
 
         if (length === 0) {
             strengthDescription = 'N/A'; barClass = ''; barWidthPercentage = 0;
-        } else if (length < this.MIN_LENGTH) {
+        } else if (isCommonPassword || length < this.MIN_LENGTH) {
             strengthDescription = 'Very Weak'; barClass = 'very-weak'; barWidthPercentage = 10;
         } else {
             // Use entropy as primary factor, but consider traditional score as well
@@ -342,21 +396,28 @@ const psc = {
         const feedback = [];
         const properties = this._getPasswordProperties(password);
 
-        // Calculate entropy first
-        const entropy = this._calculateEntropy(password, properties, feedback);
-
+        // --- Start of Modified Scoring Logic ---
         let positiveScore = 0;
         positiveScore += this._scoreLength(properties.length, feedback);
         positiveScore += this._scoreCharacterTypes(properties, feedback);
         positiveScore += this._scoreVariety(properties, feedback);
 
         let totalDeductionScore = 0;
+        totalDeductionScore += this._deductForCommonPassword(password, feedback);
+        totalDeductionScore += this._deductForDictionaryWord(password, feedback);
+        totalDeductionScore += this._deductForDate(password, feedback);
         totalDeductionScore += this._deductForSingleType(properties, feedback);
         totalDeductionScore += this._deductForRepetitions(password, positiveScore, feedback);
         totalDeductionScore += this._deductForSequences(password, positiveScore, feedback);
 
+        const isCommon = feedback.some(f => f.isCommon);
+
+        // Calculate entropy after gathering feedback that might affect it (conceptually)
+        const entropy = this._calculateEntropy(password, properties, feedback);
+        // --- End of Modified Scoring Logic ---
+
         const finalScore = Math.max(0, positiveScore - totalDeductionScore);
-        let { strengthDescription, barClass, barWidthPercentage } = this._determineStrengthPresentation(finalScore, properties.length, entropy);
+        let { strengthDescription, barClass, barWidthPercentage } = this._determineStrengthPresentation(finalScore, properties.length, entropy, isCommon);
 
         if (feedback.some(f => f.text.startsWith("Too short"))) {
             strengthDescription = 'Very Weak';
@@ -387,7 +448,7 @@ const psc = {
         if (!this.strengthText || !this.strengthBar || !this.feedbackList) return; // Elements not fetched
 
         const strength = this.checkPasswordStrength(password);
-        this.strengthText.textContent = `Strength: ${strength.text} (${strength.entropy} bits)`;
+        this.strengthText.textContent = `Strength: ${strength.text} (${strength.entropy.toFixed(1)} bits)`;
         this.strengthBar.className = 'psc-strength-bar';
         if (strength.barClass) {
             this.strengthBar.classList.add(strength.barClass);
