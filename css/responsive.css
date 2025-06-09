@@ -12,6 +12,11 @@
         border-bottom-width: 2px;
     }
 
+    #header-logo {
+        height: 50px;
+        /* Make logo a bit smaller on mobile */
+    }
+
     #top-navigation {
         width: 100%;
     }
@@ -33,28 +38,24 @@
 
     .dropdown-menu {
         position: static;
-        /* Crucial change for mobile dropdowns */
         width: 100%;
         box-shadow: none;
-        border-top-width: 1px;
+        border-top: 1px solid var(--border-color);
         border-left: none;
         border-right: none;
-        border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
-        margin-top: 0;
-        /* Remove margin as it's static */
+        border-bottom: 1px solid var(--border-color);
+        border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+        margin-top: -1px;
+        /* Overlap with button border */
         animation: none;
-        /* Disable animation on mobile */
-        /* display: none; is still the base, JS toggles .show */
     }
 
     .dropdown-menu.show {
         display: block;
-        /* Ensure it still becomes block */
     }
 
     .dropdown-menu li a.tool-link {
-        padding: var(--spacing-sm) var(--spacing-md);
-        border-left-width: 3px;
+        padding-left: var(--spacing-xl);
     }
 
     main#tool-container {
@@ -63,14 +64,17 @@
 
     .tool-content {
         padding: var(--spacing-lg);
-        border-radius: var(--border-radius-md);
+    }
+
+    h1 {
+        font-size: 1.5rem;
     }
 
     .tool-content h2 {
-        font-size: 1.6rem;
-        border-bottom-width: 1px;
+        font-size: 1.4rem;
     }
 
+    /* Specific tool adjustments from original file - kept for context */
     .pg-options {
         grid-template-columns: 1fr;
         gap: var(--spacing-md);
@@ -100,7 +104,6 @@
     }
 
     footer {
-        border-top-width: 2px;
         padding: var(--spacing-md) 0;
     }
 }

@@ -1,58 +1,55 @@
 /* === CSS Custom Properties (Theme Variables) === */
-:root {
-    /* Core Palette */
-    --accent-color: #007bff;
-    /* Primary interactive color */
-    --accent-color-dark: #0056b3;
-    /* Darker shade for hover/active */
-    --accent-color-light: #66b3ff;
-    /* Lighter shade for backgrounds/subtle accents */
-    --accent-color-rgb: 0, 123, 255;
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=Press+Start+2P&display=swap');
 
-    --neutral-dark: #343a40;
-    /* For dark backgrounds like header/footer */
-    --neutral-medium: #6c757d;
-    /* For secondary text, borders */
-    --neutral-light: #adb5bd;
-    /* For muted text on dark backgrounds */
-    --neutral-very-light: #eef2f7;
-    /* For subtle backgrounds, off-white */
-    --neutral-white: #ffffff;
+:root {
+    /* Core Palette - "Soft-Bit Dark" */
+    --accent-color: #00ff9c;
+    /* Electric, high-contrast green */
+    --accent-color-dark: #00d181;
+    /* A slightly darker shade for interaction */
+    --accent-color-rgb: 0, 255, 156;
+    --accent-color-bg-hover: rgba(var(--accent-color-rgb), 0.1);
+    /* Subtle hover background */
+
+    --bg-deep-dark: #1a1c2c;
+    /* Main background, a deep desaturated blue */
+    --bg-dark: #24283b;
+    /* Surface color, brighter for better contrast */
+    --bg-medium: #4a5073;
+    /* A much lighter, more visible border color */
+
+    --text-primary-color: #eef2f7;
+    /* Light, slightly off-white for body text */
+    --text-secondary-color: #a0a4c0;
+    /* Muted text for secondary info */
+    --text-heading-color: #ffffff;
+    /* Pure white for high-impact headings */
+    --text-on-accent-bg: #1a1c2c;
+    /* Text on top of the accent color */
 
     /* Semantic Colors */
     --success-color: #28a745;
-    --error-color: #dc3545;
+    --error-color: #e54b4b;
     --warning-color: #ffc107;
     --info-color: #17a2b8;
 
     /* Backgrounds */
-    --body-bg-color: var(--neutral-very-light);
-    --surface-bg-color: var(--neutral-white);
-    /* Cards, modals, dropdowns */
-    --input-bg-color: var(--neutral-white);
-    --disabled-bg-color: #e9ecef;
+    --body-bg-color: var(--bg-deep-dark);
+    --surface-bg-color: var(--bg-dark);
+    --input-bg-color: var(--bg-dark);
+    --disabled-bg-color: #3f4254;
 
-    /* Text */
-    --text-primary-color: #212529;
-    --text-secondary-color: var(--neutral-medium);
-    --text-on-dark-bg: var(--neutral-white);
-    --text-on-accent-bg: var(--neutral-white);
+    /* Borders & Outlines */
+    --border-color: var(--bg-medium);
+    /* High-contrast border */
+    --focus-outline-color: rgba(var(--accent-color-rgb), 0.75);
 
-    /* Borders */
-    --border-color: #ced4da;
-    /* Standard border for elements */
-    --border-color-strong: #adb5bd;
-    /* A more visible border */
-    --input-border-color: var(--border-color);
-    --focus-ring-color: rgba(var(--accent-color-rgb), 0.25);
+    /* Shadows: Combination of soft depth and hard interactive feedback */
+    --shadow-soft-md: 0 4px 10px rgba(0, 0, 0, 0.2);
+    --shadow-hard: 2px 2px 0 var(--accent-color-dark);
+    --shadow-hard-inset: inset 2px 2px 0 rgba(0, 0, 0, 0.2);
 
-    /* Shadows (subtle, for depth) */
-    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.03);
-    --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.07);
-    --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.1);
-
-    /* Spacing & Radii */
+    /* Spacing (Unchanged) */
     --spacing-xs: 0.25rem;
     /* 4px */
     --spacing-sm: 0.5rem;
@@ -64,12 +61,15 @@
     --spacing-xl: 2rem;
     /* 32px */
 
-    --border-radius-sm: 0.25rem;
-    /* 4px */
-    --border-radius-md: 0.5rem;
-    /* 8px */
-    --border-radius-lg: 0.75rem;
-    /* 12px */
+    /* Radii -> Softened corners */
+    --border-radius-sm: 3px;
+    --border-radius-md: 5px;
+    --border-radius-lg: 8px;
 
-    --font-family-monospace: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    /* Typography */
+    --font-family-pixel: 'Press Start 2P', cursive;
+    --font-family-heading: 'IBM Plex Sans', sans-serif;
+    /* For h2, h3, etc. */
+    --font-family-sans: 'IBM Plex Sans', -apple-system, sans-serif;
+    --font-family-monospace: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
 }

@@ -6,12 +6,12 @@
 
 .category-item {
     position: relative;
-    /* Essential for absolute positioning of its dropdown menu */
 }
 
 .category-button {
-    font-weight: 500;
-    color: var(--text-on-dark-bg);
+    font-weight: 600;
+    /* Using IBM Plex Sans Bold */
+    color: var(--text-primary-color);
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--border-radius-sm);
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -19,7 +19,7 @@
     align-items: center;
     gap: var(--spacing-xs);
     border: 1px solid transparent;
-    /* For layout consistency on hover/focus */
+    /* Keep for layout consistency */
 }
 
 .category-button:hover,
@@ -28,14 +28,11 @@
     background-color: var(--accent-color);
     color: var(--text-on-accent-bg);
     outline: none;
-    border-color: var(--accent-color-dark);
-    /* Subtle border on active/hover */
 }
 
 .dropdown-arrow {
     transition: transform 0.2s ease-in-out;
     fill: currentColor;
-    /* Ensures arrow matches button text color */
 }
 
 .category-button[aria-expanded="true"] .dropdown-arrow {
@@ -44,29 +41,22 @@
 
 .dropdown-menu {
     display: none;
-    /* Hidden by default */
     position: absolute;
-    top: calc(100% + var(--spacing-xs) + 2px);
-    /* Position below button, accounting for button's potential border */
+    top: calc(100% + var(--spacing-xs));
     left: 0;
     background-color: var(--surface-bg-color);
-    border: 1px solid var(--border-color-strong);
-    border-top: 3px solid var(--accent-color);
-    /* Accent on top of dropdown */
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-lg);
-    /* More prominent shadow for dropdowns */
+    box-shadow: var(--shadow-soft-md);
+    /* Softer shadow for depth */
     min-width: 250px;
-    /* Accommodate icons and text */
     z-index: 101;
-    /* Must be higher than header's z-index if it can visually overlap other parts of header, or if header has transformed children. */
     padding: var(--spacing-sm) 0;
     animation: fadeInDropdown 0.15s ease-out forwards;
 }
 
 .dropdown-menu.show {
     display: block;
-    /* This is the key to show the menu */
 }
 
 @keyframes fadeInDropdown {
@@ -87,7 +77,6 @@
     margin-right: var(--spacing-md);
     object-fit: contain;
     flex-shrink: 0;
-    /* Prevent icon from shrinking if text is long */
 }
 
 .dropdown-menu li a.tool-link {
@@ -95,28 +84,23 @@
     align-items: center;
     padding: var(--spacing-sm) var(--spacing-lg);
     color: var(--text-primary-color);
-    font-weight: 500;
+    font-weight: 400;
     font-size: 0.9rem;
     white-space: nowrap;
-    transition: background-color 0.2s ease, color 0.2s ease, border-left-color 0.2s ease;
-    border-left: 4px solid transparent;
-    /* Indication strip */
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .dropdown-menu li a.tool-link:hover,
 .dropdown-menu li a.tool-link:focus {
-    background-color: var(--accent-color-light);
-    color: var(--accent-color-dark);
-    /* Darker text on light accent bg for contrast */
+    background-color: var(--accent-color-bg-hover);
+    color: var(--accent-color);
     outline: none;
-    border-left-color: var(--accent-color);
 }
 
 .dropdown-menu li a.tool-link.active-link {
     background-color: var(--accent-color);
     color: var(--text-on-accent-bg);
     font-weight: 600;
-    border-left-color: var(--accent-color-dark);
 }
 
 /* === General Form & UI Element Styling === */
@@ -125,35 +109,18 @@
 }
 
 .tool-placeholder label,
-.pg-result-area label { /* pg-result-area label might be moved to password-generator.css later if it's too specific */
+.pg-result-area label {
     display: block;
+    font-family: var(--font-family-heading);
     font-weight: 600;
     margin-bottom: var(--spacing-sm);
     color: var(--text-primary-color);
 }
 
-input[type="number"],
-input[type="text"] {
-    width: 100%;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border: 1px solid var(--input-border-color);
-    background-color: var(--input-bg-color);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: var(--shadow-xs);
-    /* Subtle depth */
-}
-
-input[type="number"]:focus,
-input[type="text"]:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px var(--focus-ring-color);
-    outline: none;
-}
-
+/* Base input styles are now in base.css for consistency */
 input[type="number"]:disabled,
 input[type="text"]:disabled {
     background-color: var(--disabled-bg-color);
     color: var(--text-secondary-color);
     cursor: not-allowed;
-    box-shadow: none;
 }

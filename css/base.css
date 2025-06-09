@@ -11,11 +11,10 @@ html {
     font-size: 16px;
     scroll-behavior: smooth;
     overflow-y: scroll;
-    /* Prevents layout shift from scrollbar appearing/disappearing */
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-family: var(--font-family-sans);
     line-height: 1.6;
     background-color: var(--body-bg-color);
     color: var(--text-primary-color);
@@ -29,14 +28,47 @@ ol {
     list-style: none;
 }
 
+/* === Typography & Links === */
+h1 {
+    font-family: var(--font-family-pixel);
+    font-size: 1.8rem;
+    line-height: 1.3;
+    color: var(--text-heading-color);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: var(--spacing-lg);
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-family-heading);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text-heading-color);
+    margin-bottom: var(--spacing-md);
+}
+
+h2 {
+    font-size: 1.6rem;
+}
+
+h3 {
+    font-size: 1.3rem;
+}
+
 a {
     text-decoration: none;
     color: var(--accent-color);
-    transition: color 0.2s ease;
+    transition: all 0.2s ease-out;
 }
 
 a:hover {
     color: var(--accent-color-dark);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
 }
 
 img,
@@ -45,32 +77,59 @@ svg {
     max-width: 100%;
 }
 
+/* === Forms & Buttons - "Soft-Bit" Style === */
 input,
 button,
 textarea,
 select {
     font: inherit;
     border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color);
+    /* Using 1px border for a cleaner look */
+    background-color: var(--input-bg-color);
+    color: var(--text-primary-color);
+    padding: var(--spacing-sm) var(--spacing-md);
+    transition: all 0.15s ease-out;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid var(--focus-outline-color);
+    outline-offset: 2px;
+    border-color: var(--accent-color);
 }
 
 button {
     cursor: pointer;
-    background-color: transparent;
-    border: none;
-    padding: 0;
-    color: inherit;
-    /* Inherit text color by default for button text */
+    font-weight: 700;
+    border-width: 2px;
 }
+
+button:hover,
+button:focus {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-hard);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+button:active {
+    transform: translate(0, 0);
+    box-shadow: var(--shadow-hard-inset);
+}
+
 
 /* === Visually Hidden - Screen Reader Only === */
 .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
 }

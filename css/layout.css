@@ -2,73 +2,38 @@
 
 /* === Header === */
 header {
-    background-color: var(--neutral-dark);
-    color: var(--text-on-dark-bg);
+    background-color: var(--bg-dark);
+    color: var(--text-primary-color);
     padding: var(--spacing-md) var(--spacing-lg);
-    /* This padding affects overall header height */
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     z-index: 100;
-    /* High enough for dropdowns within to not be overlapped by main content scrollbars etc. */
     display: flex;
     align-items: center;
-    /* Vertically aligns items in the header, including logo and nav */
     gap: var(--spacing-lg);
-    border-bottom: 3px solid var(--accent-color);
+    border-bottom: 2px solid var(--accent-color);
 }
 
-/* Styles for the .header-brand div, which now contains the logo */
 .header-brand {
-    /* If the logo is the only item, you might not need specific styles here.
-       It will be aligned by the parent <header>'s 'align-items: center'.
-       'line-height: 0;' can sometimes help remove unexpected space around image links. */
     line-height: 0;
 }
 
-/*
-    The following styles for h1 and p within .header-brand are likely no longer needed
-    as the text title has been replaced by the image logo.
-    Commented out for now. You can delete them if they are not used elsewhere.
-
-.header-brand h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
-    color: var(--text-on-dark-bg);
-}
-
-.header-brand p {
-    font-size: 0.8rem;
-    color: var(--neutral-light);
-    margin: 0;
-}
-*/
-
-/* Styles for the logo link (the <a> tag) */
 .logo-link {
     display: inline-block;
-    /* Allows link to behave like a block for sizing but flow inline */
     text-decoration: none;
-    /* Removes underline from the link if it appears */
-    /* vertical-align: middle; /* Can be useful if other elements are directly next to it and not using flex align-items */
 }
 
-/* Styles for the logo image itself (the <img> tag with id="header-logo") */
 #header-logo {
-    height: 100px;
-    /* <<< ADJUST THIS VALUE to make the logo smaller or larger */
+    height: 60px;
+    /* Reduced for a tighter header */
     width: auto;
-    /* This maintains the aspect ratio of your logo */
     display: block;
-    /* Removes any extra space below the image that might occur if it's treated as inline */
 }
-
 
 /* === Content Wrapper & Main Content Area === */
 .content-wrapper {
     display: flex;
     flex: 1;
     overflow: hidden;
-    /* Important if main itself has overflow-y: auto */
 }
 
 main#tool-container {
@@ -76,19 +41,16 @@ main#tool-container {
     padding: var(--spacing-xl);
     overflow-y: auto;
     overflow-x: hidden;
-    /* Prevent accidental horizontal scroll */
 }
 
 .tool-content {
     display: none;
-    /* Active tool shown by JS */
     background-color: var(--surface-bg-color);
     padding: var(--spacing-xl);
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-soft-md);
     border: 1px solid var(--border-color);
     margin-bottom: var(--spacing-xl);
-    /* If you ever show multiple, for spacing */
     animation: fadeInPageContent 0.3s ease-out;
 }
 
@@ -109,23 +71,20 @@ main#tool-container {
 }
 
 .tool-content h2 {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: var(--accent-color-dark);
+    /* Using new h2 style from base.css */
+    color: var(--accent-color);
+    /* Makes tool titles pop */
     margin-bottom: var(--spacing-lg);
     padding-bottom: var(--spacing-md);
-    border-bottom: 2px solid var(--accent-color-light);
+    border-bottom: 1px solid var(--border-color);
 }
 
 /* === Footer === */
 footer {
-    background-color: var(--neutral-dark);
-    color: var(--neutral-light);
+    background-color: var(--bg-dark);
+    color: var(--text-secondary-color);
     text-align: center;
     padding: var(--spacing-lg) 0;
-    /* More padding */
     font-size: 0.85rem;
-    border-top: 3px solid var(--accent-color-dark);
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    /* Subtle shadow upwards */
+    border-top: 1px solid var(--border-color);
 }
