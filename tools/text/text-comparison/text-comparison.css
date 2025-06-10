@@ -7,13 +7,15 @@
 
 .tc-input-area {
     display: grid;
-    grid-template-columns: 1fr; /* Stack on small screens */
+    grid-template-columns: 1fr;
+    /* Stack on small screens */
     gap: var(--spacing-lg);
 }
 
 @media (min-width: 768px) {
     .tc-input-area {
-        grid-template-columns: 1fr 1fr; /* Side-by-side on larger screens */
+        grid-template-columns: 1fr 1fr;
+        /* Side-by-side on larger screens */
     }
 }
 
@@ -24,82 +26,79 @@
 
 .tc-input-group label {
     margin-bottom: var(--spacing-xs);
-    font-weight: 500;
-    color: var(--text-primary-color);
-}
-
-.tc-input-group textarea {
-    width: 100%;
-    min-height: 200px;
-    padding: var(--spacing-sm);
-    border: 1px solid var(--input-border-color);
-    border-radius: var(--border-radius-sm);
-    font-family: var(--font-family-monospace);
-    font-size: 0.95rem;
-    line-height: 1.5;
-    background-color: var(--input-bg-color);
-    color: var(--text-primary-color);
-    box-shadow: var(--shadow-xs-inset);
-    resize: vertical;
-}
-
-.tc-input-group textarea:focus {
-    outline: 2px solid var(--accent-color);
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px var(--accent-color-alpha-30), var(--shadow-xs-inset);
-}
-
-button.tc-compare-button {
-    padding: var(--spacing-md) var(--spacing-lg);
     font-weight: 600;
+    color: var(--text-primary-color);
+}
+
+/* Let textareas inherit base styles, then override specifics */
+.tc-input-group textarea {
+    min-height: 250px;
+    font-family: var(--font-family-monospace);
+    font-size: 0.9rem;
+    resize: vertical;
+    /* MODIFIED: Use defined border color */
+    border: 1px solid var(--border-color);
+}
+
+/* Base styles in base.css handle the focus state consistently */
+
+.tc-compare-button {
+    /* This button has custom styling compared to the base button */
+    padding: var(--spacing-md) var(--spacing-lg);
     font-size: 1rem;
+    font-weight: 700;
     border-radius: var(--border-radius-md);
-    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-    border: none;
+    border: 2px solid var(--accent-color);
     background-color: var(--accent-color);
     color: var(--text-on-accent-bg);
     display: block;
     width: 100%;
     max-width: 280px;
-    margin: var(--spacing-md) auto var(--spacing-lg) auto;
-    box-shadow: var(--shadow-sm);
+    margin: 0 auto;
+    /* transition from base.css */
+    transition: all 0.15s ease-out;
 }
 
-button.tc-compare-button:hover {
-    background-color: var(--accent-color-dark);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+/* Let hover/active effects from base.css apply */
+.tc-compare-button:hover,
+.tc-compare-button:focus {
+    background-color: var(--surface-bg-color);
+    color: var(--accent-color);
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-hard);
 }
 
-button.tc-compare-button:active {
-    transform: translateY(0px) scale(0.98);
-    box-shadow: var(--shadow-xs);
+.tc-compare-button:active {
+    transform: translate(0, 0);
+    box-shadow: var(--shadow-hard-inset);
 }
+
 
 .tc-results-area {
     margin-top: var(--spacing-md);
-    background-color: var(--neutral-very-light);
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
 }
 
-.tc-results-area h3 {
+.tc-results-area h2 {
+    /* Use tool-content h2 style */
+    color: var(--accent-color);
     margin-top: 0;
     margin-bottom: var(--spacing-md);
-    color: var(--text-primary-color);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .tc-diff-output-box {
-    padding: var(--spacing-sm);
-    border: 1px solid var(--border-color-strong);
-    border-radius: var(--border-radius-sm);
-    background-color: #fdfdfd; /* Or var(--input-bg-color) */
-    min-height: 100px;
+    padding: var(--spacing-md);
+    /* MODIFIED: Use a defined border color */
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    /* MODIFIED: Use a dark background from the theme */
+    background-color: var(--bg-deep-dark);
+    min-height: 150px;
     font-family: var(--font-family-monospace);
     font-size: 0.9rem;
     line-height: 1.6;
+    /* Default text color is already light from the theme */
     color: var(--text-primary-color);
     overflow-x: auto;
 }
@@ -107,61 +106,72 @@ button.tc-compare-button:active {
 /* Styling for the <pre> tag that will contain the diff */
 .tc-diff-output-box pre {
     margin: 0;
-    white-space: pre-wrap; /* Allow lines to wrap but preserve spaces and newlines */
-    word-break: break-all; /* Break words if they are too long to fit */
-    color: var(--text-primary-color); /* Default text color for unchanged words */
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--text-secondary-color);
+    /* Unchanged text is less prominent */
 }
 
-.tc-results-placeholder, .tc-error {
+.tc-results-placeholder,
+.tc-error {
     color: var(--text-secondary-color);
     font-style: italic;
     padding: var(--spacing-md);
     text-align: center;
-    white-space: normal; /* Placeholder text should wrap */
-}
-.tc-error { /* Ensure tc-error within pre also behaves as expected */
-    color: var(--error-color);
-    font-weight: bold;
-    display: block; /* if it's the only content */
+    white-space: normal;
 }
 
-.tc-no-diff { /* Ensure tc-no-diff within pre also behaves as expected */
-    color: var(--success-color-dark);
+.tc-error {
+    color: var(--error-color);
+    font-weight: bold;
+}
+
+.tc-no-diff {
+    color: var(--success-color);
     font-weight: normal;
     text-align: center;
     padding: var(--spacing-md);
-    display: block; /* if it's the only content */
+    display: block;
     white-space: normal;
 }
 
 
 /* Word-by-word diff styling */
 .tc-word-added {
-    background-color: var(--success-color-alpha-30, #d4ffd9); /* Light green */
-    color: var(--success-color-dark, #22863a);
-    padding: 1px 0; /* Minimal vertical padding */
-    border-radius: var(--border-radius-xs);
+    /* MODIFIED: Use rgba with theme colors for background */
+    background-color: rgba(40, 167, 69, 0.15);
+    /* from --success-color */
+    /* MODIFIED: Use theme color for text */
+    color: var(--success-color);
+    padding: 2px 1px;
+    border-radius: 3px;
 }
 
 .tc-word-removed {
-    background-color: var(--error-color-alpha-20, #ffdce0); /* Light red */
-    color: var(--error-color-dark, #d73a49);
+    /* MODIFIED: Use rgba with theme colors for background */
+    background-color: rgba(229, 75, 75, 0.15);
+    /* from --error-color */
+    /* MODIFIED: Use theme color for text */
+    color: var(--error-color);
     text-decoration: line-through;
-    padding: 1px 0; /* Minimal vertical padding */
-    border-radius: var(--border-radius-xs);
+    padding: 2px 1px;
+    border-radius: 3px;
 }
 
 /* For the sample text in the description */
 .tc-sample-added {
-    background-color: var(--success-color-alpha-30, #d4ffd9);
-    color: var(--success-color-dark, #22863a);
-    padding: 1px 2px;
-    border-radius: var(--border-radius-xs);
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #90eeb1;
+    /* Lighter green for readability */
+    padding: 1px 3px;
+    border-radius: 3px;
 }
+
 .tc-sample-removed {
-    background-color: var(--error-color-alpha-20, #ffdce0);
-    color: var(--error-color-dark, #d73a49);
+    background-color: rgba(229, 75, 75, 0.2);
+    color: #f6a9a9;
+    /* Lighter red for readability */
     text-decoration: line-through;
-    padding: 1px 2px;
-    border-radius: var(--border-radius-xs);
+    padding: 1px 3px;
+    border-radius: 3px;
 }
