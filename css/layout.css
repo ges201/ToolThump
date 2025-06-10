@@ -79,6 +79,50 @@ main#tool-container {
     border-bottom: 1px solid var(--border-color);
 }
 
+/* === Homepage Specific Layout === */
+.home-hero {
+    text-align: center;
+    padding: 0 0 var(--spacing-md);
+    /* MODIFIED: Removed top padding and reduced bottom padding */
+    margin-bottom: var(--spacing-lg);
+    /* MODIFIED: Reduced bottom margin */
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* ADDED: Override default h1 margin specifically for the hero section */
+.home-hero h1 {
+    margin-bottom: var(--spacing-sm);
+}
+
+.home-hero .tagline {
+    font-size: 1.25rem;
+    color: var(--text-secondary-color);
+    /* MODIFIED: Reduced top/bottom margin to bring elements closer */
+    margin: 0 0 var(--spacing-md);
+    font-weight: 400;
+}
+
+.home-hero .description {
+    max-width: 70ch;
+    margin: 0 auto;
+    color: var(--text-primary-color);
+}
+
+.home-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Overriding general .tool-content h2 for homepage sections */
+.home-section h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    color: var(--text-heading-color);
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--spacing-xl);
+}
+
+
 /* === Footer === */
 footer {
     background-color: var(--bg-dark);
