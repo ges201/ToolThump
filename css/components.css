@@ -10,23 +10,35 @@
 
 .category-button {
     font-weight: 600;
-    /* Using IBM Plex Sans Bold */
-    color: var(--text-primary-color);
+    color: var(--text-secondary-color);
+    /* MODIFIED: Matched copy button color */
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--border-radius-sm);
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    /* MODIFIED: Added border-color transition */
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
-    border: 1px solid transparent;
-    /* Keep for layout consistency */
+    border: 1px solid var(--border-color);
+    /* MODIFIED: Matched copy button border */
+    background-color: var(--surface-bg-color);
+    /* ADDED: Matched copy button background */
 }
 
+/* MODIFIED: Separated hover/focus from the active 'expanded' state */
 .category-button:hover,
-.category-button:focus,
+.category-button:focus {
+    background-color: var(--accent-color-bg-hover);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+/* MODIFIED: Active 'expanded' state is now more prominent */
 .category-button[aria-expanded="true"] {
     background-color: var(--accent-color);
     color: var(--text-on-accent-bg);
+    border-color: var(--accent-color);
     outline: none;
 }
 
