@@ -15,7 +15,7 @@ const pg = {
     passwordPlaceholderSpan: null,
     errorMessage: null,
     copyBtn: null,
-    copyFeedback: null, // MODIFIED: New element for feedback
+    copyFeedback: null,
     copyFeedbackTimeout: null,
 
     plainPassword: '',
@@ -44,7 +44,7 @@ const pg = {
         this.passwordPlaceholderSpan = this.passwordDisplay ? this.passwordDisplay.querySelector('.pg-password-placeholder') : null;
         this.errorMessage = document.getElementById('pg-error-message');
         this.copyBtn = document.getElementById('pg-copy-btn');
-        this.copyFeedback = document.getElementById('pg-copy-feedback'); // MODIFIED: Get the feedback span
+        this.copyFeedback = document.getElementById('pg-copy-feedback');
     },
 
     getRandomChar: function (charSet) {
@@ -119,9 +119,8 @@ const pg = {
     },
 
     generatePassword: function () {
-        if (!this.passwordDisplay) return;
+        if (!this.passwordDisplay || !this.generateBtn || this.generateBtn.disabled) return;
 
-        // MODIFIED: Reset the feedback element, not the button text
         if (this.copyFeedback && this.copyFeedback.classList.contains('show')) {
             this.copyFeedback.classList.remove('show');
             if (this.copyFeedbackTimeout) clearTimeout(this.copyFeedbackTimeout);
@@ -271,7 +270,6 @@ const pg = {
         this.updateValidationState();
     },
 
-    // MODIFIED: Complete rewrite of this function
     copyPasswordToClipboard: function () {
         if (!this.plainPassword || !this.copyBtn || this.copyBtn.disabled || !this.copyFeedback) return;
 
@@ -279,27 +277,22 @@ const pg = {
             .then(() => {
                 this.copyFeedback.textContent = 'Copied!';
                 this.copyFeedback.classList.add('show');
-                this.copyBtn.disabled = true;
 
                 if (this.copyFeedbackTimeout) clearTimeout(this.copyFeedbackTimeout);
 
                 this.copyFeedbackTimeout = setTimeout(() => {
                     this.copyFeedback.classList.remove('show');
-                    // Re-enable the button only if a password still exists
-                    this.copyBtn.disabled = !this.plainPassword;
                 }, 2000);
             })
             .catch(err => {
                 console.error('PG_COPY_ERROR: Could not copy text: ', err);
                 this.copyFeedback.textContent = 'Failed!';
                 this.copyFeedback.classList.add('show');
-                this.copyBtn.disabled = true;
 
                 if (this.copyFeedbackTimeout) clearTimeout(this.copyFeedbackTimeout);
 
                 this.copyFeedbackTimeout = setTimeout(() => {
                     this.copyFeedback.classList.remove('show');
-                    this.copyBtn.disabled = !this.plainPassword;
                 }, 2000);
             });
     },
@@ -307,12 +300,12 @@ const pg = {
     init: function () {
         this.fetchElements();
 
-        // MODIFIED: Added copyFeedback to the check
         if (!this.generateBtn || !this.lengthInput || !this.passwordDisplay || !this.copyBtn || !this.copyFeedback) {
             console.error("PG_INIT: Could not find all required elements for Password Generator. Aborting init.");
             return;
         }
 
+        // MODIFIED: Simplified the click handler to call the function directly
         this.generateBtn.addEventListener('click', () => this.generatePassword());
         this.copyBtn.addEventListener('click', () => this.copyPasswordToClipboard());
 
@@ -324,7 +317,7 @@ const pg = {
         allInputs.forEach(input => {
             if (input) {
                 input.addEventListener('input', () => this.updateValidationState());
-                input.addEventListener('change', (e) => { // Use 'change' for blur/enter final correction
+                input.addEventListener('change', (e) => {
                     const target = e.currentTarget;
                     if (target.id === 'pg-length') {
                         let lenVal = parseInt(target.value);

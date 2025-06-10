@@ -169,7 +169,7 @@ const tc = {
             this.diffPlaceholder.classList.remove('tc-error');
             this.diffPlaceholder.textContent = "Results will appear here after comparison.";
         }
-        console.log("Text Comparison Tool Initialized on its page.");
+        console.log("Text Comparison Initialized on its page.");
     }
 };
 

@@ -36,42 +36,35 @@
     font-family: var(--font-family-monospace);
     font-size: 0.9rem;
     resize: vertical;
-    /* MODIFIED: Use defined border color */
     border: 1px solid var(--border-color);
 }
 
 /* Base styles in base.css handle the focus state consistently */
 
 .tc-compare-button {
-    /* This button has custom styling compared to the base button */
-    padding: var(--spacing-md) var(--spacing-lg);
+    /* MODIFIED: Matched style to header category buttons */
+    padding: var(--spacing-sm) var(--spacing-md);
     font-size: 1rem;
-    font-weight: 700;
-    border-radius: var(--border-radius-md);
-    border: 2px solid var(--accent-color);
-    background-color: var(--accent-color);
-    color: var(--text-on-accent-bg);
+    font-weight: 600;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color);
+    background-color: var(--surface-bg-color);
+    color: var(--text-secondary-color);
     display: block;
     width: 100%;
     max-width: 280px;
     margin: 0 auto;
-    /* transition from base.css */
-    transition: all 0.15s ease-out;
+    /* transition is inherited from base.css */
 }
 
-/* Let hover/active effects from base.css apply */
+/* MODIFIED: Matched hover state to header buttons, inheriting transform/shadow from base.css */
 .tc-compare-button:hover,
 .tc-compare-button:focus {
-    background-color: var(--surface-bg-color);
-    color: var(--accent-color);
-    transform: translate(-2px, -2px);
-    box-shadow: var(--shadow-hard);
+    background-color: var(--accent-color-bg-hover);
+    /* Other properties (color, border, transform, shadow) are handled by base.css */
 }
 
-.tc-compare-button:active {
-    transform: translate(0, 0);
-    box-shadow: var(--shadow-hard-inset);
-}
+/* REMOVED: Active state is identical to base.css, so this rule was redundant. */
 
 
 .tc-results-area {
@@ -89,16 +82,13 @@
 
 .tc-diff-output-box {
     padding: var(--spacing-md);
-    /* MODIFIED: Use a defined border color */
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
-    /* MODIFIED: Use a dark background from the theme */
     background-color: var(--bg-deep-dark);
     min-height: 150px;
     font-family: var(--font-family-monospace);
     font-size: 0.9rem;
     line-height: 1.6;
-    /* Default text color is already light from the theme */
     color: var(--text-primary-color);
     overflow-x: auto;
 }
@@ -138,20 +128,16 @@
 
 /* Word-by-word diff styling */
 .tc-word-added {
-    /* MODIFIED: Use rgba with theme colors for background */
     background-color: rgba(40, 167, 69, 0.15);
     /* from --success-color */
-    /* MODIFIED: Use theme color for text */
     color: var(--success-color);
     padding: 2px 1px;
     border-radius: 3px;
 }
 
 .tc-word-removed {
-    /* MODIFIED: Use rgba with theme colors for background */
     background-color: rgba(229, 75, 75, 0.15);
     /* from --error-color */
-    /* MODIFIED: Use theme color for text */
     color: var(--error-color);
     text-decoration: line-through;
     padding: 2px 1px;

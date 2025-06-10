@@ -32,12 +32,15 @@ ol {
 /* Pixelated font for main tool titles */
 h1 {
     font-family: var(--font-family-pixel);
-    font-size: 1.8rem;
+    font-size: 1.6rem;
+    /* MODIFIED: Reduced font size */
     line-height: 1.3;
     color: var(--text-heading-color);
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: var(--spacing-lg);
+    text-align: center;
+    /* ADDED: Centered tool titles */
 }
 
 /* Unified font for body, subheadings, and other elements */
@@ -123,6 +126,22 @@ button:focus {
 button:active {
     transform: translate(0, 0);
     box-shadow: var(--shadow-hard-inset);
+}
+
+/* MODIFIED: Added general rule for disabled buttons to override hover/focus effects */
+button:disabled,
+button:disabled:hover,
+button:disabled:focus {
+    background-color: var(--disabled-bg-color);
+    color: var(--text-secondary-color);
+    border-color: var(--border-color);
+    cursor: not-allowed;
+    transform: none;
+    /* Override hover transform */
+    box-shadow: none;
+    /* Override hover shadow */
+    opacity: 0.6;
+    outline: none;
 }
 
 

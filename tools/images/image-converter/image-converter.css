@@ -121,22 +121,30 @@
     gap: var(--spacing-sm);
 }
 
-.ic-button.ic-file-select-btn {
+/* === MODIFIED: Unified Button Styles === */
+/* Base style for all buttons in this tool, matching header buttons */
+.ic-button {
+    font-weight: 600;
+    color: var(--text-secondary-color);
     padding: var(--spacing-sm) var(--spacing-md);
-    background-color: var(--accent-color);
-    color: var(--text-on-accent-bg);
-    border: 1px solid var(--accent-color-dark);
+    /* Default padding */
     border-radius: var(--border-radius-sm);
-    cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-    font-size: 0.9em;
-    flex-shrink: 0;
-    font-weight: 500;
+    border: 1px solid var(--border-color);
+    background-color: var(--surface-bg-color);
+    /* Transitions are inherited from base.css */
 }
 
-.ic-button.ic-file-select-btn:hover {
-    background-color: var(--accent-color-dark);
-    border-color: var(--accent-color-dark);
+/* Hover/focus state to match header buttons. */
+/* base.css handles transform, shadow, text/border color change. */
+.ic-button:hover:not(:disabled),
+.ic-button:focus:not(:disabled) {
+    background-color: var(--accent-color-bg-hover);
+}
+
+/* Modifier for the file select button */
+.ic-button.ic-file-select-btn {
+    font-size: 0.9em;
+    flex-shrink: 0;
 }
 
 .ic-file-select-text {
@@ -259,44 +267,29 @@
     margin-bottom: var(--spacing-lg);
 }
 
+/* MODIFIED: Convert button uses the unified .ic-button style with size modifiers */
 .ic-button.ic-convert-btn {
     padding: var(--spacing-md) var(--spacing-xl);
-    font-weight: 600;
     font-size: 1.05rem;
     border-radius: var(--border-radius-md);
-    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-    border: none;
-    background-color: var(--success-color);
-    color: var(--text-on-accent-bg);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-width: 200px;
-    box-shadow: var(--shadow-sm);
-}
-
-.ic-button.ic-convert-btn:hover:not(:disabled) {
-    background-color: var(--success-color-dark, #1e7e34);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-}
-
-.ic-button.ic-convert-btn:active:not(:disabled) {
-    transform: translateY(0px) scale(0.98);
-    box-shadow: var(--shadow-xs);
 }
 
 .ic-button.ic-convert-btn:disabled {
-    background-color: var(--neutral-medium);
-    opacity: 0.7;
+    background-color: var(--disabled-bg-color);
+    color: var(--text-secondary-color);
+    border-color: var(--border-color);
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
-    color: var(--neutral-light);
+    opacity: 0.7;
 }
 
 .ic-button.ic-convert-btn:disabled svg {
-    fill: var(--neutral-light);
+    fill: var(--text-secondary-color);
 }
 
 
