@@ -15,6 +15,7 @@ const pg = {
     passwordPlaceholderSpan: null,
     errorMessage: null,
     copyBtn: null,
+    copyFeedback: null, // MODIFIED: New element for feedback
     copyFeedbackTimeout: null,
 
     plainPassword: '',
@@ -43,6 +44,7 @@ const pg = {
         this.passwordPlaceholderSpan = this.passwordDisplay ? this.passwordDisplay.querySelector('.pg-password-placeholder') : null;
         this.errorMessage = document.getElementById('pg-error-message');
         this.copyBtn = document.getElementById('pg-copy-btn');
+        this.copyFeedback = document.getElementById('pg-copy-feedback'); // MODIFIED: Get the feedback span
     },
 
     getRandomChar: function (charSet) {
@@ -55,7 +57,7 @@ const pg = {
         let isFormValidForButton = true;
         let primaryErrorForDisplay = '';
         let lengthCorrectionInfo = '';
-        let minSumError = ''; // Specific error for min sum issues
+        let minSumError = '';
 
         const totalLength = parseInt(this.lengthInput.value);
 
@@ -66,9 +68,6 @@ const pg = {
             if (totalLength > this.maxLength) {
                 this.lengthInput.value = this.maxLength;
                 lengthCorrectionInfo = `Length reset to max ${this.maxLength}. Adjusting.`;
-                // Re-read totalLength if it was capped
-                // No, updateValidationState should reflect current state. GeneratePassword can cap.
-                // Actually, capping here is fine for immediate feedback.
             } else if (totalLength < this.minLength) {
                 primaryErrorForDisplay = `Length must be at least ${this.minLength}.`;
                 isFormValidForButton = false;
@@ -76,7 +75,7 @@ const pg = {
         }
 
         let currentMinSum = 0;
-        const currentDisplayLength = parseInt(this.lengthInput.value); // Use potentially corrected length
+        const currentDisplayLength = parseInt(this.lengthInput.value);
 
         const optionsForMinValidation = [
             { include: this.uppercaseCheckbox.checked, minInput: this.minUppercaseInput, type: 'Uppercase' },
@@ -88,7 +87,7 @@ const pg = {
         for (const opt of optionsForMinValidation) {
             if (opt.include && opt.minInput) {
                 const rawValue = opt.minInput.value.trim();
-                const minVal = parseInt(opt.minInput.value); // parseInt handles leading/trailing spaces
+                const minVal = parseInt(opt.minInput.value);
 
                 if (rawValue === '') {
                     if (!minSumError) minSumError = `Min ${opt.type.toLowerCase()} cannot be empty.`;
@@ -107,10 +106,7 @@ const pg = {
                 if (!minSumError) minSumError = `Sum of minimums (${currentMinSum}) exceeds total length (${currentDisplayLength}).`;
                 isFormValidForButton = false;
             }
-        } else if (isFormValidForButton && isNaN(currentDisplayLength)) {
-            // This case implies lengthInput is not a number, already handled by primaryErrorForDisplay
         }
-
 
         const finalError = minSumError || primaryErrorForDisplay || lengthCorrectionInfo || '';
         this.errorMessage.textContent = finalError;
@@ -125,17 +121,15 @@ const pg = {
     generatePassword: function () {
         if (!this.passwordDisplay) return;
 
+        // MODIFIED: Reset the feedback element, not the button text
+        if (this.copyFeedback && this.copyFeedback.classList.contains('show')) {
+            this.copyFeedback.classList.remove('show');
+            if (this.copyFeedbackTimeout) clearTimeout(this.copyFeedbackTimeout);
+        }
         if (this.copyBtn) {
-            if (this.copyBtn.classList.contains('copied') || this.copyBtn.textContent === 'Failed!') {
-                this.copyBtn.textContent = 'Copy';
-                this.copyBtn.classList.remove('copied');
-                if (this.copyFeedbackTimeout) clearTimeout(this.copyFeedbackTimeout);
-            }
             this.copyBtn.disabled = true;
         }
 
-        // Perform final validation and correction before generation
-        // This also ensures that if updateValidationState was bypassed, we still have valid numbers.
         const optionsForGeneration = [
             { type: 'uppercase', include: this.uppercaseCheckbox.checked, minInput: this.minUppercaseInput, set: this.charSets.uppercase },
             { type: 'lowercase', include: this.lowercaseCheckbox.checked, minInput: this.minLowercaseInput, set: this.charSets.lowercase },
@@ -150,30 +144,27 @@ const pg = {
             if (opt.include && opt.minInput) {
                 let minVal = parseInt(opt.minInput.value);
                 if (opt.minInput.value.trim() === '' || isNaN(minVal) || minVal < 1) {
-                    opt.minInput.value = "1"; // Correct the input field's value
-                    minVal = 1; // Use 1 for generation
+                    opt.minInput.value = "1";
+                    minVal = 1;
                 }
-                opt.correctedMin = minVal; // Store corrected min for use later in this function
+                opt.correctedMin = minVal;
                 currentMinSumForGeneration += minVal;
-            } else if (opt.include) { // If include is checked but minInput somehow missing (defensive)
-                opt.correctedMin = 0;
             } else {
                 opt.correctedMin = 0;
             }
         }
 
-        // Re-validate length and sum after potential min corrections
         let totalLength = parseInt(this.lengthInput.value);
         if (isNaN(totalLength) || totalLength < this.minLength) {
-            this.lengthInput.value = this.minLength; // Correct length if invalid
+            this.lengthInput.value = this.minLength;
             totalLength = this.minLength;
         } else if (totalLength > this.maxLength) {
-            this.lengthInput.value = this.maxLength; // Correct length if invalid
+            this.lengthInput.value = this.maxLength;
             totalLength = this.maxLength;
         }
 
         if (currentMinSumForGeneration > totalLength) {
-            this.errorMessage.textContent = `Sum of minimums (${currentMinSumForGeneration}) now exceeds total length (${totalLength}) after corrections. Adjust options.`;
+            this.errorMessage.textContent = `Sum of minimums (${currentMinSumForGeneration}) exceeds total length (${totalLength}).`;
             generationOptionsValid = false;
         }
 
@@ -186,7 +177,6 @@ const pg = {
             generationOptionsValid = false;
         }
 
-
         if (!generationOptionsValid) {
             if (this.passwordPlaceholderSpan) {
                 this.passwordDisplay.innerHTML = '';
@@ -194,45 +184,29 @@ const pg = {
                 this.passwordPlaceholderSpan.style.display = 'inline';
             }
             this.plainPassword = '';
-            return; // Abort generation
+            return;
         }
-        // At this point, all inputs should be valid or corrected.
-        // Now, call updateValidationState one more time to reflect any corrections on UI error message
-        // This is important if generatePassword corrected something the user didn't blur from.
-        this.updateValidationState(); // This will refresh the error message based on corrected values
 
+        this.updateValidationState();
 
         if (this.passwordPlaceholderSpan) this.passwordPlaceholderSpan.style.display = 'none';
         this.passwordDisplay.innerHTML = '';
         this.plainPassword = '';
 
         let guaranteedChars = [];
-
         for (const opt of optionsForGeneration) {
             if (opt.include) {
                 for (let i = 0; i < opt.correctedMin; i++) {
-                    if (opt.set.length > 0) {
-                        guaranteedChars.push(this.getRandomChar(opt.set));
-                    } else {
-                        // This case should be rare if charSets are correctly defined
-                        this.errorMessage.textContent = `Error: Charset for ${opt.type} is empty.`;
-                        if (this.passwordPlaceholderSpan) this.passwordPlaceholderSpan.style.display = 'inline';
-                        return;
-                    }
+                    guaranteedChars.push(this.getRandomChar(opt.set));
                 }
             }
         }
 
         let remainingLength = totalLength - guaranteedChars.length;
-        if (remainingLength < 0) remainingLength = 0; // Should be caught by sum check, but defensive
+        if (remainingLength < 0) remainingLength = 0;
 
         let randomFillChars = [];
         for (let i = 0; i < remainingLength; i++) {
-            if (characterPool.length === 0) {
-                this.errorMessage.textContent = "Error: Character pool became empty unexpectedly.";
-                if (this.passwordPlaceholderSpan) this.passwordPlaceholderSpan.style.display = 'inline';
-                return;
-            }
             randomFillChars.push(this.getRandomChar(characterPool));
         }
 
@@ -244,8 +218,6 @@ const pg = {
             this.copyBtn.disabled = !this.plainPassword;
         }
 
-        // Clear specific error messages if password generation was successful
-        // (e.g. if an error was set by updateValidationState just before successful generation)
         if (this.errorMessage.textContent.toLowerCase().includes('sum of minimums') ||
             this.errorMessage.textContent.toLowerCase().includes('cannot be empty') ||
             this.errorMessage.textContent.toLowerCase().includes('must be at least 1')) {
@@ -287,47 +259,46 @@ const pg = {
         optionInputs.forEach(opt => {
             if (opt.cb && opt.minIn) {
                 opt.minIn.disabled = !opt.cb.checked;
-                if (opt.cb.checked) { // If checkbox is now checked
+                if (opt.cb.checked) {
                     const valueStr = opt.minIn.value.trim();
                     const valInt = parseInt(opt.minIn.value);
                     if (valueStr === '' || isNaN(valInt) || valInt < 1) {
-                        opt.minIn.value = "1"; // Ensure it's at least 1
+                        opt.minIn.value = "1";
                     }
                 }
             }
         });
-        this.updateValidationState(); // Update after enabling/disabling and potential correction
+        this.updateValidationState();
     },
 
+    // MODIFIED: Complete rewrite of this function
     copyPasswordToClipboard: function () {
-        if (!this.plainPassword || !this.copyBtn || this.copyBtn.disabled) return;
+        if (!this.plainPassword || !this.copyBtn || this.copyBtn.disabled || !this.copyFeedback) return;
 
         navigator.clipboard.writeText(this.plainPassword)
             .then(() => {
-                const originalButtonText = "Copy";
-                this.copyBtn.textContent = 'Copied!';
-                this.copyBtn.classList.add('copied');
+                this.copyFeedback.textContent = 'Copied!';
+                this.copyFeedback.classList.add('show');
                 this.copyBtn.disabled = true;
 
                 if (this.copyFeedbackTimeout) clearTimeout(this.copyFeedbackTimeout);
 
                 this.copyFeedbackTimeout = setTimeout(() => {
-                    this.copyBtn.textContent = originalButtonText;
-                    this.copyBtn.classList.remove('copied');
+                    this.copyFeedback.classList.remove('show');
+                    // Re-enable the button only if a password still exists
                     this.copyBtn.disabled = !this.plainPassword;
                 }, 2000);
             })
             .catch(err => {
                 console.error('PG_COPY_ERROR: Could not copy text: ', err);
-                const originalButtonText = "Copy";
-                this.copyBtn.textContent = 'Failed!';
-                this.copyBtn.classList.remove('copied');
+                this.copyFeedback.textContent = 'Failed!';
+                this.copyFeedback.classList.add('show');
                 this.copyBtn.disabled = true;
 
                 if (this.copyFeedbackTimeout) clearTimeout(this.copyFeedbackTimeout);
 
                 this.copyFeedbackTimeout = setTimeout(() => {
-                    this.copyBtn.textContent = originalButtonText;
+                    this.copyFeedback.classList.remove('show');
                     this.copyBtn.disabled = !this.plainPassword;
                 }, 2000);
             });
@@ -336,7 +307,8 @@ const pg = {
     init: function () {
         this.fetchElements();
 
-        if (!this.generateBtn || !this.lengthInput || !this.passwordDisplay || !this.copyBtn) {
+        // MODIFIED: Added copyFeedback to the check
+        if (!this.generateBtn || !this.lengthInput || !this.passwordDisplay || !this.copyBtn || !this.copyFeedback) {
             console.error("PG_INIT: Could not find all required elements for Password Generator. Aborting init.");
             return;
         }
@@ -344,55 +316,33 @@ const pg = {
         this.generateBtn.addEventListener('click', () => this.generatePassword());
         this.copyBtn.addEventListener('click', () => this.copyPasswordToClipboard());
 
-        const allMinInputs = [
-            this.minUppercaseInput, this.minLowercaseInput, this.minNumbersInput, this.minSymbolsInput
-        ];
+        const allInputs = [this.lengthInput, this.minUppercaseInput, this.minLowercaseInput, this.minNumbersInput, this.minSymbolsInput];
+        const allCheckboxes = [this.uppercaseCheckbox, this.lowercaseCheckbox, this.numbersCheckbox, this.symbolsCheckbox];
 
-        const allCheckboxes = [
-            this.uppercaseCheckbox, this.lowercaseCheckbox, this.numbersCheckbox, this.symbolsCheckbox
-        ];
+        allCheckboxes.forEach(cb => cb && cb.addEventListener('change', () => this.handleCheckboxChange()));
 
-        // Event listeners for checkboxes
-        allCheckboxes.forEach(checkbox => {
-            if (checkbox) {
-                checkbox.addEventListener('change', () => this.handleCheckboxChange());
-            }
-        });
-
-        // Event listeners for total length input
-        if (this.lengthInput) {
-            this.lengthInput.addEventListener('input', () => this.updateValidationState());
-            this.lengthInput.addEventListener('change', () => { // On blur/enter for length
-                let lenVal = parseInt(this.lengthInput.value);
-                if (isNaN(lenVal) || lenVal < this.minLength) this.lengthInput.value = this.minLength;
-                if (lenVal > this.maxLength) this.lengthInput.value = this.maxLength;
-                this.updateValidationState();
-            });
-        }
-
-        // Event listeners for min-number inputs
-        allMinInputs.forEach(input => {
+        allInputs.forEach(input => {
             if (input) {
-                input.addEventListener('input', () => {
-                    // Allow typing, updateValidationState will show errors if current input is invalid
+                input.addEventListener('input', () => this.updateValidationState());
+                input.addEventListener('change', (e) => { // Use 'change' for blur/enter final correction
+                    const target = e.currentTarget;
+                    if (target.id === 'pg-length') {
+                        let lenVal = parseInt(target.value);
+                        if (isNaN(lenVal) || lenVal < this.minLength) target.value = this.minLength;
+                        if (lenVal > this.maxLength) target.value = this.maxLength;
+                    } else if (!target.disabled) {
+                        const valueStr = target.value.trim();
+                        const valInt = parseInt(target.value);
+                        if (valueStr === '' || isNaN(valInt) || valInt < 1) {
+                            target.value = "1";
+                        }
+                    }
                     this.updateValidationState();
                 });
-                input.addEventListener('change', () => { // On blur/enter for min inputs
-                    if (!input.disabled) { // Only validate/correct if the corresponding checkbox is checked
-                        const valueStr = input.value.trim();
-                        const valInt = parseInt(input.value);
-                        if (valueStr === '' || isNaN(valInt) || valInt < 1) {
-                            input.value = "1";
-                        }
-                        // No upper cap here, sum check in updateValidationState handles it
-                    }
-                    this.updateValidationState(); // Update based on potentially corrected value
-                });
             }
         });
 
-        this.handleCheckboxChange(); // Initial setup for min input disabled states and values
-        // updateValidationState is called by handleCheckboxChange
+        this.handleCheckboxChange();
 
         if (this.passwordPlaceholderSpan && this.passwordDisplay) {
             this.passwordDisplay.innerHTML = '';
