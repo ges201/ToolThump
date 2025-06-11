@@ -6,20 +6,25 @@
 
   <url>
     <loc>https://ges201.github.io/ToolThump/</loc>
-    <lastmod>2024-06-02T15:00:00+00:00</lastmod>
+    <lastmod>2025-06-11T12:00:00+00:00</lastmod>
   </url>
   <url>
-    <loc>https://ges201.github.io/ToolThump/tools/security/html/password-generator.html</loc>
-    <lastmod>2024-06-02T15:00:00+00:00</lastmod>
+    <loc>https://ges201.github.io/ToolThump/tools/images/image-converter/image-converter.html</loc>
+    <lastmod>2025-06-11T12:00:00+00:00</lastmod>
   </url>
   <url>
-    <loc>https://ges201.github.io/ToolThump/tools/security/html/password-strength-checker.html</loc>
-    <lastmod>2024-06-02T15:00:00+00:00</lastmod>
+    <loc>
+      https://ges201.github.io/ToolThump/tools/security/password-generator/password-generator.html</loc>
+    <lastmod>2025-06-11T12:00:00+00:00</lastmod>
   </url>
   <url>
-    <loc>https://ges201.github.io/ToolThump/tools/text/html/text-comparison.html</loc>
-    <lastmod>2024-06-02T15:00:00+00:00</lastmod>
+    <loc>
+      https://ges201.github.io/ToolThump/tools/security/password-strength-checker/password-strength-checker.html</loc>
+    <lastmod>2025-06-11T12:00:00+00:00</lastmod>
   </url>
-  <!-- Add more <url> blocks here for future tools -->
+  <url>
+    <loc>https://ges201.github.io/ToolThump/tools/text/text-comparison/text-comparison.html</loc>
+    <lastmod>2025-06-11T12:00:00+00:00</lastmod>
+  </url>
 
 </urlset>
