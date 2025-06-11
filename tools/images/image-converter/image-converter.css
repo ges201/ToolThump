@@ -71,46 +71,36 @@
     margin-top: var(--spacing-xs);
 }
 
-/* Note for folder selection on mobile - styled as a warning */
+/* MODIFIED: Note for folder selection, now themed for dark mode */
 .ic-folder-note {
     display: flex;
     align-items: flex-start;
-    /* Align icon to the top of the text block */
-    background-color: var(--warning-bg-color, #FFFBEB);
-    /* e.g., Amber 50 */
-    color: var(--warning-text-color, #78350F);
-    /* e.g., Amber 800 for dark yellow text */
-    border: 1px solid var(--warning-border-color, #FDE68A);
-    /* e.g., Amber 300 */
+    background-color: rgba(255, 193, 7, 0.1);
+    /* Subtle background from --warning-color */
+    color: var(--warning-color);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    /* Soft border from --warning-color */
     border-left-width: 4px;
-    border-left-color: var(--warning-accent-color, #F59E0B);
-    /* e.g., Amber 500 for accent */
+    border-left-color: var(--warning-color);
     padding: var(--spacing-sm);
     border-radius: var(--border-radius-sm);
     margin-top: var(--spacing-sm);
-    /* Space above the note */
     font-size: 1em;
-    /* Relative to parent .ic-input-hint's font size (0.85em of base) */
     line-height: 1.5;
 }
 
 .ic-folder-note-icon {
-    fill: var(--warning-accent-color, #F59E0B);
-    /* Use accent color for the icon */
+    fill: var(--warning-color);
+    /* Match the accent color */
     width: 1.125em;
-    /* Approx 15-18px, relative to note's font size */
     height: 1.125em;
     margin-right: var(--spacing-sm);
-    /* Space between icon and text */
     flex-shrink: 0;
-    /* Prevent icon from shrinking if text is long */
     margin-top: 0.1em;
-    /* Fine-tune vertical alignment with the first line of text */
 }
 
 .ic-folder-note-text {
     flex-grow: 1;
-    /* Allow text to take available space */
 }
 
 
@@ -160,7 +150,8 @@
     font: inherit;
     box-shadow: var(--shadow-xs);
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23555555%22/%3E%3C/svg%3E');
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23a0a4c0%22/%3E%3C/svg%3E');
+    /* Changed arrow fill to secondary text color */
     background-repeat: no-repeat;
     background-position: right var(--spacing-md) center;
     background-size: 12px;
@@ -293,22 +284,26 @@
     transition: background-color 0.3s ease, border-left-color 0.3s ease, color 0.3s ease;
 }
 
+/* MODIFIED: Status colors are now themed for dark mode */
 .ic-status-area.ic-status-info {
-    background-color: var(--info-color-light, #e2f3f5);
+    background-color: rgba(23, 162, 184, 0.15);
+    /* background from --info-color */
     border-left-color: var(--info-color);
-    color: var(--info-color-dark, #0c5460);
+    color: var(--info-color);
 }
 
 .ic-status-area.ic-status-success {
-    background-color: var(--success-color-light, #d1e7dd);
+    background-color: rgba(40, 167, 69, 0.15);
+    /* background from --success-color */
     border-left-color: var(--success-color);
-    color: var(--success-color-dark, #0f5132);
+    color: var(--success-color);
 }
 
 .ic-status-area.ic-status-error {
-    background-color: var(--error-color-light, #f8d7da);
+    background-color: rgba(229, 75, 75, 0.15);
+    /* background from --error-color */
     border-left-color: var(--error-color);
-    color: var(--error-color-dark, #721c24);
+    color: var(--error-color);
 }
 
 /* Responsive adjustments for Image Converter */
