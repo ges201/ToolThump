@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator - ToolThump</title>
+    <meta name="description"
+        content="Generate free QR codes for text, URLs, and Wi-Fi networks. A simple, fast, and client-side tool for all your QR code needs.">
+
+    <!-- Relative paths to global CSS -->
+    <link rel="stylesheet" href="../../../css/theme.css">
+    <link rel="stylesheet" href="../../../css/base.css">
+    <link rel="stylesheet" href="../../../css/layout.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    <link rel="stylesheet" href="../../../css/responsive.css">
+
+    <!-- Tool-specific CSS -->
+    <link rel="stylesheet" href="qr-code-generator.css">
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="../../../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../../favicon-16x16.png">
+    <link rel="manifest" href="../../../site.webmanifest">
+</head>
+
+<body>
+    <header data-include="main-header"></header>
+
+    <div class="content-wrapper">
+        <main id="tool-container">
+            <section id="qr-generator" class="tool-content active">
+                <h1>QR Code Generator</h1>
+
+                <div class="qrg-container">
+                    <!-- Input Controls -->
+                    <div class="qrg-controls">
+                        <div class="qrg-tabs" role="tablist" aria-label="QR Code Content Type">
+                            <!-- MODIFIED: Added btn-secondary class for consistency -->
+                            <button id="tab-text" role="tab" aria-selected="true" aria-controls="panel-text"
+                                class="qrg-tab-button btn-secondary">Text / URL</button>
+                            <button id="tab-wifi" role="tab" aria-selected="false" aria-controls="panel-wifi"
+                                class="qrg-tab-button btn-secondary">Wi-Fi</button>
+                        </div>
+
+                        <!-- Text/URL Input Panel -->
+                        <div id="panel-text" class="qrg-panel active" role="tabpanel" aria-labelledby="tab-text">
+                            <div class="qrg-input-group">
+                                <label for="qrg-text-input">Enter Text or URL</label>
+                                <textarea id="qrg-text-input" rows="4"
+                                    placeholder="e.g., https://ges201.github.io/ToolThump/"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Wi-Fi Input Panel -->
+                        <div id="panel-wifi" class="qrg-panel" role="tabpanel" aria-labelledby="tab-wifi">
+                            <div class="qrg-input-group">
+                                <label for="qrg-wifi-ssid">Network Name (SSID)</label>
+                                <input type="text" id="qrg-wifi-ssid" placeholder="My Home Wi-Fi">
+                            </div>
+                            <div class="qrg-input-group">
+                                <label for="qrg-wifi-password">Password</label>
+                                <input type="password" id="qrg-wifi-password"
+                                    placeholder="Enter password (case-sensitive)">
+                            </div>
+                            <div class="qrg-input-group">
+                                <label for="qrg-wifi-encryption">Encryption</label>
+                                <select id="qrg-wifi-encryption">
+                                    <option value="WPA" selected>WPA/WPA2</option>
+                                    <option value="WEP">WEP</option>
+                                    <option value="nopass">None (Open Network)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Generate Button -->
+                        <div class="qrg-button-container">
+                            <!-- MODIFIED: Added btn-secondary class -->
+                            <button id="qrg-generate-btn" class="btn-secondary">Generate QR Code</button>
+                        </div>
+                    </div>
+
+                    <!-- Output Area -->
+                    <div class="qrg-output-area">
+                        <div id="qrg-qrcode-container" aria-live="polite">
+                            <p class="qrg-placeholder">Your QR code will appear here</p>
+                        </div>
+                        <!-- MODIFIED: Added btn-secondary class -->
+                        <button id="qrg-download-btn" class="btn-secondary" style="display: none;">Download PNG</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>© <span id="current-year"></span> ToolThump. All rights reserved.</p>
+    </footer>
+
+    <!-- QR Code Library (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <!-- Main site script -->
+    <script src="../../../main.js"></script>
+    <!-- Tool-specific script -->
+    <script src="qrCodeGenerator.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+/* Container for the whole tool */
+.qrg-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+}
+
+@media (min-width: 900px) {
+    .qrg-container {
+        grid-template-columns: 1fr 280px;
+        align-items: flex-start;
+    }
+}
+
+/* Tab container styling */
+.qrg-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    /* Allow buttons to wrap on small screens */
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+/*
+ * The tab buttons use the .btn-secondary class for their base and default hover styles.
+ * This rule applies to the ACTIVE tab to make it look like the hover state, but flat.
+*/
+.qrg-tab-button.active,
+.qrg-tab-button.active:hover,
+.qrg-tab-button.active:focus {
+    /* Use the same colors as the .btn-secondary:hover state */
+    background-color: var(--accent-color-bg-hover);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+
+    /* Explicitly remove transform and shadow to keep it flat */
+    transform: none;
+    box-shadow: none;
+}
+
+
+/* Panels holding the inputs for each type */
+.qrg-panel {
+    display: none;
+}
+
+.qrg-panel.active {
+    display: block;
+}
+
+.qrg-input-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.qrg-input-group label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+}
+
+.qrg-input-group textarea,
+.qrg-input-group input,
+.qrg-input-group select {
+    width: 100%;
+}
+
+/* Container for the generate button */
+.qrg-button-container {
+    margin-top: var(--spacing-lg);
+}
+
+/* Let all buttons fill their container */
+#qrg-generate-btn,
+#qrg-download-btn {
+    width: 100%;
+}
+
+/* Output area for the QR code */
+.qrg-output-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
+    background-color: var(--bg-deep-dark);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+}
+
+#qrg-qrcode-container {
+    width: 256px;
+    height: 256px;
+    background-color: white;
+    /* QR codes need a light background */
+    border-radius: var(--border-radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+#qrg-qrcode-container canvas,
+#qrg-qrcode-container img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--border-radius-sm);
+}
+
+.qrg-placeholder {
+    color: var(--text-secondary-color);
+    text-align: center;
+    font-style: italic;
+    background-color: transparent;
+}

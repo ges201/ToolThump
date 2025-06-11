@@ -1,10 +1,11 @@
 <div class="header-brand">
-    <a href="/ToolThump/" class="logo-link"> <!-- Site root -->
-        <img src="/ToolThump/ToolThump.png" alt="ToolThump Logo" id="header-logo"> <!-- Site root asset -->
+    <a href="/ToolThump/" class="logo-link">
+        <img src="/ToolThump/ToolThump.png" alt="ToolThump Logo" id="header-logo">
     </a>
 </div>
 <nav id="top-navigation">
     <ul class="category-list">
+        <!-- Security Tools -->
         <li class="category-item">
             <button class="category-button btn-secondary" aria-haspopup="true" aria-expanded="false"
                 aria-controls="security-tools">
@@ -16,25 +17,16 @@
                 </svg>
             </button>
             <ul class="dropdown-menu" id="security-tools" role="menu">
-                <li role="none">
-                    <!-- MODIFIED: Corrected href to match new file structure -->
-                    <a href="/ToolThump/tools/security/password-generator/password-generator.html" role="menuitem"
-                        class="tool-link">
-                        <img src="/ToolThump/icons/password-generator-color.png" alt="Password Generator Tool"
-                            class="tool-icon">
-                        Password Generator
-                    </a>
-                </li>
-                <li role="none">
-                    <a href="/ToolThump/tools/security/password-strength-checker/password-strength-checker.html"
-                        role="menuitem" class="tool-link">
-                        <img src="/ToolThump/icons/password-strength-color.png" alt="Password Strength Checker Tool"
-                            class="tool-icon">
-                        Password Strength Checker
-                    </a>
-                </li>
+                <li role="none"><a href="/ToolThump/tools/security/password-generator/password-generator.html"
+                        role="menuitem" class="tool-link"><img src="/ToolThump/icons/password-generator-color.png"
+                            alt="Password Generator Tool" class="tool-icon">Password Generator</a></li>
+                <li role="none"><a
+                        href="/ToolThump/tools/security/password-strength-checker/password-strength-checker.html"
+                        role="menuitem" class="tool-link"><img src="/ToolThump/icons/password-strength-color.png"
+                            alt="Password Strength Checker Tool" class="tool-icon">Password Strength Checker</a></li>
             </ul>
         </li>
+        <!-- Text Tools -->
         <li class="category-item">
             <button class="category-button btn-secondary" aria-haspopup="true" aria-expanded="false"
                 aria-controls="text-tools">
@@ -46,16 +38,12 @@
                 </svg>
             </button>
             <ul class="dropdown-menu" id="text-tools" role="menu">
-                <li role="none">
-                    <a href="/ToolThump/tools/text/text-comparison/text-comparison.html" role="menuitem"
-                        class="tool-link">
-                        <img src="/ToolThump/icons/text-comparison-color.png" alt="Text Comparison" class="tool-icon">
-                        Text Comparison
-                    </a>
-                </li>
+                <li role="none"><a href="/ToolThump/tools/text/text-comparison/text-comparison.html" role="menuitem"
+                        class="tool-link"><img src="/ToolThump/icons/text-comparison-color.png" alt="Text Comparison"
+                            class="tool-icon">Text Comparison</a></li>
             </ul>
         </li>
-        <!-- New Image Tools Section -->
+        <!-- Image Tools -->
         <li class="category-item">
             <button class="category-button btn-secondary" aria-haspopup="true" aria-expanded="false"
                 aria-controls="image-tools">
@@ -67,15 +55,26 @@
                 </svg>
             </button>
             <ul class="dropdown-menu" id="image-tools" role="menu">
-                <li role="none">
-                    <a href="/ToolThump/tools/images/image-converter/image-converter.html" role="menuitem"
-                        class="tool-link">
-                        <img src="/ToolThump/icons/image-converter-color.png" alt="Image Converter Tool"
-                            class="tool-icon">
-                        Image Converter
-                    </a>
-                </li>
-                <!-- Add other image tools here in the future -->
+                <li role="none"><a href="/ToolThump/tools/images/image-converter/image-converter.html" role="menuitem"
+                        class="tool-link"><img src="/ToolThump/icons/image-converter-color.png"
+                            alt="Image Converter Tool" class="tool-icon">Image Converter</a></li>
+            </ul>
+        </li>
+        <!-- Data Tools (Newly Added) -->
+        <li class="category-item">
+            <button class="category-button btn-secondary" aria-haspopup="true" aria-expanded="false"
+                aria-controls="data-tools">
+                Data Tools
+                <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16"
+                    height="16" fill="currentColor">
+                    <path d="M7 10l5 5 5-5H7z" />
+                    <path d="M0 0h24v24H0z" fill="none" />
+                </svg>
+            </button>
+            <ul class="dropdown-menu" id="data-tools" role="menu">
+                <li role="none"><a href="/ToolThump/tools/data/qr-code-generator/qr-code-generator.html" role="menuitem"
+                        class="tool-link"><img src="/ToolThump/icons/qr-code-color.png" alt="QR Code Generator"
+                            class="tool-icon">QR Code Generator</a></li>
             </ul>
         </li>
     </ul>
