@@ -82,10 +82,10 @@ main#tool-container {
 /* === Homepage Specific Layout === */
 .home-hero {
     text-align: center;
-    padding: 0 0 var(--spacing-md);
-    /* MODIFIED: Removed top padding and reduced bottom padding */
-    margin-bottom: var(--spacing-lg);
-    /* MODIFIED: Reduced bottom margin */
+    /* MODIFIED: Increased vertical padding for the search bar */
+    padding: var(--spacing-xl) 0;
+    margin-bottom: var(--spacing-xl);
+    /* Increased bottom margin */
     border-bottom: 1px solid var(--border-color);
 }
 

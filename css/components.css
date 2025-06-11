@@ -218,3 +218,77 @@ input[type="text"]:disabled {
     color: var(--text-secondary-color);
     cursor: not-allowed;
 }
+
+/* === Homepage Search Bar === */
+.search-prompt {
+    font-family: var(--font-family-pixel);
+    font-size: 1.1rem;
+    text-transform: lowercase;
+    color: var(--text-secondary-color);
+    margin-bottom: var(--spacing-lg);
+    letter-spacing: 1px;
+}
+
+.search-bar-container {
+    display: flex;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    /* To ensure child border-radii are contained */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-bar-container:focus-within {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--focus-outline-color);
+}
+
+#home-search-input {
+    flex-grow: 1;
+    border: none;
+    font-size: 1.1rem;
+    padding: var(--spacing-md);
+    background-color: var(--input-bg-color);
+    color: var(--text-primary-color);
+    border-radius: 0;
+    /* Remove individual radius */
+    min-width: 0;
+    /* Fix for flexbox shrinking */
+}
+
+#home-search-input:focus {
+    outline: none;
+    /* Remove default outline, as the container has one */
+    box-shadow: none;
+}
+
+#home-search-button {
+    flex-shrink: 0;
+    border: none;
+    background-color: var(--accent-color);
+    color: var(--text-on-accent-bg);
+    padding: var(--spacing-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+    border-radius: 0;
+    /* Remove individual radius */
+    /* Remove hover effects from base.css */
+    transform: none;
+    box-shadow: none;
+}
+
+#home-search-button:hover,
+#home-search-button:focus {
+    background-color: var(--accent-color-dark);
+    transform: none;
+    box-shadow: none;
+    color: var(--text-on-accent-bg);
+    border-color: transparent;
+    /* Override base styles */
+}
