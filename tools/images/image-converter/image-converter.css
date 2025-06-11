@@ -121,26 +121,6 @@
     gap: var(--spacing-sm);
 }
 
-/* === MODIFIED: Unified Button Styles === */
-/* Base style for all buttons in this tool, matching header buttons */
-.ic-button {
-    font-weight: 600;
-    color: var(--text-secondary-color);
-    padding: var(--spacing-sm) var(--spacing-md);
-    /* Default padding */
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--border-color);
-    background-color: var(--surface-bg-color);
-    /* Transitions are inherited from base.css */
-}
-
-/* Hover/focus state to match header buttons. */
-/* base.css handles transform, shadow, text/border color change. */
-.ic-button:hover:not(:disabled),
-.ic-button:focus:not(:disabled) {
-    background-color: var(--accent-color-bg-hover);
-}
-
 /* Modifier for the file select button */
 .ic-button.ic-file-select-btn {
     font-size: 0.9em;
@@ -217,7 +197,7 @@
     border: 1px dashed var(--border-color-strong);
     padding: var(--spacing-md);
     border-radius: var(--border-radius-sm);
-    background-color: var(--neutral-very-light);
+    background-color: var(--bg-deep-dark);
     min-height: 150px;
     display: flex;
     flex-direction: column;
