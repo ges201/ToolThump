@@ -24,7 +24,6 @@ header {
 
 #header-logo {
     height: 60px;
-    /* Reduced for a tighter header */
     width: auto;
     display: block;
 }
@@ -71,9 +70,7 @@ main#tool-container {
 }
 
 .tool-content h2 {
-    /* Using new h2 style from base.css */
     color: var(--accent-color);
-    /* Makes tool titles pop */
     margin-bottom: var(--spacing-lg);
     padding-bottom: var(--spacing-md);
     border-bottom: 1px solid var(--border-color);
@@ -82,46 +79,52 @@ main#tool-container {
 /* === Homepage Specific Layout === */
 .home-hero {
     text-align: center;
-    /* MODIFIED: Increased vertical padding for the search bar */
     padding: var(--spacing-xl) 0;
-    margin-bottom: var(--spacing-xl);
-    /* Increased bottom margin */
+    /* MODIFIED: Increased bottom margin for more separation */
+    margin-bottom: calc(var(--spacing-xl) * 2.5);
     border-bottom: 1px solid var(--border-color);
 }
 
-/* ADDED: Override default h1 margin specifically for the hero section */
-.home-hero h1 {
-    margin-bottom: var(--spacing-sm);
-}
-
-.home-hero .tagline {
-    font-size: 1.25rem;
-    color: var(--text-secondary-color);
-    /* MODIFIED: Reduced top/bottom margin to bring elements closer */
-    margin: 0 0 var(--spacing-md);
-    font-weight: 400;
-}
-
-.home-hero .description {
-    max-width: 70ch;
-    margin: 0 auto;
-    color: var(--text-primary-color);
-}
-
 .home-section {
-    margin-bottom: var(--spacing-xl);
+    /* MODIFIED: Increased bottom margin for more separation */
+    margin-bottom: calc(var(--spacing-xl) * 2.5);
 }
 
-/* Overriding general .tool-content h2 for homepage sections */
+/* Styles for "What is ToolThump" and "Why Choose..." sections */
 .home-section h2 {
     text-align: center;
-    font-size: 1.8rem;
+    font-size: 2rem;
+    /* MODIFIED: Slightly larger section headings */
     color: var(--text-heading-color);
     border-bottom: none;
     padding-bottom: 0;
     margin-bottom: var(--spacing-xl);
 }
 
+/* ADDED: "What is ToolThump?" Section Specifics */
+.what-is-section {
+    text-align: center;
+    max-width: 80ch;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.what-is-section .tagline {
+    font-size: 1.4rem;
+    /* MODIFIED: Larger font size */
+    color: var(--text-secondary-color);
+    margin: 0 auto var(--spacing-lg);
+    /* MODIFIED: More bottom margin */
+    font-weight: 400;
+}
+
+.what-is-section .description {
+    font-size: 1.15rem;
+    /* MODIFIED: Slightly larger font size */
+    line-height: 1.7;
+    color: var(--text-primary-color);
+    margin: 0 auto;
+}
 
 /* === Footer === */
 footer {

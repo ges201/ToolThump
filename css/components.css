@@ -8,7 +8,6 @@
     position: relative;
 }
 
-/* ADDED: A reusable class for secondary buttons found across the site */
 .btn-secondary {
     font-weight: 600;
     color: var(--text-secondary-color);
@@ -32,7 +31,6 @@
     outline: none;
 }
 
-/* MODIFIED: Simplified to act as a selector hook; visual style now from .btn-secondary */
 .category-button {
     gap: var(--spacing-xs);
 }
@@ -62,7 +60,6 @@
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-soft-md);
-    /* Softer shadow for depth */
     min-width: 250px;
     z-index: 101;
     padding: var(--spacing-sm) 0;
@@ -126,7 +123,6 @@
 
 .feature-card {
     background-color: var(--bg-deep-dark);
-    /* Slightly darker to stand out */
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-lg);
@@ -157,46 +153,6 @@
     font-size: 0.95rem;
 }
 
-/* === Homepage Category Preview === */
-.category-preview-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-xl);
-}
-
-.category-preview-card {
-    background-color: var(--surface-bg-color);
-    border: 2px solid var(--border-color);
-    border-radius: var(--border-radius-md);
-    padding: var(--spacing-lg);
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-}
-
-.category-preview-card:hover {
-    border-color: var(--accent-color);
-    background-color: var(--accent-color-bg-hover);
-}
-
-.category-preview-card h4 {
-    color: var(--accent-color);
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-bottom: var(--spacing-sm);
-}
-
-.category-preview-card p {
-    color: var(--text-secondary-color);
-    font-size: 0.9rem;
-}
-
-.explore-prompt {
-    text-align: center;
-    color: var(--text-secondary-color);
-    font-style: italic;
-}
-
-
 /* === General Form & UI Element Styling === */
 .tool-placeholder div:not(.pg-checkbox-group):not(.pg-min-input-group):not(.pg-password-wrapper):not(.psc-strength-meter) {
     margin-bottom: var(--spacing-lg);
@@ -211,7 +167,6 @@
     color: var(--text-primary-color);
 }
 
-/* Base input styles are now in base.css for consistency */
 input[type="number"]:disabled,
 input[type="text"]:disabled {
     background-color: var(--disabled-bg-color);
@@ -222,11 +177,14 @@ input[type="text"]:disabled {
 /* === Homepage Search Bar === */
 .search-prompt {
     font-family: var(--font-family-pixel);
-    font-size: 1.1rem;
-    text-transform: lowercase;
-    color: var(--text-secondary-color);
-    margin-bottom: var(--spacing-lg);
-    letter-spacing: 1px;
+    font-size: 1.5rem;
+    /* MODIFIED: Increased font size */
+    color: var(--text-heading-color);
+    /* MODIFIED: Brighter color for more impact */
+    margin-bottom: var(--spacing-xl);
+    /* MODIFIED: More space above search bar */
+    letter-spacing: 1.5px;
+    /* MODIFIED: Slightly more spacing */
 }
 
 .search-bar-container {
@@ -237,7 +195,6 @@ input[type="text"]:disabled {
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius-md);
     overflow: hidden;
-    /* To ensure child border-radii are contained */
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -254,14 +211,11 @@ input[type="text"]:disabled {
     background-color: var(--input-bg-color);
     color: var(--text-primary-color);
     border-radius: 0;
-    /* Remove individual radius */
     min-width: 0;
-    /* Fix for flexbox shrinking */
 }
 
 #home-search-input:focus {
     outline: none;
-    /* Remove default outline, as the container has one */
     box-shadow: none;
 }
 
@@ -277,8 +231,6 @@ input[type="text"]:disabled {
     justify-content: center;
     transition: background-color 0.2s ease;
     border-radius: 0;
-    /* Remove individual radius */
-    /* Remove hover effects from base.css */
     transform: none;
     box-shadow: none;
 }
@@ -290,5 +242,4 @@ input[type="text"]:disabled {
     box-shadow: none;
     color: var(--text-on-accent-bg);
     border-color: transparent;
-    /* Override base styles */
 }
