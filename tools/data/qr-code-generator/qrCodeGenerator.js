@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- State ---
         state: {
             activeTab: 'text',
-            qrCodeInstance: null,
+            // REMOVED: qrCodeInstance is no longer stored in state.
         },
 
         // --- Initialization ---
@@ -36,8 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.tabText.addEventListener('click', () => this.setActiveTab('text'));
             elements.tabWifi.addEventListener('click', () => this.setActiveTab('wifi'));
             elements.generateBtn.addEventListener('click', () => this.generateQRCode());
-
-            // MODIFIED: Event listener is on a <button>, not <a>
             elements.downloadBtn.addEventListener('click', () => this.downloadQRCode());
 
             elements.wifiPasswordInput.addEventListener('dblclick', (e) => {
@@ -56,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const { tabText, tabWifi, panelText, panelWifi } = this.elements;
             const isTextTab = this.state.activeTab === 'text';
 
-            // JS now toggles the 'active' class for styling
             tabText.classList.toggle('active', isTextTab);
             tabText.setAttribute('aria-selected', isTextTab);
             panelText.classList.toggle('active', isTextTab);
@@ -78,39 +75,48 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         },
 
+        /**
+         * MODIFIED: This function is completely rewritten to be stateless.
+         * It clears the container and creates a new QRCode instance on every call,
+         * which resolves the bug where subsequent generations failed.
+         */
         generateQRCode() {
             const data = this.getQRCodeData();
             const { qrCodeContainer, downloadBtn, placeholderText } = this.elements;
 
+            // Clear previous QR code or placeholder text
             qrCodeContainer.innerHTML = '';
 
             if (!data) {
+                // If there's no data, restore the placeholder and hide the download button.
                 qrCodeContainer.appendChild(placeholderText);
                 downloadBtn.style.display = 'none';
                 return;
             }
 
-            if (!this.state.qrCodeInstance) {
-                this.state.qrCodeInstance = new QRCode(qrCodeContainer, {
+            // If there is data, generate a new QR Code.
+            try {
+                // By creating a new QRCode instance each time, we avoid state issues.
+                // The library will append the QR code (as a canvas or img) to the container.
+                new QRCode(qrCodeContainer, {
+                    text: data,
                     width: 224,
                     height: 224,
                     colorDark: "#1a1c2c",
                     colorLight: "#ffffff",
                     correctLevel: QRCode.CorrectLevel.H
                 });
-            }
 
-            try {
-                this.state.qrCodeInstance.makeCode(data);
-                downloadBtn.style.display = 'block'; // Use block for button
+                // Show the download button upon successful generation.
+                downloadBtn.style.display = 'block';
             } catch (error) {
+                // Handle cases where the input data is too long for a QR code.
                 console.error("QR Code generation failed:", error);
                 qrCodeContainer.innerHTML = '<p class="qrg-placeholder" style="color: var(--error-color);">Error: Input too long or invalid.</p>';
                 downloadBtn.style.display = 'none';
             }
         },
 
-        // MODIFIED: This function now programmatically creates a link to download the canvas content.
         downloadQRCode() {
             const canvas = this.elements.qrCodeContainer.querySelector('canvas');
             if (canvas) {
