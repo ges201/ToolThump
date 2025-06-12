@@ -22,12 +22,8 @@
 
 .tool-description {
     font-size: 1rem;
-    color: var(--text-secondary-color);
+    color: var(--text-primary-color);
     margin-bottom: var(--spacing-lg);
-    background-color: var(--surface-bg-color);
-    padding: var(--spacing-md);
-    border-radius: var(--border-radius-sm);
-    border-left: 4px solid var(--accent-color);
 }
 
 
@@ -80,8 +76,6 @@
     color: var(--warning-color);
     border: 1px solid rgba(255, 193, 7, 0.3);
     /* Soft border from --warning-color */
-    border-left-width: 4px;
-    border-left-color: var(--warning-color);
     padding: var(--spacing-sm);
     border-radius: var(--border-radius-sm);
     margin-top: var(--spacing-sm);
@@ -226,7 +220,7 @@
     background-color: var(--accent-color-light-alpha, rgba(0, 123, 255, 0.1));
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--border-radius-sm);
-    border-left: 4px solid var(--accent-color);
+    border: 1px solid var(--accent-color);
     min-height: 1.2em;
     font-weight: 500;
 }
@@ -279,30 +273,29 @@
     font-size: 0.95em;
     padding: var(--spacing-md);
     border-radius: var(--border-radius-sm);
-    border-left-width: 4px;
-    border-left-style: solid;
-    transition: background-color 0.3s ease, border-left-color 0.3s ease, color 0.3s ease;
+    border: 1px solid transparent;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 /* MODIFIED: Status colors are now themed for dark mode */
 .ic-status-area.ic-status-info {
     background-color: rgba(23, 162, 184, 0.15);
     /* background from --info-color */
-    border-left-color: var(--info-color);
+    border-color: var(--info-color);
     color: var(--info-color);
 }
 
 .ic-status-area.ic-status-success {
     background-color: rgba(40, 167, 69, 0.15);
     /* background from --success-color */
-    border-left-color: var(--success-color);
+    border-color: var(--success-color);
     color: var(--success-color);
 }
 
 .ic-status-area.ic-status-error {
     background-color: rgba(229, 75, 75, 0.15);
     /* background from --error-color */
-    border-left-color: var(--error-color);
+    border-color: var(--error-color);
     color: var(--error-color);
 }
 
