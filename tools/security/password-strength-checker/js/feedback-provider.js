@@ -167,26 +167,41 @@ export function deductForSingleType(properties, feedback) {
 
 export function deductForRepetitions(password, positiveScore, feedback) {
     let deduction = 0;
+    const foundPatterns = new Set();
     const lowerPassword = password.toLowerCase();
-    for (let i = 0; i < lowerPassword.length / 2; i++) {
-        const sub = lowerPassword.substring(i, i + Math.floor(lowerPassword.length / 3));
-        if (sub.length < 2) continue;
-        const occurrences = (lowerPassword.match(new RegExp(sub.replace(/[^a-zA-Z0-9]/g, '\\$&'), 'g')) || []).length;
-        if (occurrences > 1) {
-            deduction = Math.min(occurrences - 1, 3);
-            if (deduction > 0) {
-                feedback.push({ text: `Repetitive patterns found (e.g., "${sub}..."). Weakens password.`, valid: false });
-                return deduction;
+
+    // Only check for repetitions in passwords of a certain length
+    if (lowerPassword.length < 6) {
+        return 0;
+    }
+
+    // Find repeated, non-overlapping patterns of length 3 and 4
+    for (let len = 3; len <= 4; len++) {
+        for (let i = 0; i <= lowerPassword.length - (len * 2); i++) {
+            const sub = lowerPassword.substring(i, i + len);
+            if (lowerPassword.substring(i + len).includes(sub)) {
+                foundPatterns.add(sub);
             }
         }
     }
+
+    if (foundPatterns.size > 0) {
+        deduction = Math.min(foundPatterns.size, 3);
+        const patternList = Array.from(foundPatterns).map(p => `"${p}"`).join(', ');
+        feedback.push({
+            text: `Contains repetitive patterns (${patternList}). Weakens password.`,
+            valid: false
+        });
+    }
+
     return deduction;
 }
 
 export function deductForSequences(password, positiveScore, feedback) {
     let deduction = 0;
-    let sequentialCharsCount = 0;
-    const sequences = ["abcdefghijklmnopqrstuvwxyz", "0123456789", "qwertyuiop", "asdfghjkl"];
+    const foundSequences = new Set();
+    // Added 'zxcvbnm' for consistency with entropy calculator
+    const sequences = ["abcdefghijklmnopqrstuvwxyz", "0123456789", "qwertyuiop", "asdfghjkl", "zxcvbnm"];
     const lowerPassword = password.toLowerCase();
 
     if (password.length > 2) {
@@ -194,12 +209,14 @@ export function deductForSequences(password, positiveScore, feedback) {
             let sub3 = lowerPassword.substring(i, i + 3);
             for (const seq of sequences) {
                 if (seq.includes(sub3) || seq.split("").reverse().join("").includes(sub3)) {
-                    sequentialCharsCount++;
-                    break;
+                    foundSequences.add(sub3);
+                    break; // Found in a sequence, move to next char in password
                 }
             }
         }
     }
+
+    const sequentialCharsCount = foundSequences.size;
 
     if (sequentialCharsCount > 0) {
         if (positiveScore >= SUPER_STRONG_POSITIVE_THRESHOLD) {
@@ -210,7 +227,8 @@ export function deductForSequences(password, positiveScore, feedback) {
             deduction = Math.min(sequentialCharsCount, 3);
         }
         if (deduction > 0) {
-            feedback.push({ text: `Common keyboard sequences found (e.g., "abc"). Weakens password.`, valid: false });
+            const sequenceList = Array.from(foundSequences).map(s => `"${s}"`).join(', ');
+            feedback.push({ text: `Contains keyboard sequences (${sequenceList}). Weakens password.`, valid: false });
         }
     }
     return deduction;
