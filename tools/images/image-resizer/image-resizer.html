@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer & Cropper - ToolThump</title>
+    <meta name="description"
+        content="Easily resize and crop your images online. Adjust dimensions, aspect ratios, and download your processed images instantly. Client-side processing for privacy.">
+    <link rel="canonical" href="https://ges201.github.io/ToolThump/tools/images/image-resizer/image-resizer.html">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ges201.github.io/ToolThump/tools/images/image-resizer/image-resizer.html">
+    <meta property="og:title" content="Image Resizer & Cropper - ToolThump">
+    <meta property="og:description"
+        content="Resize and crop images with various options. All processing is done in your browser.">
+    <meta property="og:image" content="https://ges201.github.io/ToolThump/ToolThump.png">
+    <meta property="og:site_name" content="ToolThump" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url"
+        content="https://ges201.github.io/ToolThump/tools/images/image-resizer/image-resizer.html">
+    <meta property="twitter:title" content="Image Resizer & Cropper - ToolThump">
+    <meta property="twitter:description"
+        content="Resize and crop images with various options. All processing is done in your browser.">
+    <meta property="twitter:image" content="https://ges201.github.io/ToolThump/ToolThump.png">
+
+    <!-- Common Stylesheets -->
+    <link rel="stylesheet" href="../../../css/theme.css">
+    <link rel="stylesheet" href="../../../css/base.css">
+    <link rel="stylesheet" href="../../../css/layout.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    <link rel="stylesheet" href="../../../css/responsive.css">
+
+    <!-- Cropper.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+
+    <!-- Tool-Specific Stylesheet -->
+    <link rel="stylesheet" href="image-resizer.css">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": "https://ges201.github.io/ToolThump/tools/images/image-resizer/image-resizer.html#webpage",
+      "url": "https://ges201.github.io/ToolThump/tools/images/image-resizer/image-resizer.html",
+      "name": "Image Resizer & Cropper",
+      "description": "Resize and crop images online with options for aspect ratio and dimensions.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://ges201.github.io/ToolThump/#website"
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ToolThump",
+          "item": "https://ges201.github.io/ToolThump/"
+        },{
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Image Tools",
+          "item": "https://ges201.github.io/ToolThump/#image-tools" 
+        },{
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Image Resizer & Cropper"
+        }]
+      }
+    }
+    </script>
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="../../../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../../favicon-16x16.png">
+    <link rel="manifest" href="../../../site.webmanifest">
+    <link rel="shortcut icon" href="../../../favicon.ico">
+    <meta name="msapplication-TileColor" content="#1a1c2c">
+    <meta name="theme-color" content="#1a1c2c">
+</head>
+
+<body>
+    <header data-include="main-header"></header>
+
+    <div class="content-wrapper">
+        <main id="tool-container">
+            <section id="imageResizerTool" class="tool-content active">
+                <h1>Image Resizer & Cropper</h1>
+                <p style="margin-bottom: var(--spacing-lg); text-align: center;">
+                    Upload an image to resize or crop it. Adjust dimensions, select aspect ratios, and download the
+                    result.
+                    All processing happens locally in your browser for privacy and speed.
+                </p>
+
+                <div class="tool-content-area">
+                    <!-- Image Preview Area - MOVED TO TOP AND MADE LARGER -->
+                    <div class="ir-preview-section ir-section ir-section-fullwidth-preview">
+                        <h2 class="ir-section-title sr-only">Preview & Crop Area</h2>
+                        <div class="ir-image-preview-wrapper">
+                            <img id="irImagePreview" alt="Image preview for cropping"
+                                style="display:block; max-width:100%; visibility: hidden;">
+                            <div id="irImageUploadPlaceholder" class="ir-image-upload-placeholder">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M19,19H5V5H19M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M13.96,12.29L11.21,15.83L9.25,13.47L6.5,17H17.5L13.96,12.29Z" />
+                                </svg>
+                                <p>Upload an image to start cropping</p>
+                                <p class="ir-placeholder-secondary-text">(Or click/drag & drop here)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ir-controls-grid">
+                        <!-- Upload Section -->
+                        <div class="ir-section ir-upload-section">
+                            <h2 class="ir-section-title">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    class="icon">
+                                    <path d="M9 16V10H5L12 3L19 10H15V16H9M5 20V18H19V20H5Z" />
+                                </svg>
+                                1. Upload Image
+                            </h2>
+                            <input type="file" id="irImageUpload" class="sr-only" accept="image/*,image/webp">
+                            <label for="irImageUpload" class="btn-secondary"
+                                style="width: 100%; margin-bottom: var(--spacing-md); display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm);">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    class="icon" style="margin-right:0;">
+                                    <path
+                                        d="M14 2H6C4.89 2 4 2.9 4 4V20C4 21.11 4.89 22 6 22H18C19.11 22 20 21.11 20 20V8L14 2M18 20H6V4H13V9H18V20Z" />
+                                </svg>
+                                Choose Image
+                            </label>
+                            <div id="irFileName" class="ir-file-name">No image selected.</div>
+                            <div id="irOriginalDimensions" class="ir-dimension-display"></div>
+                        </div>
+
+                        <!-- Controls Section -->
+                        <div class="ir-section ir-options-section">
+                            <h2 class="ir-section-title">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    class="icon">
+                                    <path
+                                        d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10M10,22C9.75,22 9.54,21.82 9.5,21.58L9.13,18.93C8.5,18.68 7.96,18.34 7.45,17.9L4.94,18.95C4.73,19.03 4.46,18.95 4.34,18.78L2.34,15.22C2.21,15.05 2.27,14.78 2.45,14.66L4.6,13.05C4.54,12.72 4.5,12.37 4.5,12C4.5,11.63 4.54,11.28 4.6,10.95L2.45,9.34C2.27,9.22 2.21,8.95 2.34,8.78L4.34,5.22C4.46,5.05 4.73,4.96 4.94,5.05L7.45,6.1C7.96,5.66 8.5,5.32 9.13,5.07L9.5,2.42C9.54,2.18 9.75,2 10,2H14C14.25,2 14.46,2.18 14.5,2.42L14.87,5.07C15.5,5.32 16.04,5.66 16.55,6.1L19.06,5.05C19.27,4.96 19.54,5.05 19.66,5.22L21.66,8.78C21.79,8.95 21.73,9.22 21.55,9.34L19.4,10.95C19.46,11.28 19.5,11.63 19.5,12C19.5,12.37 19.46,12.72 19.4,13.05L21.55,14.66C21.73,14.78 21.79,15.05 21.66,15.22L19.66,18.78C19.54,18.95 19.27,19.03 19.06,18.95L16.55,17.9C16.04,18.34 15.5,18.68 14.87,18.93L14.5,21.58C14.46,21.82 14.25,22 14,22H10Z" />
+                                </svg>
+                                2. Crop & Resize Options
+                            </h2>
+                            <fieldset class="ir-fieldset">
+                                <legend>Mode</legend>
+                                <div class="ir-radio-group">
+                                    <input type="radio" id="irModeFree" name="cropMode" value="free" checked>
+                                    <label for="irModeFree">Free Crop</label>
+                                    <input type="radio" id="irModeRatio" name="cropMode" value="ratio">
+                                    <label for="irModeRatio">Fixed Ratio</label>
+                                </div>
+                            </fieldset>
+
+                            <div id="irFreeCropOptions">
+                                <fieldset class="ir-fieldset">
+                                    <legend>Current Selection (Live)</legend>
+                                    <div class="ir-input-group">
+                                        <label for="irDisplayWidth">Width (px):</label>
+                                        <input type="number" id="irDisplayWidth" placeholder="Auto" min="1">
+                                    </div>
+                                    <div class="ir-input-group">
+                                        <label for="irDisplayHeight">Height (px):</label>
+                                        <input type="number" id="irDisplayHeight" placeholder="Auto" min="1">
+                                    </div>
+                                    <small>These values update as you adjust the crop box.</small>
+                                </fieldset>
+                            </div>
+
+                            <div id="irRatioCropOptions" style="display: none;">
+                                <fieldset class="ir-fieldset">
+                                    <legend>Fixed Ratio Settings</legend>
+                                    <div class="ir-input-group">
+                                        <label for="irAspectRatioSelect">Select Ratio:</label>
+                                        <select id="irAspectRatioSelect">
+                                            <option value="1">1:1 (Square)</option>
+                                            <option value="1.7777777777777777">16:9 (Widescreen)</option>
+                                            <option value="0.5625">9:16 (Tall)</option>
+                                            <option value="1.3333333333333333">4:3 (Standard Monitor)</option>
+                                            <option value="0.75">3:4 (Portrait)</option>
+                                            <option value="1.5">3:2 (Classic Photo)</option>
+                                            <option value="0.6666666666666666">2:3 (Portrait Photo)</option>
+                                            <option value="original">Original Image Ratio</option>
+                                        </select>
+                                    </div>
+                                    <div class="ir-input-group">
+                                        <label for="irRatioReferenceWidth">Target Output Width (px):</label>
+                                        <input type="number" id="irRatioReferenceWidth" min="1" max="32000"
+                                            placeholder="e.g., 1920">
+                                        <small>Height auto-adjusts. If empty, uses selection width.</small>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <!-- Action/Download Area -->
+                        <div class="ir-section ir-action-section">
+                            <h2 class="ir-section-title">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    class="icon">
+                                    <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
+                                </svg>
+                                3. Process & Download
+                            </h2>
+                            <div id="irNewDimensions" class="ir-dimension-display"
+                                style="text-align: center; margin-bottom: var(--spacing-md); font-weight: bold;">
+                                Selection: N/A</div>
+                            <button id="irResizeButton" class="btn-secondary" disabled
+                                style="width:100%; padding: var(--spacing-md); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm);">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    class="icon" style="margin-right:0;">
+                                    <path
+                                        d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z" />
+                                </svg>
+                                Process & Download Image
+                            </button>
+                            <div id="irErrorMessage" class="pg-error-message" aria-live="assertive"
+                                style="margin-top: var(--spacing-sm);"></div>
+                        </div>
+                    </div> <!-- /ir-controls-grid -->
+                </div> <!-- /tool-content-area -->
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>© <span id="current-year"></span> ToolThump. All rights reserved.</p>
+    </footer>
+
+    <!-- Cropper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <!-- Tool-Specific JS -->
+    <script src="imageResizer.js"></script>
+    <!-- Main JS for header/footer includes -->
+    <script src="../../../main.js"></script>
+</body>
+
+</html>
