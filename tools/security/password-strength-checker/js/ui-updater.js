@@ -1,4 +1,4 @@
-import { strengthText, strengthBar, feedbackList } from './dom-elements.js';
+import { strengthText, strengthBar, feedbackList, hibpCheckBtn, hibpResultContainer } from './dom-elements.js';
 import { checkPasswordStrength } from './password-scorer.js';
 
 export function updateUI(password) {
@@ -18,4 +18,15 @@ export function updateUI(password) {
         li.classList.add(item.valid ? 'valid' : 'invalid');
         feedbackList.appendChild(li);
     });
+
+    // Handle HIBP UI state
+    if (hibpCheckBtn && hibpResultContainer) {
+        const hasPassword = password && password.length > 0;
+        hibpCheckBtn.disabled = !hasPassword;
+
+        // Hide result area on password change
+        if (hibpResultContainer.classList.contains('show')) {
+            hibpResultContainer.className = 'psc-hibp-result';
+        }
+    }
 }
