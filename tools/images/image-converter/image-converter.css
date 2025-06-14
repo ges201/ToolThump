@@ -84,13 +84,16 @@
 }
 
 .ic-folder-note-icon {
-    fill: var(--warning-color);
-    /* Match the accent color */
-    width: 1.125em;
-    height: 1.125em;
+    fill: var(--warning-color); /* Color for warning */
+    width: 1.125em;           /* Scales with font size of .ic-folder-note */
+    height: 1.125em;          /* Scales with font size of .ic-folder-note */
+    /* Safeguard against excessively large computed size.
+       20px is a reasonable upper limit for an inline text icon. */
+    max-width: 20px;
+    max-height: 20px;
     margin-right: var(--spacing-sm);
     flex-shrink: 0;
-    margin-top: 0.1em;
+    margin-top: 0.1em;        /* Small vertical alignment relative to icon's font-size */
 }
 
 .ic-folder-note-text {

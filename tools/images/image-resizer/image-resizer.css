@@ -55,14 +55,10 @@
 
 /* Specific styling for the "Choose Image" label to include transform and shadow on hover */
 .ir-upload-section label[for="irImageUpload"].btn-secondary {
-    /* Inherits base .btn-secondary styles from components.css */
-    /* Add transform and box-shadow to its transition */
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease-out, box-shadow 0.15s ease-out;
 }
 
 .ir-upload-section label[for="irImageUpload"].btn-secondary:hover {
-    /* Inherits hover styles from .btn-secondary:hover (bg, color, border) in components.css */
-    /* Add transform and shadow like general buttons from base.css */
     transform: translate(-2px, -2px);
     box-shadow: var(--shadow-hard);
 }
@@ -130,37 +126,67 @@
     border-radius: var(--border-radius-sm);
     border: 1px solid var(--border-color);
     background-color: var(--surface-bg-color);
-    /* MODIFIED: Added transform and box-shadow to transition */
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    /* Transitions for hover pop-out/in and color changes when becoming checked */
+    transition: background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease-out,
+        /* Animates the pop-out on hover */
+        box-shadow 0.15s ease-out;
+    /* Animates the pop-out on hover */
     cursor: pointer;
     text-align: center;
     white-space: nowrap;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    transform: none;
+    /* Default state: flat */
+    box-shadow: none;
+    /* Default state: flat */
 }
 
-/* Hover and Focus for UNSELECTED radio button's label (mimics .btn-secondary:hover) */
-.ir-radio-group input[type="radio"]:not(:checked)+label:hover,
-.ir-radio-group input[type="radio"]:not(:checked):focus-visible+label {
+/* Active state (during mousedown/press) - INSTANTLY flat */
+.ir-radio-group label:active {
+    transform: none !important;
+    /* Force flat, important to override hover if click is very fast */
+    box-shadow: none !important;
+    /* Force flat, important to override hover if click is very fast */
+    transition: none;
+    /* CRITICAL: No transition during the active state for an instant snap */
+}
+
+/* Checked state styles - provides the "pressed" look with accent colors */
+.ir-radio-group input[type="radio"]:checked+label {
     background-color: var(--accent-color-bg-hover);
     color: var(--accent-color);
     border-color: var(--accent-color);
-    outline: none;
-    /* MODIFIED: Added transform and shadow for hover/focus-visible */
+    transform: none;
+    /* Ensures it stays flat */
+    box-shadow: none;
+    /* Ensures it stays flat */
+}
+
+/* Hover effect for UNCHECKED radio labels - gives the 3D pop */
+.ir-radio-group input[type="radio"]:not(:checked)+label:hover {
+    background-color: var(--accent-color-bg-hover);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
     transform: translate(-2px, -2px);
+    /* Apply 3D pop-out effect */
     box-shadow: var(--shadow-hard);
 }
 
-/* Styles for SELECTED radio button's label */
-.ir-radio-group input[type="radio"]:checked+label {
-    background-color: var(--accent-color);
-    color: var(--text-on-accent-bg);
+/* Hover effect for CHECKED radio labels - maintains "pressed" look with accent colors */
+.ir-radio-group input[type="radio"]:checked+label:hover {
+    background-color: var(--accent-color-bg-hover);
+    /* Keep accent colors */
+    color: var(--accent-color);
     border-color: var(--accent-color);
-    /* Selected state should not have the transform/shadow hover effect by default unless specified */
+    /* Transform and box-shadow remain 'none' as per the :checked+label rule, so it stays flat */
 }
 
-/* Focus style for SELECTED radio button's label (distinct from hover) */
+/* Focus style for checked radio buttons */
 .ir-radio-group input[type="radio"]:checked:focus-visible+label {
     outline: 2px solid var(--focus-outline-color);
     outline-offset: 1px;
@@ -261,10 +287,6 @@
     background-size: 20px 20px !important;
 }
 
-/* The #irResizeButton.btn-secondary will get its hover effect (including transform and shadow)
-   from a combination of base.css (button:hover) and components.css (.btn-secondary:hover).
-   No specific additions needed here unless override is required. */
-
 @media (max-width: 768px) {
     .ir-section-fullwidth-preview {
         height: clamp(300px, 60vh, 600px);
@@ -290,4 +312,15 @@
     /* .ir-radio-group label {
         width: 100%;
     } */
+}
+
+/*
+   #irResizeButton.btn-secondary inherits its hover state properties (background, color, border)
+   from general button styles in components.css (.btn-secondary:hover) and base.css (button:hover).
+   The transform and box-shadow effects on hover also come from base.css (button:hover).
+   The following rule ensures these transform and box-shadow effects are animated smoothly by
+   including them in the transition, consistent with other custom buttons in this tool.
+*/
+#irResizeButton.btn-secondary {
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease-out, box-shadow 0.15s ease-out;
 }
