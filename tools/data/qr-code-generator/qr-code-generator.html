@@ -7,22 +7,78 @@
     <title>QR Code Generator - ToolThump</title>
     <meta name="description"
         content="Generate free QR codes for text, URLs, and Wi-Fi networks. A simple, fast, and client-side tool for all your QR code needs.">
+    <link rel="canonical" href="https://toolthump.com/tools/data/qr-code-generator/qr-code-generator.html">
+    <meta name="robots" content="index, follow">
 
-    <!-- Relative paths to global CSS -->
-    <link rel="stylesheet" href="../../../css/theme.css">
-    <link rel="stylesheet" href="../../../css/base.css">
-    <link rel="stylesheet" href="../../../css/layout.css">
-    <link rel="stylesheet" href="../../../css/components.css">
-    <link rel="stylesheet" href="../../../css/responsive.css">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://toolthump.com/tools/data/qr-code-generator/qr-code-generator.html">
+    <meta property="og:title" content="QR Code Generator - ToolThump">
+    <meta property="og:description"
+        content="Generate free QR codes for text, URLs, and Wi-Fi networks. A simple, fast, and client-side tool for all your QR code needs.">
+    <meta property="og:image" content="https://toolthump.com/ToolThump.png">
+    <meta property="og:site_name" content="ToolThump" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://toolthump.com/tools/data/qr-code-generator/qr-code-generator.html">
+    <meta property="twitter:title" content="QR Code Generator - ToolThump">
+    <meta property="twitter:description"
+        content="Generate free QR codes for text, URLs, and Wi-Fi networks. A simple, fast, and client-side tool for all your QR code needs.">
+    <meta property="twitter:image" content="https://toolthump.com/ToolThump.png">
+
+    <!-- Common Stylesheets -->
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/responsive.css">
 
     <!-- Tool-specific CSS -->
     <link rel="stylesheet" href="qr-code-generator.css">
 
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": "https://toolthump.com/tools/data/qr-code-generator/qr-code-generator.html#webpage",
+      "url": "https://toolthump.com/tools/data/qr-code-generator/qr-code-generator.html",
+      "name": "QR Code Generator",
+      "description": "Generate free QR codes for text, URLs, and Wi-Fi networks. A simple, fast, and client-side tool.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://toolthump.com/#website"
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ToolThump",
+          "item": "https://toolthump.com/"
+        },{
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Data Tools",
+          "item": "https://toolthump.com/#data-tools" 
+        },{
+          "@type": "ListItem",
+          "position": 3,
+          "name": "QR Code Generator"
+        }]
+      }
+    }
+    </script>
+
     <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="../../../apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="../../../favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="../../../favicon-16x16.png">
-    <link rel="manifest" href="../../../site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
 </head>
 
 <body>
@@ -37,7 +93,6 @@
                     <!-- Input Controls -->
                     <div class="qrg-controls">
                         <div class="qrg-tabs" role="tablist" aria-label="QR Code Content Type">
-                            <!-- MODIFIED: Added btn-secondary class for consistency -->
                             <button id="tab-text" role="tab" aria-selected="true" aria-controls="panel-text"
                                 class="qrg-tab-button btn-secondary">Text / URL</button>
                             <button id="tab-wifi" role="tab" aria-selected="false" aria-controls="panel-wifi"
@@ -49,7 +104,7 @@
                             <div class="qrg-input-group">
                                 <label for="qrg-text-input">Enter Text or URL</label>
                                 <textarea id="qrg-text-input" rows="4"
-                                    placeholder="e.g., https://toolthump.com/ToolThump/"></textarea>
+                                    placeholder="e.g., https://toolthump.com/"></textarea>
                             </div>
                         </div>
 
@@ -76,7 +131,6 @@
 
                         <!-- Generate Button -->
                         <div class="qrg-button-container">
-                            <!-- MODIFIED: Added btn-secondary class -->
                             <button id="qrg-generate-btn" class="btn-secondary">Generate QR Code</button>
                         </div>
                     </div>
@@ -86,7 +140,6 @@
                         <div id="qrg-qrcode-container" aria-live="polite">
                             <p class="qrg-placeholder">Your QR code will appear here</p>
                         </div>
-                        <!-- MODIFIED: Added btn-secondary class -->
                         <button id="qrg-download-btn" class="btn-secondary" style="display: none;">Download PNG</button>
                     </div>
                 </div>
@@ -101,7 +154,7 @@
     <!-- QR Code Library (CDN) -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <!-- Main site script -->
-    <script src="../../../main.js"></script>
+    <script src="/main.js"></script>
     <!-- Tool-specific script -->
     <script src="qrCodeGenerator.js"></script>
 </body>
