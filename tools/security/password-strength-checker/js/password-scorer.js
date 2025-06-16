@@ -1,114 +1,97 @@
-import { calculateEntropy } from './entropy-calculator.js';
-import {
-    scoreLength,
-    scoreCharacterTypes,
-    scoreVariety,
-    deductForCommonPassword,
-    deductForDictionaryWord,
-    deductForDate,
-    deductForSingleType,
-    deductForRepetitions,
-    deductForSequences
-} from './feedback-provider.js';
-import {
-    MIN_LENGTH,
-    ENTROPY_THRESHOLDS
-} from './constants.js';
-
-function getPasswordProperties(password) {
-    const length = password.length;
-    const hasUpper = /[A-Z]/.test(password);
-    const hasLower = /[a-z]/.test(password);
-    const hasNumbers = /[0-9]/.test(password);
-    const hasSymbols = /[^A-Za-z0-9]/.test(password);
-    const typesCount = (hasUpper ? 1 : 0) + (hasLower ? 1 : 0) + (hasNumbers ? 1 : 0) + (hasSymbols ? 1 : 0);
-    return { length, hasUpper, hasLower, hasNumbers, hasSymbols, typesCount };
-}
-
-function determineStrengthPresentation(finalScore, length, entropy, isCommonPassword) {
-    let strengthDescription = '';
-    let barClass = '';
-    let barWidthPercentage = 0;
-
-    if (length === 0) {
-        strengthDescription = 'N/A'; barClass = ''; barWidthPercentage = 0;
-    } else if (isCommonPassword || length < MIN_LENGTH) {
-        strengthDescription = 'Very Weak'; barClass = 'very-weak'; barWidthPercentage = 10;
-    } else {
-        const entropyWeight = 0.7;
-        const scoreWeight = 0.3;
-        const normalizedEntropy = Math.min(10, (entropy / ENTROPY_THRESHOLDS.VERY_STRONG) * 10);
-        const combinedScore = (normalizedEntropy * entropyWeight) + (finalScore * scoreWeight);
-
-        if (entropy < ENTROPY_THRESHOLDS.VERY_WEAK || combinedScore <= 2) {
-            strengthDescription = 'Very Weak'; barClass = 'very-weak'; barWidthPercentage = 25;
-        } else if (entropy < ENTROPY_THRESHOLDS.WEAK || combinedScore <= 4) {
-            strengthDescription = 'Weak'; barClass = 'weak'; barWidthPercentage = 45;
-        } else if (entropy < ENTROPY_THRESHOLDS.MODERATE || combinedScore <= 6) {
-            strengthDescription = 'Moderate'; barClass = 'moderate'; barWidthPercentage = 65;
-        } else if (entropy < ENTROPY_THRESHOLDS.STRONG || combinedScore <= 8) {
-            strengthDescription = 'Strong'; barClass = 'strong'; barWidthPercentage = 85;
-        } else {
-            strengthDescription = 'Very Strong'; barClass = 'very-strong'; barWidthPercentage = 100;
-        }
-    }
-    return { strengthDescription, barClass, barWidthPercentage };
-}
-
+/**
+ * Calculates password strength using zxcvbn and maps it to the UI structure.
+ * @param {string} password The password to check.
+ * @returns {object} Strength analysis result.
+ */
 export function checkPasswordStrength(password) {
     if (!password || password.length === 0) {
         return {
-            score: 0,
+            score: 0, // zxcvbn score 0-4
             entropy: 0,
             text: 'N/A',
             barClass: '',
             barWidth: 0,
-            feedback: [{ text: 'Enter a password to check its strength.', valid: false }]
+            feedback: [{ text: 'Enter a password to check its strength.', type: 'info' }] // type: 'info', 'warning', 'suggestion'
         };
     }
 
-    const feedback = [];
-    const properties = getPasswordProperties(password);
+    const zxcvbnResult = zxcvbn(password);
+    const score = zxcvbnResult.score; // 0-4
+    const entropy = zxcvbnResult.guesses_log10 / Math.log10(2); // Convert log10 guesses to bits of entropy
 
-    let positiveScore = 0;
-    positiveScore += scoreLength(properties.length, feedback);
-    positiveScore += scoreCharacterTypes(properties, feedback);
-    positiveScore += scoreVariety(properties, feedback);
+    let strengthDescription = '';
+    let barClass = '';
+    let barWidthPercentage = 0;
 
-    let totalDeductionScore = 0;
-    totalDeductionScore += deductForCommonPassword(password, feedback);
-    totalDeductionScore += deductForDictionaryWord(password, feedback);
-    totalDeductionScore += deductForDate(password, feedback);
-    totalDeductionScore += deductForSingleType(properties, feedback);
-    totalDeductionScore += deductForRepetitions(password, positiveScore, feedback);
-    totalDeductionScore += deductForSequences(password, positiveScore, feedback);
-
-    const isCommon = feedback.some(f => f.isCommon);
-    const entropy = calculateEntropy(password, properties, feedback);
-
-    const finalScore = Math.max(0, positiveScore - totalDeductionScore);
-    let { strengthDescription, barClass, barWidthPercentage } = determineStrengthPresentation(finalScore, properties.length, entropy, isCommon);
-
-    if (feedback.some(f => f.text.startsWith("Too short"))) {
-        strengthDescription = 'Very Weak';
-        barClass = 'very-weak';
-        barWidthPercentage = 10;
+    switch (score) {
+        case 0:
+            strengthDescription = 'Very Weak';
+            barClass = 'very-weak';
+            barWidthPercentage = 20;
+            break;
+        case 1:
+            strengthDescription = 'Weak';
+            barClass = 'weak';
+            barWidthPercentage = 40;
+            break;
+        case 2:
+            strengthDescription = 'Moderate';
+            barClass = 'moderate';
+            barWidthPercentage = 60;
+            break;
+        case 3:
+            strengthDescription = 'Strong';
+            barClass = 'strong';
+            barWidthPercentage = 80;
+            break;
+        case 4:
+            strengthDescription = 'Very Strong';
+            barClass = 'very-strong';
+            barWidthPercentage = 100;
+            break;
+        default:
+            strengthDescription = 'N/A';
+            barClass = '';
+            barWidthPercentage = 0;
     }
 
-    feedback.sort((a, b) => {
-        if (a.text.includes('Entropy:')) return -1;
-        if (b.text.includes('Entropy:')) return 1;
-        if (a.text.includes('Estimated crack time:')) return -1;
-        if (b.text.includes('Estimated crack time:')) return 1;
-        return (a.valid === b.valid) ? 0 : (a.valid ? 1 : -1);
-    });
+    // If zxcvbn score is low due to common password, override bar width to minimum if not already very low
+    if (zxcvbnResult.feedback && zxcvbnResult.feedback.warning && password.length >= 1 && score < 2) {
+        if (barWidthPercentage > 10) barWidthPercentage = 10;
+        if (strengthDescription !== 'Very Weak') strengthDescription = 'Very Weak';
+        if (barClass !== 'very-weak') barClass = 'very-weak';
+    }
+
+
+    const feedbackItems = [];
+    if (zxcvbnResult.feedback && zxcvbnResult.feedback.warning) {
+        feedbackItems.push({ text: zxcvbnResult.feedback.warning, type: 'warning' });
+    }
+    if (zxcvbnResult.feedback && zxcvbnResult.feedback.suggestions) {
+        zxcvbnResult.feedback.suggestions.forEach(suggestion => {
+            feedbackItems.push({ text: suggestion, type: 'suggestion' });
+        });
+    }
+
+    // Add crack time information
+    let crackTimeText = "Estimated crack time: N/A";
+    if (zxcvbnResult.crack_times_display) {
+        // Prefer offline_fast_hashing, fallback to others if necessary
+        const crackTime = zxcvbnResult.crack_times_display.offline_fast_hashing_1e10_per_second ||
+            zxcvbnResult.crack_times_display.offline_slow_hashing_1e4_per_second ||
+            zxcvbnResult.crack_times_display.online_throttling_100_per_hour ||
+            "N/A";
+        crackTimeText = `Estimated time to crack: ${crackTime}`;
+    }
+    feedbackItems.unshift({ text: crackTimeText, type: 'info' });
+
 
     return {
-        score: finalScore,
+        score: score,
         entropy: entropy,
         text: strengthDescription,
         barClass: barClass,
         barWidth: barWidthPercentage,
-        feedback: feedback
+        feedback: feedbackItems
     };
 }
