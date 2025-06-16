@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://toolthump.com/ToolThump/sitemap.xml
+Sitemap: https://toolthump.com/sitemap.xml
