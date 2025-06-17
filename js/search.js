@@ -1,5 +1,3 @@
-// js/search.js
-
 document.addEventListener('DOMContentLoaded', () => {
     // Only execute on the homepage
     const searchInput = document.getElementById('home-search-input');
@@ -79,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             li.className = 'search-result-item';
 
             li.innerHTML = `
-                <a href="${item.url}" class="result-link">
+                <a href="${item.htmlPath}" class="result-link">  <!-- CORRECTED HERE -->
                     <img src="${item.icon}" alt="" class="result-icon">
                     <div class="result-details">
                         <span class="result-name">${item.name}</span>
