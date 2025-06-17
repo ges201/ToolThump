@@ -1,0 +1,143 @@
+/* ToolThump/tools/text/text-converter/text-converter.css */
+
+.tool-description {
+    text-align: center;
+    max-width: 70ch;
+    margin: 0 auto var(--spacing-xl);
+    color: var(--text-secondary-color);
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.converter-interface {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.text-area-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.text-area-container label {
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    color: var(--text-primary-color);
+}
+
+textarea#inputText,
+textarea#outputText {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background-color: var(--input-bg-color);
+    color: var(--text-primary-color);
+    font-family: var(--font-family-monospace);
+    font-size: 1rem;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 120px;
+}
+
+textarea#inputText:focus,
+textarea#outputText:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--focus-outline-color);
+    outline: none;
+}
+
+textarea#outputText {
+    background-color: var(--bg-deep-dark);
+    cursor: default;
+}
+
+.conversion-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    justify-content: center;
+    align-items: center;
+}
+
+/*
+  All buttons now use .btn-secondary class from components.css for their base style
+  and hover/focus appearances (background, color, border).
+  The global 'button:hover' and 'button:active' styles from base.css
+  will provide the transform and box-shadow effects.
+  The .btn-convert and .btn-clear classes are kept for potential specific
+  layout or icon styling if needed in the future, but not for core button appearance.
+*/
+
+/* Apply common layout for icons within any btn-secondary in this tool */
+.conversion-controls .btn-secondary,
+.output-actions .btn-secondary {
+    gap: var(--spacing-sm);
+    /* Space between icon and text */
+    /* .btn-secondary from components.css provides:
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-weight: 600;
+        etc.
+    */
+    /* You can set a specific font-size if desired for this tool's buttons,
+       otherwise, it will inherit from .btn-secondary and global button styles.
+       Example: font-size: 0.95rem; */
+}
+
+/* Ensure SVGs within these buttons correctly use the text color */
+.conversion-controls .btn-secondary svg,
+.output-actions .btn-secondary svg {
+    /* SVG width/height should be set in HTML or here if consistently sized */
+    stroke: currentColor;
+    /* For line/outline SVGs */
+    fill: currentColor;
+    /* For filled SVGs */
+}
+
+.output-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xs);
+}
+
+.copy-feedback {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.copy-feedback.visible {
+    opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .conversion-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .conversion-controls .btn-secondary {
+        /* Target all relevant buttons */
+        width: 100%;
+        /* justify-content: center; is default from .btn-secondary, typically fine */
+    }
+
+    .tool-description {
+        font-size: 1rem;
+    }
+
+    textarea#inputText,
+    textarea#outputText {
+        font-size: 0.95rem;
+    }
+}

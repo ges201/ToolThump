@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Case Converter - ToolThump</title>
+    <meta name="description"
+        content="Easily convert text to uppercase, lowercase, or title case with ToolThump's free online Text Case Converter. Client-side, fast, and private.">
+    <link rel="canonical" href="https://toolthump.com/tools/text/text-converter/text-converter.html">
+
+    <!-- Common Stylesheets (adjust paths if this file is deeper) -->
+    <link rel="stylesheet" href="../../../css/theme.css">
+    <link rel="stylesheet" href="../../../css/base.css">
+    <link rel="stylesheet" href="../../../css/layout.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    <link rel="stylesheet" href="../../../css/responsive.css">
+
+    <!-- Tool-Specific Stylesheet -->
+    <link rel="stylesheet" href="text-converter.css">
+
+    <!-- Favicon (Copied from main index.html, paths adjusted) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="../../../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../../favicon-16x16.png">
+    <link rel="manifest" href="../../../site.webmanifest">
+    <link rel="shortcut icon" href="../../../favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+</head>
+
+<body>
+    <header data-include="main-header"></header>
+
+    <div class="content-wrapper">
+        <main id="tool-container">
+            <section id="text-converter-tool" class="tool-content active">
+                <h1>Text Case Converter</h1>
+
+                <div class="tool-description">
+                    <p>Convert your text to UPPERCASE, lowercase, or Title Case effortlessly. Simply paste your text,
+                        choose the desired case, and get the converted output instantly.</p>
+                </div>
+
+                <div class="converter-interface">
+                    <div class="text-area-container">
+                        <label for="inputText">Input Text:</label>
+                        <textarea id="inputText" rows="8" placeholder="Paste or type your text here..."></textarea>
+                    </div>
+
+                    <div class="conversion-controls">
+                        <button id="btnUppercase" class="btn-convert btn-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M6 3h12" />
+                                <path d="M10 3v18" />
+                                <path d="M14 3v18" />
+                                <path d="M6 21h12" />
+                                <path d="M18 12L12 6l-6 6" />
+                            </svg>
+                            UPPERCASE
+                        </button>
+                        <button id="btnLowercase" class="btn-convert btn-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M6 3h12" />
+                                <path d="M10 3v18" />
+                                <path d="M14 3v18" />
+                                <path d="M6 21h12" />
+                                <path d="M18 12l-6 6-6-6" />
+                            </svg>
+                            lowercase
+                        </button>
+                        <button id="btnTitleCase" class="btn-convert btn-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M12 4V20" />
+                                <path d="M4 12h16" />
+                                <path d="M8 4h8" />
+                                <path d="M8 20h8" />
+                            </svg>
+                            Title Case
+                        </button>
+                        <button id="btnClear" class="btn-clear btn-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+                                <line x1="18" y1="9" x2="12" y2="15"></line>
+                                <line x1="12" y1="9" x2="18" y2="15"></line>
+                            </svg>
+                            Clear
+                        </button>
+                    </div>
+
+                    <div class="text-area-container">
+                        <label for="outputText">Output Text:</label>
+                        <textarea id="outputText" rows="8" placeholder="Converted text will appear here..."
+                            readonly></textarea>
+                    </div>
+
+                    <div class="output-actions">
+                        <button id="btnCopy" class="btn-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                            </svg>
+                            Copy to Clipboard
+                        </button>
+                        <span id="copyFeedback" class="copy-feedback" aria-live="polite"></span>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>© <span id="current-year"></span> ToolThump. All rights reserved.</p>
+    </footer>
+
+    <script src="../../../main.js"></script>
+    <script src="textConverter.js"></script>
+</body>
+
+</html>
