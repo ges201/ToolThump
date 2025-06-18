@@ -33,6 +33,17 @@ const toolsData = [
         keywords: ["text", "comparison", "compare", "diff", "difference", "tool", "string"]
     },
     {
+        id: "text-converter",
+        name: "Text Case Converter",
+        category: "Text Tools",
+        description: "Convert text to uppercase, lowercase, or title case.",
+        icon: "/icons/text-case-converter-color.png",
+        htmlPath: "/tools/text/text-converter/text-converter.html",
+        cssPaths: ["/tools/text/text-converter/text-converter.css"],
+        jsPath: "/tools/text/text-converter/textConverter.js",
+        keywords: ["text", "case", "converter", "uppercase", "lowercase", "titlecase", "capitalize", "string", "format"]
+    },
+    {
         id: "image-converter",
         name: "Image Converter",
         category: "Image Tools",
@@ -44,6 +55,28 @@ const toolsData = [
         keywords: ["image", "converter", "picture", "photo", "jpg", "png", "webp", "gif", "convert", "transform"]
     },
     {
+        id: "image-resizer",
+        name: "Image Resizer",
+        category: "Image Tools",
+        description: "Resize images to custom dimensions or standard aspect ratios.",
+        icon: "/icons/image-resizer.png",
+        htmlPath: "/tools/images/image-resizer/image-resizer.html",
+        cssPaths: ["/tools/images/image-resizer/image-resizer.css"],
+        jsPath: "/tools/images/image-resizer/imageResizer.js",
+        keywords: ["resize", "image", "picture", "photo", "scale", "dimensions", "aspect ratio", "resizer", "shrinker", "enlarger"]
+    },
+    {
+        id: "color-picker",
+        name: "Image Color Picker",
+        category: "Image Tools",
+        description: "Pick a color from an image to get its HEX, RGB, and HSL values.",
+        icon: "/icons/color-picker-icon.png", // You need to create this icon
+        htmlPath: "/tools/images/color-picker/color-picker.html",
+        cssPaths: ["/tools/images/color-picker/color-picker.css"],
+        jsPath: "/tools/images/color-picker/colorPicker.js",
+        keywords: ["color", "picker", "eyedropper", "image", "hex", "rgb", "hsl", "select", "palette", "finder"]
+    },
+    {
         id: "qr-code-generator",
         name: "QR Code Generator",
         category: "Data Tools",
@@ -53,27 +86,5 @@ const toolsData = [
         cssPaths: ["/tools/data/qr-code-generator/qr-code-generator.css"],
         jsPath: "/tools/data/qr-code-generator/qrCodeGenerator.js",
         keywords: ["qr", "code", "generator", "data", "link", "url", "barcode"]
-    },
-    {
-        id: "image-resizer",
-        name: "Image Resizer",
-        category: "Image Tools",
-        description: "Resize images to custom dimensions or standard aspect ratios. Aims to preserve quality and uses the original file format where possible (PNG, JPEG, WEBP).",
-        icon: "/icons/image-resizer.png",
-        htmlPath: "/tools/images/image-resizer/image-resizer.html",
-        cssPaths: ["/tools/images/image-resizer/image-resizer.css"],
-        jsPath: "/tools/images/image-resizer/imageResizer.js",
-        keywords: ["resize", "image", "picture", "photo", "scale", "dimensions", "aspect ratio", "resizer", "shrinker", "enlarger"]
-    },
-    {
-        id: "text-converter",
-        name: "Text Case Converter",
-        category: "Text Tools",
-        description: "Convert text to uppercase, lowercase, or title case.",
-        icon: "/icons/text-case-converter-color.png", // You'll need to create this icon
-        htmlPath: "/tools/text/text-converter/text-converter.html",
-        cssPaths: ["/tools/text/text-converter/text-converter.css"],
-        jsPath: "/tools/text/text-converter/textConverter.js",
-        keywords: ["text", "case", "converter", "uppercase", "lowercase", "titlecase", "capitalize", "string", "format"]
     }
 ];
