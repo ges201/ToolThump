@@ -1,3 +1,21 @@
+/* Styles for the tool header */
+.tool-header {
+    display: flex;
+    align-items: baseline;
+    /* Aligns the icon's bottom with the text's baseline */
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.tool-header .tool-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+}
+
+/* No longer need to override the h1's margin */
+
 /* Color Picker Specific Styles */
 
 .cp-container {
