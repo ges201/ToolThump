@@ -51,7 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function activateEyedropper() {
         isEyedropperActive = true;
         canvas.classList.add('active');
-        canvas.focus(); // Set focus for keyboard events
+        eyedropperBtn.classList.add('active');
+        canvas.focus();
         eyedropperBtn.querySelector('span').textContent = 'Click or Use Arrows';
         updateColorInfoFromPoint(selectionPoint.x, selectionPoint.y);
     }
@@ -59,6 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function deactivateEyedropper() {
         isEyedropperActive = false;
         canvas.classList.remove('active');
+        eyedropperBtn.classList.remove('active');
+        magnifier.style.display = 'none'; // <<< MODIFIED: Explicitly hide magnifier
         eyedropperBtn.querySelector('span').textContent = 'Activate Eyedropper';
     }
 
@@ -78,24 +81,27 @@ document.addEventListener('DOMContentLoaded', () => {
         selectionPoint.x = Math.floor((e.clientX - rect.left) * scaleX);
         selectionPoint.y = Math.floor((e.clientY - rect.top) * scaleY);
 
-        updateMagnifier(selectionPoint.x, selectionPoint.y, e.clientX, e.clientY);
-
+        // <<< MODIFIED: Only show and update magnifier if eyedropper is active
         if (isEyedropperActive) {
+            magnifier.style.display = 'block';
+            updateMagnifier(selectionPoint.x, selectionPoint.y, e.clientX, e.clientY);
             updateColorInfoFromPoint(selectionPoint.x, selectionPoint.y);
         }
     });
 
     canvas.addEventListener('mouseleave', () => {
-        if (imageLoaded) magnifier.style.display = 'none';
+        // <<< MODIFIED: This is now the only place that hides the magnifier on mouse out
+        if (imageLoaded) {
+            magnifier.style.display = 'none';
+        }
     });
 
-    canvas.addEventListener('mouseenter', () => {
-        if (imageLoaded) magnifier.style.display = 'block';
-    });
+    // <<< REMOVED: The old 'mouseenter' listener is no longer needed.
+    // The 'mousemove' listener now handles showing the magnifier correctly.
 
     canvas.addEventListener('click', () => {
         if (!isEyedropperActive || !imageLoaded) return;
-        updateColorInfoFromPoint(selectionPoint.x, selectionPoint.y); // Finalize color
+        updateColorInfoFromPoint(selectionPoint.x, selectionPoint.y);
         deactivateEyedropper();
     });
 
@@ -103,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.addEventListener('keydown', (e) => {
         if (!isEyedropperActive) return;
 
-        e.preventDefault(); // Prevent page scrolling
+        e.preventDefault();
         const { x, y } = selectionPoint;
         let newX = x, newY = y;
 
@@ -115,11 +121,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (newX !== x || newY !== y) {
             selectionPoint = { x: newX, y: newY };
 
-            // Calculate screen position from canvas data point for magnifier positioning
             const rect = canvas.getBoundingClientRect();
             const canvasScreenX = (newX / canvas.width) * rect.width + rect.left;
             const canvasScreenY = (newY / canvas.height) * rect.height + rect.top;
 
+            magnifier.style.display = 'block'; // Ensure it's visible during keyboard use
             updateMagnifier(newX, newY, canvasScreenX, canvasScreenY);
             updateColorInfoFromPoint(newX, newY);
         }
@@ -133,26 +139,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateMagnifier(x, y, mouseX, mouseY) {
-        const OFFSET = 25; // Space between cursor and magnifier
+        const OFFSET = 25;
         const HALF_MAG_SIZE = MAGNIFIER_SIZE / 2;
 
-        // Center magnifier vertically on the cursor/point
         magnifier.style.top = `${mouseY - HALF_MAG_SIZE}px`;
 
-        // Dynamically position to the left or right to stay within the viewport
         if (mouseX + OFFSET + MAGNIFIER_SIZE < window.innerWidth) {
-            // Enough space on the right, place it there
             magnifier.style.left = `${mouseX + OFFSET}px`;
         } else {
-            // Not enough space, place on the left
             magnifier.style.left = `${mouseX - MAGNIFIER_SIZE - OFFSET}px`;
         }
 
-        // Set the zoomed background image
         magnifier.style.backgroundImage = `url(${canvas.toDataURL()})`;
         magnifier.style.backgroundSize = `${canvas.width * ZOOM_LEVEL}px ${canvas.height * ZOOM_LEVEL}px`;
 
-        // Calculate background position to center the target pixel.
         const bgX = -((x + 0.5) * ZOOM_LEVEL - HALF_MAG_SIZE);
         const bgY = -((y + 0.5) * ZOOM_LEVEL - HALF_MAG_SIZE);
         magnifier.style.backgroundPosition = `${bgX}px ${bgY}px`;

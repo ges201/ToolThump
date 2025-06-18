@@ -32,6 +32,24 @@
     min-width: 220px;
 }
 
+/* 
+  NEW: Styles for the active eyedropper state.
+  Matches the hover state of .btn-secondary but without the 3D effect.
+*/
+#cp-eyedropper-btn.active,
+#cp-eyedropper-btn.active:hover {
+    background-color: var(--accent-color-bg-hover);
+    /* Subtle hover background */
+    color: var(--accent-color);
+    /* Accent color text */
+    border-color: var(--accent-color);
+    /* Accent color border */
+
+    /* Override the 3D effect from base.css */
+    transform: none;
+    box-shadow: none;
+}
+
 .cp-main-area {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -102,17 +120,13 @@
     image-rendering: crisp-edges;
 }
 
-/* NEW: Styles for the central pixel highlight box */
 #cp-magnifier-highlight {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 10px;
-    /* This corresponds to the ZOOM_LEVEL in JS */
     height: 10px;
-    /* This corresponds to the ZOOM_LEVEL in JS */
-    /* Creates a crisp 1px border that is visible on light/dark colors */
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7),
         inset 0 0 0 2px rgba(0, 0, 0, 0.5);
 }
@@ -139,38 +153,33 @@
     gap: var(--spacing-md);
 }
 
-.cp-color-value {
-    position: relative;
-}
-
 .cp-color-value label {
+    display: block;
     font-size: 0.9rem;
     color: var(--text-secondary-color);
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Wrapper for aligning the input and button */
+.input-wrapper {
+    display: flex;
+    align-items: center;
 }
 
 .cp-color-value input {
-    width: 100%;
+    flex-grow: 1;
+    min-width: 0;
     background-color: var(--bg-deep-dark);
 }
 
-.cp-color-value .copy-btn {
-    position: absolute;
-    right: 4px;
-    top: 50%;
-    transform: translateY(-50%);
+/* The copy button will now inherit hover effects from base.css */
+.copy-btn {
+    margin-left: var(--spacing-sm);
+    flex-shrink: 0;
     padding: var(--spacing-xs) var(--spacing-sm);
     font-size: 0.8rem;
-    background-color: var(--bg-medium);
-    color: var(--text-primary-color);
-    border: 1px solid var(--border-color);
 }
 
-.copy-btn:hover {
-    background-color: var(--accent-color);
-    color: var(--text-on-accent-bg);
-    transform: translateY(-50%) translate(-1px, -1px);
-    box-shadow: 1px 1px 0 var(--accent-color-dark);
-}
 
 /* Responsive adjustments */
 @media (max-width: 900px) {
