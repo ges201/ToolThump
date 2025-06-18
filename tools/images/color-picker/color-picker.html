@@ -6,17 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Color Picker - ToolThump</title>
     <meta name="description"
-        content="A free online tool to pick colors from any image. Upload your image and get HEX, RGB, and HSL color codes instantly. Client-side and privacy-focused.">
+        content="A free online tool to pick colors from any image with a zoom magnifier. Upload an image and get HEX, RGB, and HSL color codes instantly.">
     <link rel="canonical" href="https://toolthump.com/tools/images/color-picker/color-picker.html">
     <meta name="robots" content="index, follow">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://toolthump.com/tools/images/color-picker/color-picker.html">
-    <meta property="og:title" content="Image Color Picker - ToolThump">
+    <meta property="og:title" content="Image Color Picker with Magnifier - ToolThump">
     <meta property="og:description"
-        content="A free online tool to pick colors from any image. Upload your image and get HEX, RGB, and HSL color codes instantly.">
-    <meta property="og:image" content="https://toolthump.com/icons/color-picker-icon.png"> <!-- Use a relevant icon -->
+        content="A free online tool to pick colors from any image with a zoom magnifier. Get HEX, RGB, and HSL color codes instantly.">
+    <meta property="og:image" content="https://toolthump.com/icons/color-picker-icon.png">
     <meta property="og:site_name" content="ToolThump" />
 
     <!-- Favicon -->
@@ -28,7 +28,7 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
 
-    <!-- Global Stylesheets (using root-relative paths for robustness) -->
+    <!-- Global Stylesheets -->
     <link rel="stylesheet" href="/css/theme.css">
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/layout.css">
@@ -40,17 +40,16 @@
 </head>
 
 <body>
-    <!-- The header will be loaded here by main.js -->
     <header data-include="main-header"></header>
 
     <div class="content-wrapper">
         <main id="tool-container">
-            <!-- Tool Content -->
             <div id="color-picker-tool" class="tool-content active">
                 <h1>Image Color Picker</h1>
                 <div class="cp-container">
                     <div class="cp-controls">
-                        <p>Upload an image to pick a color from it.</p>
+                        <p>Upload an image, activate the eyedropper, then click or use arrow keys for pixel-perfect
+                            selection.</p>
                         <input type="file" id="cp-image-loader" accept="image/*">
                         <button id="cp-eyedropper-btn" class="btn-secondary" disabled>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -64,7 +63,11 @@
 
                     <div class="cp-main-area">
                         <div class="cp-canvas-wrapper">
-                            <canvas id="cp-canvas"></canvas>
+                            <canvas id="cp-canvas" tabindex="0"></canvas>
+                            <div id="cp-magnifier">
+                                <!-- This div will highlight the selected pixel -->
+                                <div id="cp-magnifier-highlight"></div>
+                            </div>
                             <div id="cp-canvas-placeholder" class="cp-canvas-placeholder">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor"
                                     class="bi bi-image" viewBox="0 0 16 16">
@@ -106,7 +109,6 @@
         <p>© <span id="current-year"></span> ToolThump. All rights reserved.</p>
     </footer>
 
-    <!-- Global and tool-specific scripts -->
     <script src="/main.js"></script>
     <script src="colorPicker.js"></script>
 </body>

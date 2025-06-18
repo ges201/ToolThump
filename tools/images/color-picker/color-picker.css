@@ -55,11 +55,15 @@
     max-height: 70vh;
     object-fit: contain;
     display: none;
-    /* Hidden until an image is loaded */
 }
 
 #cp-canvas.active {
     cursor: crosshair;
+}
+
+#cp-canvas:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: -2px;
 }
 
 .cp-canvas-placeholder {
@@ -79,6 +83,40 @@
     margin-bottom: var(--spacing-md);
     color: var(--bg-medium);
 }
+
+/* === Magnifier Styles === */
+#cp-magnifier {
+    display: none;
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-color);
+    background-color: var(--bg-deep-dark);
+    box-shadow: var(--shadow-soft-md);
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 10;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+/* NEW: Styles for the central pixel highlight box */
+#cp-magnifier-highlight {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    /* This corresponds to the ZOOM_LEVEL in JS */
+    height: 10px;
+    /* This corresponds to the ZOOM_LEVEL in JS */
+    /* Creates a crisp 1px border that is visible on light/dark colors */
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+        inset 0 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
 
 .cp-results-wrapper {
     display: flex;
