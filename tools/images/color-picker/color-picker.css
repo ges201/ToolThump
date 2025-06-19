@@ -2,7 +2,6 @@
 .tool-header {
     display: flex;
     align-items: baseline;
-    /* Aligns the icon's bottom with the text's baseline */
     justify-content: center;
     gap: var(--spacing-md);
     margin-bottom: var(--spacing-lg);
@@ -13,8 +12,6 @@
     height: 48px;
     flex-shrink: 0;
 }
-
-/* No longer need to override the h1's margin */
 
 /* Color Picker Specific Styles */
 
@@ -41,29 +38,40 @@
     text-align: center;
 }
 
-#cp-image-loader {
-    max-width: 300px;
+.cp-action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-md);
 }
+
+.cp-upload-label {
+    gap: var(--spacing-sm);
+    min-width: 220px;
+}
+
+.cp-upload-label:hover,
+.cp-upload-label:focus-within {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-hard);
+}
+
+.cp-upload-label:active {
+    transform: translate(0, 0);
+    box-shadow: var(--shadow-hard-inset);
+}
+
 
 #cp-eyedropper-btn {
     gap: var(--spacing-sm);
     min-width: 220px;
 }
 
-/* 
-  NEW: Styles for the active eyedropper state.
-  Matches the hover state of .btn-secondary but without the 3D effect.
-*/
 #cp-eyedropper-btn.active,
 #cp-eyedropper-btn.active:hover {
     background-color: var(--accent-color-bg-hover);
-    /* Subtle hover background */
     color: var(--accent-color);
-    /* Accent color text */
     border-color: var(--accent-color);
-    /* Accent color border */
-
-    /* Override the 3D effect from base.css */
     transform: none;
     box-shadow: none;
 }
@@ -120,22 +128,50 @@
     color: var(--bg-medium);
 }
 
-/* === Magnifier Styles === */
+/* === Results Area Styles === */
+
+.cp-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.cp-visual-previews {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+
 #cp-magnifier {
-    display: none;
-    position: absolute;
+    position: relative;
     width: 150px;
     height: 150px;
+    flex-shrink: 0;
     border-radius: 50%;
-    border: 3px solid var(--accent-color);
-    background-color: var(--bg-deep-dark);
+    border: 3px solid var(--border-color);
+    background-color: var(--disabled-bg-color);
+    background-size: 0 0;
     box-shadow: var(--shadow-soft-md);
     overflow: hidden;
-    pointer-events: none;
-    z-index: 10;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
+    transition: border-color 0.2s ease;
+    /* MODIFIED: Always visible, using flex to center content */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--text-secondary-color);
+    background-image: none;
+}
+
+/* NEW: Placeholder text inside magnifier */
+#cp-magnifier-placeholder {
+    padding: var(--spacing-sm);
+    font-size: 0.9rem;
 }
 
 #cp-magnifier-highlight {
@@ -147,13 +183,17 @@
     height: 10px;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7),
         inset 0 0 0 2px rgba(0, 0, 0, 0.5);
+    display: none;
+    /* Initially hidden */
 }
 
+/* Logic to show/hide placeholder vs highlight */
+#cp-magnifier.inspecting #cp-magnifier-placeholder {
+    display: none;
+}
 
-.cp-results-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-lg);
+#cp-magnifier.inspecting #cp-magnifier-highlight {
+    display: block;
 }
 
 .cp-color-preview {
@@ -163,7 +203,10 @@
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
     transition: background-color 0.2s ease;
+    /* MODIFIED: Always visible */
+    display: block;
 }
+
 
 .cp-color-details {
     display: flex;
@@ -178,7 +221,6 @@
     margin-bottom: var(--spacing-sm);
 }
 
-/* Wrapper for aligning the input and button */
 .input-wrapper {
     display: flex;
     align-items: center;
@@ -190,7 +232,6 @@
     background-color: var(--bg-deep-dark);
 }
 
-/* The copy button will now inherit hover effects from base.css */
 .copy-btn {
     margin-left: var(--spacing-sm);
     flex-shrink: 0;
@@ -212,13 +253,22 @@
     }
 
     .cp-results-wrapper {
-        flex-direction: row;
-        align-items: flex-start;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cp-visual-previews {
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    #cp-magnifier {
+        width: 120px;
+        height: 120px;
     }
 
     .cp-color-preview {
-        height: 100px;
-        min-width: 100px;
+        height: 120px;
     }
 
     .cp-color-details {

@@ -6,20 +6,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const placeholder = document.getElementById('cp-canvas-placeholder');
     const eyedropperBtn = document.getElementById('cp-eyedropper-btn');
     const magnifier = document.getElementById('cp-magnifier');
-
+    const magnifierPlaceholder = document.getElementById('cp-magnifier-placeholder');
     const colorPreview = document.getElementById('cp-color-preview');
     const hexValueInput = document.getElementById('cp-hex-value');
     const rgbValueInput = document.getElementById('cp-rgb-value');
     const hslValueInput = document.getElementById('cp-hsl-value');
 
+    // Off-screen canvas for the magnifier
+    const magnifierCanvas = document.createElement('canvas');
+    const magnifierCtx = magnifierCanvas.getContext('2d');
+    magnifierCanvas.style.imageRendering = 'pixelated';
+
     // State
     let isEyedropperActive = false;
     let imageLoaded = false;
     let selectionPoint = { x: 0, y: 0 };
+    let originalImage = null;
 
     // Magnifier Constants
-    const MAGNIFIER_SIZE = 150; // px, must match CSS
     const ZOOM_LEVEL = 10;
+
+    // --- Tool State Management ---
+
+    function resetToInitialState() {
+        magnifierPlaceholder.textContent = 'Upload an image to begin.';
+        resetPreviews();
+        clearColorValues();
+    }
+
+    function resetPreviews() {
+        magnifier.classList.remove('inspecting');
+        magnifier.style.backgroundImage = 'none';
+        magnifier.style.borderColor = 'var(--border-color)';
+        colorPreview.style.backgroundColor = 'var(--disabled-bg-color)';
+        if (imageLoaded) {
+            magnifierPlaceholder.textContent = 'Activate eyedropper...';
+        }
+    }
+
+    function clearColorValues() {
+        hexValueInput.value = '';
+        rgbValueInput.value = '';
+        hslValueInput.value = '';
+    }
+
 
     // --- Image Loading ---
     imageLoader.addEventListener('change', (e) => {
@@ -29,16 +59,23 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.onload = (event) => {
                 const img = new Image();
                 img.onload = () => {
+                    originalImage = img;
                     canvas.width = img.width;
                     canvas.height = img.height;
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    magnifierCanvas.width = img.width;
+                    magnifierCanvas.height = img.height;
+                    magnifierCtx.drawImage(img, 0, 0);
 
                     placeholder.classList.add('hidden');
                     canvas.style.display = 'block';
 
                     eyedropperBtn.disabled = false;
                     imageLoaded = true;
-                    selectionPoint = { x: Math.floor(canvas.width / 2), y: Math.floor(canvas.height / 2) };
+
+                    resetPreviews();
+                    clearColorValues();
                     deactivateEyedropper();
                 };
                 img.src = event.target.result;
@@ -54,25 +91,38 @@ document.addEventListener('DOMContentLoaded', () => {
         eyedropperBtn.classList.add('active');
         canvas.focus();
         eyedropperBtn.querySelector('span').textContent = 'Click or Use Arrows';
-        updateColorInfoFromPoint(selectionPoint.x, selectionPoint.y);
     }
 
     function deactivateEyedropper() {
         isEyedropperActive = false;
         canvas.classList.remove('active');
         eyedropperBtn.classList.remove('active');
-        magnifier.style.display = 'none'; // <<< MODIFIED: Explicitly hide magnifier
         eyedropperBtn.querySelector('span').textContent = 'Activate Eyedropper';
+        magnifier.classList.remove('inspecting');
     }
 
     eyedropperBtn.addEventListener('click', () => {
         if (!imageLoaded) return;
-        isEyedropperActive ? deactivateEyedropper() : activateEyedropper();
+        if (isEyedropperActive) {
+            deactivateEyedropper();
+            // MODIFIED: Also reset the previews, treating it as a "cancel" action.
+            resetPreviews();
+        } else {
+            activateEyedropper();
+        }
     });
 
     // --- Event Listeners for Color Selection ---
+    function startInspection() {
+        if (!magnifier.classList.contains('inspecting')) {
+            magnifier.classList.add('inspecting');
+        }
+    }
+
     canvas.addEventListener('mousemove', (e) => {
-        if (!imageLoaded) return;
+        if (!imageLoaded || !isEyedropperActive) return;
+
+        startInspection();
 
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
@@ -81,87 +131,73 @@ document.addEventListener('DOMContentLoaded', () => {
         selectionPoint.x = Math.floor((e.clientX - rect.left) * scaleX);
         selectionPoint.y = Math.floor((e.clientY - rect.top) * scaleY);
 
-        // <<< MODIFIED: Only show and update magnifier if eyedropper is active
-        if (isEyedropperActive) {
-            magnifier.style.display = 'block';
-            updateMagnifier(selectionPoint.x, selectionPoint.y, e.clientX, e.clientY);
-            updateColorInfoFromPoint(selectionPoint.x, selectionPoint.y);
-        }
+        updateMagnifier(selectionPoint.x, selectionPoint.y);
+        updateColorInfoFromPoint(selectionPoint.x, selectionPoint.y);
     });
 
-    canvas.addEventListener('mouseleave', () => {
-        // <<< MODIFIED: This is now the only place that hides the magnifier on mouse out
-        if (imageLoaded) {
-            magnifier.style.display = 'none';
-        }
-    });
-
-    // <<< REMOVED: The old 'mouseenter' listener is no longer needed.
-    // The 'mousemove' listener now handles showing the magnifier correctly.
-
+    // MODIFIED: This is the core change.
     canvas.addEventListener('click', () => {
         if (!isEyedropperActive || !imageLoaded) return;
+
+        // Finalize color selection at the current point.
         updateColorInfoFromPoint(selectionPoint.x, selectionPoint.y);
-        deactivateEyedropper();
+
+        // Deactivate the eyedropper to "lock" the selection, but keep the visuals.
+        // This makes the selection result persistent until the next action.
+        isEyedropperActive = false;
+        canvas.classList.remove('active'); // Stop the crosshair cursor.
+        eyedropperBtn.classList.remove('active'); // Reset the button's visual state.
+        eyedropperBtn.querySelector('span').textContent = 'Activate Eyedropper';
+
+        // By not calling deactivateEyedropper() or resetPreviews(), the magnifier
+        // and color swatches remain visible with the selected color.
     });
+
 
     // --- Keyboard Control ---
     canvas.addEventListener('keydown', (e) => {
         if (!isEyedropperActive) return;
 
+        const validKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+        if (!validKeys.includes(e.key)) return;
+
         e.preventDefault();
-        const { x, y } = selectionPoint;
-        let newX = x, newY = y;
+        startInspection();
 
-        if (e.key === 'ArrowUp') newY = Math.max(0, y - 1);
-        else if (e.key === 'ArrowDown') newY = Math.min(canvas.height - 1, y + 1);
-        else if (e.key === 'ArrowLeft') newX = Math.max(0, x - 1);
-        else if (e.key === 'ArrowRight') newX = Math.min(canvas.width - 1, x + 1);
+        let { x, y } = selectionPoint;
 
-        if (newX !== x || newY !== y) {
-            selectionPoint = { x: newX, y: newY };
+        if (e.key === 'ArrowUp') y = Math.max(0, y - 1);
+        else if (e.key === 'ArrowDown') y = Math.min(canvas.height - 1, y + 1);
+        else if (e.key === 'ArrowLeft') x = Math.max(0, x - 1);
+        else if (e.key === 'ArrowRight') x = Math.min(canvas.width - 1, x + 1);
 
-            const rect = canvas.getBoundingClientRect();
-            const canvasScreenX = (newX / canvas.width) * rect.width + rect.left;
-            const canvasScreenY = (newY / canvas.height) * rect.height + rect.top;
-
-            magnifier.style.display = 'block'; // Ensure it's visible during keyboard use
-            updateMagnifier(newX, newY, canvasScreenX, canvasScreenY);
-            updateColorInfoFromPoint(newX, newY);
-        }
+        selectionPoint = { x, y };
+        updateMagnifier(x, y);
+        updateColorInfoFromPoint(x, y);
     });
 
     // --- Core Update Functions ---
     function updateColorInfoFromPoint(x, y) {
-        const pixel = ctx.getImageData(x, y, 1, 1).data;
+        const pixel = magnifierCtx.getImageData(x, y, 1, 1).data;
         const [r, g, b] = pixel;
         updateColorDisplay(r, g, b);
     }
 
-    function updateMagnifier(x, y, mouseX, mouseY) {
-        const OFFSET = 25;
-        const HALF_MAG_SIZE = MAGNIFIER_SIZE / 2;
-
-        magnifier.style.top = `${mouseY - HALF_MAG_SIZE}px`;
-
-        if (mouseX + OFFSET + MAGNIFIER_SIZE < window.innerWidth) {
-            magnifier.style.left = `${mouseX + OFFSET}px`;
-        } else {
-            magnifier.style.left = `${mouseX - MAGNIFIER_SIZE - OFFSET}px`;
-        }
-
-        magnifier.style.backgroundImage = `url(${canvas.toDataURL()})`;
+    function updateMagnifier(x, y) {
+        if (!originalImage) return;
+        const magSize = magnifier.offsetWidth;
+        const halfMagSize = magSize / 2;
+        magnifier.style.backgroundImage = `url(${originalImage.src})`;
         magnifier.style.backgroundSize = `${canvas.width * ZOOM_LEVEL}px ${canvas.height * ZOOM_LEVEL}px`;
-
-        const bgX = -((x + 0.5) * ZOOM_LEVEL - HALF_MAG_SIZE);
-        const bgY = -((y + 0.5) * ZOOM_LEVEL - HALF_MAG_SIZE);
+        const bgX = -((x + 0.5) * ZOOM_LEVEL - halfMagSize);
+        const bgY = -((y + 0.5) * ZOOM_LEVEL - halfMagSize);
         magnifier.style.backgroundPosition = `${bgX}px ${bgY}px`;
     }
 
     function updateColorDisplay(r, g, b) {
         const hex = rgbToHex(r, g, b);
         const hsl = rgbToHsl(r, g, b);
-
+        magnifier.style.borderColor = hex;
         colorPreview.style.backgroundColor = hex;
         hexValueInput.value = hex;
         rgbValueInput.value = `rgb(${r}, ${g}, ${b})`;
@@ -204,4 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Run the initialization function when the page is ready
+    resetToInitialState();
 });
