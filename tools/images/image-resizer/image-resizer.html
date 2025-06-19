@@ -82,6 +82,62 @@
     <link rel="shortcut icon" href="/favicon.ico">
     <meta name="msapplication-TileColor" content="#1a1c2c">
     <meta name="theme-color" content="#1a1c2c">
+
+    <!-- STYLES FOR TIPS SECTION -->
+    <style>
+        .ir-tips-section h2 {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .ir-tips-section h2 .section-icon {
+            font-size: 1.2em;
+            color: var(--accent-color);
+        }
+
+        .ir-tips-list {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: var(--spacing-lg);
+            color: var(--text-primary-color);
+        }
+
+        .ir-tip-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-lg);
+            background-color: var(--bg-deep-dark);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .ir-tip-icon {
+            font-size: 1.6em;
+            margin-right: var(--spacing-md);
+            line-height: 1.4;
+            color: var(--accent-color);
+            flex-shrink: 0;
+            margin-top: -2px;
+        }
+
+        .ir-tip-text {
+            flex-grow: 1;
+        }
+
+        .ir-tip-text strong {
+            display: block;
+            font-size: 1.1em;
+            margin-bottom: var(--spacing-xs);
+            color: var(--text-heading-color);
+        }
+
+        #image-resizer-tips p {
+            line-height: 1.7;
+            margin-bottom: var(--spacing-md);
+        }
+    </style>
 </head>
 
 <body>
@@ -98,7 +154,7 @@
                 </p>
 
                 <div class="tool-content-area">
-                    <!-- Image Preview Area - MOVED TO TOP AND MADE LARGER -->
+                    <!-- Image Preview Area -->
                     <div class="ir-preview-section ir-section ir-section-fullwidth-preview">
                         <h2 class="ir-section-title sr-only">Preview & Crop Area</h2>
                         <div class="ir-image-preview-wrapper">
@@ -227,6 +283,57 @@
                     </div> <!-- /ir-controls-grid -->
                 </div> <!-- /tool-content-area -->
             </section>
+
+            <!-- REWRITTEN SECTION -->
+            <section id="image-resizer-tips" class="tool-content active ir-tips-section">
+                <h2><span class="section-icon">💡</span>Getting the Best Results</h2>
+                <p>Cropping and resizing are powerful tools for optimizing your images. Here are a few tips to ensure
+                    your final images look sharp and professional.</p>
+                <ul class="ir-tips-list">
+                    <li class="ir-tip-item">
+                        <span class="ir-tip-icon">🎯</span>
+                        <div class="ir-tip-text">
+                            <strong>Frame Your Subject:</strong> Use the crop tool to improve your image's composition.
+                            Drag the corners to remove distracting backgrounds and focus the viewer's attention on the
+                            most important part of the photo.
+                        </div>
+                    </li>
+                    <li class="ir-tip-item">
+                        <span class="ir-tip-icon">📏</span>
+                        <div class="ir-tip-text">
+                            <strong>Choose Your Mode: Ratio vs. Free:</strong>
+                            Use <strong>Fixed Ratio</strong> mode to lock proportions (like 1:1 Square or 16:9
+                            Widescreen), perfect for social media profiles or thumbnails. Use <strong>Free Crop</strong>
+                            when you need exact pixel dimensions (e.g., a 300x250 banner).
+                        </div>
+                    </li>
+                    <li class="ir-tip-item">
+                        <span class="ir-tip-icon">✨</span>
+                        <div class="ir-tip-text">
+                            <strong>Start High, Go Low:</strong> For the best quality, always start with a
+                            high-resolution image and make it smaller. Enlarging a small, cropped area to a much larger
+                            size will result in a loss of sharpness and clarity.
+                        </div>
+                    </li>
+                    <li class="ir-tip-item">
+                        <span class="ir-tip-icon">🌐</span>
+                        <div class="ir-tip-text">
+                            <strong>Resize for the Web:</strong> After cropping, ensure your final output dimensions are
+                            suitable for where the image will be used. Smaller images load faster on websites, improving
+                            user experience and SEO. Don't use a 4000px wide image where a 1200px one will do.
+                        </div>
+                    </li>
+                    <li class="ir-tip-item">
+                        <span class="ir-tip-icon">🛡️</span>
+                        <div class="ir-tip-text">
+                            <strong>Your Images are Safe:</strong> All cropping and resizing happens in your browser.
+                            Your images are never uploaded to our servers, ensuring your privacy.
+                        </div>
+                    </li>
+                </ul>
+            </section>
+            <!-- END REWRITTEN SECTION -->
+
         </main>
     </div>
 
