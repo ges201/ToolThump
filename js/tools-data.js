@@ -70,7 +70,7 @@ const toolsData = [
         name: "Image Color Picker",
         category: "Image Tools",
         description: "Pick a color from an image to get its HEX, RGB, and HSL values.",
-        icon: "/icons/color-picker-icon.png", // You need to create this icon
+        icon: "/icons/color-picker-icon.png",
         htmlPath: "/tools/images/color-picker/color-picker.html",
         cssPaths: ["/tools/images/color-picker/color-picker.css"],
         jsPath: "/tools/images/color-picker/colorPicker.js",
@@ -81,7 +81,7 @@ const toolsData = [
         name: "QR Code Generator",
         category: "Data Tools",
         description: "Generate QR codes for URLs, text, and more.",
-        icon: "/icons/qr-code-color.png",
+        icon: "/icons/qr-code-icon.png",
         htmlPath: "/tools/data/qr-code-generator/qr-code-generator.html",
         cssPaths: ["/tools/data/qr-code-generator/qr-code-generator.css"],
         jsPath: "/tools/data/qr-code-generator/qrCodeGenerator.js",
