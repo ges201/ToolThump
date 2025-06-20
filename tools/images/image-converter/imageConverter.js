@@ -17,6 +17,11 @@ const customFolderText = document.getElementById("customFolderText")
 const singleFileGroup = document.getElementById("singleFileGroup")
 const folderGroup = document.getElementById("folderGroup")
 
+// ADDED: Folder options
+const retainStructureContainer = document.getElementById("retainStructureContainer");
+const retainFolderStructureCheckbox = document.getElementById("retainFolderStructure");
+
+
 const outputFormatSelect = document.getElementById("outputFormatSelect")
 const convertBtn = document.getElementById("convertBtn")
 const statusArea = document.getElementById("statusArea")
@@ -39,6 +44,9 @@ function showStatus(message, type = "info") {
 }
 
 function updateUIState() {
+    const isFolderMode = currentConversionType === 'folder' && selectedFiles.length > 0;
+    retainStructureContainer.style.display = isFolderMode ? 'flex' : 'none';
+
     customSingleFileText.classList.toggle(
         placeholderClass,
         customSingleFileText.textContent === defaultSingleFileText
@@ -276,6 +284,8 @@ convertBtn.addEventListener("click", async () => {
         } else if (currentConversionType === "folder") {
             const zip = new JSZip()
             let convertedCount = 0
+            const retainStructure = retainFolderStructureCheckbox.checked; // Checkbox state
+
             showStatus(
                 `Processing ${selectedFiles.length} images for ZIP archive...`,
                 "info"
@@ -297,15 +307,16 @@ convertBtn.addEventListener("click", async () => {
                         )
                         const newFileName = `${originalNameWithoutExt}.${outputExtension}`
 
-                        let pathInZip = newFileName
-                        // Only create directory structure if relativePath indicates it (i.e., contains '/')
-                        if (relativePath && relativePath.includes('/') && relativePath !== file.name) {
+                        // MODIFIED: Determine path in ZIP based on checkbox
+                        let pathInZip = newFileName;
+                        if (retainStructure && relativePath && relativePath.includes('/') && relativePath !== file.name) {
                             const dirPath = relativePath.substring(
                                 0,
                                 relativePath.lastIndexOf("/") + 1
                             )
                             pathInZip = dirPath + newFileName
                         }
+
                         zip.file(pathInZip, convertedBlob)
                         convertedCount++
                     } else {

@@ -130,6 +130,14 @@
                     </div>
                     <input type="file" id="folderInput" class="sr-only" webkitdirectory directory multiple
                         accept="image/jpeg,image/png,image/gif,image/webp">
+
+                    <!-- ADDED: Checkbox for retaining folder structure -->
+                    <div class="ic-checkbox-container" id="retainStructureContainer" style="display: none;">
+                        <input type="checkbox" id="retainFolderStructure" class="ic-checkbox" checked>
+                        <label for="retainFolderStructure" class="ic-checkbox-label">Retain folder structure</label>
+                        <span class="ic-input-hint">If unchecked, all images will be saved in a single folder.</span>
+                    </div>
+
                     <small class="ic-input-hint">Select a folder. JPG, PNG, GIF, or WEBP images in it (and subfolders)
                         will be processed.
                         <span class="ic-folder-note">
