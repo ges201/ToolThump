@@ -12,19 +12,89 @@ document.addEventListener('DOMContentLoaded', () => {
     const rgbValueInput = document.getElementById('cp-rgb-value');
     const hslValueInput = document.getElementById('cp-hsl-value');
 
-    // Off-screen canvas for the magnifier
+    // --- Canvas and Context Setup ---
     const magnifierCanvas = document.createElement('canvas');
     const magnifierCtx = magnifierCanvas.getContext('2d');
-    magnifierCanvas.style.imageRendering = 'pixelated';
+    // Ensure both canvases have image smoothing disabled for crisp pixels
+    ctx.imageSmoothingEnabled = false;
+    magnifierCtx.imageSmoothingEnabled = false;
+
 
     // State
     let isEyedropperActive = false;
     let imageLoaded = false;
     let selectionPoint = { x: 0, y: 0 };
     let originalImage = null;
+    let imageRenderInfo = { dx: 0, dy: 0, dWidth: 0, dHeight: 0, scale: 1 };
+
 
     // Magnifier Constants
     const ZOOM_LEVEL = 10;
+
+    // --- Image Drawing and Scaling ---
+
+    // REVISED AND FINAL: This function now correctly handles device pixel ratio without causing layout shifts.
+    function drawImageToCanvas() {
+        if (!originalImage || !canvas) return;
+
+        const wrapper = canvas.parentElement;
+        const rect = wrapper.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+
+        // Set the canvas's internal resolution based on its container's static size and the device pixel ratio.
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+
+        // Set the canvas's display size via CSS to ensure it fits its container perfectly.
+        canvas.style.width = `${rect.width}px`;
+        canvas.style.height = `${rect.height}px`;
+
+        // Always ensure image smoothing is off after any canvas resize.
+        ctx.imageSmoothingEnabled = false;
+
+        const imgRatio = originalImage.width / originalImage.height;
+        const canvasRatio = canvas.width / canvas.height;
+
+        let dWidth, dHeight, scale;
+
+        if (imgRatio > canvasRatio) { // Image is wider than canvas
+            dWidth = canvas.width;
+            scale = canvas.width / originalImage.width;
+            dHeight = originalImage.height * scale;
+        } else { // Image is taller than or equal to canvas aspect ratio
+            dHeight = canvas.height;
+            scale = canvas.height / originalImage.height;
+            dWidth = originalImage.width * scale;
+        }
+
+        const dx = (canvas.width - dWidth) / 2;
+        const dy = (canvas.height - dHeight) / 2;
+
+        // Store render info for coordinate mapping. This needs to account for the DPR scaling.
+        imageRenderInfo = {
+            dWidth: dWidth / dpr,
+            dHeight: dHeight / dpr,
+            dx: dx / dpr,
+            dy: dy / dpr,
+            scale: (scale / dpr)
+        };
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(originalImage, dx, dy, dWidth, dHeight);
+    }
+
+    // REMOVED: The faulty ResizeObserver has been removed.
+    // ADDED: A standard window resize listener to redraw the canvas when the viewport changes.
+    window.addEventListener('resize', () => {
+        if (imageLoaded) {
+            drawImageToCanvas();
+            // After redraw, if eyedropper is active, re-center magnifier on the current point
+            if (isEyedropperActive && magnifier.classList.contains('inspecting')) {
+                updateMagnifier(selectionPoint.x, selectionPoint.y);
+            }
+        }
+    });
+
 
     // --- Tool State Management ---
 
@@ -60,17 +130,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const img = new Image();
                 img.onload = () => {
                     originalImage = img;
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
                     magnifierCanvas.width = img.width;
                     magnifierCanvas.height = img.height;
+                    magnifierCtx.imageSmoothingEnabled = false;
                     magnifierCtx.drawImage(img, 0, 0);
+
+                    // This is the first draw. It will happen once, instantly.
+                    drawImageToCanvas();
 
                     placeholder.classList.add('hidden');
                     canvas.style.display = 'block';
-
                     eyedropperBtn.disabled = false;
                     imageLoaded = true;
 
@@ -105,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!imageLoaded) return;
         if (isEyedropperActive) {
             deactivateEyedropper();
-            // MODIFIED: Also reset the previews, treating it as a "cancel" action.
             resetPreviews();
         } else {
             activateEyedropper();
@@ -122,35 +191,36 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.addEventListener('mousemove', (e) => {
         if (!imageLoaded || !isEyedropperActive) return;
 
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        if (mouseX < imageRenderInfo.dx || mouseX > imageRenderInfo.dx + imageRenderInfo.dWidth ||
+            mouseY < imageRenderInfo.dy || mouseY > imageRenderInfo.dy + imageRenderInfo.dHeight) {
+            return;
+        }
+
         startInspection();
 
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
+        const xOnImage = mouseX - imageRenderInfo.dx;
+        const yOnImage = mouseY - imageRenderInfo.dy;
 
-        selectionPoint.x = Math.floor((e.clientX - rect.left) * scaleX);
-        selectionPoint.y = Math.floor((e.clientY - rect.top) * scaleY);
+        let originalX = Math.round(xOnImage / imageRenderInfo.scale);
+        let originalY = Math.round(yOnImage / imageRenderInfo.scale);
 
+        originalX = Math.max(0, Math.min(originalX, originalImage.width - 1));
+        originalY = Math.max(0, Math.min(originalY, originalImage.height - 1));
+
+        selectionPoint = { x: originalX, y: originalY };
         updateMagnifier(selectionPoint.x, selectionPoint.y);
         updateColorInfoFromPoint(selectionPoint.x, selectionPoint.y);
     });
 
-    // MODIFIED: This is the core change.
     canvas.addEventListener('click', () => {
         if (!isEyedropperActive || !imageLoaded) return;
-
-        // Finalize color selection at the current point.
         updateColorInfoFromPoint(selectionPoint.x, selectionPoint.y);
-
-        // Deactivate the eyedropper to "lock" the selection, but keep the visuals.
-        // This makes the selection result persistent until the next action.
-        isEyedropperActive = false;
-        canvas.classList.remove('active'); // Stop the crosshair cursor.
-        eyedropperBtn.classList.remove('active'); // Reset the button's visual state.
-        eyedropperBtn.querySelector('span').textContent = 'Activate Eyedropper';
-
-        // By not calling deactivateEyedropper() or resetPreviews(), the magnifier
-        // and color swatches remain visible with the selected color.
+        deactivateEyedropper();
+        magnifier.style.backgroundImage = 'none';
     });
 
 
@@ -167,9 +237,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let { x, y } = selectionPoint;
 
         if (e.key === 'ArrowUp') y = Math.max(0, y - 1);
-        else if (e.key === 'ArrowDown') y = Math.min(canvas.height - 1, y + 1);
+        else if (e.key === 'ArrowDown') y = Math.min(originalImage.height - 1, y + 1);
         else if (e.key === 'ArrowLeft') x = Math.max(0, x - 1);
-        else if (e.key === 'ArrowRight') x = Math.min(canvas.width - 1, x + 1);
+        else if (e.key === 'ArrowRight') x = Math.min(originalImage.width - 1, x + 1);
 
         selectionPoint = { x, y };
         updateMagnifier(x, y);
@@ -185,12 +255,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateMagnifier(x, y) {
         if (!originalImage) return;
-        const magSize = magnifier.offsetWidth;
+
+        // MODIFIED: Use `clientWidth` instead of `offsetWidth`.
+        // `clientWidth` gives the inner dimension (content + padding), which correctly
+        // aligns with the default `background-origin: padding-box`. This ensures
+        // the background position calculation is based on the correct reference frame.
+        const magSize = magnifier.clientWidth;
         const halfMagSize = magSize / 2;
+
         magnifier.style.backgroundImage = `url(${originalImage.src})`;
-        magnifier.style.backgroundSize = `${canvas.width * ZOOM_LEVEL}px ${canvas.height * ZOOM_LEVEL}px`;
-        const bgX = -((x + 0.5) * ZOOM_LEVEL - halfMagSize);
-        const bgY = -((y + 0.5) * ZOOM_LEVEL - halfMagSize);
+        magnifier.style.backgroundSize = `${originalImage.width * ZOOM_LEVEL}px ${originalImage.height * ZOOM_LEVEL}px`;
+
+        // MODIFIED: Simplified the calculation for better readability.
+        // The goal is to align the center of the target pixel on the zoomed background
+        // with the center of the magnifier's visible area.
+        const bgX = halfMagSize - (x + 0.5) * ZOOM_LEVEL;
+        const bgY = halfMagSize - (y + 0.5) * ZOOM_LEVEL;
+
         magnifier.style.backgroundPosition = `${bgX}px ${bgY}px`;
     }
 

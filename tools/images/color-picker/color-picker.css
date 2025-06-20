@@ -88,6 +88,8 @@
     border-radius: var(--border-radius-md);
     border: 1px solid var(--border-color);
     min-height: 400px;
+    /* MODIFIED: Add a max-height to prevent infinite growth with tall images. */
+    max-height: 75vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -95,10 +97,12 @@
 }
 
 #cp-canvas {
-    max-width: 100%;
-    max-height: 70vh;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
     display: none;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
 }
 
 #cp-canvas.active {
@@ -159,7 +163,6 @@
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
     transition: border-color 0.2s ease;
-    /* MODIFIED: Always visible, using flex to center content */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -168,7 +171,6 @@
     background-image: none;
 }
 
-/* NEW: Placeholder text inside magnifier */
 #cp-magnifier-placeholder {
     padding: var(--spacing-sm);
     font-size: 0.9rem;
@@ -184,10 +186,8 @@
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7),
         inset 0 0 0 2px rgba(0, 0, 0, 0.5);
     display: none;
-    /* Initially hidden */
 }
 
-/* Logic to show/hide placeholder vs highlight */
 #cp-magnifier.inspecting #cp-magnifier-placeholder {
     display: none;
 }
@@ -203,7 +203,6 @@
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
     transition: background-color 0.2s ease;
-    /* MODIFIED: Always visible */
     display: block;
 }
 
