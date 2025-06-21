@@ -13,11 +13,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const hslValueInput = document.getElementById('cp-hsl-value');
 
     // --- Canvas and Context Setup ---
-    const magnifierCanvas = document.createElement('canvas');
-    const magnifierCtx = magnifierCanvas.getContext('2d');
-    // Ensure both canvases have image smoothing disabled for crisp pixels
+
+    // Off-screen canvas to hold the original, full-resolution image for accurate color data
+    const fullResCanvas = document.createElement('canvas');
+    const fullResCtx = fullResCanvas.getContext('2d');
+
+    // A small, dedicated canvas for rendering the magnifier's zoomed view efficiently
+    const magnifierDisplayCanvas = document.createElement('canvas');
+    const magnifierDisplayCtx = magnifierDisplayCanvas.getContext('2d');
+
+    // Ensure all canvases have image smoothing disabled for crisp pixels
     ctx.imageSmoothingEnabled = false;
-    magnifierCtx.imageSmoothingEnabled = false;
+    fullResCtx.imageSmoothingEnabled = false;
+    magnifierDisplayCtx.imageSmoothingEnabled = false;
 
 
     // State
@@ -33,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Image Drawing and Scaling ---
 
-    // REVISED AND FINAL: This function now correctly handles device pixel ratio without causing layout shifts.
     function drawImageToCanvas() {
         if (!originalImage || !canvas) return;
 
@@ -41,15 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const rect = wrapper.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
 
-        // Set the canvas's internal resolution based on its container's static size and the device pixel ratio.
         canvas.width = rect.width * dpr;
         canvas.height = rect.height * dpr;
 
-        // Set the canvas's display size via CSS to ensure it fits its container perfectly.
         canvas.style.width = `${rect.width}px`;
         canvas.style.height = `${rect.height}px`;
 
-        // Always ensure image smoothing is off after any canvas resize.
         ctx.imageSmoothingEnabled = false;
 
         const imgRatio = originalImage.width / originalImage.height;
@@ -57,11 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let dWidth, dHeight, scale;
 
-        if (imgRatio > canvasRatio) { // Image is wider than canvas
+        if (imgRatio > canvasRatio) {
             dWidth = canvas.width;
             scale = canvas.width / originalImage.width;
             dHeight = originalImage.height * scale;
-        } else { // Image is taller than or equal to canvas aspect ratio
+        } else {
             dHeight = canvas.height;
             scale = canvas.height / originalImage.height;
             dWidth = originalImage.width * scale;
@@ -70,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const dx = (canvas.width - dWidth) / 2;
         const dy = (canvas.height - dHeight) / 2;
 
-        // Store render info for coordinate mapping. This needs to account for the DPR scaling.
         imageRenderInfo = {
             dWidth: dWidth / dpr,
             dHeight: dHeight / dpr,
@@ -83,12 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.drawImage(originalImage, dx, dy, dWidth, dHeight);
     }
 
-    // REMOVED: The faulty ResizeObserver has been removed.
-    // ADDED: A standard window resize listener to redraw the canvas when the viewport changes.
     window.addEventListener('resize', () => {
         if (imageLoaded) {
             drawImageToCanvas();
-            // After redraw, if eyedropper is active, re-center magnifier on the current point
             if (isEyedropperActive && magnifier.classList.contains('inspecting')) {
                 updateMagnifier(selectionPoint.x, selectionPoint.y);
             }
@@ -131,12 +131,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 img.onload = () => {
                     originalImage = img;
 
-                    magnifierCanvas.width = img.width;
-                    magnifierCanvas.height = img.height;
-                    magnifierCtx.imageSmoothingEnabled = false;
-                    magnifierCtx.drawImage(img, 0, 0);
+                    // Load full-res image into its dedicated canvas for picking
+                    fullResCanvas.width = img.width;
+                    fullResCanvas.height = img.height;
+                    fullResCtx.imageSmoothingEnabled = false;
+                    fullResCtx.drawImage(img, 0, 0);
 
-                    // This is the first draw. It will happen once, instantly.
+                    // Setup the magnifier's dedicated canvas
+                    const magElementSize = magnifier.clientWidth;
+                    magnifierDisplayCanvas.width = magElementSize;
+                    magnifierDisplayCanvas.height = magElementSize;
+                    magnifierDisplayCtx.imageSmoothingEnabled = false;
+
                     drawImageToCanvas();
 
                     placeholder.classList.add('hidden');
@@ -220,7 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isEyedropperActive || !imageLoaded) return;
         updateColorInfoFromPoint(selectionPoint.x, selectionPoint.y);
         deactivateEyedropper();
-        magnifier.style.backgroundImage = 'none';
     });
 
 
@@ -248,32 +253,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Core Update Functions ---
     function updateColorInfoFromPoint(x, y) {
-        const pixel = magnifierCtx.getImageData(x, y, 1, 1).data;
+        // Get pixel data from the full-resolution offscreen canvas for perfect accuracy
+        const pixel = fullResCtx.getImageData(x, y, 1, 1).data;
         const [r, g, b] = pixel;
         updateColorDisplay(r, g, b);
     }
 
+    /**
+     * ALIGNMENT FIX: This function now centers the source sampling area on the
+     * middle of the target pixel (by adding 0.5) to ensure the highlight is perfect.
+     */
     function updateMagnifier(x, y) {
         if (!originalImage) return;
 
-        // MODIFIED: Use `clientWidth` instead of `offsetWidth`.
-        // `clientWidth` gives the inner dimension (content + padding), which correctly
-        // aligns with the default `background-origin: padding-box`. This ensures
-        // the background position calculation is based on the correct reference frame.
         const magSize = magnifier.clientWidth;
-        const halfMagSize = magSize / 2;
+        
+        // The size of the source area on the full-res canvas to grab pixels from
+        const sourcePixelArea = magSize / ZOOM_LEVEL;
+        const halfSourcePixelArea = sourcePixelArea / 2;
 
-        magnifier.style.backgroundImage = `url(${originalImage.src})`;
-        magnifier.style.backgroundSize = `${originalImage.width * ZOOM_LEVEL}px ${originalImage.height * ZOOM_LEVEL}px`;
+        magnifierDisplayCtx.clearRect(0, 0, magSize, magSize);
+        magnifierDisplayCtx.fillStyle = '#CCCCCC';
+        magnifierDisplayCtx.fillRect(0, 0, magSize, magSize);
+        
+        // Draw the zoomed portion from the full-res offscreen canvas to our small magnifier canvas
+        magnifierDisplayCtx.drawImage(
+            fullResCanvas,
+            // By sampling from the pixel's center (x + 0.5), we ensure perfect alignment
+            (x + 0.5) - halfSourcePixelArea,
+            (y + 0.5) - halfSourcePixelArea,
+            sourcePixelArea,
+            sourcePixelArea,
+            0,
+            0,
+            magSize,
+            magSize
+        );
 
-        // MODIFIED: Simplified the calculation for better readability.
-        // The goal is to align the center of the target pixel on the zoomed background
-        // with the center of the magnifier's visible area.
-        const bgX = halfMagSize - (x + 0.5) * ZOOM_LEVEL;
-        const bgY = halfMagSize - (y + 0.5) * ZOOM_LEVEL;
-
-        magnifier.style.backgroundPosition = `${bgX}px ${bgY}px`;
+        // Use the small, pre-rendered canvas as the background for the magnifier element
+        magnifier.style.backgroundImage = `url(${magnifierDisplayCanvas.toDataURL()})`;
+        magnifier.style.backgroundSize = 'cover';
+        magnifier.style.backgroundPosition = 'center';
     }
+
 
     function updateColorDisplay(r, g, b) {
         const hex = rgbToHex(r, g, b);

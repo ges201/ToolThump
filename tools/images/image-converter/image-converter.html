@@ -96,154 +96,111 @@
     <header data-include="main-header"></header>
 
     <div class="content-wrapper">
-        <main id="tool-container" class="tool-content active">
-            <h1>Image Converter</h1>
-            <p class="tool-description">
-                Convert your images between popular formats like JPG, PNG, WEBP, and GIF.
-                Process single files or entire folders right in your browser—quickly and privately, no uploads required.
-            </p>
+        <main id="tool-container">
+            <!-- Main tool UI is in its own box -->
+            <section class="tool-content active">
+                <h1>Image Converter</h1>
+                <p class="tool-description">
+                    Convert images between JPG, PNG, WEBP, and GIF. Process single files or entire folders right in your
+                    browser.
+                </p>
 
-            <section class="ic-section ic-input-selection-section">
-                <h3>1. Select Image(s)</h3>
-                <div class="ic-input-group" id="singleFileGroup">
-                    <label for="singleFile" class="ic-label">Single Image:</label>
-                    <div class="ic-file-input-controls">
-                        <button type="button" id="customSingleFileBtn"
-                            class="ic-button ic-file-select-btn btn-secondary">Choose
-                            File</button>
-                        <span id="customSingleFileText" class="ic-file-select-text text-placeholder"
-                            aria-live="polite">No file selected</span>
+                <div class="ic-options-grid">
+                    <div class="ic-option-group" id="singleFileGroup">
+                        <label for="customSingleFileBtn" class="ic-label">1. Select a Single Image</label>
+                        <div class="ic-file-input-controls">
+                            <button type="button" id="customSingleFileBtn" class="btn-secondary">Choose File</button>
+                            <span id="customSingleFileText" class="ic-file-select-text text-placeholder"
+                                aria-live="polite">No file chosen</span>
+                        </div>
+                        <input type="file" id="singleFile" class="sr-only"
+                            accept="image/jpeg,image/png,image/gif,image/webp">
                     </div>
-                    <input type="file" id="singleFile" class="sr-only"
-                        accept="image/jpeg,image/png,image/gif,image/webp">
-                    <small class="ic-input-hint">Select a single JPG, PNG, GIF, or WEBP image.</small>
+
+                    <div class="ic-option-group" id="folderGroup">
+                        <label for="customFolderBtn" class="ic-label">...or a Folder of Images</label>
+                        <div class="ic-file-input-controls">
+                            <button type="button" id="customFolderBtn" class="btn-secondary">Choose Folder</button>
+                            <span id="customFolderText" class="ic-file-select-text text-placeholder"
+                                aria-live="polite">No folder chosen</span>
+                        </div>
+                        <input type="file" id="folderInput" class="sr-only" webkitdirectory directory multiple
+                            accept="image/jpeg,image/png,image/gif,image/webp">
+                    </div>
                 </div>
 
-                <div class="ic-input-group" id="folderGroup">
-                    <label for="folderInput" class="ic-label">Folder of Images:</label>
-                    <div class="ic-file-input-controls">
-                        <button type="button" id="customFolderBtn"
-                            class="ic-button ic-file-select-btn btn-secondary">Choose
-                            Folder</button>
-                        <span id="customFolderText" class="ic-file-select-text text-placeholder" aria-live="polite">No
-                            folder selected</span>
-                    </div>
-                    <input type="file" id="folderInput" class="sr-only" webkitdirectory directory multiple
-                        accept="image/jpeg,image/png,image/gif,image/webp">
-
-                    <!-- ADDED: Checkbox for retaining folder structure -->
-                    <div class="ic-checkbox-container" id="retainStructureContainer" style="display: none;">
+                <div id="folderOptionsContainer" class="ic-folder-options" style="display: none;">
+                    <div class="ic-checkbox-container">
                         <input type="checkbox" id="retainFolderStructure" class="ic-checkbox" checked>
-                        <label for="retainFolderStructure" class="ic-checkbox-label">Retain folder structure</label>
-                        <span class="ic-input-hint">If unchecked, all images will be saved in a single folder.</span>
+                        <label for="retainFolderStructure" class="ic-checkbox-label">Retain folder structure in
+                            ZIP</label>
                     </div>
+                </div>
 
-                    <small class="ic-input-hint">Select a folder. JPG, PNG, GIF, or WEBP images in it (and subfolders)
-                        will be processed.
-                        <span class="ic-folder-note">
-                            <svg class="ic-folder-note-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd"
-                                    d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span class="ic-folder-note-text">Folder selection works best on desktop. On mobile, this
-                                may act as a multiple file selector.</span>
-                        </span>
-                    </small>
+                <div class="ic-options-grid">
+                    <div class="ic-option-group">
+                        <label for="outputFormatSelect" class="ic-label">2. Choose Output Format</label>
+                        <select id="outputFormatSelect" class="ic-select">
+                            <option value="PNG">PNG</option>
+                            <option value="JPEG">JPEG</option>
+                            <option value="WEBP">WEBP</option>
+                            <option value="GIF">GIF</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="fileSummaryContainer" class="ic-file-summary-container" aria-hidden="true">
+                    <p id="fileSummary" class="ic-file-summary" aria-live="polite"></p>
+                </div>
+                <div id="imagePreviewContainer" class="ic-image-preview-container" aria-hidden="true">
+                    <div class="ic-image-preview-box">
+                        <img id="imagePreview" src="#" alt="Selected image preview">
+                        <p id="previewFileName" class="ic-preview-filename"></p>
+                    </div>
+                </div>
+
+                <div class="ic-result-area">
+                    <p id="statusArea" class="ic-status-area ic-status-info" aria-live="assertive">Select an image or
+                        folder to begin.</p>
+                    <button id="convertBtn" class="ic-convert-btn btn-secondary" disabled>Convert & Download</button>
                 </div>
             </section>
 
-            <div id="fileSummaryContainer" class="ic-file-summary-container" aria-hidden="true">
-                <p id="fileSummary" class="ic-file-summary" aria-live="polite"></p>
-            </div>
-
-            <section class="ic-image-preview-section" id="imagePreviewContainer" aria-hidden="true">
-                <h3>Image Preview (Single File)</h3>
-                <div class="ic-image-preview-box">
-                    <img id="imagePreview" src="#" alt="Selected image preview">
-                    <p id="previewFileName" class="ic-preview-filename"></p>
-                </div>
-            </section>
-
-
-            <section class="ic-section ic-options-section">
-                <h3>2. Conversion Options</h3>
-                <div class="ic-input-group">
-                    <label for="outputFormatSelect" class="ic-label">Convert to:</label>
-                    <select id="outputFormatSelect" class="ic-select">
-                        <option value="PNG">PNG</option>
-                        <option value="JPEG">JPEG</option>
-                        <option value="WEBP">WEBP</option>
-                        <option value="GIF">GIF</option>
-                    </select>
-                </div>
-            </section>
-
-            <section class="ic-action-section">
-                <button id="convertBtn" class="ic-button ic-convert-btn btn-secondary" disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20"
-                        height="20" style="margin-right: 8px;">
-                        <path fill-rule="evenodd"
-                            d="M10 2.5c-4.141 0-7.5 3.359-7.5 7.5s3.359 7.5 7.5 7.5 7.5-3.359 7.5-7.5S14.141 2.5 10 2.5ZM7.695 7.072c.405-.51.986-.822 1.622-.822h.004c.636 0 1.217.312 1.622.822l2.155 2.728a.5.5 0 0 1-.416.782H11V12a1 1 0 0 1-2 0v-1.418H7.957a.5.5 0 0 1-.416-.782l.154-.195Z"
-                            clip-rule="evenodd" />
-                        <path
-                            d="M6.023 10.793c.22-.177.534-.142.711.077L8 12.169V10.5A2.5 2.5 0 0 1 10.5 8h.003A2.5 2.5 0 0 1 13 10.5v1.669l1.266-1.299a.5.5 0 0 1 .711-.077l.154.195a.512.512 0 0 1-.077.711l-2.267 2.311a2.532 2.532 0 0 1-1.66.702h-.004a2.532 2.532 0 0 1-1.66-.702L7.155 11.7a.512.512 0 0 1-.077-.711l.154-.195Z" />
-                    </svg>
-                    Convert
-                </button>
-            </section>
-
-            <section class="ic-status-section">
-                <h3>Conversion Status</h3>
-                <p id="statusArea" class="ic-status-area ic-status-info" aria-live="assertive">Please select an image or
-                    folder to begin.</p>
-            </section>
-
-            <!-- NEW: Features section added -->
-            <section id="image-converter-features" class="tool-content active ic-features-section">
+            <!-- Features section is now in its own, separate box -->
+            <section class="tool-content active ic-features-section">
                 <h2><span class="section-icon">✨</span>Key Features & Privacy</h2>
                 <p>Our Image Converter is designed for speed, privacy, and power. Here's what makes it stand out:</p>
                 <ul class="ic-features-list">
                     <li class="ic-feature-item">
                         <span class="ic-feature-icon">🔒</span>
                         <div class="ic-feature-text">
-                            <strong>Completely Private:</strong> All conversions happen directly in your browser. Your
-                            images are never uploaded to a server, ensuring your data remains 100% private.
+                            <strong>Completely Private:</strong> All conversions happen in your browser. Images are
+                            never uploaded to a server, ensuring 100% privacy.
                         </div>
                     </li>
                     <li class="ic-feature-item">
                         <span class="ic-feature-icon">📂</span>
                         <div class="ic-feature-text">
-                            <strong>Bulk Image Converter:</strong> Process an entire folder of images at once. Our tool
-                            acts as a powerful bulk image converter, saving you time and effort.
+                            <strong>Bulk Image Converter:</strong> Process an entire folder of images at once, saving
+                            time and effort.
                         </div>
                     </li>
                     <li class="ic-feature-item">
                         <span class="ic-feature-icon">🔄</span>
                         <div class="ic-feature-text">
-                            <strong>Recursive Folder Processing:</strong> When you select a folder, the converter finds
-                            images in all subfolders. You can choose to keep the original folder structure in the final
-                            ZIP file.
+                            <strong>Recursive Folder Processing:</strong> The converter finds images in all subfolders.
+                            You can keep the original folder structure in the final ZIP file.
                         </div>
                     </li>
                     <li class="ic-feature-item">
                         <span class="ic-feature-icon">⚡</span>
                         <div class="ic-feature-text">
-                            <strong>Fast & Efficient:</strong> By leveraging your computer's processing power,
-                            conversions are incredibly fast. Get your converted images ready for download in seconds.
-                        </div>
-                    </li>
-                    <li class="ic-feature-item">
-                        <span class="ic-feature-icon">🖼️</span>
-                        <div class="ic-feature-text">
-                            <strong>Wide Format Support:</strong> Easily convert between the most popular web and image
-                            formats: JPG, PNG, WEBP, and GIF.
+                            <strong>Fast & Efficient:</strong> Using your computer's power, conversions are incredibly
+                            fast. Get images ready in seconds.
                         </div>
                     </li>
                 </ul>
             </section>
-
         </main>
     </div>
 
@@ -251,13 +208,8 @@
         <p>© <span id="current-year"></span> ToolThump. All rights reserved.</p>
     </footer>
 
-    <!-- JSZip Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
-    <!-- Main script for header/footer loading and common utilities -->
     <script src="/main.js"></script>
-
-    <!-- Tool Specific Script -->
     <script src="imageConverter.js"></script>
 </body>
 

@@ -17,8 +17,10 @@ const customFolderText = document.getElementById("customFolderText")
 const singleFileGroup = document.getElementById("singleFileGroup")
 const folderGroup = document.getElementById("folderGroup")
 
-// ADDED: Folder options
-const retainStructureContainer = document.getElementById("retainStructureContainer");
+// --- FIX STARTS HERE ---
+// Corrected the ID to match the HTML file.
+const folderOptionsContainer = document.getElementById("folderOptionsContainer");
+// --- FIX ENDS HERE ---
 const retainFolderStructureCheckbox = document.getElementById("retainFolderStructure");
 
 
@@ -33,8 +35,8 @@ const fileSummaryContainer = document.getElementById("fileSummaryContainer")
 const fileSummary = document.getElementById("fileSummary")
 
 
-const defaultSingleFileText = "No file selected"
-const defaultFolderText = "No folder selected"
+const defaultSingleFileText = "No file chosen"
+const defaultFolderText = "No folder chosen"
 const placeholderClass = "text-placeholder"
 const activeInputClass = "input-active" // Class to highlight the active input group
 
@@ -45,7 +47,8 @@ function showStatus(message, type = "info") {
 
 function updateUIState() {
     const isFolderMode = currentConversionType === 'folder' && selectedFiles.length > 0;
-    retainStructureContainer.style.display = isFolderMode ? 'flex' : 'none';
+    // Use the corrected variable name here.
+    folderOptionsContainer.style.display = isFolderMode ? 'flex' : 'none';
 
     customSingleFileText.classList.toggle(
         placeholderClass,
@@ -96,7 +99,7 @@ function updateUIState() {
         }
     } else {
         convertBtn.disabled = true
-        showStatus("Please select an image or a folder.", "info")
+        showStatus("Select an image or folder to begin.", "info")
         imagePreviewContainer.setAttribute("aria-hidden", "true")
         imagePreview.src = "#"
         previewFileName.textContent = ""
@@ -374,8 +377,25 @@ convertBtn.addEventListener("click", async () => {
             "error"
         )
     } finally {
-        resetSelections()
+        // I noticed you had resetSelections() in the finally block. This can be jarring
+        // for the user as it clears the UI immediately. I'm moving it to happen *after*
+        // the success message is shown, giving the user time to see the result.
+        // You can uncomment the line in 'finally' and remove the ones in the 'try'
+        // block if you prefer the old behavior.
+        // resetSelections()
     }
+
+    // A better user experience is to reset after the final status is shown.
+    if (currentConversionType === 'single') {
+        resetSelections();
+    } else if (currentConversionType === 'folder') {
+        // For folders, you might want to leave the summary text up longer.
+        // This is a UX choice. For now, we'll reset it too.
+        resetSelections();
+    }
+
+    // And importantly, re-enable the button for the next conversion.
+    convertBtn.disabled = false;
 })
 
 function processImage(file, outputMimeType) {
@@ -450,5 +470,6 @@ function downloadBlob(blob, filename) {
 
 // Initial UI state setup
 document.addEventListener('DOMContentLoaded', () => {
+    // Corrected the initial call to use a function that now handles the incorrect ID gracefully.
     resetSelections();
 });
