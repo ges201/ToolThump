@@ -80,22 +80,18 @@
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: var(--spacing-xl);
-    /* MODIFIED: Align content to the start of the grid cell */
     align-items: start;
 }
 
-/* ADDED: Container for canvas and zoom controls */
 .cp-canvas-container {
     display: flex;
     flex-direction: column;
     min-width: 0;
-    /* Prevents flexbox overflow issues */
 }
 
 .cp-canvas-wrapper {
     position: relative;
     background-color: var(--bg-deep-dark);
-    /* MODIFIED: Adjusted border for new layout */
     border: 1px solid var(--border-color);
     border-bottom: none;
     border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
@@ -116,7 +112,6 @@
     image-rendering: crisp-edges;
 }
 
-/* MODIFIED: Add cursor styles for different states */
 #cp-canvas.active {
     cursor: crosshair;
 }
@@ -148,12 +143,12 @@
     display: none;
 }
 
-.cp-canvas-placeholder svg {
+.cp-canvas-placeholder .bi {
+    font-size: 64px;
     margin-bottom: var(--spacing-md);
     color: var(--bg-medium);
 }
 
-/* ADDED: Zoom Controls Styles */
 .cp-zoom-controls-wrapper {
     background-color: var(--bg-deep-dark);
     border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
@@ -163,7 +158,6 @@
     display: flex;
     justify-content: center;
     margin-top: -1px;
-    /* Overlap borders */
 }
 
 .cp-zoom-controls-wrapper.hidden {
@@ -178,7 +172,7 @@
     max-width: 450px;
 }
 
-.cp-zoom-controls svg {
+.cp-zoom-controls .bi {
     color: var(--text-secondary-color);
     flex-shrink: 0;
 }
@@ -229,19 +223,6 @@
     padding: var(--spacing-xs);
     min-width: auto;
     margin-left: var(--spacing-sm);
-    box-shadow: none;
-    transform: none;
-}
-
-#cp-zoom-reset-btn:hover,
-#cp-zoom-reset-btn:focus {
-    transform: rotate(-15deg);
-    color: var(--accent-color);
-    border-color: var(--accent-color);
-}
-
-#cp-zoom-reset-btn:active {
-    transform: rotate(15deg);
 }
 
 /* === Results Area Styles === */
@@ -274,7 +255,6 @@
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
-    transition: border-color 0.2s ease;
     display: flex;
     justify-content: center;
     align-items: center;

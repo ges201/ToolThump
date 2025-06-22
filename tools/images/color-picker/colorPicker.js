@@ -98,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function resetPreviews() {
         magnifier.classList.remove('inspecting');
         magnifier.style.backgroundImage = 'none';
-        magnifier.style.borderColor = 'var(--border-color)';
         colorPreview.style.backgroundColor = 'var(--disabled-bg-color)';
         if (imageLoaded) {
             magnifierPlaceholder.textContent = 'Activate eyedropper...';
@@ -169,10 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
         eyedropperBtn.querySelector('span').textContent = 'Activate Eyedropper';
         magnifier.classList.remove('inspecting');
         updateCursor();
-
-        // **FIX:** Added this line.
-        // This explicitly clears the magnifier's background image when deactivating,
-        // resetting it to its placeholder state after a color is selected via click.
         magnifier.style.backgroundImage = 'none';
     }
 
@@ -324,7 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateColorDisplay(r, g, b) {
         const hex = rgbToHex(r, g, b);
         const hsl = rgbToHsl(r, g, b);
-        magnifier.style.borderColor = hex;
         colorPreview.style.backgroundColor = hex;
         hexValueInput.value = hex;
         rgbValueInput.value = `rgb(${r}, ${g}, ${b})`;
