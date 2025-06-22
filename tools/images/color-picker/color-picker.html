@@ -82,10 +82,11 @@
                     </div>
 
                     <div class="cp-main-area">
-                        <!-- MODIFIED: Wrapped canvas and zoom controls in a container -->
                         <div class="cp-canvas-container">
                             <div class="cp-canvas-wrapper">
                                 <canvas id="cp-canvas" tabindex="0"></canvas>
+                                <!-- ADDED: Crosshair element for arrow key navigation -->
+                                <div id="cp-crosshair"></div>
                                 <div id="cp-canvas-placeholder" class="cp-canvas-placeholder">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor"
                                         class="bi bi-image" viewBox="0 0 16 16">
@@ -96,7 +97,6 @@
                                     <p>Your image will appear here</p>
                                 </div>
                             </div>
-                            <!-- ADDED: Zoom controls -->
                             <div class="cp-zoom-controls-wrapper hidden" id="cp-zoom-controls-wrapper">
                                 <div class="cp-zoom-controls">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"

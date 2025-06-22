@@ -130,6 +130,62 @@
     outline-offset: -2px;
 }
 
+/* MODIFIED: More visible and distinct crosshair styles */
+#cp-crosshair {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 24px;
+    /* Increased size for better visibility */
+    height: 24px;
+    pointer-events: none;
+    display: none;
+    z-index: 10;
+}
+
+#cp-crosshair.visible {
+    display: block;
+}
+
+#cp-crosshair::before,
+#cp-crosshair::after {
+    content: '';
+    position: absolute;
+    background-color: var(--accent-color);
+    /* Use a vibrant color */
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+    /* Strong shadow for contrast on any background */
+    border-radius: 1px;
+}
+
+/* Vertical line of the cross, with a gap in the middle */
+#cp-crosshair::before {
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    transform: translateX(-50%);
+}
+
+/* Horizontal line of the cross, with a gap in the middle */
+#cp-crosshair::after {
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    transform: translateY(-50%);
+}
+
+/* Creating a center gap by clipping the very center of the cross */
+#cp-crosshair::before {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 40%, 0% 40%, 0% 60%, 100% 60%, 100% 100%, 0% 100%);
+}
+
+#cp-crosshair::after {
+    clip-path: polygon(0% 0%, 40% 0%, 40% 100%, 60% 100%, 60% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+
 .cp-canvas-placeholder {
     display: flex;
     flex-direction: column;

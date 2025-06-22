@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const zoomControlsWrapper = document.getElementById('cp-zoom-controls-wrapper');
     const zoomSlider = document.getElementById('cp-zoom-slider');
     const zoomResetBtn = document.getElementById('cp-zoom-reset-btn');
+    const crosshair = document.getElementById('cp-crosshair'); // ADDED
 
     // --- Canvas and Context Setup ---
     const fullResCanvas = document.createElement('canvas');
@@ -83,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             drawImageToCanvas();
             if (isEyedropperActive && magnifier.classList.contains('inspecting')) {
                 updateMagnifier(selectionPoint.x, selectionPoint.y);
+                updateCrosshairPosition(selectionPoint.x, selectionPoint.y); // ADDED
             }
         }
     });
@@ -93,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resetPreviews();
         clearColorValues();
         zoomControlsWrapper.classList.add('hidden');
+        crosshair.classList.remove('visible'); // ADDED
     }
 
     function resetPreviews() {
@@ -167,6 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         eyedropperBtn.classList.remove('active');
         eyedropperBtn.querySelector('span').textContent = 'Activate Eyedropper';
         magnifier.classList.remove('inspecting');
+        crosshair.classList.remove('visible'); // ADDED
         updateCursor();
         magnifier.style.backgroundImage = 'none';
     }
@@ -185,6 +189,9 @@ document.addEventListener('DOMContentLoaded', () => {
     zoomSlider.addEventListener('input', (e) => {
         zoomLevel = parseFloat(e.target.value);
         drawImageToCanvas();
+        if (crosshair.classList.contains('visible')) { // ADDED BLOCK
+            updateCrosshairPosition(selectionPoint.x, selectionPoint.y);
+        }
         updateCursor();
     });
 
@@ -196,6 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         panOffset = { x: 0, y: 0 };
         calculateBaseFit();
         drawImageToCanvas();
+        crosshair.classList.remove('visible'); // ADDED
         updateCursor();
     }
 
@@ -213,6 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
             startPanPoint.y = e.clientY - panOffset.y;
             canvas.classList.add('panning');
             canvas.classList.remove('pannable');
+            crosshair.classList.remove('visible'); // ADDED
         }
     });
 
@@ -237,6 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!isEyedropperActive) return;
+
+        crosshair.classList.remove('visible'); // ADDED: Hide crosshair during mouse move
 
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
@@ -286,6 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectionPoint = { x, y };
         updateMagnifier(x, y);
         updateColorInfoFromPoint(x, y);
+        updateCrosshairPosition(x, y); // ADDED
     });
 
     // --- Core Update Functions ---
@@ -293,6 +305,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const pixel = fullResCtx.getImageData(x, y, 1, 1).data;
         const [r, g, b] = pixel;
         updateColorDisplay(r, g, b);
+    }
+
+    // ADDED: New function to position the crosshair
+    function updateCrosshairPosition(imgX, imgY) {
+        if (!imageLoaded || !isEyedropperActive) {
+            crosshair.classList.remove('visible');
+            return;
+        }
+        // Calculate the center of the target pixel on the canvas
+        const screenX = currentRender.x + ((imgX + 0.5) * currentRender.scale);
+        const screenY = currentRender.y + ((imgY + 0.5) * currentRender.scale);
+
+        // Update the crosshair style and make it visible
+        crosshair.style.transform = `translate(${screenX}px, ${screenY}px) translate(-50%, -50%)`;
+        crosshair.classList.add('visible');
     }
 
     function updateMagnifier(x, y) {
