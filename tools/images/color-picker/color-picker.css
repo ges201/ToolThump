@@ -80,16 +80,27 @@
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: var(--spacing-xl);
+    /* MODIFIED: Align content to the start of the grid cell */
+    align-items: start;
+}
+
+/* ADDED: Container for canvas and zoom controls */
+.cp-canvas-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    /* Prevents flexbox overflow issues */
 }
 
 .cp-canvas-wrapper {
     position: relative;
     background-color: var(--bg-deep-dark);
-    border-radius: var(--border-radius-md);
+    /* MODIFIED: Adjusted border for new layout */
     border: 1px solid var(--border-color);
+    border-bottom: none;
+    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
     min-height: 400px;
-    /* MODIFIED: Add a max-height to prevent infinite growth with tall images. */
-    max-height: 75vh;
+    max-height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -105,9 +116,19 @@
     image-rendering: crisp-edges;
 }
 
+/* MODIFIED: Add cursor styles for different states */
 #cp-canvas.active {
     cursor: crosshair;
 }
+
+#cp-canvas.pannable {
+    cursor: grab;
+}
+
+#cp-canvas.panning {
+    cursor: grabbing;
+}
+
 
 #cp-canvas:focus {
     outline: 2px solid var(--accent-color);
@@ -130,6 +151,97 @@
 .cp-canvas-placeholder svg {
     margin-bottom: var(--spacing-md);
     color: var(--bg-medium);
+}
+
+/* ADDED: Zoom Controls Styles */
+.cp-zoom-controls-wrapper {
+    background-color: var(--bg-deep-dark);
+    border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+    border: 1px solid var(--border-color);
+    border-top: 1px dashed var(--border-color);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    display: flex;
+    justify-content: center;
+    margin-top: -1px;
+    /* Overlap borders */
+}
+
+.cp-zoom-controls-wrapper.hidden {
+    display: none;
+}
+
+.cp-zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    width: 100%;
+    max-width: 450px;
+}
+
+.cp-zoom-controls svg {
+    color: var(--text-secondary-color);
+    flex-shrink: 0;
+}
+
+#cp-zoom-slider {
+    flex-grow: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 5px;
+    background: var(--disabled-bg-color);
+    border-radius: 5px;
+    outline: none;
+    padding: 0;
+    transition: background-color 0.2s ease;
+}
+
+#cp-zoom-slider:hover {
+    background: var(--bg-medium);
+}
+
+#cp-zoom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--accent-color);
+    cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid var(--bg-deep-dark);
+    transition: transform 0.1s ease;
+}
+
+#cp-zoom-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+#cp-zoom-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--accent-color);
+    cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid var(--bg-deep-dark);
+}
+
+#cp-zoom-reset-btn {
+    padding: var(--spacing-xs);
+    min-width: auto;
+    margin-left: var(--spacing-sm);
+    box-shadow: none;
+    transform: none;
+}
+
+#cp-zoom-reset-btn:hover,
+#cp-zoom-reset-btn:focus {
+    transform: rotate(-15deg);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+#cp-zoom-reset-btn:active {
+    transform: rotate(15deg);
 }
 
 /* === Results Area Styles === */

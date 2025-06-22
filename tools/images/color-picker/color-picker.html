@@ -82,23 +82,59 @@
                     </div>
 
                     <div class="cp-main-area">
-                        <div class="cp-canvas-wrapper">
-                            <canvas id="cp-canvas" tabindex="0"></canvas>
-                            <div id="cp-canvas-placeholder" class="cp-canvas-placeholder">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor"
-                                    class="bi bi-image" viewBox="0 0 16 16">
-                                    <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-                                    <path
-                                        d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
-                                </svg>
-                                <p>Your image will appear here</p>
+                        <!-- MODIFIED: Wrapped canvas and zoom controls in a container -->
+                        <div class="cp-canvas-container">
+                            <div class="cp-canvas-wrapper">
+                                <canvas id="cp-canvas" tabindex="0"></canvas>
+                                <div id="cp-canvas-placeholder" class="cp-canvas-placeholder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor"
+                                        class="bi bi-image" viewBox="0 0 16 16">
+                                        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                                        <path
+                                            d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
+                                    </svg>
+                                    <p>Your image will appear here</p>
+                                </div>
+                            </div>
+                            <!-- ADDED: Zoom controls -->
+                            <div class="cp-zoom-controls-wrapper hidden" id="cp-zoom-controls-wrapper">
+                                <div class="cp-zoom-controls">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-zoom-out" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                            d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11M13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />
+                                        <path
+                                            d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1A6.538 6.538 0 0 1 13 6.5a6.5 6.5 0 1 1-6.5 6.5c1.61 0 3.09-.59 4.232-1.558a.996.996 0 0 0-.152.058z" />
+                                        <path d="M4 6.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z" />
+                                    </svg>
+                                    <input type="range" id="cp-zoom-slider" min="1" max="10" value="1" step="0.1"
+                                        aria-label="Image Zoom">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-zoom-in" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                            d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11M13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />
+                                        <path
+                                            d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1A6.538 6.538 0 0 1 13 6.5a6.5 6.5 0 1 1-6.5 6.5c1.61 0 3.09-.59 4.232-1.558a.996.996 0 0 0-.152.058z" />
+                                        <path
+                                            d="M6.5 6a.5.5 0 0 1 .5.5v2.5h2.5a.5.5 0 0 1 0 1h-2.5V11a.5.5 0 0 1-1 0V9.5H4a.5.5 0 0 1 0-1h2.5V6.5a.5.5 0 0 1 .5-.5z" />
+                                    </svg>
+                                    <button id="cp-zoom-reset-btn" class="btn-secondary" title="Reset Zoom & Pan">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-arrow-counterclockwise"
+                                            viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
+                                            <path
+                                                d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
                         <div class="cp-results-wrapper">
                             <div class="cp-visual-previews">
                                 <div id="cp-magnifier">
-                                    <!-- MODIFIED: Added a dedicated placeholder element -->
                                     <div id="cp-magnifier-placeholder"></div>
                                     <div id="cp-magnifier-highlight"></div>
                                 </div>
