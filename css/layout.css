@@ -80,28 +80,30 @@ main#tool-container {
 .home-hero {
     text-align: center;
     padding: var(--spacing-xl) 0;
-    /* MODIFIED: Increased bottom margin for more separation */
     margin-bottom: calc(var(--spacing-xl) * 2.5);
     border-bottom: 1px solid var(--border-color);
 }
 
 .home-section {
-    /* MODIFIED: Increased bottom margin for more separation */
     margin-bottom: calc(var(--spacing-xl) * 2.5);
 }
 
-/* Styles for "What is ToolThump" and "Why Choose..." sections */
 .home-section h2 {
     text-align: center;
     font-size: 2rem;
-    /* MODIFIED: Slightly larger section headings */
     color: var(--text-heading-color);
     border-bottom: none;
     padding-bottom: 0;
     margin-bottom: var(--spacing-xl);
 }
 
-/* ADDED: "What is ToolThump?" Section Specifics */
+/* ADDED: Most Used Tools Grid */
+.most-used-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+}
+
 .what-is-section {
     text-align: center;
     max-width: 80ch;
@@ -111,16 +113,13 @@ main#tool-container {
 
 .what-is-section .tagline {
     font-size: 1.4rem;
-    /* MODIFIED: Larger font size */
     color: var(--text-secondary-color);
     margin: 0 auto var(--spacing-lg);
-    /* MODIFIED: More bottom margin */
     font-weight: 400;
 }
 
 .what-is-section .description {
     font-size: 1.15rem;
-    /* MODIFIED: Slightly larger font size */
     line-height: 1.7;
     color: var(--text-primary-color);
     margin: 0 auto;
