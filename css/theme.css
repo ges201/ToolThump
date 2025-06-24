@@ -1,5 +1,5 @@
 /* === CSS Custom Properties (Theme Variables) === */
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 :root {
     /* Core Palette - "Soft-Bit Dark" */
@@ -68,9 +68,8 @@
 
     /* Typography */
     --font-family-pixel: 'Press Start 2P', cursive;
-    --font-family-heading: 'IBM Plex Sans', sans-serif;
+    --font-family-heading: monospace;
     /* For h2, h3, etc. */
-    --font-family-sans: 'IBM Plex Sans', -apple-system, sans-serif;
-    /* MODIFIED: Replaced monospace fonts with the primary sans-serif font */
-    --font-family-monospace: 'IBM Plex Sans', monospace;
+    --font-family-sans: monospace;
+    --font-family-monospace: monospace;
 }
