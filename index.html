@@ -40,7 +40,38 @@
             height: 64px;
             width: 64px;
             object-fit: contain;
-            /* Scale image to fit within the box while preserving aspect ratio */
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            line-height: 1;
+        }
+
+        .home-hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 0;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            /* Reduced font size */
+            font-weight: normal;
+            /* Normal font weight */
+            color: var(--text-color-secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+            max-width: 650px;
+            /* Adjusted max-width */
+        }
+
+        .search-wrapper {
+            width: 100%;
+            max-width: 600px;
+            /* Control search bar width */
+            position: relative;
+            /* For dropdown positioning */
         }
     </style>
 
@@ -83,13 +114,15 @@
             <section id="home" class="tool-content active">
                 <!-- Hero Section -->
                 <div class="home-hero">
-                    <p class="search-prompt">What do you need?</p>
-                    <!-- New wrapper for positioning the dropdown -->
+                    <p class="hero-description">
+                        Your hub for free, private, and powerful online tools. All utilities run in your browser—your
+                        data stays yours.
+                    </p>
                     <div class="search-wrapper">
                         <div class="search-bar-container">
                             <input type="search" id="home-search-input"
-                                placeholder="e.g., Password Generator, Image Converter..."
-                                aria-label="Search for a tool" autocomplete="off">
+                                placeholder="Search for a tool (e.g., Image Converter)" aria-label="Search for a tool"
+                                autocomplete="off">
                             <button type="button" id="home-search-button" aria-label="Search" onclick="return false;">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                     width="24" height="24">
@@ -140,60 +173,32 @@
                             </a>
                         </div>
                     </div>
-                    <!-- What is ToolThump? Section -->
-                    <div class="home-section what-is-section">
-                        <h2>What is ToolThump?</h2>
-                        <p class="tagline">Your 100% Free, fast & Privacy-Focused Online Utilities Hub.</p>
-                        <p class="description">A growing collection of client-side tools for text, images, security, and
-                            more. All utilities run directly in your browser — no login required, and your data
-                            always stays with you.
-                        </p>
-                    </div>
 
                     <!-- Features Section -->
                     <div class="home-section">
                         <h2>Why Choose ToolThump?</h2>
                         <div class="features-grid">
                             <div class="feature-card">
-                                <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                    fill="currentColor" width="48" height="48">
-                                    <path
-                                        d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z">
-                                    </path>
-                                </svg>
+                                <div class="feature-icon">🛡️</div>
                                 <h3>Absolutely Private & Secure</h3>
                                 <p>Your data is never sent to our servers. Every tool operates entirely within your
                                     browser. No tracking, no PII collection—just pure utility.</p>
                             </div>
                             <div class="feature-card">
-                                <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                    fill="currentColor" width="48" height="48">
-                                    <path
-                                        d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" />
-                                </svg>
+                                <div class="feature-icon">🆓</div>
                                 <h3>100% Free, No Login or registration required</h3>
                                 <p>Enjoy full access to all tools without any cost, non invasive ads, or registration
                                     requirements. Just the tools you need, instantly.</p>
                             </div>
                             <div class="feature-card">
-                                <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                    fill="currentColor" width="48" height="48">
-                                    <path
-                                        d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z">
-                                    </path>
-                                </svg>
+                                <div class="feature-icon">💻</div>
                                 <h3>Developer-Friendly & Open Source</h3>
                                 <p>Built with clean, modern code. An open-source project on GitHub, designed to be a
                                     useful and
                                     reliable resource for developers and creators.</p>
                             </div>
                             <div class="feature-card">
-                                <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                    fill="currentColor" width="48" height="48">
-                                    <path
-                                        d="M13 10h-2v3h2v-3zm0-5h-2v2h2V5zm-4 5h2v3H9v-3zM5 21h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2zM5 5h14v14H5V5z">
-                                    </path>
-                                </svg>
+                                <div class="feature-icon">🚀</div>
                                 <h3>Constantly Growing</h3>
                                 <p>We are always adding new and useful utilities. Check back often to see the latest
                                     tools added to our collection. Your suggestions are welcome!</p>

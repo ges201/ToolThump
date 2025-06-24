@@ -48,7 +48,7 @@ const toolsData = [
         name: "Image Converter",
         category: "Image Tools",
         description: "Convert images between different formats (PNG, JPG, WEBP, etc.).",
-        icon: "/icons/image-converter-color.png",
+        icon: "/icons/image-converter-icon.png",
         htmlPath: "/tools/images/image-converter/image-converter.html",
         cssPaths: ["/tools/images/image-converter/image-converter.css"],
         jsPath: "/tools/images/image-converter/imageConverter.js",
