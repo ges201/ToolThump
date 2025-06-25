@@ -47,11 +47,31 @@
                 </div>
 
                 <div class="converter-interface">
-                    <div class="text-area-container">
-                        <label for="inputText">Input Text:</label>
-                        <textarea id="inputText" rows="8" placeholder="Paste or type your text here..."></textarea>
+                    <!-- Grid for Input/Output Text Areas -->
+                    <div class="converter-io-grid">
+                        <div class="text-area-container">
+                            <label for="inputText">Input Text:</label>
+                            <textarea id="inputText" rows="15" placeholder="Paste or type your text here..."></textarea>
+                        </div>
+                        <div class="text-area-container">
+                            <label for="outputText">Output Text:</label>
+                            <textarea id="outputText" rows="15" placeholder="Converted text will appear here..."
+                                readonly></textarea>
+                            <div class="output-actions">
+                                <button id="btnCopy" class="btn-secondary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="currentColor">
+                                        <path
+                                            d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                                    </svg>
+                                    Copy to Clipboard
+                                </button>
+                                <span id="copyFeedback" class="copy-feedback" aria-live="polite"></span>
+                            </div>
+                        </div>
                     </div>
 
+                    <!-- Conversion Controls -->
                     <div class="conversion-controls">
                         <button id="btnUppercase" class="btn-convert btn-secondary">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -98,24 +118,6 @@
                             </svg>
                             Clear
                         </button>
-                    </div>
-
-                    <div class="text-area-container">
-                        <label for="outputText">Output Text:</label>
-                        <textarea id="outputText" rows="8" placeholder="Converted text will appear here..."
-                            readonly></textarea>
-                    </div>
-
-                    <div class="output-actions">
-                        <button id="btnCopy" class="btn-secondary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                fill="currentColor">
-                                <path
-                                    d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
-                            </svg>
-                            Copy to Clipboard
-                        </button>
-                        <span id="copyFeedback" class="copy-feedback" aria-live="polite"></span>
                     </div>
                 </div>
 

@@ -1,10 +1,9 @@
 /* ToolThump/tools/text/text-converter/text-converter.css */
 
 .tool-description {
-    text-align: center;
-    max-width: 70ch;
+    text-align: left;
     margin: 0 auto var(--spacing-xl);
-    color: var(--text-secondary-color);
+    color: var(--text-primary-color);
     font-size: 1.05rem;
     line-height: 1.7;
 }
@@ -13,8 +12,23 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-lg);
-    max-width: 800px;
     margin: 0 auto;
+    /* max-width removed to allow for a wider side-by-side layout */
+}
+
+/* Grid layout for input/output textareas, inspired by text-comparison tool */
+.converter-io-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* Stacked by default */
+    gap: var(--spacing-lg);
+}
+
+/* Switch to side-by-side on larger screens */
+@media (min-width: 768px) {
+    .converter-io-grid {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 .text-area-container {
@@ -40,7 +54,8 @@ textarea#outputText {
     font-size: 1rem;
     line-height: 1.5;
     resize: vertical;
-    min-height: 120px;
+    min-height: 250px;
+    /* Increased height */
 }
 
 textarea#inputText:focus,
@@ -61,43 +76,19 @@ textarea#outputText {
     gap: var(--spacing-md);
     justify-content: center;
     align-items: center;
+    margin-top: var(--spacing-md);
+    /* Added margin for spacing */
 }
 
-/*
-  All buttons now use .btn-secondary class from components.css for their base style
-  and hover/focus appearances (background, color, border).
-  The global 'button:hover' and 'button:active' styles from base.css
-  will provide the transform and box-shadow effects.
-  The .btn-convert and .btn-clear classes are kept for potential specific
-  layout or icon styling if needed in the future, but not for core button appearance.
-*/
-
-/* Apply common layout for icons within any btn-secondary in this tool */
 .conversion-controls .btn-secondary,
 .output-actions .btn-secondary {
     gap: var(--spacing-sm);
-    /* Space between icon and text */
-    /* .btn-secondary from components.css provides:
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: var(--spacing-sm) var(--spacing-md);
-        font-weight: 600;
-        etc.
-    */
-    /* You can set a specific font-size if desired for this tool's buttons,
-       otherwise, it will inherit from .btn-secondary and global button styles.
-       Example: font-size: 0.95rem; */
 }
 
-/* Ensure SVGs within these buttons correctly use the text color */
 .conversion-controls .btn-secondary svg,
 .output-actions .btn-secondary svg {
-    /* SVG width/height should be set in HTML or here if consistently sized */
     stroke: currentColor;
-    /* For line/outline SVGs */
     fill: currentColor;
-    /* For filled SVGs */
 }
 
 .output-actions {
@@ -105,7 +96,8 @@ textarea#outputText {
     align-items: center;
     justify-content: flex-start;
     gap: var(--spacing-md);
-    margin-top: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+    /* Spacing between textarea and copy button */
 }
 
 .copy-feedback {
@@ -120,16 +112,16 @@ textarea#outputText {
 }
 
 /* Responsive adjustments */
-@media (max-width: 600px) {
+@media (max-width: 767px) {
+
+    /* When the grid stacks, make the control buttons full-width */
     .conversion-controls {
         flex-direction: column;
         align-items: stretch;
     }
 
     .conversion-controls .btn-secondary {
-        /* Target all relevant buttons */
         width: 100%;
-        /* justify-content: center; is default from .btn-secondary, typically fine */
     }
 
     .tool-description {
