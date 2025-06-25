@@ -21,21 +21,20 @@
     gap: var(--spacing-xl);
 }
 
+.cp-instructions {
+    color: var(--text-heading-color);
+    text-align: left;
+    padding: 0 var(--spacing-md);
+}
+
 .cp-controls {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-md);
     padding: var(--spacing-lg);
     background-color: var(--bg-deep-dark);
     border-radius: var(--border-radius-md);
     border: 1px solid var(--border-color);
-}
-
-.cp-controls p {
-    color: var(--text-secondary-color);
-    margin: 0;
-    text-align: center;
 }
 
 .cp-action-buttons {
