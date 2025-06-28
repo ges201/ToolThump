@@ -99,8 +99,11 @@
                     <!-- Left Column: Input and Controls -->
                     <div class="dwf-input-column">
                         <label for="dwf-text-input" class="dwf-column-title">Your Text:</label>
-                        <textarea id="dwf-text-input" placeholder="Enter text here to find duplicates..."
-                            aria-label="Text input for finding duplicate words"></textarea>
+                        <div id="dwf-text-input-container" class="dwf-text-input-container">
+                            <div id="dwf-text-input" class="dwf-text-input" contenteditable="true"
+                                placeholder="Enter text here to find duplicates..."
+                                aria-label="Text input for finding duplicate words"></div>
+                        </div>
 
                         <!-- Wrapper for controls below textarea -->
                         <div class="dwf-controls-container">
@@ -109,11 +112,7 @@
                                     <input type="checkbox" id="dwf-case-sensitive" name="case-sensitive">
                                     <label for="dwf-case-sensitive">Case-Sensitive</label>
                                 </div>
-                                <div class="dwf-checkbox-group">
-                                    <input type="checkbox" id="dwf-ignore-punctuation" name="ignore-punctuation"
-                                        checked>
-                                    <label for="dwf-ignore-punctuation">Ignore Punctuation</label>
-                                </div>
+                                
                             </div>
                             <button id="dwf-find-btn" class="dwf-find-button btn-secondary">Find Duplicates</button>
                         </div>

@@ -33,15 +33,45 @@
 
 /* --- Left Column Specifics --- */
 
+.dwf-text-input-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-sm);
+}
+
 #dwf-text-input {
     flex-grow: 1;
     /* This is key: makes the textarea fill vertical space */
-    min-height: 300px;
     font-family: var(--font-family-monospace);
     font-size: 0.9rem;
     resize: vertical;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-md);
+    border: none;
+    /* Remove border from the div itself */
+    outline: none;
+    /* No focus ring */
+    white-space: pre-wrap;
+    /* Respects whitespace and wraps text */
+    word-wrap: break-word;
+    /* Breaks long words */
+}
+
+#dwf-text-input:empty:before {
+    content: attr(placeholder);
+    color: var(--text-secondary-color);
+    pointer-events: none;
+    /* Allows clicking through the placeholder */
+}
+
+/* Highlight style for the selected word */
+.dwf-highlight {
+    background-color: var(--accent-color-bg-hover);
+    color: var(--accent-color);
+    border-radius: var(--border-radius-sm);
+    padding: 0 2px;
 }
 
 /* Container for the controls below the textarea */
