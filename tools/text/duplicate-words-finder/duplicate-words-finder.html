@@ -36,7 +36,7 @@
     <link rel="stylesheet" href="/css/responsive.css">
 
     <!-- Tool-Specific Stylesheet -->
-    <link rel="stylesheet" href="duplicate-word-finder.css">
+    <link rel="stylesheet" href="duplicate-words-finder.css">
 
     <!-- Schema.org -->
     <script type="application/ld+json">
@@ -96,28 +96,34 @@
                     many times they appear.</p>
 
                 <div class="tool-placeholder dwf-container">
-                    <div class="dwf-input-group">
-                        <label for="dwf-text-input">Your Text:</label>
-                        <textarea id="dwf-text-input" rows="12" placeholder="Enter text here to find duplicates..."
+                    <!-- Left Column: Input and Controls -->
+                    <div class="dwf-input-column">
+                        <label for="dwf-text-input" class="dwf-column-title">Your Text:</label>
+                        <textarea id="dwf-text-input" placeholder="Enter text here to find duplicates..."
                             aria-label="Text input for finding duplicate words"></textarea>
+
+                        <!-- Wrapper for controls below textarea -->
+                        <div class="dwf-controls-container">
+                            <div class="dwf-options">
+                                <div class="dwf-checkbox-group">
+                                    <input type="checkbox" id="dwf-case-sensitive" name="case-sensitive">
+                                    <label for="dwf-case-sensitive">Case-Sensitive</label>
+                                </div>
+                                <div class="dwf-checkbox-group">
+                                    <input type="checkbox" id="dwf-ignore-punctuation" name="ignore-punctuation"
+                                        checked>
+                                    <label for="dwf-ignore-punctuation">Ignore Punctuation</label>
+                                </div>
+                            </div>
+                            <button id="dwf-find-btn" class="dwf-find-button btn-secondary">Find Duplicates</button>
+                        </div>
                     </div>
 
-                    <div class="dwf-options">
-                        <div class="dwf-checkbox-group">
-                            <input type="checkbox" id="dwf-case-sensitive" name="case-sensitive">
-                            <label for="dwf-case-sensitive">Case-Sensitive</label>
-                        </div>
-                        <div class="dwf-checkbox-group">
-                            <input type="checkbox" id="dwf-ignore-punctuation" name="ignore-punctuation" checked>
-                            <label for="dwf-ignore-punctuation">Ignore Punctuation</label>
-                        </div>
-                    </div>
-
-                    <button id="dwf-find-btn" class="dwf-find-button btn-secondary">Find Duplicates</button>
-
-                    <div class="dwf-results-area" aria-live="polite">
-                        <h2>Results:</h2>
-                        <div id="dwf-output" class="dwf-output-box">
+                    <!-- Right Column: Results -->
+                    <div class="dwf-output-column">
+                        <!-- Changed h2 to a div for better alignment control -->
+                        <div class="dwf-column-title" role="heading" aria-level="2">Results:</div>
+                        <div id="dwf-output" class="dwf-output-box" aria-live="polite">
                             <p class="dwf-results-placeholder">Duplicate words will be listed here.</p>
                         </div>
                     </div>

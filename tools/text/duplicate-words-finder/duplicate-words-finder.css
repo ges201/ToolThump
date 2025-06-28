@@ -1,64 +1,113 @@
 /* === Duplicate Word Finder Specific Styles === */
 
+/* Main layout container for the tool */
 .dwf-container {
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+    /* Allows columns to stack on smaller screens */
+    gap: var(--spacing-xl);
+    align-items: stretch;
+    /* Makes columns stretch to the same height */
 }
 
-.dwf-input-group {
+/* Base styles for both columns */
+.dwf-input-column,
+.dwf-output-column {
+    flex: 1 1 48%;
+    min-width: 320px;
     display: flex;
     flex-direction: column;
+    gap: var(--spacing-md);
 }
 
-.dwf-input-group label {
-    margin-bottom: var(--spacing-sm);
+/* Shared title style for both columns for perfect alignment */
+.dwf-column-title {
+    color: var(--accent-color);
+    margin: 0;
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1.1rem;
     font-weight: 600;
-    color: var(--text-primary-color);
+    font-family: var(--font-family-heading);
 }
 
-.dwf-input-group textarea {
-    min-height: 250px;
+/* --- Left Column Specifics --- */
+
+#dwf-text-input {
+    flex-grow: 1;
+    /* This is key: makes the textarea fill vertical space */
+    min-height: 300px;
     font-family: var(--font-family-monospace);
     font-size: 0.9rem;
     resize: vertical;
     border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
 }
 
-/* Base styles in base.css handle the focus state consistently */
+/* Container for the controls below the textarea */
+.dwf-controls-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    /* This is the key change for perfect text alignment */
+    gap: var(--spacing-md);
+}
 
+/* Wrapper for checkboxes, with no visual styling */
+.dwf-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+    align-items: center;
+    flex-grow: 1;
+    /* This groups checkboxes and pushes the button right */
+}
+
+.dwf-checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.dwf-checkbox-group input[type="checkbox"] {
+    width: 1.15em;
+    height: 1.15em;
+    accent-color: var(--accent-color);
+    cursor: pointer;
+}
+
+.dwf-checkbox-group label {
+    cursor: pointer;
+    font-weight: normal;
+    color: var(--text-primary-color);
+    user-select: none;
+}
+
+/* The button remains its own element */
 .dwf-find-button {
-    display: block;
-    width: 100%;
-    max-width: 280px;
-    margin: 0 auto;
-    /* Visual styles are handled by the .btn-secondary class */
+    flex-shrink: 0;
+    /* Prevents the button from shrinking */
+    padding: var(--spacing-sm) var(--spacing-xl);
 }
 
-.dwf-results-area {
-    margin-top: var(--spacing-md);
-}
-
-.dwf-results-area h2 {
-    color: var(--accent-color);
-    margin-top: 0;
-    margin-bottom: var(--spacing-md);
-    padding-bottom: var(--spacing-sm);
-    border-bottom: 1px solid var(--border-color);
-}
+/* --- Right Column Specifics --- */
 
 .dwf-output-box {
+    flex-grow: 1;
+    /* This makes the output box match the input column's height */
     padding: var(--spacing-md);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
     background-color: var(--bg-deep-dark);
-    min-height: 100px;
     font-family: var(--font-family-monospace);
     font-size: 0.9rem;
     line-height: 1.6;
     color: var(--text-primary-color);
-    overflow-x: auto;
+    overflow: auto;
 }
+
+/* --- Results Table & Placeholders --- */
 
 .dwf-results-placeholder,
 .dwf-error-message,
@@ -67,6 +116,10 @@
     font-style: italic;
     padding: var(--spacing-md);
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
 
 .dwf-error-message {
@@ -79,7 +132,6 @@
     font-weight: normal;
 }
 
-/* Results Table Styling */
 .dwf-results-table {
     width: 100%;
     border-collapse: collapse;
@@ -110,57 +162,15 @@
     background-color: var(--accent-color-bg-hover);
 }
 
-/* Specific column styles */
 .dwf-word-col {
     width: 65%;
     color: var(--accent-color);
     font-weight: 600;
     word-break: break-all;
-    /* Handle very long words */
 }
 
 .dwf-count-col {
     width: 35%;
     text-align: right;
     color: var(--text-primary-color);
-}
-
-/* Options for case sensitivity and punctuation */
-.dwf-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-lg);
-    justify-content: center;
-    align-items: center;
-    padding: var(--spacing-md);
-    background-color: var(--bg-deep-dark);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-color);
-    margin-top: var(--spacing-md);
-}
-
-.dwf-options-label {
-    font-weight: 600;
-    color: var(--text-secondary-color);
-}
-
-.dwf-checkbox-group {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
-
-.dwf-checkbox-group input[type="checkbox"] {
-    width: 1.15em;
-    height: 1.15em;
-    accent-color: var(--accent-color);
-    cursor: pointer;
-}
-
-.dwf-checkbox-group label {
-    cursor: pointer;
-    font-weight: normal;
-    color: var(--text-primary-color);
-    user-select: none;
-    /* Prevents text selection on label click */
 }
