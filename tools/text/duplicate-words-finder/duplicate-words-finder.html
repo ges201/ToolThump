@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate Word Finder - Free Online Tool | ToolThump</title>
+    <meta name="description"
+        content="Quickly find and count duplicate words in your text. A free, easy-to-use online utility for writers, editors, and students to improve text clarity.">
+    <link rel="canonical" href="https://toolthump.com/tools/text/duplicate-word-finder/duplicate-word-finder.html">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://toolthump.com/tools/text/duplicate-word-finder/duplicate-word-finder.html">
+    <meta property="og:title" content="Duplicate Word Finder - Free Online Tool | ToolThump">
+    <meta property="og:description"
+        content="Instantly identify repeated words and their frequency in any text. Perfect for proofreading and refining your writing.">
+    <meta property="og:image" content="https://toolthump.com/ToolThump.png">
+    <meta property="og:site_name" content="ToolThump" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url"
+        content="https://toolthump.com/tools/text/duplicate-word-finder/duplicate-word-finder.html">
+    <meta property="twitter:title" content="Duplicate Word Finder - Free Online Tool | ToolThump">
+    <meta property="twitter:description"
+        content="Instantly identify repeated words and their frequency in any text. Perfect for proofreading and refining your writing.">
+    <meta property="twitter:image" content="https://toolthump.com/ToolThump.png">
+
+    <!-- Common Stylesheets -->
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+
+    <!-- Tool-Specific Stylesheet -->
+    <link rel="stylesheet" href="duplicate-word-finder.css">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": "https://toolthump.com/tools/text/duplicate-word-finder/duplicate-word-finder.html#webpage",
+      "url": "https://toolthump.com/tools/text/duplicate-word-finder/duplicate-word-finder.html",
+      "name": "Online Duplicate Word Finder",
+      "description": "Find and count duplicate words in your text with this free online utility from ToolThump.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://toolthump.com/#website"
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ToolThump",
+          "item": "https://toolthump.com/"
+        },{
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Text Tools",
+          "item": "https://toolthump.com/#text-tools"
+        },{
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Duplicate Word Finder"
+        }]
+      }
+    }
+    </script>
+
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7245857649397014"
+        crossorigin="anonymous"></script>
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+</head>
+
+<body>
+    <header data-include="main-header"></header>
+    <div class="content-wrapper">
+        <main id="tool-container">
+            <section id="duplicateWordFinder" class="tool-content active">
+                <h1>Duplicate Word Finder</h1>
+                <p style="margin-bottom: 1em;">Paste your text into the box below to find all repeated words and see how
+                    many times they appear.</p>
+
+                <div class="tool-placeholder dwf-container">
+                    <div class="dwf-input-group">
+                        <label for="dwf-text-input">Your Text:</label>
+                        <textarea id="dwf-text-input" rows="12" placeholder="Enter text here to find duplicates..."
+                            aria-label="Text input for finding duplicate words"></textarea>
+                    </div>
+
+                    <div class="dwf-options">
+                        <div class="dwf-checkbox-group">
+                            <input type="checkbox" id="dwf-case-sensitive" name="case-sensitive">
+                            <label for="dwf-case-sensitive">Case-Sensitive</label>
+                        </div>
+                        <div class="dwf-checkbox-group">
+                            <input type="checkbox" id="dwf-ignore-punctuation" name="ignore-punctuation" checked>
+                            <label for="dwf-ignore-punctuation">Ignore Punctuation</label>
+                        </div>
+                    </div>
+
+                    <button id="dwf-find-btn" class="dwf-find-button btn-secondary">Find Duplicates</button>
+
+                    <div class="dwf-results-area" aria-live="polite">
+                        <h2>Results:</h2>
+                        <div id="dwf-output" class="dwf-output-box">
+                            <p class="dwf-results-placeholder">Duplicate words will be listed here.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>© <span id="current-year"></span> ToolThump. All rights reserved.</p>
+    </footer>
+
+    <script src="duplicateWordFinder.js"></script>
+    <script src="/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,166 @@
+/* === Duplicate Word Finder Specific Styles === */
+
+.dwf-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.dwf-input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.dwf-input-group label {
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    color: var(--text-primary-color);
+}
+
+.dwf-input-group textarea {
+    min-height: 250px;
+    font-family: var(--font-family-monospace);
+    font-size: 0.9rem;
+    resize: vertical;
+    border: 1px solid var(--border-color);
+}
+
+/* Base styles in base.css handle the focus state consistently */
+
+.dwf-find-button {
+    display: block;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+    /* Visual styles are handled by the .btn-secondary class */
+}
+
+.dwf-results-area {
+    margin-top: var(--spacing-md);
+}
+
+.dwf-results-area h2 {
+    color: var(--accent-color);
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dwf-output-box {
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background-color: var(--bg-deep-dark);
+    min-height: 100px;
+    font-family: var(--font-family-monospace);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-primary-color);
+    overflow-x: auto;
+}
+
+.dwf-results-placeholder,
+.dwf-error-message,
+.dwf-no-duplicates {
+    color: var(--text-secondary-color);
+    font-style: italic;
+    padding: var(--spacing-md);
+    text-align: center;
+}
+
+.dwf-error-message {
+    color: var(--error-color);
+    font-weight: bold;
+}
+
+.dwf-no-duplicates {
+    color: var(--success-color);
+    font-weight: normal;
+}
+
+/* Results Table Styling */
+.dwf-results-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.dwf-results-table th,
+.dwf-results-table td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dwf-results-table thead {
+    background-color: var(--bg-deep-dark);
+}
+
+.dwf-results-table th {
+    font-weight: 600;
+    color: var(--text-secondary-color);
+    font-family: var(--font-family-heading);
+}
+
+.dwf-results-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.dwf-results-table tbody tr:hover {
+    background-color: var(--accent-color-bg-hover);
+}
+
+/* Specific column styles */
+.dwf-word-col {
+    width: 65%;
+    color: var(--accent-color);
+    font-weight: 600;
+    word-break: break-all;
+    /* Handle very long words */
+}
+
+.dwf-count-col {
+    width: 35%;
+    text-align: right;
+    color: var(--text-primary-color);
+}
+
+/* Options for case sensitivity and punctuation */
+.dwf-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-md);
+    background-color: var(--bg-deep-dark);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color);
+    margin-top: var(--spacing-md);
+}
+
+.dwf-options-label {
+    font-weight: 600;
+    color: var(--text-secondary-color);
+}
+
+.dwf-checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.dwf-checkbox-group input[type="checkbox"] {
+    width: 1.15em;
+    height: 1.15em;
+    accent-color: var(--accent-color);
+    cursor: pointer;
+}
+
+.dwf-checkbox-group label {
+    cursor: pointer;
+    font-weight: normal;
+    color: var(--text-primary-color);
+    user-select: none;
+    /* Prevents text selection on label click */
+}
