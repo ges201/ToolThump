@@ -1,10 +1,68 @@
 /* === Image Converter Specific Styles === */
 
+/* --- Upload Area --- */
+.ic-upload-area {
+    position: relative; /* Needed for positioning the remove button */
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    text-align: center;
+    background-color: var(--surface-bg-color);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    cursor: pointer;
+    margin-bottom: var(--spacing-lg);
+    overflow: hidden; /* Hide overflowing parts of the preview image */
+    min-height: 280px; /* Ensure a consistent height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ic-upload-area.drag-over {
+    border-color: var(--accent-color);
+    background-color: var(--accent-color-bg-hover);
+}
+
+/* Hide upload content when preview is active */
+.ic-upload-area.preview-active .ic-upload-content {
+    display: none;
+}
+.ic-upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.ic-upload-content .bi {
+    color: var(--accent-color);
+    margin-bottom: var(--spacing-md);
+}
+
+
+.ic-upload-text {
+    margin: 0 0 var(--spacing-xs);
+    color: var(--text-heading-color);
+}
+
+.ic-upload-text-secondary {
+    margin: var(--spacing-sm) 0;
+    color: var(--text-secondary-color);
+}
+
+.ic-upload-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+
 /* --- Main Options Grid --- */
 .ic-options-grid {
     margin-bottom: var(--spacing-lg);
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: 1fr;
     gap: var(--spacing-md);
 }
 
@@ -95,49 +153,69 @@
 }
 
 /* --- Summary & Preview --- */
-.ic-file-summary-container,
 .ic-image-preview-container {
-    margin-bottom: var(--spacing-lg);
-}
-
-.ic-file-summary-container[aria-hidden="true"],
-.ic-image-preview-container[aria-hidden="true"] {
-    display: none;
-}
-
-.ic-file-summary {
-    font-weight: 500;
-    color: var(--accent-color-dark);
-    background-color: var(--accent-color-bg-hover);
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--accent-color);
-}
-
-.ic-image-preview-box {
-    text-align: center;
-    border: 2px dashed var(--border-color);
-    padding: var(--spacing-md);
-    border-radius: var(--border-radius-md);
-    background-color: var(--bg-deep-dark);
-    min-height: 150px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: var(--spacing-md);
+    background-color: var(--bg-deep-dark);
+}
+
+.ic-image-preview-container[aria-hidden="true"] {
+    display: none;
 }
 
 #imagePreview {
     max-width: 100%;
-    max-height: 250px;
-    margin-bottom: var(--spacing-sm);
+    max-height: calc(100% - 40px); /* Leave space for the filename below */
+    object-fit: contain; /* Scale to fit while maintaining aspect ratio */
     border-radius: var(--border-radius-sm);
+    display: block;
 }
 
 .ic-preview-filename {
     font-size: 0.9em;
     color: var(--text-secondary-color);
     word-break: break-all;
+    margin-top: var(--spacing-sm);
+    position: absolute;
+    bottom: var(--spacing-sm);
+    left: var(--spacing-md);
+    right: var(--spacing-md);
+    text-align: center;
+    background: rgba(0,0,0,0.5);
+    padding: 2px 5px;
+    border-radius: var(--border-radius-sm);
+}
+
+.ic-remove-image-btn {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    font-size: 1.5rem;
+    line-height: 1;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.ic-remove-image-btn:hover {
+    background: rgba(0, 0, 0, 0.7); /* Slightly darker on hover */
 }
 
 /* --- Result Area (Status & Convert Button) --- */
