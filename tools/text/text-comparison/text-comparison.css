@@ -30,23 +30,34 @@
     color: var(--text-primary-color);
 }
 
-/* Let textareas inherit base styles, then override specifics */
 .tc-input-group textarea {
     min-height: 250px;
     font-family: var(--font-family-monospace);
     font-size: 0.9rem;
     resize: vertical;
     border: 1px solid var(--border-color);
+    /* --- UPDATED --- */
+    background-color: var(--bg-deep-dark);
+    /* Makes the text area background darker */
+    color: var(--text-primary-color);
+    /* Ensures the text inside is light and readable */
+    padding: var(--spacing-sm);
+    /* Add some padding for better text alignment */
 }
 
-/* Base styles in base.css handle the focus state consistently */
+.tc-button-group {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+    /* Allows buttons to wrap on very small screens */
+}
 
-/* MODIFIED: Visual styles are now handled by .btn-secondary, leaving only layout rules. */
-.tc-compare-button {
-    display: block;
-    width: 100%;
+.tc-button-group button {
+    flex-grow: 1;
+    /* Allows buttons to grow and fill space */
     max-width: 280px;
-    margin: 0 auto;
+    /* Same max-width as before */
 }
 
 .tc-results-area {
@@ -54,7 +65,6 @@
 }
 
 .tc-results-area h2 {
-    /* Use tool-content h2 style */
     color: var(--accent-color);
     margin-top: 0;
     margin-bottom: var(--spacing-md);
@@ -67,21 +77,20 @@
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
     background-color: var(--bg-deep-dark);
-    min-height: 150px;
+    /* min-height was removed to allow the box to adapt to its content. */
     font-family: var(--font-family-monospace);
     font-size: 0.9rem;
     line-height: 1.6;
     color: var(--text-primary-color);
     overflow-x: auto;
+    transition: height 0.2s ease-in-out;
 }
 
-/* Styling for the <pre> tag that will contain the diff */
 .tc-diff-output-box pre {
     margin: 0;
     white-space: pre-wrap;
     word-break: break-word;
     color: var(--text-secondary-color);
-    /* Unchanged text is less prominent */
 }
 
 .tc-results-placeholder,
@@ -107,11 +116,8 @@
     white-space: normal;
 }
 
-
-/* Word-by-word diff styling */
 .tc-word-added {
     background-color: rgba(40, 167, 69, 0.15);
-    /* from --success-color */
     color: var(--success-color);
     padding: 2px 1px;
     border-radius: 3px;
@@ -119,18 +125,15 @@
 
 .tc-word-removed {
     background-color: rgba(229, 75, 75, 0.15);
-    /* from --error-color */
     color: var(--error-color);
     text-decoration: line-through;
     padding: 2px 1px;
     border-radius: 3px;
 }
 
-/* For the sample text in the description */
 .tc-sample-added {
     background-color: rgba(40, 167, 69, 0.2);
     color: #90eeb1;
-    /* Lighter green for readability */
     padding: 1px 3px;
     border-radius: 3px;
 }
@@ -138,7 +141,6 @@
 .tc-sample-removed {
     background-color: rgba(229, 75, 75, 0.2);
     color: #f6a9a9;
-    /* Lighter red for readability */
     text-decoration: line-through;
     padding: 1px 3px;
     border-radius: 3px;
