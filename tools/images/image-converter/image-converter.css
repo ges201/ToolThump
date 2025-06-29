@@ -34,10 +34,18 @@
     justify-content: center;
 }
 
-.ic-upload-content .bi {
+.ic-multi-file-summary {
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     color: var(--accent-color);
+}
+
+.ic-multi-file-summary .bi {
     margin-bottom: var(--spacing-md);
 }
+
 
 
 .ic-upload-text {

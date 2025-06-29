@@ -35,8 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
         convertBtn.disabled = selectedFiles.length === 0;
 
         const isSingleFile = currentSelectionMode === 'single' && selectedFiles.length === 1;
-        
-        if (isSingleFile) {
+        const isMultiFile = (currentSelectionMode === 'multiple' || currentSelectionMode === 'folder') && selectedFiles.length > 0;
+
+        if (isSingleFile || isMultiFile) {
             uploadArea.classList.add('preview-active');
             imagePreviewContainer.style.display = 'flex';
             imagePreviewContainer.setAttribute("aria-hidden", "false");
@@ -46,13 +47,13 @@ document.addEventListener('DOMContentLoaded', () => {
             imagePreviewContainer.setAttribute("aria-hidden", "true");
         }
 
+        document.getElementById('imagePreview').style.display = isSingleFile ? 'block' : 'none';
+        document.getElementById('multiFileSummary').style.display = isMultiFile ? 'flex' : 'none';
+
         if (selectedFiles.length === 0) {
             showStatus("Select an image or folder to begin.", "info");
             imagePreview.src = "#";
             previewFileName.textContent = "";
-            uploadArea.classList.remove('preview-active');
-            imagePreviewContainer.style.display = 'none';
-            imagePreviewContainer.setAttribute("aria-hidden", "true");
             return;
         }
 
@@ -66,6 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
             reader.readAsDataURL(file);
+        } else if (isMultiFile) {
+            previewFileName.textContent = `${selectedFiles.length} images selected`;
         }
     }
 
@@ -74,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentSelectionMode = null;
         if (fileInput) fileInput.value = "";
         if (folderInput) folderInput.value = "";
+        retainFolderStructureCheckbox.checked = false;
         updateUIState();
     }
 
@@ -91,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 directoryReader.readEntries(async (entries) => {
                     if (entries.length > 0) {
                         allEntries = allEntries.concat(Array.from(entries));
-                        readEntries(); // Recursively read until all entries are fetched
+                        readEntries();
                     } else {
                         let files = [];
                         for (const anEntry of allEntries) {
@@ -112,53 +116,74 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }, (error) => {
                     console.error("Error reading directory entries:", error);
-                    resolve([]); // Resolve with empty array on error
+                    resolve([]);
                 });
             };
             readEntries();
         });
     }
 
+    function handleInputChange(fileList) {
+        const files = Array.from(fileList);
+        const isFolder = files.length > 0 && files[0].webkitRelativePath;
 
-    async function handleFiles(files) {
-        const fileList = Array.from(files);
-        const dataTransfer = new DataTransfer();
-        fileList.forEach(file => dataTransfer.items.add(file));
+        if (isFolder) {
+            currentSelectionMode = 'folder';
+            selectedFiles = files
+                .filter(file => isValidImageType(file.type))
+                .map(file => ({
+                    file,
+                    relativePath: file.webkitRelativePath
+                }));
+            finalizeFolderSelection();
+        } else {
+            handleFileSelection(files);
+        }
+    }
 
-        // Use the first item to check if it's a directory
-        const entry = dataTransfer.items[0]?.webkitGetAsEntry();
+    async function handleDrop(items) {
+        const itemList = Array.from(items);
+        const entry = itemList[0]?.webkitGetAsEntry();
 
         if (entry?.isDirectory) {
             currentSelectionMode = 'folder';
             showStatus("Scanning folder, please wait...", "info");
             selectedFiles = await processDirectory(entry);
             finalizeFolderSelection();
-
-        } else { // Handle files
-            selectedFiles = fileList
-                .filter(file => isValidImageType(file.type))
-                .map(file => ({
-                    file,
-                    relativePath: file.name
-                }));
-
-            if (selectedFiles.length === 0) {
-                showStatus("No valid image files (JPG, PNG, GIF, WEBP) found in selection.", "error");
-                resetSelections();
-                return;
+        } else {
+            const files = [];
+            for (const item of itemList) {
+                if (item.kind === 'file') {
+                    const file = item.getAsFile();
+                    if (file) files.push(file);
+                }
             }
-
-            currentSelectionMode = selectedFiles.length === 1 ? 'single' : 'multiple';
-
-            if (currentSelectionMode === 'single') {
-                showStatus(`Selected file: ${selectedFiles[0].file.name}. Ready to convert.`, "success");
-            } else {
-                showStatus(`Selected ${selectedFiles.length} images for batch conversion. Ready to convert.`, "success");
-            }
-            updateUIState();
+            handleFileSelection(files);
         }
     }
 
+    function handleFileSelection(files) {
+        selectedFiles = files
+            .filter(file => isValidImageType(file.type))
+            .map(file => ({
+                file,
+                relativePath: file.name
+            }));
+
+        if (selectedFiles.length === 0) {
+            showStatus("No valid image files (JPG, PNG, GIF, WEBP) found in selection.", "error");
+            resetSelections();
+            return;
+        }
+
+        currentSelectionMode = selectedFiles.length === 1 ? 'single' : 'multiple';
+        if (currentSelectionMode === 'single') {
+            showStatus(`Selected file: ${selectedFiles[0].file.name}. Ready to convert.`, "success");
+        } else {
+            showStatus(`Selected ${selectedFiles.length} images for batch conversion. Ready to convert.`, "success");
+        }
+        updateUIState();
+    }
 
     function finalizeFolderSelection() {
         if (selectedFiles.length === 0) {
@@ -174,27 +199,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function getOutputFormat() {
         const format = outputFormatSelect.value.toUpperCase();
         switch (format) {
-            case "JPEG":
-                return {
-                    mimeType: "image/jpeg",
-                    extension: "jpg"
-                };
-            case "GIF":
-                return {
-                    mimeType: "image/gif",
-                    extension: "gif"
-                };
-            case "WEBP":
-                return {
-                    mimeType: "image/webp",
-                    extension: "webp"
-                };
-            case "PNG":
-            default:
-                return {
-                    mimeType: "image/png",
-                    extension: "png"
-                };
+            case "JPEG": return { mimeType: "image/jpeg", extension: "jpg" };
+            case "GIF": return { mimeType: "image/gif", extension: "gif" };
+            case "WEBP": return { mimeType: "image/webp", extension: "webp" };
+            case "PNG": default: return { mimeType: "image/png", extension: "png" };
         }
     }
 
@@ -224,13 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     ctx.drawImage(img, 0, 0);
-
-                    let quality = 0.92;
-                    if (outputMimeType === "image/jpeg" || outputMimeType === "image/webp") {
-                        canvas.toBlob(blob => resolve(blob), outputMimeType, quality);
-                    } else {
-                        canvas.toBlob(blob => resolve(blob), outputMimeType);
-                    }
+                    const quality = 0.92;
+                    canvas.toBlob(blob => resolve(blob), outputMimeType, quality);
                 };
                 img.onerror = () => {
                     console.error(`Image load error for ${file.name}`);
@@ -267,16 +270,23 @@ document.addEventListener('DOMContentLoaded', () => {
     customFileBtn.addEventListener("click", () => fileInput.click());
     customFolderBtn.addEventListener("click", () => folderInput.click());
     removeImageBtn.addEventListener("click", (e) => {
-        e.stopPropagation(); // Prevent the upload area click event from firing
+        e.stopPropagation();
         resetSelections();
     });
 
-    fileInput.addEventListener("change", (event) => handleFiles(event.target.files));
-    folderInput.addEventListener("change", (event) => handleFiles(event.target.files));
+    fileInput.addEventListener("change", (event) => handleInputChange(event.target.files));
+    folderInput.addEventListener("change", (event) => handleInputChange(event.target.files));
 
+    // CORRECTED: This listener now prevents clicks on buttons from triggering the file input.
     uploadArea.addEventListener("click", (e) => {
-        // Only trigger file input if the click is on the background, not on the buttons inside it.
-        if (e.target === uploadArea || e.target.classList.contains('ic-upload-content') || e.target.tagName === 'P' || e.target.tagName === 'svg' || e.target.tagName === 'path') {
+        // If the click is on a button, do nothing here.
+        // Its own dedicated click listener will handle the action.
+        if (e.target.closest('button')) {
+            return;
+        }
+
+        // If the click was on the general area (and not a button), trigger the file input.
+        if (e.target === uploadArea || e.target.closest('.ic-upload-content')) {
             fileInput.click();
         }
     });
@@ -293,8 +303,8 @@ document.addEventListener('DOMContentLoaded', () => {
     uploadArea.addEventListener("drop", (event) => {
         event.preventDefault();
         uploadArea.classList.remove("drag-over");
-        if (event.dataTransfer?.files) {
-            handleFiles(event.dataTransfer.files);
+        if (event.dataTransfer?.items) {
+            handleDrop(event.dataTransfer.items);
         }
     });
 
@@ -306,17 +316,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         convertBtn.disabled = true;
         showStatus("Initializing conversion...", "info");
-
-        const {
-            mimeType: outputMimeType,
-            extension: outputExtension
-        } = getOutputFormat();
+        const { mimeType: outputMimeType, extension: outputExtension } = getOutputFormat();
 
         try {
             if (currentSelectionMode === 'single') {
-                const {
-                    file
-                } = selectedFiles[0];
+                const { file } = selectedFiles[0];
                 showStatus(`Converting ${file.name}...`, "info");
                 const convertedBlob = await processImage(file, outputMimeType);
                 if (convertedBlob) {
@@ -334,23 +338,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 showStatus(`Processing ${selectedFiles.length} images for ZIP archive...`, "info");
 
                 for (let i = 0; i < selectedFiles.length; i++) {
-                    const {
-                        file,
-                        relativePath
-                    } = selectedFiles[i];
+                    const { file, relativePath } = selectedFiles[i];
                     showStatus(`Converting image ${i + 1} of ${selectedFiles.length}: ${file.name}...`, "info");
                     const convertedBlob = await processImage(file, outputMimeType);
+
                     if (convertedBlob) {
                         const originalNameWithoutExt = file.name.substring(0, file.name.lastIndexOf(".") || file.name.length);
                         const newFileName = `${originalNameWithoutExt}.${outputExtension}`;
 
                         let pathInZip = newFileName;
                         if (currentSelectionMode === 'folder' && retainStructure && relativePath.includes('/')) {
-                            // Recreate the directory structure for the new file
                             const originalPath = relativePath.substring(0, relativePath.lastIndexOf('/') + 1);
-                            const newPath = originalPath.replace(/\/[^/]+$/, `/${newFileName}`); // a/b/c.jpg -> a/b/new.png
                             pathInZip = originalPath + newFileName;
-
                         }
 
                         zip.file(pathInZip, convertedBlob);
@@ -362,9 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (convertedCount > 0) {
                     showStatus(`Creating ZIP file with ${convertedCount} converted image(s)...`, "info");
-                    const zipBlob = await zip.generateAsync({
-                        type: "blob"
-                    });
+                    const zipBlob = await zip.generateAsync({ type: "blob" });
                     const archiveBaseName = currentSelectionMode === 'folder' ? (selectedFiles[0].relativePath.split('/')[0] || "converted_images") : "converted_images";
                     downloadBlob(zipBlob, `${archiveBaseName}_${outputExtension.toUpperCase()}.zip`);
                     showStatus(`${convertedCount} image(s) converted and zipped. Downloading...`, "success");
@@ -377,7 +374,6 @@ document.addEventListener('DOMContentLoaded', () => {
             showStatus(`Error during conversion: ${error.message}. Please try again.`, "error");
         } finally {
             resetSelections();
-            convertBtn.disabled = false;
         }
     });
 

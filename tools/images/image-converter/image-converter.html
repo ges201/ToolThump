@@ -120,20 +120,28 @@
                         </div>
                     </div>
                     <div id="imagePreviewContainer" class="ic-image-preview-container" aria-hidden="true">
+                        <div id="multiFileSummary" class="ic-multi-file-summary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor"
+                                class="bi bi-files" viewBox="0 0 16 16">
+                                <path
+                                    d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z" />
+                            </svg>
+                        </div>
                         <img id="imagePreview" src="#" alt="Selected image preview" />
-                        <button id="removeImageBtn" type="button" class="ic-remove-image-btn" aria-label="Remove image">&times;</button>
+                        <button id="removeImageBtn" type="button" class="ic-remove-image-btn"
+                            aria-label="Remove image">×</button>
                         <p id="previewFileName" class="ic-preview-filename"></p>
                     </div>
                     <!-- Hidden actual inputs -->
-                    <input type="file" id="fileInput" class="sr-only"
-                        accept="image/jpeg,image/png,image/gif,image/webp" multiple>
+                    <input type="file" id="fileInput" class="sr-only" accept="image/jpeg,image/png,image/gif,image/webp"
+                        multiple>
                     <input type="file" id="folderInput" class="sr-only" webkitdirectory directory multiple
                         accept="image/jpeg,image/png,image/gif,image/webp">
                 </div>
 
                 <div id="folderOptionsContainer" class="ic-folder-options" style="display: none;">
                     <div class="ic-checkbox-container">
-                        <input type="checkbox" id="retainFolderStructure" class="ic-checkbox" checked>
+                        <input type="checkbox" id="retainFolderStructure" class="ic-checkbox">
                         <label for="retainFolderStructure" class="ic-checkbox-label">Retain folder structure in
                             ZIP</label>
                     </div>
