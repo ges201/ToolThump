@@ -87,61 +87,7 @@
     <meta name="msapplication-TileColor" content="#1a1c2c">
     <meta name="theme-color" content="#1a1c2c">
 
-    <!-- STYLES FOR TIPS SECTION -->
-    <style>
-        .ir-tips-section h2 {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-        }
-
-        .ir-tips-section h2 .section-icon {
-            font-size: 1.2em;
-            color: var(--accent-color);
-        }
-
-        .ir-tips-list {
-            list-style: none;
-            padding-left: 0;
-            margin-bottom: var(--spacing-lg);
-            color: var(--text-primary-color);
-        }
-
-        .ir-tip-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: var(--spacing-lg);
-            background-color: var(--bg-deep-dark);
-            padding: var(--spacing-md);
-            border-radius: var(--border-radius-md);
-            border: 1px solid var(--border-color);
-        }
-
-        .ir-tip-icon {
-            font-size: 1.6em;
-            margin-right: var(--spacing-md);
-            line-height: 1.4;
-            color: var(--accent-color);
-            flex-shrink: 0;
-            margin-top: -2px;
-        }
-
-        .ir-tip-text {
-            flex-grow: 1;
-        }
-
-        .ir-tip-text strong {
-            display: block;
-            font-size: 1.1em;
-            margin-bottom: var(--spacing-xs);
-            color: var(--text-heading-color);
-        }
-
-        #image-resizer-tips p {
-            line-height: 1.7;
-            margin-bottom: var(--spacing-md);
-        }
-    </style>
+    
 </head>
 
 <body>
@@ -288,55 +234,89 @@
                 </div> <!-- /tool-content-area -->
             </section>
 
-            <!-- REWRITTEN SECTION -->
-            <section id="image-resizer-tips" class="tool-content active ir-tips-section">
-                <h2><span class="section-icon">💡</span>Getting the Best Results</h2>
-                <p>Cropping and resizing are powerful tools for optimizing your images. Here are a few tips to ensure
-                    your final images look sharp and professional.</p>
-                <ul class="ir-tips-list">
-                    <li class="ir-tip-item">
-                        <span class="ir-tip-icon">🎯</span>
-                        <div class="ir-tip-text">
-                            <strong>Frame Your Subject:</strong> Use the crop tool to improve your image's composition.
-                            Drag the corners to remove distracting backgrounds and focus the viewer's attention on the
-                            most important part of the photo.
+            <!-- How-to section -->
+            <section class="tool-content active cp-features-section">
+                <h2><span class="section-icon">💡</span>How to Use</h2>
+                <p>Follow these simple steps to effectively crop and resize your images. All processing is done securely
+                    in your browser.</p>
+                <ul class="cp-features-list">
+                    <li class="cp-feature-item">
+                        <span class="cp-feature-icon">1️⃣</span>
+                        <div class="cp-feature-text">
+                            <strong>Upload Your Image:</strong> Click the "Choose Image" button or drag and drop your
+                            image onto the preview area. Your image will appear in the main canvas.
                         </div>
                     </li>
-                    <li class="ir-tip-item">
-                        <span class="ir-tip-icon">📏</span>
-                        <div class="ir-tip-text">
-                            <strong>Choose Your Mode: Ratio vs. Free:</strong>
-                            Use <strong>Fixed Ratio</strong> mode to lock proportions (like 1:1 Square or 16:9
-                            Widescreen), perfect for social media profiles or thumbnails. Use <strong>Free Crop</strong>
-                            when you need exact pixel dimensions (e.g., a 300x250 banner).
+                    <li class="cp-feature-item">
+                        <span class="cp-feature-icon">2️⃣</span>
+                        <div class="cp-feature-text">
+                            <strong>Adjust Crop & Resize Options:</strong>
+                            Choose between "Free Crop" to manually select any area, or "Fixed Ratio" for predefined
+                            aspect ratios (e.g., 1:1, 16:9). You can also input target dimensions.
                         </div>
                     </li>
-                    <li class="ir-tip-item">
-                        <span class="ir-tip-icon">✨</span>
-                        <div class="ir-tip-text">
-                            <strong>Start High, Go Low:</strong> For the best quality, always start with a
-                            high-resolution image and make it smaller. Enlarging a small, cropped area to a much larger
-                            size will result in a loss of sharpness and clarity.
-                        </div>
-                    </li>
-                    <li class="ir-tip-item">
-                        <span class="ir-tip-icon">🌐</span>
-                        <div class="ir-tip-text">
-                            <strong>Resize for the Web:</strong> After cropping, ensure your final output dimensions are
-                            suitable for where the image will be used. Smaller images load faster on websites, improving
-                            user experience and SEO. Don't use a 4000px wide image where a 1200px one will do.
-                        </div>
-                    </li>
-                    <li class="ir-tip-item">
-                        <span class="ir-tip-icon">🛡️</span>
-                        <div class="ir-tip-text">
-                            <strong>Your Images are Safe:</strong> All cropping and resizing happens in your browser.
-                            Your images are never uploaded to our servers, ensuring your privacy.
+                    <li class="cp-feature-item">
+                        <span class="cp-feature-icon">3️⃣</span>
+                        <div class="cp-feature-text">
+                            <strong>Process & Download:</strong> Once satisfied with your selection, click "Process &
+                            Download Image". The tool will crop and resize your image, then automatically download it to
+                            your device.
                         </div>
                     </li>
                 </ul>
             </section>
-            <!-- END REWRITTEN SECTION -->
+
+            <!-- Features section -->
+            <section class="tool-content active cp-features-section">
+                <h2><span class="section-icon">✨</span>Key Features</h2>
+                <p>Our Image Resizer & Cropper is designed for efficiency, privacy, and ease of use. Here's what makes
+                    it stand out:</p>
+                <ul class="cp-features-list">
+                    <li class="cp-feature-item">
+                        <span class="cp-feature-icon">🔒</span>
+                        <div class="cp-feature-text">
+                            <strong>Client-Side Processing:</strong> All image manipulation happens directly in your
+                            browser. Your images are never uploaded to our servers, ensuring complete privacy and fast
+                            processing.
+                        </div>
+                    </li>
+                    <li class="cp-feature-item">
+                        <span class="cp-feature-icon">✂️</span>
+                        <div class="cp-feature-text">
+                            <strong>Flexible Cropping:</strong> Use the intuitive cropping interface to select any
+                            portion of your image. Adjust the crop box freely or lock it to popular aspect ratios.
+                        </div>
+                    </li>
+                    <li class="cp-feature-item">
+                        <span class="cp-feature-icon">📐</span>
+                        <div class="cp-feature-text">
+                            <strong>Precise Resizing:</strong> Easily resize images to exact pixel dimensions. Maintain
+                            aspect ratio or set custom width and height for specific needs.
+                        </div>
+                    </li>
+                    <li class="cp-feature-item">
+                        <span class="cp-feature-icon">⚡</span>
+                        <div class="cp-feature-text">
+                            <strong>Instant Download:</strong> Once processed, your new image is immediately available
+                            for download. No waiting, no extra steps.
+                        </div>
+                    </li>
+                    <li class="cp-feature-item">
+                        <span class="cp-feature-icon">🖼️</span>
+                        <div class="cp-feature-text">
+                            <strong>Multiple Formats:</strong> Supports common image formats like JPEG, PNG, and WebP,
+                            allowing you to work with a variety of image files.
+                        </div>
+                    </li>
+                    <li class="cp-feature-item">
+                        <span class="cp-feature-icon">🔄</span>
+                        <div class="cp-feature-text">
+                            <strong>Original Image Preservation:</strong> Your original image file remains untouched on
+                            your device. The tool creates a new, modified version for download.
+                        </div>
+                    </li>
+                </ul>
+            </section>
 
         </main>
     </div>
