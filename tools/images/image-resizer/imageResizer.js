@@ -119,7 +119,7 @@ function initImageResizer() {
         cropper = new Cropper(imagePreview, cropperOptions);
     }
 
-    function handleImageFile(file) { /* ... same as before ... */
+    function handleImageFile(file) {
         uploadedImageFile = file; fileNameDisplay.textContent = file.name; lastCropData = null;
         if (!['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/bmp'].includes(file.type)) { displayError('Unsupported file type.'); resetCropperUI(true); return; }
         clearError(); resizeButton.disabled = true;
@@ -146,15 +146,15 @@ function initImageResizer() {
         reader.readAsDataURL(file);
     }
 
-    imageUpload.addEventListener('change', (event) => { /* ... same as before ... */
+    imageUpload.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) { handleImageFile(file); } else { resetCropperUI(true); }
     });
 
-    const previewWrapper = document.querySelector('.ir-image-preview-wrapper'); /* ... same as before ... */
+    const previewWrapper = document.querySelector('.ir-image-preview-wrapper');
     if (previewWrapper) { previewWrapper.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); previewWrapper.style.borderColor = 'var(--accent-color)'; }); previewWrapper.addEventListener('dragleave', (e) => { e.preventDefault(); e.stopPropagation(); previewWrapper.style.borderColor = 'var(--border-color)'; }); previewWrapper.addEventListener('drop', (e) => { e.preventDefault(); e.stopPropagation(); previewWrapper.style.borderColor = 'var(--border-color)'; const files = e.dataTransfer.files; if (files.length > 0) { imageUpload.files = files; handleImageFile(files[0]); } }); if (imageUploadPlaceholder) imageUploadPlaceholder.addEventListener('click', () => imageUpload.click()); previewWrapper.addEventListener('click', () => { if (!currentImageSrc) imageUpload.click(); }); }
 
-    function resetCropperUI(fullReset = false) { /* ... same as before ... */
+    function resetCropperUI(fullReset = false) {
         if (cropper) { cropper.destroy(); cropper = null; }
         if (fullReset) { uploadedImageFile = null; currentImageSrc = null; lastCropData = null; originalWidth = 0; originalHeight = 0; fileNameDisplay.textContent = 'No image selected.'; imagePreview.src = "#"; imagePreview.style.visibility = 'hidden'; if (imageUploadPlaceholder) imageUploadPlaceholder.style.display = 'flex'; originalDimensionsDisplay.textContent = ''; if (ratioReferenceWidthInput) { ratioReferenceWidthInput.value = ''; ratioReferenceWidthInput.removeAttribute('max'); } if (displayWidthInput) displayWidthInput.removeAttribute('max'); if (displayHeightInput) displayHeightInput.removeAttribute('max'); }
         newDimensionsDisplay.textContent = 'Selection: N/A';
@@ -217,7 +217,7 @@ function initImageResizer() {
         if (modeRatioRadio.checked && currentImageSrc) initializeOrReinitializeCropper();
     });
 
-    function handleDimensionInputChange() { /* ... same as before ... */
+    function handleDimensionInputChange() {
         if (isUpdatingInputsProgrammatically || !modeFreeRadio.checked || !cropper || !cropper.cropped || !originalWidth || !originalHeight) return;
         const currentCropData = cropper.getData(); let newWidth = parseInt(displayWidthInput.value, 10); let newHeight = parseInt(displayHeightInput.value, 10);
         let dataToSet = {}; let needsUpdate = false;
@@ -228,7 +228,7 @@ function initImageResizer() {
     if (displayWidthInput) displayWidthInput.addEventListener('input', handleDimensionInputChange);
     if (displayHeightInput) displayHeightInput.addEventListener('input', handleDimensionInputChange);
 
-    function handleRatioReferenceWidthChange() { /* ... same as before ... */
+    function handleRatioReferenceWidthChange() {
         if (isUpdatingRatioInputProgrammatically || !modeRatioRadio.checked || !cropper || /*!cropper.cropped ||*/ !originalWidth) { return; } // Allow update even if not fully cropped yet
         let targetWidth = parseInt(ratioReferenceWidthInput.value, 10);
         if (isNaN(targetWidth)) { if (ratioReferenceWidthInput.value.trim() !== "") { /* Maybe clear error or show small hint */ } return; }
@@ -245,12 +245,21 @@ function initImageResizer() {
     }
     if (ratioReferenceWidthInput) ratioReferenceWidthInput.addEventListener('input', handleRatioReferenceWidthChange);
 
-    resizeButton.addEventListener('click', () => { /* ... same as before ... */
+    resizeButton.addEventListener('click', () => {
         if (!uploadedImageFile || !cropper || !cropper.cropped) { displayError('Upload image and select area.'); return; } clearError(); const cropData = cropper.getData(true); if (cropData.width <= 0 || cropData.height <= 0) { displayError('Invalid crop dimensions.'); return; }
         let outputWidth = cropData.width; let outputHeight = cropData.height;
         if (modeRatioRadio.checked && ratioReferenceWidthInput.value) { const targetRefWidth = parseInt(ratioReferenceWidthInput.value, 10); const safeTargetRefWidth = Math.min(targetRefWidth, originalWidth); if (safeTargetRefWidth > 0 && safeTargetRefWidth !== outputWidth) { const aspectRatio = cropData.width / cropData.height; if (aspectRatio > 0) { outputWidth = safeTargetRefWidth; outputHeight = Math.round(safeTargetRefWidth / aspectRatio); if (outputHeight > originalHeight) { outputHeight = originalHeight; outputWidth = Math.round(outputHeight * aspectRatio); } } } }
         if (outputWidth > 32000 || outputHeight > 32000 || outputWidth < 1 || outputHeight < 1) { displayError('Output dimensions invalid or too large (max 32000px).'); return; }
-        const croppedCanvas = cropper.getCroppedCanvas({ width: outputWidth, height: outputHeight, imageSmoothingEnabled: true, imageSmoothingQuality: 'high', fillColor: '#fff' }); if (!croppedCanvas) { displayError('Could not generate cropped image.'); return; }
+
+        // **MODIFICATION HERE**: Removed `fillColor: '#fff'` to preserve transparency
+        const croppedCanvas = cropper.getCroppedCanvas({
+            width: outputWidth,
+            height: outputHeight,
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high',
+        });
+
+        if (!croppedCanvas) { displayError('Could not generate cropped image.'); return; }
         let downloadMimeType = uploadedImageFile.type; if (downloadMimeType === 'image/gif' || downloadMimeType === 'image/bmp' || !['image/png', 'image/jpeg', 'image/webp'].includes(downloadMimeType)) { downloadMimeType = 'image/png'; }
         let quality = (downloadMimeType === 'image/jpeg' || downloadMimeType === 'image/webp') ? 0.92 : undefined;
         try {
