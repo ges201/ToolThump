@@ -163,6 +163,49 @@ function setupDropdowns() {
 // =================================================================
 
 /**
+ * Fetches the shared footer and injects the HTML into the page.
+ */
+async function loadFooter() {
+    const footerPlaceholder = document.querySelector('footer[data-include="main-footer"]');
+    if (!footerPlaceholder) return;
+
+    // Calculate the relative path from the current page to the project root.
+    // This should be your GitHub repository name.
+    const projectRootFolderName = "ToolThump";
+    let currentPathname = window.location.pathname;
+    let dirPath = currentPathname.substring(0, currentPathname.lastIndexOf('/') + 1);
+    let pathSegments = dirPath.split('/').filter(Boolean);
+
+    let depth = 0;
+    const projectRootIndex = pathSegments.indexOf(projectRootFolderName);
+
+    if (projectRootIndex !== -1) {
+        // Calculate depth from the project's root folder onwards.
+        depth = pathSegments.length - 1 - projectRootIndex;
+    } else {
+        // Assumes the project is at the web server's root.
+        depth = pathSegments.length;
+    }
+
+    if (depth < 0) depth = 0; // Safety check.
+    const relativePathPrefix = depth > 0 ? '../'.repeat(depth) : './';
+    const footerUrl = `${relativePathPrefix}_includes/footer.html`;
+
+    try {
+        const response = await fetch(footerUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status} fetching from ${footerUrl}`);
+        }
+        const footerHTML = await response.text();
+        footerPlaceholder.innerHTML = footerHTML;
+        updateCopyrightYear(); // Update year after footer is loaded
+    } catch (error) {
+        console.error("Error loading footer:", error);
+        footerPlaceholder.innerHTML = `<p style='color:red; text-align:center; padding: 1em;'>Error loading footer. Check console for details.</p>`;
+    }
+}
+
+/**
  * Updates the copyright year in the footer.
  */
 function updateCopyrightYear() {
@@ -181,5 +224,5 @@ function updateCopyrightYear() {
  */
 document.addEventListener('DOMContentLoaded', () => {
     loadHeader();
-    updateCopyrightYear();
+    loadFooter();
 });
