@@ -1,0 +1,150 @@
+@import url("/css/theme.css");
+@import url("/css/base.css");
+@import url("/css/layout.css");
+@import url("/css/components.css");
+@import url("/css/responsive.css");
+
+/* Specific styles for a cleaner About page */
+.page-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xxl);
+    padding-bottom: var(--spacing-xl);
+}
+
+.page-header h1 {
+    font-family: var(--font-family-heading);
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.page-header .subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary-color);
+    max-width: 70ch;
+    margin: 0 auto;
+}
+
+.about-container {
+    margin: 0 auto;
+}
+
+/* MODIFIED: Removed max-width and centering margins */
+.about-section {
+    margin-bottom: 5rem;
+    /* Large margin for clear separation */
+}
+
+/* Remove margin from the last section */
+.about-section:last-of-type {
+    margin-bottom: 0;
+}
+
+.about-section h2 {
+    font-size: 1.6rem;
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-heading-color);
+}
+
+.about-me p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-secondary-color);
+    margin-bottom: var(--spacing-lg);
+}
+
+.principles-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.principles-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-lg);
+    background-color: var(--bg-deep-dark);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.principles-list i {
+    font-size: 1.5rem;
+    color: var(--accent-color);
+    height: 45px;
+    width: 45px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius-sm);
+    background-color: var(--bg-dark);
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+
+.principles-list li div {
+    display: flex;
+    flex-direction: column;
+}
+
+.principles-list li strong {
+    font-size: 1.1rem;
+    color: var(--text-heading-color);
+    margin-bottom: var(--spacing-xs);
+}
+
+.principles-list li span {
+    font-size: 1rem;
+    color: var(--text-secondary-color);
+}
+
+.highlight {
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.github-cta {
+    text-align: center;
+    background-color: var(--bg-deep-dark);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+}
+
+.github-cta h2 {
+    font-size: 1.6rem;
+    margin-top: 0;
+    margin-bottom: var(--spacing-sm);
+}
+
+.github-cta p {
+    color: var(--text-secondary-color);
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-lg);
+}
+
+.github-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md) var(--spacing-xl);
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease;
+}
+
+.github-button:hover {
+    background-color: #555;
+}
+
+.github-button i {
+    font-size: 1.2rem;
+    margin-right: var(--spacing-md);
+}

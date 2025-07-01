@@ -1,0 +1,83 @@
+@import url("/css/theme.css");
+@import url("/css/base.css");
+@import url("/css/layout.css");
+@import url("/css/components.css");
+@import url("/css/responsive.css");
+
+/* Specific styles for a cleaner Privacy Policy page */
+.page-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xxl);
+    padding-bottom: var(--spacing-xl);
+}
+
+.page-header h1 {
+    font-family: var(--font-family-heading);
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.page-header .subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary-color);
+    max-width: 70ch;
+    margin: 0 auto;
+}
+
+.privacy-container {
+    margin: 0 auto;
+}
+
+/* MODIFIED: Increased margin-bottom significantly for more separation */
+.privacy-section {
+    margin-bottom: 5rem; /* A large, explicit value for clear separation */
+}
+
+/* NEW: Ensures there's no extra space at the very bottom of the page */
+.privacy-section:last-of-type {
+    margin-bottom: 0;
+}
+
+/* MODIFIED: Increased margin-bottom to create more space between a heading and its text */
+.privacy-section h2 {
+    font-size: 1.6rem;
+    color: var(--text-heading-color);
+    margin-bottom: var(--spacing-lg); /* Was var(--spacing-md) */
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+}
+
+.privacy-section h2 .icon {
+    color: var(--accent-color);
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+
+.privacy-section p {
+    line-height: 1.8;
+    font-size: 1.1rem;
+    color: var(--text-secondary-color);
+    margin: 0;
+}
+
+.highlight {
+    background-color: rgba(var(--accent-color-rgb), 0.1);
+    color: var(--accent-color);
+    padding: 2px 6px;
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+}
+
+.privacy-section a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom 0.3s ease;
+}
+
+.privacy-section a:hover {
+    border-bottom: 2px solid var(--accent-color);
+}
