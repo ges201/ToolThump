@@ -84,34 +84,7 @@
         gap: var(--spacing-md);
     }
 
-    /* Specific tool adjustments from original file - kept for context */
-    .pg-options {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-md);
-    }
-
-    .pg-result-area {
-        padding: var(--spacing-md);
-    }
-
-    button.pg-generate-button {
-        padding: var(--spacing-sm) var(--spacing-lg);
-        font-size: 1rem;
-        max-width: 100%;
-    }
-
-    .psc-strength-meter {
-        padding: var(--spacing-sm);
-    }
-
-    .psc-feedback-list li {
-        padding-left: 1.8em;
-    }
-
-    .psc-feedback-list li::before {
-        font-size: 0.9em;
-        left: 0.15em;
-    }
+    
 
     footer {
         padding: var(--spacing-md) 0;

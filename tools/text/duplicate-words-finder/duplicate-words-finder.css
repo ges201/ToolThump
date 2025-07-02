@@ -254,3 +254,15 @@
     margin-bottom: var(--spacing-xs);
     color: var(--text-heading-color);
 }
+
+.tool-placeholder div {
+    margin-bottom: var(--spacing-lg);
+}
+
+.tool-placeholder label {
+    display: block;
+    font-family: var(--font-family-heading);
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary-color);
+}

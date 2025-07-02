@@ -208,26 +208,7 @@
     font-size: 0.95rem;
 }
 
-/* === General Form & UI Element Styling === */
-.tool-placeholder div:not(.pg-checkbox-group):not(.pg-min-input-group):not(.pg-password-wrapper):not(.psc-strength-meter) {
-    margin-bottom: var(--spacing-lg);
-}
 
-.tool-placeholder label,
-.pg-result-area label {
-    display: block;
-    font-family: var(--font-family-heading);
-    font-weight: 600;
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-primary-color);
-}
-
-input[type="number"]:disabled,
-input[type="text"]:disabled {
-    background-color: var(--disabled-bg-color);
-    color: var(--text-secondary-color);
-    cursor: not-allowed;
-}
 
 /* === Homepage Search Bar === */
 .search-prompt {
