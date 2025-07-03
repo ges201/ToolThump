@@ -390,4 +390,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     resetToInitialState();
+
+    // --- MODIFIED: Accordion Functionality for FAQ ---
+    document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const accordionItem = header.closest('.accordion-item');
+            const content = accordionItem.querySelector('.accordion-content');
+            const isCurrentlyOpen = header.classList.contains('active');
+
+            // Close other open accordions first
+            document.querySelectorAll('.accordion-item').forEach(item => {
+                if (item !== accordionItem) {
+                    const otherHeader = item.querySelector('.accordion-header');
+                    const otherContent = item.querySelector('.accordion-content');
+                    otherHeader.classList.remove('active');
+                    otherContent.classList.remove('open');
+                    otherContent.style.maxHeight = null; // Let CSS handle the closing animation to 0
+                }
+            });
+
+            // Toggle the clicked accordion
+            header.classList.toggle('active');
+            content.classList.toggle('open');
+
+            if (!isCurrentlyOpen) {
+                // --- FIXED OPENING LOGIC ---
+                // It was closed, so now we open it.
+                // Set max-height to its scroll height to trigger the opening animation.
+                // scrollHeight correctly measures the content's full height, including padding.
+                content.style.maxHeight = content.scrollHeight + 'px';
+            } else {
+                // --- CORRECT CLOSING LOGIC ---
+                // It was open, so now we close it.
+                // Setting max-height to null removes the inline style, allowing the stylesheet
+                // to take over and animate it back to its default (max-height: 0).
+                content.style.maxHeight = null;
+            }
+        });
+    });
 });
