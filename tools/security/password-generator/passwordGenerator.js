@@ -305,7 +305,6 @@ const pg = {
             return;
         }
 
-        // MODIFIED: Simplified the click handler to call the function directly
         this.generateBtn.addEventListener('click', () => this.generatePassword());
         this.copyBtn.addEventListener('click', () => this.copyPasswordToClipboard());
 
@@ -346,10 +345,16 @@ const pg = {
         if (this.copyBtn) {
             this.copyBtn.disabled = true;
         }
+
         console.log("Password Generator Initialized on its page.");
     }
 };
 
-if (document.getElementById('passwordGenerator')) {
-    pg.init();
+// The global `main.js` will call this function after includes are loaded.
+function initializeTool() {
+    if (document.getElementById('passwordGenerator')) {
+        pg.init();
+    }
 }
+
+window.initializeTool = initializeTool;

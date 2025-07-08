@@ -5,13 +5,11 @@
 /**
  * Finds all elements with a `data-include` attribute and loads the
  * corresponding HTML file from the `_includes` directory into them.
- * This is used for header, footer, and reusable tool sections.
  */
 async function loadIncludes() {
     const includeElements = document.querySelectorAll('[data-include]');
     const projectRootFolderName = "ToolThump"; // Your GitHub repo name
 
-    // Function to calculate the relative path to the project root
     const calculateRelativePath = () => {
         let currentPathname = window.location.pathname;
         let dirPath = currentPathname.substring(0, currentPathname.lastIndexOf('/') + 1);
@@ -30,7 +28,6 @@ async function loadIncludes() {
 
     const relativePathPrefix = calculateRelativePath();
 
-    // Create a fetch promise for each include element
     const fetchPromises = Array.from(includeElements).map(async (element) => {
         const includeName = element.dataset.include;
         const filePath = `${relativePathPrefix}_includes/${includeName}.html`;
@@ -42,8 +39,6 @@ async function loadIncludes() {
             }
             let contentHTML = await response.text();
 
-            // Prepend the relative path to all local 'href' and 'src' attributes
-            // This is mainly for the header's logo and links
             if (includeName === 'header') {
                 contentHTML = contentHTML.replace(/(href|src)=["'](?!(?:https?:|\/\/|\/|data:|#))([^"']+)["']/g, (match, attr, url) => {
                     return `${attr}="${relativePathPrefix}${url}"`;
@@ -57,7 +52,6 @@ async function loadIncludes() {
         }
     });
 
-    // Wait for all includes to be fetched and inserted
     await Promise.all(fetchPromises);
 }
 
@@ -67,14 +61,12 @@ async function loadIncludes() {
 // =================================================================
 
 /**
- * Sets up all interactive elements within the header, such as dropdown menus
- * and active link highlighting. This function is called after the header is loaded.
+ * Sets up all interactive elements within the header.
  */
 function setupHeader() {
     const header = document.querySelector('header');
     if (!header) return;
 
-    // --- Dropdown Toggling ---
     const categoryButtons = header.querySelectorAll('.category-button');
     categoryButtons.forEach(button => {
         const dropdownId = button.getAttribute('aria-controls');
@@ -84,22 +76,17 @@ function setupHeader() {
         button.addEventListener('click', (event) => {
             event.stopPropagation();
             const isExpanded = button.getAttribute('aria-expanded') === 'true';
-
-            // Close other open dropdowns
             header.querySelectorAll('.category-button[aria-expanded="true"]').forEach(otherButton => {
                 if (otherButton !== button) {
                     otherButton.setAttribute('aria-expanded', 'false');
                     document.getElementById(otherButton.getAttribute('aria-controls')).classList.remove('show');
                 }
             });
-
-            // Toggle the current dropdown
             button.setAttribute('aria-expanded', String(!isExpanded));
             dropdown.classList.toggle('show', !isExpanded);
         });
     });
 
-    // --- Event Listeners for Closing Dropdowns ---
     document.addEventListener('click', (event) => {
         if (!header.contains(event.target)) {
             header.querySelectorAll('.category-button[aria-expanded="true"]').forEach(button => {
@@ -113,8 +100,6 @@ function setupHeader() {
         menu.addEventListener('click', (event) => event.stopPropagation());
     });
 
-    // --- Active Link Highlighting ---
-    const repoName = "ToolThump";
     const currentPath = window.location.pathname.replace(/\/index\.html$/, '/');
     header.querySelectorAll('.tool-link').forEach(link => {
         const linkPath = new URL(link.href).pathname.replace(/\/index\.html$/, '/');
@@ -138,15 +123,121 @@ function setupFooter() {
     }
 }
 
-
 // =================================================================
-// SECTION 4: INITIALIZATION
+// SECTION 4: REUSABLE TOOL TEXT SECTION LOGIC (NEW)
 // =================================================================
 
 /**
- * Main execution entry point after the DOM is fully loaded.
- * Orchestrates the loading of includes and setup of components.
+ * Initializes and renders the tool's text sections (How-to, Features, FAQ)
+ * based on a JSON data island. This is a global function.
  */
+function initializeToolTextSections() {
+    const dataElement = document.getElementById('tool-text-data');
+    const mainContainer = document.getElementById('tool-text-sections-container');
+
+    // If the page doesn't have the required data or container, do nothing.
+    if (!dataElement || !mainContainer) {
+        return;
+    }
+
+    const sectionTemplate = document.getElementById('template-section');
+    const featureItemTemplate = document.getElementById('template-feature-item');
+    const faqItemTemplate = document.getElementById('template-faq-item');
+
+    if (!sectionTemplate || !featureItemTemplate || !faqItemTemplate) {
+        console.error("TOOL_TEXT_INIT: Missing required templates in tool-text-section.html. Aborting.");
+        return;
+    }
+
+    try {
+        const toolTextData = JSON.parse(dataElement.textContent);
+        generateSections(toolTextData);
+        setupAccordion();
+    } catch (error) {
+        console.error("TOOL_TEXT_INIT: Error parsing or rendering tool text data:", error);
+    }
+
+    function generateSections(data) {
+        data.sections.forEach(sectionData => {
+            const sectionClone = sectionTemplate.content.cloneNode(true);
+            const h2 = sectionClone.querySelector('h2');
+            const sectionContent = sectionClone.querySelector('.section-content');
+
+            h2.querySelector('.section-icon').textContent = sectionData.icon;
+            h2.append(sectionData.title);
+
+            if (sectionData.intro) {
+                const p = document.createElement('p');
+                p.textContent = sectionData.intro;
+                sectionContent.appendChild(p);
+            }
+
+            const items = sectionData.steps || sectionData.features;
+            if (items) {
+                const list = document.createElement('ul');
+                list.className = 'features-list';
+                items.forEach(itemData => {
+                    const itemClone = featureItemTemplate.content.cloneNode(true);
+                    itemClone.querySelector('.feature-icon').textContent = itemData.icon;
+                    itemClone.querySelector('strong').textContent = itemData.title;
+                    itemClone.querySelector('p').textContent = itemData.description;
+                    list.appendChild(itemClone);
+                });
+                sectionContent.appendChild(list);
+            }
+
+            if (sectionData.content) {
+                sectionData.content.forEach(paragraphText => {
+                    const p = document.createElement('p');
+                    p.textContent = paragraphText;
+                    sectionContent.appendChild(p);
+                });
+            }
+
+            if (sectionData.faqs) {
+                const accordionContainer = document.createElement('div');
+                accordionContainer.className = 'accordion-container';
+                sectionData.faqs.forEach(faqData => {
+                    const itemClone = faqItemTemplate.content.cloneNode(true);
+                    itemClone.querySelector('.accordion-icon').textContent = faqData.icon;
+                    itemClone.querySelector('strong').textContent = faqData.question;
+                    itemClone.querySelector('.accordion-content p').innerHTML = faqData.answer;
+                    accordionContainer.appendChild(itemClone);
+                });
+                sectionContent.appendChild(accordionContainer);
+            }
+            mainContainer.appendChild(sectionClone);
+        });
+    }
+
+    function setupAccordion() {
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                const isOpening = !header.classList.contains('active');
+
+                // Close all other items for a cleaner accordion experience
+                accordionHeaders.forEach(h => {
+                    if (h !== header) {
+                        h.classList.remove('active');
+                        h.nextElementSibling.style.maxHeight = null;
+                    }
+                });
+
+                // Toggle the clicked item
+                header.classList.toggle('active', isOpening);
+                content.style.maxHeight = isOpening ? content.scrollHeight + 'px' : null;
+            });
+        });
+    }
+}
+
+
+// =================================================================
+// SECTION 5: INITIALIZATION
+// =================================================================
+
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Load all includes (header, footer, tool-text-section, etc.)
     await loadIncludes();
@@ -154,8 +245,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 2. Setup components that depend on the includes
     setupHeader();
     setupFooter();
+    initializeToolTextSections(); // This will now run on every page
 
-    // 3. Trigger the specific tool's rendering logic if it exists
+    // 3. Trigger the specific tool's unique rendering logic if it exists
     if (typeof window.initializeTool === 'function') {
         window.initializeTool();
     }
