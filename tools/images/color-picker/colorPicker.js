@@ -1,5 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elements
+function initializeTool() {
+    // --- DOM Elements ---
     const imageLoader = document.getElementById('cp-image-loader');
     const canvas = document.getElementById('cp-canvas');
     const ctx = canvas.getContext('2d');
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const zoomControlsWrapper = document.getElementById('cp-zoom-controls-wrapper');
     const zoomSlider = document.getElementById('cp-zoom-slider');
     const zoomResetBtn = document.getElementById('cp-zoom-reset-btn');
-    const crosshair = document.getElementById('cp-crosshair'); // ADDED
+    const crosshair = document.getElementById('cp-crosshair');
 
     // --- Canvas and Context Setup ---
     const fullResCanvas = document.createElement('canvas');
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             drawImageToCanvas();
             if (isEyedropperActive && magnifier.classList.contains('inspecting')) {
                 updateMagnifier(selectionPoint.x, selectionPoint.y);
-                updateCrosshairPosition(selectionPoint.x, selectionPoint.y); // ADDED
+                updateCrosshairPosition(selectionPoint.x, selectionPoint.y);
             }
         }
     });
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resetPreviews();
         clearColorValues();
         zoomControlsWrapper.classList.add('hidden');
-        crosshair.classList.remove('visible'); // ADDED
+        crosshair.classList.remove('visible');
     }
 
     function resetPreviews() {
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         eyedropperBtn.classList.remove('active');
         eyedropperBtn.querySelector('span').textContent = 'Activate Eyedropper';
         magnifier.classList.remove('inspecting');
-        crosshair.classList.remove('visible'); // ADDED
+        crosshair.classList.remove('visible');
         updateCursor();
         magnifier.style.backgroundImage = 'none';
     }
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     zoomSlider.addEventListener('input', (e) => {
         zoomLevel = parseFloat(e.target.value);
         drawImageToCanvas();
-        if (crosshair.classList.contains('visible')) { // ADDED BLOCK
+        if (crosshair.classList.contains('visible')) {
             updateCrosshairPosition(selectionPoint.x, selectionPoint.y);
         }
         updateCursor();
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         panOffset = { x: 0, y: 0 };
         calculateBaseFit();
         drawImageToCanvas();
-        crosshair.classList.remove('visible'); // ADDED
+        crosshair.classList.remove('visible');
         updateCursor();
     }
 
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
             startPanPoint.y = e.clientY - panOffset.y;
             canvas.classList.add('panning');
             canvas.classList.remove('pannable');
-            crosshair.classList.remove('visible'); // ADDED
+            crosshair.classList.remove('visible');
         }
     });
 
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!isEyedropperActive) return;
 
-        crosshair.classList.remove('visible'); // ADDED: Hide crosshair during mouse move
+        crosshair.classList.remove('visible');
 
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
@@ -297,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectionPoint = { x, y };
         updateMagnifier(x, y);
         updateColorInfoFromPoint(x, y);
-        updateCrosshairPosition(x, y); // ADDED
+        updateCrosshairPosition(x, y);
     });
 
     // --- Core Update Functions ---
@@ -307,17 +307,14 @@ document.addEventListener('DOMContentLoaded', () => {
         updateColorDisplay(r, g, b);
     }
 
-    // ADDED: New function to position the crosshair
     function updateCrosshairPosition(imgX, imgY) {
         if (!imageLoaded || !isEyedropperActive) {
             crosshair.classList.remove('visible');
             return;
         }
-        // Calculate the center of the target pixel on the canvas
         const screenX = currentRender.x + ((imgX + 0.5) * currentRender.scale);
         const screenY = currentRender.y + ((imgY + 0.5) * currentRender.scale);
 
-        // Update the crosshair style and make it visible
         crosshair.style.transform = `translate(${screenX}px, ${screenY}px) translate(-50%, -50%)`;
         crosshair.classList.add('visible');
     }
@@ -389,43 +386,118 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    resetToInitialState();
+    // --- Dynamic Text Section Generation ---
+    function generateToolTextSections(data) {
+        const mainContainer = document.getElementById('tool-text-sections-container');
+        const sectionTemplate = document.getElementById('template-section');
+        const featureItemTemplate = document.getElementById('template-feature-item');
+        const faqItemTemplate = document.getElementById('template-faq-item');
 
-    // --- MODIFIED: Accordion Functionality for FAQ ---
-    document.querySelectorAll('.accordion-header').forEach(header => {
-        header.addEventListener('click', () => {
-            const accordionItem = header.closest('.accordion-item');
-            const content = accordionItem.querySelector('.accordion-content');
-            const isCurrentlyOpen = header.classList.contains('active');
+        if (!mainContainer || !sectionTemplate || !featureItemTemplate || !faqItemTemplate || !data) {
+            console.error("Required elements for text generation are missing.");
+            return;
+        }
 
-            // Close other open accordions first
-            document.querySelectorAll('.accordion-item').forEach(item => {
-                if (item !== accordionItem) {
-                    const otherHeader = item.querySelector('.accordion-header');
-                    const otherContent = item.querySelector('.accordion-content');
-                    otherHeader.classList.remove('active');
-                    otherContent.classList.remove('open');
-                    otherContent.style.maxHeight = null; // Let CSS handle the closing animation to 0
+        data.sections.forEach(sectionData => {
+            const sectionClone = sectionTemplate.content.cloneNode(true);
+            const h2 = sectionClone.querySelector('h2');
+            const sectionContent = sectionClone.querySelector('.section-content');
+
+            h2.querySelector('.section-icon').textContent = sectionData.icon;
+            h2.append(sectionData.title);
+
+            if (sectionData.intro) {
+                const p = document.createElement('p');
+                p.textContent = sectionData.intro;
+                sectionContent.appendChild(p);
+            }
+
+            const items = sectionData.steps || sectionData.features;
+            if (items) {
+                const list = document.createElement('ul');
+                list.className = 'features-list';
+                items.forEach(itemData => {
+                    const itemClone = featureItemTemplate.content.cloneNode(true);
+                    itemClone.querySelector('.feature-icon').textContent = itemData.icon;
+                    itemClone.querySelector('strong').textContent = itemData.title;
+                    itemClone.querySelector('p').textContent = itemData.description;
+                    list.appendChild(itemClone);
+                });
+                sectionContent.appendChild(list);
+            }
+
+            if (sectionData.content) {
+                sectionData.content.forEach(paragraphText => {
+                    const p = document.createElement('p');
+                    p.textContent = paragraphText;
+                    sectionContent.appendChild(p);
+                });
+            }
+
+            if (sectionData.faqs) {
+                const accordionContainer = document.createElement('div');
+                accordionContainer.className = 'accordion-container';
+                sectionData.faqs.forEach(faqData => {
+                    const itemClone = faqItemTemplate.content.cloneNode(true);
+                    itemClone.querySelector('.accordion-icon').textContent = faqData.icon;
+                    itemClone.querySelector('strong').textContent = faqData.question;
+                    itemClone.querySelector('.accordion-content p').innerHTML = faqData.answer;
+                    accordionContainer.appendChild(itemClone);
+                });
+                sectionContent.appendChild(accordionContainer);
+            }
+
+            mainContainer.appendChild(sectionClone);
+        });
+
+        setupAccordion();
+    }
+
+
+    function setupAccordion() {
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                const isOpening = !header.classList.contains('active');
+
+                // First, close all other items
+                accordionHeaders.forEach(h => {
+                    if (h !== header) {
+                        h.classList.remove('active');
+                        h.nextElementSibling.style.maxHeight = null;
+                    }
+                });
+
+                // Then, toggle the clicked item
+                header.classList.toggle('active');
+                if (isOpening) {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                } else {
+                    content.style.maxHeight = null;
                 }
             });
-
-            // Toggle the clicked accordion
-            header.classList.toggle('active');
-            content.classList.toggle('open');
-
-            if (!isCurrentlyOpen) {
-                // --- FIXED OPENING LOGIC ---
-                // It was closed, so now we open it.
-                // Set max-height to its scroll height to trigger the opening animation.
-                // scrollHeight correctly measures the content's full height, including padding.
-                content.style.maxHeight = content.scrollHeight + 'px';
-            } else {
-                // --- CORRECT CLOSING LOGIC ---
-                // It was open, so now we close it.
-                // Setting max-height to null removes the inline style, allowing the stylesheet
-                // to take over and animate it back to its default (max-height: 0).
-                content.style.maxHeight = null;
-            }
         });
-    });
-});
+    }
+
+    function loadAndRenderToolText() {
+        const dataElement = document.getElementById('tool-text-data');
+        if (dataElement) {
+            try {
+                const toolTextData = JSON.parse(dataElement.textContent);
+                generateToolTextSections(toolTextData);
+            } catch (error) {
+                console.error("Error parsing tool text data from JSON:", error);
+            }
+        }
+    }
+
+    // --- Initialization ---
+    resetToInitialState();
+    loadAndRenderToolText();
+}
+
+// Expose the initialization function to the global scope
+// so it can be called by main.js after includes are loaded.
+window.initializeTool = initializeTool;

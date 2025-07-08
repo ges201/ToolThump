@@ -37,6 +37,9 @@
 
     <!-- Tool-Specific Stylesheet -->
     <link rel="stylesheet" href="color-picker.css">
+    <!-- Reusable Text Section Stylesheet -->
+    <link rel="stylesheet" href="/_includes/tool-text-section.css">
+
 
     <!-- AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7245857649397014"
@@ -44,7 +47,8 @@
 </head>
 
 <body>
-    <header data-include="main-header"></header>
+    <!-- FIX: Corrected data-include value to 'header' -->
+    <header data-include="header"></header>
 
     <div class="content-wrapper">
         <main id="tool-container">
@@ -86,7 +90,6 @@
                         <div class="cp-canvas-container">
                             <div class="cp-canvas-wrapper">
                                 <canvas id="cp-canvas" tabindex="0"></canvas>
-                                <!-- ADDED: Crosshair element for arrow key navigation -->
                                 <div id="cp-crosshair"></div>
                                 <div id="cp-canvas-placeholder" class="cp-canvas-placeholder">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor"
@@ -172,167 +175,119 @@
                 </div>
             </div>
 
-            <!-- How-to section -->
-            <section class="tool-content active cp-features-section">
-                <h2><span class="section-icon">💡</span>How to Use</h2>
-                <p>Follow these simple steps to grab any color from your image. All processing is done securely in your
-                    browser.</p>
-                <ul class="cp-features-list">
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">1️⃣</span>
-                        <div class="cp-feature-text">
-                            <strong>Select Your Image:</strong> Click the "Upload Image" button to choose a file from
-                            your device. Your image will appear in the main canvas area.
-                        </div>
-                    </li>
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">2️⃣</span>
-                        <div class="cp-feature-text">
-                            <strong>Activate the Eyedropper:</strong> Press the "Activate Eyedropper" button. This
-                            enables color selection mode and brings up the live magnifier.
-                        </div>
-                    </li>
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">3️⃣</span>
-                        <div class="cp-feature-text">
-                            <strong>Pick Your Color:</strong> Move your mouse over the image to see the magnifier and
-                            color preview update in real-time. Use the zoom controls or arrow keys for fine-tuning.
-                            Click to select the final color and instantly see its HEX, RGB, and HSL codes.
-                        </div>
-                    </li>
-                </ul>
-            </section>
-
-            <!-- Features section -->
-            <section class="tool-content active cp-features-section">
-                <h2><span class="section-icon">✨</span>Key Features</h2>
-                <p>Our Image Color Picker is designed for accuracy, privacy, and ease of use. Here's what makes it stand
-                    out:</p>
-                <ul class="cp-features-list">
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">🔒</span>
-                        <div class="cp-feature-text">
-                            <strong>Completely Private:</strong> All color processing happens in your browser. Images
-                            are never uploaded to a server, ensuring 100% privacy and security.
-                        </div>
-                    </li>
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">🔎</span>
-                        <div class="cp-feature-text">
-                            <strong>Zoom & Pan Controls:</strong> Easily navigate high-resolution images. Zoom in for
-                            incredible detail and pan across the canvas to find the perfect area.
-                        </div>
-                    </li>
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">🎯</span>
-                        <div class="cp-feature-text">
-                            <strong>Magnifying Glass:</strong> A live, magnified preview of the area under your cursor
-                            allows you to select the exact pixel you need with confidence.
-                        </div>
-                    </li>
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">⌨️</span>
-                        <div class="cp-feature-text">
-                            <strong>Keyboard Navigation:</strong> After activating the eyedropper, use your keyboard's
-                            arrow keys to nudge the selection one pixel at a time for ultimate precision.
-                        </div>
-                    </li>
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">🎨</span>
-                        <div class="cp-feature-text">
-                            <strong>Multiple Color Formats:</strong> Instantly get your selected color in HEX, RGB, and
-                            HSL formats. Each value is ready to be copied with a single click.
-                        </div>
-                    </li>
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">⚡</span>
-                        <div class="cp-feature-text">
-                            <strong>Interactive Canvas:</strong> The tool uses a powerful HTML5 canvas, providing a
-                            smooth and responsive experience even with large image files.
-                        </div>
-                    </li>
-                </ul>
-            </section>
-
-            <!-- ADDED SECTION START -->
-
-            <!-- Why it Matters section -->
-            <section class="tool-content active cp-features-section">
-                <h2><span class="section-icon">🌟</span>Why Our Color Picker is an Essential Tool</h2>
-                <p>Getting the exact color from an image is crucial for designers, developers, and artists. A mismatched
-                    color can disrupt a brand's identity, throw off a design's harmony, or make a digital illustration
-                    look unprofessional. This tool bridges the gap between inspiration and implementation.</p>
-                <p>Whether you are a web developer matching a client's logo color, a graphic designer creating a
-                    cohesive brand palette, or a digital artist sampling colors from a reference photo, our color picker
-                    provides the pixel-perfect accuracy you need. It eliminates guesswork, saves you time, and ensures
-                    your projects maintain a professional, consistent look and feel across any medium.</p>
-            </section>
-
-            <!-- FAQ section -->
-            <section class="tool-content active cp-features-section">
-                <h2><span class="section-icon">❓</span>Frequently Asked Questions (FAQ)</h2>
-                <div class="accordion-container">
-                    <div class="accordion-item">
-                        <button class="accordion-header">
-                            <span class="accordion-icon">🛡️</span>
-                            <strong>Is my data safe?</strong>
-                            <span class="arrow-icon"></span>
-                        </button>
-                        <div class="accordion-content">
-                            <p>Absolutely. This tool is 100% client-side, meaning your images are never uploaded or sent to
-                                our servers. All processing happens securely within your own browser on your computer. Your
-                                privacy is guaranteed.</p>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item">
-                        <button class="accordion-header">
-                            <span class="accordion-icon">🖼️</span>
-                            <strong>What image formats can I upload?</strong>
-                            <span class="arrow-icon"></span>
-                        </button>
-                        <div class="accordion-content">
-                            <p>You can upload most standard web image formats, including <code>.JPG</code>,
-                                <code>.JPEG</code>, <code>.PNG</code>, <code>.GIF</code>, <code>.WEBP</code>, and
-                                <code>.BMP</code>. For the best results, use uncompressed or high-quality images.</p>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item">
-                        <button class="accordion-header">
-                            <span class="accordion-icon">📦</span>
-                            <strong>Is there a file size limit?</strong>
-                            <span class="arrow-icon"></span>
-                        </button>
-                        <div class="accordion-content">
-                            <p>While there's no hard limit enforced, performance may vary with extremely large image files
-                                (over 15MB). The tool is optimized for typical web and design images for a fast and smooth
-                                experience.</p>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item">
-                        <button class="accordion-header">
-                            <span class="accordion-icon">🖱️</span>
-                            <strong>How do the Zoom and Pan features work?</strong>
-                            <span class="arrow-icon"></span>
-                        </button>
-                        <div class="accordion-content">
-                            <p>After uploading an image, use the zoom slider to magnify it. When zoomed in, you can click
-                                and drag the image to pan around. This is especially useful for high-resolution photos where
-                                you need to find a specific detail.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ADDED SECTION END -->
-
+            <!-- This will now fetch the new include file -->
+            <div data-include="tool-text-section"></div>
 
         </main>
     </div>
 
-    <footer data-include="main-footer"></footer>
+    <!-- FIX: Corrected data-include value to 'footer' -->
+    <footer data-include="footer"></footer>
+
+    <!-- Data Island for this specific tool's text content -->
+    <script type="application/json" id="tool-text-data">
+    {
+        "sections": [
+            {
+                "type": "how-to",
+                "title": "How to Use",
+                "icon": "💡",
+                "intro": "Follow these simple steps to grab any color from your image. All processing is done securely in your browser.",
+                "steps": [
+                    {
+                        "icon": "1️⃣",
+                        "title": "Select Your Image",
+                        "description": "Click the \"Upload Image\" button to choose a file from your device. Your image will appear in the main canvas area."
+                    },
+                    {
+                        "icon": "2️⃣",
+                        "title": "Activate the Eyedropper",
+                        "description": "Press the \"Activate Eyedropper\" button. This enables color selection mode and brings up the live magnifier."
+                    },
+                    {
+                        "icon": "3️⃣",
+                        "title": "Pick Your Color",
+                        "description": "Move your mouse over the image to see the magnifier and color preview update in real-time. Use the zoom controls or arrow keys for fine-tuning. Click to select the final color and instantly see its HEX, RGB, and HSL codes."
+                    }
+                ]
+            },
+            {
+                "type": "features",
+                "title": "Key Features",
+                "icon": "✨",
+                "intro": "Our Image Color Picker is designed for accuracy, privacy, and ease of use. Here's what makes it stand out:",
+                "features": [
+                    {
+                        "icon": "🔒",
+                        "title": "Completely Private",
+                        "description": "All color processing happens in your browser. Images are never uploaded to a server, ensuring 100% privacy and security."
+                    },
+                    {
+                        "icon": "🔎",
+                        "title": "Zoom & Pan Controls",
+                        "description": "Easily navigate high-resolution images. Zoom in for incredible detail and pan across the canvas to find the perfect area."
+                    },
+                    {
+                        "icon": "🎯",
+                        "title": "Magnifying Glass",
+                        "description": "A live, magnified preview of the area under your cursor allows you to select the exact pixel you need with confidence."
+                    },
+                    {
+                        "icon": "⌨️",
+                        "title": "Keyboard Navigation",
+                        "description": "After activating the eyedropper, use your keyboard's arrow keys to nudge the selection one pixel at a time for ultimate precision."
+                    },
+                    {
+                        "icon": "🎨",
+                        "title": "Multiple Color Formats",
+                        "description": "Instantly get your selected color in HEX, RGB, and HSL formats. Each value is ready to be copied with a single click."
+                    },
+                    {
+                        "icon": "⚡",
+                        "title": "Interactive Canvas",
+                        "description": "The tool uses a powerful HTML5 canvas, providing a smooth and responsive experience even with large image files."
+                    }
+                ]
+            },
+            {
+                "type": "prose",
+                "title": "Why Our Color Picker is an Essential Tool",
+                "icon": "🌟",
+                "content": [
+                    "Getting the exact color from an image is crucial for designers, developers, and artists. A mismatched color can disrupt a brand's identity, throw off a design's harmony, or make a digital illustration look unprofessional. This tool bridges the gap between inspiration and implementation.",
+                    "Whether you are a web developer matching a client's logo color, a graphic designer creating a cohesive brand palette, or a digital artist sampling colors from a reference photo, our color picker provides the pixel-perfect accuracy you need. It eliminates guesswork, saves you time, and ensures your projects maintain a professional, consistent look and feel across any medium."
+                ]
+            },
+            {
+                "type": "faq",
+                "title": "Frequently Asked Questions (FAQ)",
+                "icon": "❓",
+                "faqs": [
+                    {
+                        "icon": "🛡️",
+                        "question": "Is my data safe?",
+                        "answer": "Absolutely. This tool is 100% client-side, meaning your images are never uploaded or sent to our servers. All processing happens securely within your own browser on your computer. Your privacy is guaranteed."
+                    },
+                    {
+                        "icon": "🖼️",
+                        "question": "What image formats can I upload?",
+                        "answer": "You can upload most standard web image formats, including <code>.JPG</code>, <code>.JPEG</code>, <code>.PNG</code>, <code>.GIF</code>, <code>.WEBP</code>, and <code>.BMP</code>. For the best results, use uncompressed or high-quality images."
+                    },
+                    {
+                        "icon": "📦",
+                        "question": "Is there a file size limit?",
+                        "answer": "While there's no hard limit enforced, performance may vary with extremely large image files (over 15MB). The tool is optimized for typical web and design images for a fast and smooth experience."
+                    },
+                    {
+                        "icon": "🖱️",
+                        "question": "How do the Zoom and Pan features work?",
+                        "answer": "After uploading an image, use the zoom slider to magnify it. When zoomed in, you can click and drag the image to pan around. This is especially useful for high-resolution photos where you need to find a specific detail."
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
 
     <script src="/main.js"></script>
     <script src="colorPicker.js"></script>

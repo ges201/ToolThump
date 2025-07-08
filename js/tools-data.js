@@ -59,7 +59,7 @@ const toolsData = [
         name: "Image Resizer",
         category: "Image Tools",
         description: "Resize images to custom dimensions or standard aspect ratios.",
-        icon: "/icons/image-resizer.png",
+        icon: "/icons/image-resizer-icon.png",
         htmlPath: "/tools/images/image-resizer/image-resizer.html",
         cssPaths: ["/tools/images/image-resizer/image-resizer.css"],
         jsPath: "/tools/images/image-resizer/imageResizer.js",

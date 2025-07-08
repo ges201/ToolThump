@@ -1,0 +1,43 @@
+<!-- Main container where sections will be rendered -->
+<div id="tool-text-sections-container"></div>
+
+<!--
+  HTML TEMPLATES
+  These are inert blocks of HTML that our JavaScript will use to build the sections.
+  This keeps the structure of our content out of the JavaScript file.
+-->
+
+<!-- Template for a single feature or how-to step item -->
+<template id="template-feature-item">
+    <li class="feature-item">
+        <span class="feature-icon"></span>
+        <div class="feature-text">
+            <strong></strong>
+            <p></p>
+        </div>
+    </li>
+</template>
+
+<!-- Template for a single FAQ accordion item -->
+<template id="template-faq-item">
+    <div class="accordion-item">
+        <button class="accordion-header">
+            <span class="accordion-icon"></span>
+            <strong></strong>
+            <span class="arrow-icon"></span>
+        </button>
+        <div class="accordion-content">
+            <p></p>
+        </div>
+    </div>
+</template>
+
+<!-- Template for a generic section wrapper -->
+<template id="template-section">
+    <section class="tool-text-section">
+        <h2><span class="section-icon"></span></h2>
+        <div class="section-content">
+            <!-- Content (intro, lists, paragraphs) will be injected here -->
+        </div>
+    </section>
+</template>
