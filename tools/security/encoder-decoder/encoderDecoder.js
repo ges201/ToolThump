@@ -47,13 +47,13 @@ const ed = {
         try {
             switch (format) {
                 case 'base64':
-                    output = mode === 'encode' ? btoa(unescape(encodeURIComponent(input))) : decodeURIComponent(escape(atob(input)));
+                    output = mode === 'encode' ? base64Encode(input) : base64Decode(input);
                     break;
                 case 'url':
-                    output = mode === 'encode' ? encodeURIComponent(input) : decodeURIComponent(input);
+                    output = mode === 'encode' ? urlEncode(input) : urlDecode(input);
                     break;
                 case 'html':
-                    output = mode === 'encode' ? this.htmlEncode(input) : this.htmlDecode(input);
+                    output = mode === 'encode' ? htmlEncode(input) : htmlDecode(input);
                     break;
             }
             this.outputArea.value = output;
@@ -64,18 +64,6 @@ const ed = {
             this.outputArea.value = '';
             this.copyBtn.disabled = true;
         }
-    },
-
-    htmlEncode: function (str) {
-        const temp = document.createElement('div');
-        temp.textContent = str;
-        return temp.innerHTML;
-    },
-
-    htmlDecode: function (str) {
-        const temp = document.createElement('textarea');
-        temp.innerHTML = str;
-        return temp.value;
     },
 
     swapContent: function () {
