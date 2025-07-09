@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encoder & Decoder (Base64, URL) - Free Online Tool | ToolThump</title>
+    <meta name="description"
+        content="Easily encode and decode text with ToolThump's free online tool. Supports Base64, URL encoding (percent-encoding), and HTML entities. All operations are done in your browser for privacy.">
+    <link rel="canonical" href="https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html">
+    <meta property="og:title" content="Encoder & Decoder (Base64, URL) - Free Online Tool | ToolThump">
+    <meta property="og:description"
+        content="A simple, free tool to encode and decode text into various formats like Base64 and URL encoding. Fast, secure, and client-side.">
+    <meta property="og:image" content="https://toolthump.com/icons/encoder-decoder-icon.png">
+    <meta property="og:site_name" content="ToolThump" />
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html">
+    <meta property="twitter:title" content="Encoder & Decoder (Base64, URL) - Free Online Tool | ToolThump">
+    <meta property="twitter:description"
+        content="A simple, free tool to encode and decode text into various formats like Base64 and URL encoding. Fast, secure, and client-side.">
+    <meta property="twitter:image" content="https://toolthump.com/icons/encoder-decoder-icon.png">
+
+    <link rel="stylesheet" href="/global_css/theme.css">
+    <link rel="stylesheet" href="/global_css/base.css">
+    <link rel="stylesheet" href="/global_css/layout.css">
+    <link rel="stylesheet" href="/global_css/components.css">
+    <link rel="stylesheet" href="/global_css/responsive.css">
+    <link rel="stylesheet" href="encoder-decoder.css">
+    <link rel="stylesheet" href="/_includes/tool-text-section.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": "https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html#webpage",
+      "url": "https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html",
+      "name": "Encoder & Decoder",
+      "description": "A free online tool to encode and decode text in various formats like Base64 and URL encoding, performed securely in your browser.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://toolthump.com/#website"
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ToolThump",
+          "item": "https://toolthump.com/"
+        },{
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Security Tools",
+          "item": "https://toolthump.com/#security-tools"
+        },{
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Encoder & Decoder"
+        }]
+      }
+    }
+    </script>
+
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7245857649397014"
+        crossorigin="anonymous"></script>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+</head>
+
+<body>
+    <header data-include="header"></header>
+    <div class="content-wrapper">
+        <main id="tool-container">
+            <section id="encoderDecoder" class="tool-content active">
+                <div class="tool-header">
+                    <h1>Encoder / Decoder</h1>
+                </div>
+                <p style="margin-bottom: var(--spacing-md);">A straightforward tool for encoding and decoding text.
+                    Select a format, paste your text, and get the result instantly. All operations are performed locally
+                    in your browser.</p>
+
+                <div class="tool-placeholder">
+                    <div class="ed-controls">
+                        <div class="ed-control-group">
+                            <label for="ed-format-select">Format:</label>
+                            <select id="ed-format-select" class="input-base">
+                                <option value="base64">Base64</option>
+                                <option value="url">URL (Percent Encoding)</option>
+                                <option value="html">HTML Entities</option>
+                            </select>
+                        </div>
+                        <div class="ed-action-buttons">
+                            <button id="ed-encode-btn" class="btn-secondary">Encode</button>
+                            <button id="ed-decode-btn" class="btn-secondary">Decode</button>
+                        </div>
+                    </div>
+
+                    <div class="ed-main-layout">
+                        <div class="ed-io-panel">
+                            <label for="ed-input">Input</label>
+                            <textarea id="ed-input" class="ed-textarea" rows="10"
+                                placeholder="Paste your text here..."></textarea>
+                        </div>
+
+                        <!-- MODIFIED: Central column now contains both buttons -->
+                        <div class="ed-swap-container">
+                            <button id="ed-swap-btn" title="Swap Input and Output" aria-label="Swap Input and Output">
+                                ⇄
+                            </button>
+                            <!-- MOVED: Copy button and feedback are now here -->
+                            <div class="ed-copy-wrapper">
+                                <button id="ed-copy-btn" class="btn-secondary" disabled>Copy</button>
+                                <span id="ed-copy-feedback" class="ed-copy-feedback"></span>
+                            </div>
+                        </div>
+
+                        <div class="ed-io-panel">
+                            <label for="ed-output">Output</label>
+                            <textarea id="ed-output" class="ed-textarea" rows="10" readonly
+                                placeholder="Result will appear here..."></textarea>
+                        </div>
+                    </div>
+                    <span id="ed-error-message" class="ed-error-message" aria-live="assertive"></span>
+                </div>
+            </section>
+
+            <div data-include="tool-text-section"></div>
+
+        </main>
+    </div>
+
+    <footer data-include="footer"></footer>
+
+    <!-- Data Island (No changes needed) -->
+    <script type="application/json" id="tool-text-data">
+    {
+        "sections": [
+            {
+                "type": "how-to",
+                "title": "How It Works",
+                "icon": "💡",
+                "intro": "Transforming text is a simple, three-step process with this tool.",
+                "steps": [
+                    {
+                        "icon": "1️⃣",
+                        "title": "Input Your Text",
+                        "description": "Paste or type the text you want to transform into the 'Input' box."
+                    },
+                    {
+                        "icon": "2️⃣",
+                        "title": "Choose Format & Action",
+                        "description": "Select the desired format (like Base64 or URL) from the dropdown menu, then click either 'Encode' or 'Decode'."
+                    },
+                    {
+                        "icon": "3️⃣",
+                        "title": "Copy the Result",
+                        "description": "Your result will instantly appear in the 'Output' box. Use the 'Copy' button to save it to your clipboard, or the 'Swap' button (⇅) to use the output as your next input."
+                    }
+                ]
+            },
+            {
+                "type": "features",
+                "title": "Key Features",
+                "icon": "✨",
+                "intro": "This tool is designed for simplicity, security, and utility.",
+                "features": [
+                    {
+                        "icon": "🔒",
+                        "title": "100% Client-Side",
+                        "description": "Your data is never sent to a server. All encoding and decoding happens securely within your browser, ensuring your information remains private."
+                    },
+                    {
+                        "icon": "🔄",
+                        "title": "Multiple Formats",
+                        "description": "Supports common encoding schemes essential for web development and data transmission, including Base64, URL (Percent) Encoding, and HTML Entities."
+                    },
+                    {
+                        "icon": "⚡",
+                        "title": "Instant Transformation",
+                        "description": "Get immediate results with the click of a button. The clean interface removes distractions and lets you get the job done quickly."
+                    },
+                    {
+                        "icon": "📋",
+                        "title": "Easy Workflow",
+                        "description": "Features like one-click copy and the ability to swap input/output make it easy to perform multiple transformations in a row."
+                    }
+                ]
+            },
+            {
+                "type": "faq",
+                "title": "Frequently Asked Questions (FAQ)",
+                "icon": "❓",
+                "faqs": [
+                    {
+                        "icon": "🛡️",
+                        "question": "Is it safe to put sensitive data in this tool?",
+                        "answer": "Yes. The tool operates entirely on your device (client-side). No data is transmitted to our servers, so it's as safe as any offline application on your computer."
+                    },
+                    {
+                        "icon": "🤔",
+                        "question": "What is Base64 encoding used for?",
+                        "answer": "Base64 is used to represent binary data (like images or files) as ASCII text. It's commonly used in data URLs (e.g., embedding a small image directly in CSS) and for transmitting data in text-based formats like JSON."
+                    },
+                    {
+                        "icon": "🌐",
+                        "question": "What is URL (Percent) encoding?",
+                        "answer": "URL encoding ensures that text can be safely transmitted over the internet. It replaces reserved characters (like spaces, '/', '&') with a '%' followed by a two-digit hexadecimal code, preventing them from being misinterpreted by web servers or browsers."
+                    },
+                    {
+                        "icon": "❌",
+                        "question": "Why did I get a 'Failed to decode' error?",
+                        "answer": "This error usually happens when the input text is not a valid string for the selected decoding format. For example, trying to decode 'hello world' as Base64 will fail because it's not a valid Base64 sequence. Ensure your input text is correctly formatted."
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+
+    <script src="encoderDecoder.js"></script>
+    <script src="/main.js"></script>
+</body>
+
+</html>

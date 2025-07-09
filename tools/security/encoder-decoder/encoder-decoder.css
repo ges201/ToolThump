@@ -1,0 +1,166 @@
+/* === Encoder/Decoder Specific Styles === */
+
+.tool-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.ed-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background-color: var(--surface-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+}
+
+.ed-control-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.ed-control-group label {
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.ed-action-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.ed-main-layout {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--spacing-sm);
+}
+
+.ed-io-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    min-width: 0;
+}
+
+.ed-textarea {
+    min-height: 200px;
+    resize: vertical;
+    font-family: var(--font-family-monospace);
+    font-size: 1rem;
+    background-color: var(--bg-deep-dark);
+    flex-grow: 1;
+}
+
+.ed-textarea:read-only {
+    background-color: var(--surface-bg-color);
+    cursor: default;
+}
+
+/* MODIFIED: Container for the central action buttons */
+.ed-swap-container {
+    display: flex;
+    flex-direction: column;
+    /* Stack buttons vertically */
+    justify-content: center;
+    /* Center them vertically in the column */
+    align-items: center;
+    /* Center them horizontally */
+    gap: var(--spacing-md);
+    /* Add space between the buttons */
+    height: 100%;
+}
+
+#ed-swap-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-bg-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+    color: var(--text-secondary-color);
+    font-weight: normal;
+    border-width: 1px;
+    border-color: var(--border-color);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+#ed-swap-btn:hover,
+#ed-swap-btn:focus {
+    background-color: var(--accent-color);
+    color: var(--text-on-accent-bg);
+    transform: none;
+    box-shadow: none;
+    border-color: var(--accent-color);
+}
+
+#ed-swap-btn:active {
+    transform: none;
+    box-shadow: none;
+}
+
+/* MODIFIED: Wrapper for the copy button */
+.ed-copy-wrapper {
+    position: relative;
+    display: flex;
+    /* Keeps it flexible for its contents */
+    justify-content: center;
+}
+
+.ed-copy-feedback {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--success-color);
+    font-size: 0.85rem;
+    font-weight: 600;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out, bottom 0.2s ease-in-out;
+    white-space: nowrap;
+    background-color: var(--bg-deep-dark);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+}
+
+.ed-copy-feedback.show {
+    opacity: 1;
+    bottom: calc(100% + 8px);
+}
+
+.ed-error-message {
+    color: var(--error-color);
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: block;
+    min-height: 1.2em;
+    text-align: center;
+    margin-top: var(--spacing-md);
+}
+
+@media (max-width: 768px) {
+    .ed-main-layout {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    .ed-swap-container {
+        transform: rotate(90deg);
+        min-height: 60px;
+    }
+
+    .ed-controls {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+}
