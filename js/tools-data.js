@@ -88,6 +88,17 @@ const toolsData = [
         keywords: ["color", "picker", "eyedropper", "image", "hex", "rgb", "hsl", "select", "palette", "finder"]
     },
     {
+        id: "bg-remover",
+        name: "Background Remover",
+        category: "Image Tools",
+        description: "Remove the background from images.",
+        icon: "/icons/bg-remover-icon.png",
+        htmlPath: "/tools/images/bg-remover/bg-remover.html",
+        cssPaths: ["/tools/images/bg-remover/bg-remover.css"],
+        jsPath: "/tools/images/bg-remover/bgRemover.js",
+        keywords: ["background", "remover", "image", "photo", "editor", "transparent", "cut out"]
+    },
+    {
         id: "qr-code-generator",
         name: "QR Code Generator",
         category: "Data Tools",
