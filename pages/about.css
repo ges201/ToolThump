@@ -126,22 +126,26 @@
     margin-bottom: var(--spacing-lg);
 }
 
+/* MODIFIED: The .github-button leverages .btn-secondary (from HTML) for its base style.
+   These rules override sizing and add a more pronounced hover effect consistent with other site buttons. */
 .github-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     padding: var(--spacing-md) var(--spacing-xl);
-    background-color: #333;
-    color: #fff;
-    text-decoration: none;
-    border-radius: var(--border-radius-md);
-    font-weight: 600;
     font-size: 1.1rem;
-    transition: background-color 0.3s ease;
+    border-radius: var(--border-radius-md);
+    /* Combine transitions for smooth effect on all properties */
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .github-button:hover {
-    background-color: #555;
+    text-decoration: none;
+    /* Apply the "hard shadow" hover effect from base.css */
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-hard);
+}
+
+.github-button:active {
+    transform: translate(0, 0);
+    box-shadow: var(--shadow-hard-inset);
 }
 
 .github-button i {
