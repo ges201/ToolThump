@@ -114,24 +114,26 @@
                             <label for="ed-input">Input</label>
                             <textarea id="ed-input" class="ed-textarea" rows="10"
                                 placeholder="Paste your text here..."></textarea>
+                            <div class="ed-copy-wrapper">
+                                <button id="ed-copy-input-btn" class="btn-secondary btn-copy" disabled>Copy</button>
+                                <span id="ed-copy-input-feedback" class="ed-copy-feedback"></span>
+                            </div>
                         </div>
 
-                        <!-- MODIFIED: Central column now contains both buttons -->
                         <div class="ed-swap-container">
                             <button id="ed-swap-btn" title="Swap Input and Output" aria-label="Swap Input and Output">
                                 ⇄
                             </button>
-                            <!-- MOVED: Copy button and feedback are now here -->
-                            <div class="ed-copy-wrapper">
-                                <button id="ed-copy-btn" class="btn-secondary" disabled>Copy</button>
-                                <span id="ed-copy-feedback" class="ed-copy-feedback"></span>
-                            </div>
                         </div>
 
                         <div class="ed-io-panel">
                             <label for="ed-output">Output</label>
                             <textarea id="ed-output" class="ed-textarea" rows="10" readonly
                                 placeholder="Result will appear here..."></textarea>
+                            <div class="ed-copy-wrapper">
+                                <button id="ed-copy-output-btn" class="btn-secondary btn-copy" disabled>Copy</button>
+                                <span id="ed-copy-output-feedback" class="ed-copy-feedback"></span>
+                            </div>
                         </div>
                     </div>
                     <span id="ed-error-message" class="ed-error-message" aria-live="assertive"></span>

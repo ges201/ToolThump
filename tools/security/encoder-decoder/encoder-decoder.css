@@ -48,6 +48,7 @@
     flex-direction: column;
     gap: var(--spacing-sm);
     min-width: 0;
+    position: relative; /* For positioning the copy button */
 }
 
 .ed-textarea {
@@ -57,6 +58,7 @@
     font-size: 1rem;
     background-color: var(--bg-deep-dark);
     flex-grow: 1;
+    padding-bottom: 40px; /* Add padding to prevent text from overlapping with the button */
 }
 
 .ed-textarea:read-only {
@@ -64,17 +66,12 @@
     cursor: default;
 }
 
-/* MODIFIED: Container for the central action buttons */
 .ed-swap-container {
     display: flex;
     flex-direction: column;
-    /* Stack buttons vertically */
     justify-content: center;
-    /* Center them vertically in the column */
     align-items: center;
-    /* Center them horizontally */
     gap: var(--spacing-md);
-    /* Add space between the buttons */
     height: 100%;
 }
 
@@ -108,34 +105,39 @@
     box-shadow: none;
 }
 
-/* MODIFIED: Wrapper for the copy button */
 .ed-copy-wrapper {
-    position: relative;
+    position: absolute;
+    bottom: var(--spacing-sm);
+    left: var(--spacing-sm);
     display: flex;
-    /* Keeps it flexible for its contents */
-    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.btn-copy {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.875rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-color: var(--border-color);
+    color: var(--text-secondary-color);
+}
+
+.btn-copy:hover {
+    background-color: var(--accent-color);
+    color: var(--text-on-accent-bg);
 }
 
 .ed-copy-feedback {
-    position: absolute;
-    bottom: calc(100% + 4px);
-    left: 50%;
-    transform: translateX(-50%);
     color: var(--success-color);
     font-size: 0.85rem;
     font-weight: 600;
-    pointer-events: none;
     opacity: 0;
-    transition: opacity 0.2s ease-in-out, bottom 0.2s ease-in-out;
-    white-space: nowrap;
-    background-color: var(--bg-deep-dark);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--border-radius-sm);
+    transition: opacity 0.2s ease-in-out;
+    pointer-events: none;
 }
 
 .ed-copy-feedback.show {
     opacity: 1;
-    bottom: calc(100% + 8px);
 }
 
 .ed-error-message {

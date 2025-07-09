@@ -4,32 +4,39 @@ const ed = {
     encodeBtn: null,
     decodeBtn: null,
     swapBtn: null,
-    copyBtn: null,
     inputArea: null,
     outputArea: null,
+    copyInputBtn: null,
+    copyOutputBtn: null,
+    copyInputFeedback: null,
+    copyOutputFeedback: null,
     errorMessage: null,
-    copyFeedback: null,
 
-    copyFeedbackTimeout: null,
+    copyFeedbackTimeout: {},
 
     fetchElements: function () {
         this.formatSelect = document.getElementById('ed-format-select');
         this.encodeBtn = document.getElementById('ed-encode-btn');
         this.decodeBtn = document.getElementById('ed-decode-btn');
         this.swapBtn = document.getElementById('ed-swap-btn');
-        this.copyBtn = document.getElementById('ed-copy-btn');
         this.inputArea = document.getElementById('ed-input');
         this.outputArea = document.getElementById('ed-output');
         this.errorMessage = document.getElementById('ed-error-message');
-        this.copyFeedback = document.getElementById('ed-copy-feedback');
+        this.copyInputBtn = document.getElementById('ed-copy-input-btn');
+        this.copyOutputBtn = document.getElementById('ed-copy-output-btn');
+        this.copyInputFeedback = document.getElementById('ed-copy-input-feedback');
+        this.copyOutputFeedback = document.getElementById('ed-copy-output-feedback');
     },
 
     clearFeedback: function () {
         this.errorMessage.textContent = '';
-        if (this.copyFeedback.classList.contains('show')) {
-            this.copyFeedback.classList.remove('show');
-            clearTimeout(this.copyFeedbackTimeout);
-        }
+        // Clear any visible copy feedback
+        [this.copyInputFeedback, this.copyOutputFeedback].forEach(fb => {
+            if (fb.classList.contains('show')) {
+                fb.classList.remove('show');
+                clearTimeout(this.copyFeedbackTimeout[fb.id]);
+            }
+        });
     },
 
     process: function (mode) {
@@ -40,7 +47,7 @@ const ed = {
 
         if (!input) {
             this.outputArea.value = '';
-            this.copyBtn.disabled = true;
+            this.copyOutputBtn.disabled = true;
             return;
         }
 
@@ -60,12 +67,12 @@ const ed = {
                     break;
             }
             this.outputArea.value = output;
-            this.copyBtn.disabled = false;
+            this.copyOutputBtn.disabled = false;
         } catch (error) {
             console.error('ED_PROCESS_ERROR:', error);
             this.errorMessage.textContent = `Failed to ${mode}. The input may not be valid for this format.`;
             this.outputArea.value = '';
-            this.copyBtn.disabled = true;
+            this.copyOutputBtn.disabled = true;
         }
     },
 
@@ -75,19 +82,25 @@ const ed = {
         const outputVal = this.outputArea.value;
         this.inputArea.value = outputVal;
         this.outputArea.value = inputVal;
-        this.copyBtn.disabled = !inputVal;
+
+        this.copyInputBtn.disabled = !outputVal;
+        this.copyOutputBtn.disabled = !inputVal;
     },
 
-    copyOutput: function () {
-        if (!this.outputArea.value || this.copyBtn.disabled) return;
+    copyToClipboard: function (text, feedbackEl, buttonEl) {
+        if (!text || buttonEl.disabled) return;
 
-        navigator.clipboard.writeText(this.outputArea.value)
+        navigator.clipboard.writeText(text)
             .then(() => {
-                this.copyFeedback.textContent = 'Copied!';
-                this.copyFeedback.classList.add('show');
-                if (this.copyFeedbackTimeout) clearTimeout(this.copyFeedbackTimeout);
-                this.copyFeedbackTimeout = setTimeout(() => {
-                    this.copyFeedback.classList.remove('show');
+                feedbackEl.textContent = 'Copied!';
+                feedbackEl.classList.add('show');
+
+                if (this.copyFeedbackTimeout[feedbackEl.id]) {
+                    clearTimeout(this.copyFeedbackTimeout[feedbackEl.id]);
+                }
+
+                this.copyFeedbackTimeout[feedbackEl.id] = setTimeout(() => {
+                    feedbackEl.classList.remove('show');
                 }, 2000);
             })
             .catch(err => {
@@ -107,13 +120,16 @@ const ed = {
         this.encodeBtn.addEventListener('click', () => this.process('encode'));
         this.decodeBtn.addEventListener('click', () => this.process('decode'));
         this.swapBtn.addEventListener('click', () => this.swapContent());
-        this.copyBtn.addEventListener('click', () => this.copyOutput());
+
+        this.copyInputBtn.addEventListener('click', () => this.copyToClipboard(this.inputArea.value, this.copyInputFeedback, this.copyInputBtn));
+        this.copyOutputBtn.addEventListener('click', () => this.copyToClipboard(this.outputArea.value, this.copyOutputFeedback, this.copyOutputBtn));
 
         this.inputArea.addEventListener('input', () => {
+            this.copyInputBtn.disabled = this.inputArea.value === '';
             if (this.inputArea.value === '') {
                 this.clearFeedback();
                 this.outputArea.value = '';
-                this.copyBtn.disabled = true;
+                this.copyOutputBtn.disabled = true;
             }
         });
 
@@ -128,3 +144,9 @@ function initializeTool() {
 }
 
 window.initializeTool = initializeTool;
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeTool);
+} else {
+    initializeTool();
+}
