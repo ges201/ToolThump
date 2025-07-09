@@ -101,7 +101,9 @@
                                 <option value="url">URL (Percent Encoding)</option>
                                 <option value="html">HTML Entities</option>
                                 <option value="hex">Hex</option>
+                                <option value="sha256">SHA256 Hash</option>
                             </select>
+                            <span id="ed-format-warning" class="ed-format-warning"></span>
                         </div>
                         <div class="ed-action-buttons">
                             <button id="ed-encode-btn" class="btn-secondary">Encode</button>
@@ -237,6 +239,7 @@
     <script src="url.js"></script>
     <script src="html.js"></script>
     <script src="hex.js"></script>
+    <script src="sha256.js"></script>
     <script src="encoderDecoder.js"></script>
     <script src="/main.js"></script>
 </body>

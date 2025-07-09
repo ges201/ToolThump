@@ -27,6 +27,24 @@
     gap: var(--spacing-sm);
 }
 
+.ed-control-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    position: relative;
+}
+
+.ed-format-warning {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    font-size: 0.85rem;
+    color: var(--warning-color);
+    font-weight: 500;
+    white-space: nowrap;
+    margin-top: 2px;
+}
+
 .ed-control-group label {
     font-weight: 600;
     margin-bottom: 0;

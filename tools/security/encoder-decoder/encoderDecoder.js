@@ -11,6 +11,7 @@ const ed = {
     copyInputFeedback: null,
     copyOutputFeedback: null,
     errorMessage: null,
+    formatWarning: null,
 
     copyFeedbackTimeout: {},
 
@@ -22,6 +23,7 @@ const ed = {
         this.inputArea = document.getElementById('ed-input');
         this.outputArea = document.getElementById('ed-output');
         this.errorMessage = document.getElementById('ed-error-message');
+        this.formatWarning = document.getElementById('ed-format-warning');
         this.copyInputBtn = document.getElementById('ed-copy-input-btn');
         this.copyOutputBtn = document.getElementById('ed-copy-output-btn');
         this.copyInputFeedback = document.getElementById('ed-copy-input-feedback');
@@ -30,7 +32,7 @@ const ed = {
 
     clearFeedback: function () {
         this.errorMessage.textContent = '';
-        // Clear any visible copy feedback
+        this.formatWarning.textContent = '';
         [this.copyInputFeedback, this.copyOutputFeedback].forEach(fb => {
             if (fb.classList.contains('show')) {
                 fb.classList.remove('show');
@@ -39,7 +41,7 @@ const ed = {
         });
     },
 
-    process: function (mode) {
+    process: async function (mode) {
         this.clearFeedback();
         const format = this.formatSelect.value;
         const input = this.inputArea.value;
@@ -52,6 +54,10 @@ const ed = {
         }
 
         try {
+            if (format === 'sha256' && mode === 'decode') {
+                throw new Error('SHA-256 is a one-way hash and cannot be decoded.');
+            }
+
             switch (format) {
                 case 'base64':
                     output = mode === 'encode' ? base64Encode(input) : base64Decode(input);
@@ -64,6 +70,9 @@ const ed = {
                     break;
                 case 'hex':
                     output = mode === 'encode' ? hexEncode(input) : hexDecode(input);
+                    break;
+                case 'sha256':
+                    output = await sha256Hash(input);
                     break;
             }
             this.outputArea.value = output;
@@ -109,6 +118,19 @@ const ed = {
             });
     },
 
+    handleFormatChange: function() {
+        const selectedFormat = this.formatSelect.value;
+        if (selectedFormat === 'sha256') {
+            this.decodeBtn.disabled = true;
+            this.encodeBtn.textContent = 'Hash';
+            this.formatWarning.textContent = 'SHA-256 is a one-way hash.';
+        } else {
+            this.decodeBtn.disabled = false;
+            this.encodeBtn.textContent = 'Encode';
+            this.formatWarning.textContent = '';
+        }
+    },
+
     init: function () {
         this.fetchElements();
 
@@ -120,6 +142,7 @@ const ed = {
         this.encodeBtn.addEventListener('click', () => this.process('encode'));
         this.decodeBtn.addEventListener('click', () => this.process('decode'));
         this.swapBtn.addEventListener('click', () => this.swapContent());
+        this.formatSelect.addEventListener('change', () => this.handleFormatChange());
 
         this.copyInputBtn.addEventListener('click', () => this.copyToClipboard(this.inputArea.value, this.copyInputFeedback, this.copyInputBtn));
         this.copyOutputBtn.addEventListener('click', () => this.copyToClipboard(this.outputArea.value, this.copyOutputFeedback, this.copyOutputBtn));
@@ -132,6 +155,8 @@ const ed = {
                 this.copyOutputBtn.disabled = true;
             }
         });
+        
+        this.handleFormatChange(); // Initial check
 
         console.log("Encoder/Decoder Initialized on its page.");
     }
