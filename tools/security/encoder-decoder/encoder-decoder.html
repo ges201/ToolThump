@@ -96,14 +96,16 @@
                     <div class="ed-controls">
                         <div class="ed-control-group">
                             <label for="ed-format-select">Format:</label>
-                            <select id="ed-format-select" class="input-base">
-                                <option value="base64">Base64</option>
-                                <option value="url">URL (Percent Encoding)</option>
-                                <option value="html">HTML Entities</option>
-                                <option value="hex">Hex</option>
-                                <option value="sha256">SHA256 Hash</option>
-                            </select>
-                            <span id="ed-format-warning" class="ed-format-warning"></span>
+                            <div class="ed-format-container">
+                                <select id="ed-format-select" class="input-base">
+                                    <option value="base64">Base64</option>
+                                    <option value="url">URL (Percent Encoding)</option>
+                                    <option value="html">HTML Entities</option>
+                                    <option value="hex">Hex</option>
+                                    <option value="sha256">SHA256 Hash</option>
+                                </select>
+                                <span id="ed-format-warning" class="ed-format-warning"></span>
+                            </div>
                         </div>
                         <div class="ed-action-buttons">
                             <button id="ed-encode-btn" class="btn-secondary">Encode</button>
@@ -117,15 +119,15 @@
                             <textarea id="ed-input" class="ed-textarea" rows="10"
                                 placeholder="Paste your text here..."></textarea>
                             <div class="ed-copy-wrapper">
-                                <button id="ed-copy-input-btn" class="btn-secondary btn-copy" disabled>Copy</button>
+                                <button id="ed-copy-input-btn" class="btn-secondary btn-copy">Copy</button>
+                                <button id="ed-paste-input-btn" class="btn-secondary btn-paste">Paste</button>
                                 <span id="ed-copy-input-feedback" class="ed-copy-feedback"></span>
                             </div>
                         </div>
 
                         <div class="ed-swap-container">
-                            <button id="ed-swap-btn" title="Swap Input and Output" aria-label="Swap Input and Output">
-                                ⇄
-                            </button>
+                            <button id="ed-swap-btn" class="btn-secondary" title="Swap Input and Output">⇄</button>
+                            <button id="ed-clear-btn" class="btn-secondary" title="Clear both fields">Clear</button>
                         </div>
 
                         <div class="ed-io-panel">
@@ -133,7 +135,7 @@
                             <textarea id="ed-output" class="ed-textarea" rows="10" readonly
                                 placeholder="Result will appear here..."></textarea>
                             <div class="ed-copy-wrapper">
-                                <button id="ed-copy-output-btn" class="btn-secondary btn-copy" disabled>Copy</button>
+                                <button id="ed-copy-output-btn" class="btn-secondary btn-copy">Copy</button>
                                 <span id="ed-copy-output-feedback" class="ed-copy-feedback"></span>
                             </div>
                         </div>

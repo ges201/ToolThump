@@ -12,7 +12,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     gap: var(--spacing-lg);
     margin-bottom: var(--spacing-lg);
     padding: var(--spacing-md);
@@ -24,35 +24,48 @@
 .ed-control-group {
     display: flex;
     align-items: center;
+    /* This will vertically center the label and the container */
     gap: var(--spacing-sm);
 }
 
-.ed-control-group {
+.ed-format-container {
     display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    position: relative;
+    flex-direction: column;
+    justify-content: center;
+    /* Center the select box within its container */
 }
 
 .ed-format-warning {
-    position: absolute;
-    top: 100%;
-    left: 0;
     font-size: 0.85rem;
     color: var(--warning-color);
     font-weight: 500;
     white-space: nowrap;
-    margin-top: 2px;
+    margin-top: 4px;
+    height: 0;
+    /* Collapse when empty */
+    opacity: 0;
+    /* Hide when empty */
+    transition: height 0.2s ease-out, opacity 0.2s ease-out;
+}
+
+.ed-format-warning.show {
+    height: 1.2em;
+    /* Animate to its natural height */
+    opacity: 1;
 }
 
 .ed-control-group label {
-    font-weight: 600;
     margin-bottom: 0;
 }
 
 .ed-action-buttons {
     display: flex;
+    align-items: center;
+    /* Align with the format group */
     gap: var(--spacing-sm);
+    /* Ensure it has enough height to match the format group */
+    min-height: 40px;
+    /* Adjust as needed */
 }
 
 .ed-main-layout {
@@ -66,7 +79,7 @@
     flex-direction: column;
     gap: var(--spacing-sm);
     min-width: 0;
-    position: relative; /* For positioning the copy button */
+    position: relative;
 }
 
 .ed-textarea {
@@ -76,12 +89,17 @@
     font-size: 1rem;
     background-color: var(--bg-deep-dark);
     flex-grow: 1;
-    padding-bottom: 40px; /* Add padding to prevent text from overlapping with the button */
+    padding-bottom: 40px;
 }
 
 .ed-textarea:read-only {
     background-color: var(--surface-bg-color);
     cursor: default;
+}
+
+.ed-textarea.warning {
+    color: var(--warning-color);
+    font-weight: 500;
 }
 
 .ed-swap-container {
@@ -93,34 +111,20 @@
     height: 100%;
 }
 
-#ed-swap-btn {
-    display: flex;
+/* Set a fixed size for swap and clear buttons for consistency. */
+#ed-swap-btn,
+#ed-clear-btn {
+    width: 70px;
+    height: 38px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--surface-bg-color);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 1.5rem;
-    color: var(--text-secondary-color);
-    font-weight: normal;
-    border-width: 1px;
-    border-color: var(--border-color);
-    transition: background-color 0.2s, color 0.2s;
 }
 
-#ed-swap-btn:hover,
-#ed-swap-btn:focus {
-    background-color: var(--accent-color);
-    color: var(--text-on-accent-bg);
-    transform: none;
-    box-shadow: none;
-    border-color: var(--accent-color);
-}
-
-#ed-swap-btn:active {
-    transform: none;
-    box-shadow: none;
+#ed-swap-btn {
+    font-size: 1.3rem;
+    line-height: 1;
+    /* Prevents larger font from affecting button height. */
 }
 
 .ed-copy-wrapper {
@@ -132,7 +136,8 @@
     gap: var(--spacing-sm);
 }
 
-.btn-copy {
+.btn-copy,
+.btn-paste {
     padding: var(--spacing-xs) var(--spacing-sm);
     font-size: 0.875rem;
     background-color: rgba(0, 0, 0, 0.3);
@@ -140,7 +145,8 @@
     color: var(--text-secondary-color);
 }
 
-.btn-copy:hover {
+.btn-copy:hover,
+.btn-paste:hover {
     background-color: var(--accent-color);
     color: var(--text-on-accent-bg);
 }
@@ -175,12 +181,15 @@
     }
 
     .ed-swap-container {
-        transform: rotate(90deg);
-        min-height: 60px;
+        flex-direction: row;
+        transform: none;
+        min-height: auto;
+        margin: 0 auto;
     }
 
     .ed-controls {
         flex-direction: column;
         gap: var(--spacing-md);
+        align-items: center;
     }
 }
