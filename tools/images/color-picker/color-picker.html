@@ -58,23 +58,11 @@
                     <h1>Image Color Picker</h1>
                 </div>
                 <div class="cp-container">
-                    <p class="cp-instructions">Upload an image, activate the eyedropper, then move the cursor on the
+                    <p class="cp-instructions">Click to upload or drag & drop an image, activate the eyedropper, then move the cursor on the
                         image and click the
                         mouse to select the color, you can also use arrow keys for pixel-perfect selection.</p>
                     <div class="cp-controls">
                         <div class="cp-action-buttons">
-                            <label for="cp-image-loader" class="btn-secondary cp-upload-label">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-upload" viewBox="0 0 16 16">
-                                    <path
-                                        d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
-                                    <path
-                                        d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z" />
-                                </svg>
-                                <span>Upload Image</span>
-                            </label>
-                            <input type="file" id="cp-image-loader" class="sr-only" accept="image/*">
-
                             <button id="cp-eyedropper-btn" class="btn-secondary" disabled>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-eyedropper" viewBox="0 0 16 16">
@@ -91,15 +79,16 @@
                             <div class="cp-canvas-wrapper">
                                 <canvas id="cp-canvas" tabindex="0"></canvas>
                                 <div id="cp-crosshair"></div>
-                                <div id="cp-canvas-placeholder" class="cp-canvas-placeholder">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor"
-                                        class="bi bi-image" viewBox="0 0 16 16">
-                                        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                                <input type="file" id="cp-image-loader" accept="image/*" class="sr-only">
+                                <label for="cp-image-loader" id="cp-upload-label" class="cp-upload-label">
+                                    <svg class="cp-upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="currentColor">
                                         <path
-                                            d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
+                                            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
                                     </svg>
-                                    <p>Your image will appear here</p>
-                                </div>
+                                    <span class="cp-upload-text">Click to Upload or Drop Image</span>
+                                    <span class="cp-upload-hint">PNG, JPG, or WEBP</span>
+                                </label>
                             </div>
                             <div class="cp-zoom-controls-wrapper hidden" id="cp-zoom-controls-wrapper">
                                 <div class="cp-zoom-controls">

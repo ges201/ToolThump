@@ -49,11 +49,7 @@
     min-width: 220px;
 }
 
-.cp-upload-label:hover,
-.cp-upload-label:focus-within {
-    transform: translate(-2px, -2px);
-    box-shadow: var(--shadow-hard);
-}
+
 
 .cp-upload-label:active {
     transform: translate(0, 0);
@@ -90,22 +86,84 @@
 
 .cp-canvas-wrapper {
     position: relative;
-    background-color: var(--bg-deep-dark);
-    border: 1px solid var(--border-color);
-    border-bottom: none;
-    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
-    min-height: 400px;
-    max-height: 70vh;
+    width: 100%;
+    aspect-ratio: 4 / 3;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+    border: 2px dashed var(--border-color);
+    background-color: var(--surface-bg-color);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
     overflow: hidden;
+    /* Checkerboard background to show transparency */
+    background-image:
+        linear-gradient(45deg, var(--bg-deep-dark) 25%, transparent 25%),
+        linear-gradient(-45deg, var(--bg-deep-dark) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, var(--bg-deep-dark) 75%),
+        linear-gradient(-45deg, transparent 75%, var(--bg-deep-dark) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
 }
 
-#cp-canvas {
+.cp-canvas-wrapper.dragover {
+    border-color: var(--accent-color);
+    background-color: var(--accent-color-bg-hover);
+}
+
+/* --- Upload Label (Overlay) --- */
+.cp-upload-label {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    display: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-align: center;
+    color: var(--text-secondary-color);
+    z-index: 10;
+    background-color: var(--surface-bg-color);
+    /* Hides checkerboard initially */
+    transition: opacity 0.3s ease;
+}
+
+.cp-canvas-wrapper.has-image .cp-upload-label {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.cp-upload-icon {
+    width: 60px;
+    height: 60px;
+    color: var(--accent-color);
+    margin-bottom: var(--spacing-md);
+}
+
+.cp-upload-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary-color);
+}
+
+.cp-upload-hint {
+    font-size: 0.9rem;
+    margin-top: var(--spacing-xs);
+}
+
+/* --- Preview Image & Result Canvas --- */
+#cp-canvas {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    width: auto;
+    object-fit: contain;
+    z-index: 1;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
@@ -182,26 +240,6 @@
 
 #cp-crosshair::after {
     clip-path: polygon(0% 0%, 40% 0%, 40% 100%, 60% 100%, 60% 0%, 100% 0%, 100% 100%, 0% 100%);
-}
-
-
-.cp-canvas-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary-color);
-    text-align: center;
-}
-
-.cp-canvas-placeholder.hidden {
-    display: none;
-}
-
-.cp-canvas-placeholder .bi {
-    font-size: 64px;
-    margin-bottom: var(--spacing-md);
-    color: var(--bg-medium);
 }
 
 .cp-zoom-controls-wrapper {

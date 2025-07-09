@@ -1,9 +1,10 @@
 function initializeTool() {
     // --- DOM Elements ---
-    const imageLoader = document.getElementById('cp-image-loader');
+    const imageInput = document.getElementById('cp-image-loader');
     const canvas = document.getElementById('cp-canvas');
     const ctx = canvas.getContext('2d');
-    const placeholder = document.getElementById('cp-canvas-placeholder');
+    const canvasWrapper = document.querySelector('.cp-canvas-wrapper');
+    const uploadLabel = document.getElementById('cp-upload-label');
     const eyedropperBtn = document.getElementById('cp-eyedropper-btn');
     const magnifier = document.getElementById('cp-magnifier');
     const magnifierPlaceholder = document.getElementById('cp-magnifier-placeholder');
@@ -91,11 +92,15 @@ function initializeTool() {
 
     // --- Tool State Management ---
     function resetToInitialState() {
+        uploadLabel.style.display = 'flex';
+        canvas.style.display = 'none';
+        canvasWrapper.classList.remove('has-image');
         magnifierPlaceholder.textContent = 'Upload an image to begin.';
         resetPreviews();
         clearColorValues();
         zoomControlsWrapper.classList.add('hidden');
         crosshair.classList.remove('visible');
+        eyedropperBtn.disabled = true;
     }
 
     function resetPreviews() {
@@ -121,40 +126,42 @@ function initializeTool() {
     }
 
     // --- Image Loading ---
-    imageLoader.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = new Image();
-                img.onload = () => {
-                    originalImage = img;
-                    fullResCanvas.width = img.width;
-                    fullResCanvas.height = img.height;
-                    fullResCtx.drawImage(img, 0, 0);
+    function handleFileSelect(file) {
+        if (!file) return;
 
-                    const magElementSize = magnifier.clientWidth;
-                    magnifierDisplayCanvas.width = magElementSize;
-                    magnifierDisplayCanvas.height = magElementSize;
-                    magnifierDisplayCtx.imageSmoothingEnabled = false;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                originalImage = img;
+                fullResCanvas.width = img.width;
+                fullResCanvas.height = img.height;
+                fullResCtx.drawImage(img, 0, 0);
 
-                    placeholder.classList.add('hidden');
-                    canvas.style.display = 'block';
-                    eyedropperBtn.disabled = false;
-                    imageLoaded = true;
+                const magElementSize = magnifier.clientWidth;
+                magnifierDisplayCanvas.width = magElementSize;
+                magnifierDisplayCanvas.height = magElementSize;
+                magnifierDisplayCtx.imageSmoothingEnabled = false;
 
-                    resetZoomAndPan();
-                    zoomControlsWrapper.classList.remove('hidden');
+                uploadLabel.style.display = 'none';
+                canvas.style.display = 'block';
+                canvasWrapper.classList.add('has-image');
+                eyedropperBtn.disabled = false;
+                imageLoaded = true;
 
-                    resetPreviews();
-                    clearColorValues();
-                    deactivateEyedropper();
-                };
-                img.src = event.target.result;
+                resetZoomAndPan();
+                zoomControlsWrapper.classList.remove('hidden');
+
+                resetPreviews();
+                clearColorValues();
+                deactivateEyedropper();
             };
-            reader.readAsDataURL(file);
-        }
-    });
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    imageInput.addEventListener('change', (e) => handleFileSelect(e.target.files[0]));
 
     // --- Eyedropper & Zoom/Pan Controls ---
     function activateEyedropper() {
@@ -386,8 +393,31 @@ function initializeTool() {
         });
     });
 
+    // --- Drag and Drop Initialization ---
+    function initDragAndDrop() {
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            canvasWrapper.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            canvasWrapper.addEventListener(eventName, () => canvasWrapper.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            canvasWrapper.addEventListener(eventName, () => canvasWrapper.classList.remove('dragover'), false);
+        });
+
+        canvasWrapper.addEventListener('drop', (e) => {
+            handleFileSelect(e.dataTransfer.files[0]);
+        }, false);
+    }
+
     // --- Initialization ---
     resetToInitialState();
+    initDragAndDrop();
 }
 
 // Expose the initialization function to the global scope
