@@ -193,10 +193,8 @@ function initializeTool() {
     }
 }
 
+// Make the function available to the global scope (e.g., for main.js to call)
 window.initializeTool = initializeTool;
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeTool);
-} else {
-    initializeTool();
-}
+// The self-initialization block that caused the double-execution has been removed.
+// The global 'main.js' script is now solely responsible for calling 'initializeTool()'.
