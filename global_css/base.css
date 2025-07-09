@@ -99,12 +99,13 @@ select {
     transition: all 0.15s ease-out;
 }
 
+/* MODIFIED: Replaced outline with a softer box-shadow for a cleaner focus state */
 input:focus,
 textarea:focus,
 select:focus {
-    outline: 2px solid var(--focus-outline-color);
-    outline-offset: 2px;
+    outline: none;
     border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--focus-outline-color);
 }
 
 button {
