@@ -55,6 +55,9 @@ const ed = {
                 case 'html':
                     output = mode === 'encode' ? htmlEncode(input) : htmlDecode(input);
                     break;
+                case 'hex':
+                    output = mode === 'encode' ? hexEncode(input) : hexDecode(input);
+                    break;
             }
             this.outputArea.value = output;
             this.copyBtn.disabled = false;
