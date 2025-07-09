@@ -15,11 +15,22 @@ const toolsData = [
         name: "Password Strength Checker",
         category: "Security",
         description: "Check the strength of your passwords.",
-        icon: "/icons/password-strength-color.png",
+        icon: "/icons/password-strength-checker-icon.png",
         htmlPath: "/tools/security/password-strength-checker/password-strength-checker.html",
         cssPaths: ["/tools/security/password-strength-checker/password-strength-checker.css"],
         jsPath: "/tools/security/password-strength-checker/js/main.js",
         keywords: ["password", "strength", "checker", "security", "entropy", "test", "meter", "check", "validate"]
+    },
+    {
+        id: "encoder-decoder",
+        name: "Encoder / Decoder",
+        category: "Security",
+        description: "Encode and decode data in various formats like Base64, URL, and more.",
+        icon: "/icons/encoder-decoder-icon.png",
+        htmlPath: "/tools/security/encoder-decoder/encoder-decoder.html",
+        cssPaths: ["/tools/security/encoder-decoder/encoder-decoder.css"],
+        jsPath: "/tools/security/encoder-decoder/encoderDecoder.js",
+        keywords: ["encode", "decode", "base64", "url", "string", "data", "security", "converter", "encoder", "decoder"]
     },
     {
         id: "text-comparison",
