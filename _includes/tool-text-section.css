@@ -23,14 +23,17 @@
     font-size: 1.2em;
 }
 
-.tool-text-section p {
+/*
+  MODIFICATION:
+  This rule now specifically targets the main introductory paragraphs of a section
+  and increases their bottom margin to create more space. This is more robust
+  than the previous general 'p' selector.
+*/
+.tool-text-section .section-content>p {
     line-height: 1.7;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+    /* Increased space for main text */
     color: var(--text-secondary-color);
-}
-
-.tool-text-section p:last-of-type {
-    margin-bottom: 0;
 }
 
 /* === Features List Styles === */
@@ -75,6 +78,18 @@
     margin-bottom: var(--spacing-xs);
     color: var(--text-heading-color);
 }
+
+/*
+  MODIFICATION:
+  Ensures paragraphs within a feature description do not have a large margin,
+  as the .feature-item container already handles the spacing.
+*/
+.feature-text p {
+    margin-bottom: 0;
+    line-height: 1.6;
+    color: var(--text-secondary-color);
+}
+
 
 /* === Accordion Styles for FAQ === */
 .accordion-container {
