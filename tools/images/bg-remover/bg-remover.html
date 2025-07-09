@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client-Side Background Remover - Free & Private | ToolThump</title>
+    <meta name="description"
+        content="Instantly remove the background from any image for free. All processing is done in your browser, so your images remain 100% private. No uploads, no login required.">
+    <link rel="canonical" href="https://toolthump.com/tools/images/bg-remover/bg-remover.html">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" href="https://toolthump.com/tools/images/bg-remover/bg-remover.html">
+    <meta property="og:title" content="Client-Side Background Remover - Free & Private | ToolThump">
+    <meta property="og:description"
+        content="Instantly remove the background from any image for free. All processing is done in your browser, so your images remain 100% private.">
+    <meta property="og:image" content="https://toolthump.com/icons/bg-remover-icon.png">
+    <meta property="og:site_name" content="ToolThump" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" href="https://toolthump.com/tools/images/bg-remover/bg-remover.html">
+    <meta property="twitter:title" content="Client-Side Background Remover - Free & Private | ToolThump">
+    <meta property="twitter:description"
+        content="Instantly remove the background from any image for free. All processing is done in your browser, so your images remain 100% private.">
+    <meta property="twitter:image" content="https://toolthump.com/icons/bg-remover-icon.png">
+
+    <!-- Common Stylesheets (paths relative to root) -->
+    <link rel="stylesheet" href="/global_css/theme.css">
+    <link rel="stylesheet" href="/global_css/base.css">
+    <link rel="stylesheet" href="/global_css/layout.css">
+    <link rel="stylesheet" href="/global_css/components.css">
+    <link rel="stylesheet" href="/global_css/responsive.css">
+    <link rel="stylesheet" href="/_includes/tool-text-section.css">
+
+    <!-- Tool-Specific Stylesheet (path relative to root) -->
+    <link rel="stylesheet" href="/tools/images/bg-remover/bg-remover.css">
+
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7245857649397014"
+        crossorigin="anonymous"></script>
+
+    <!-- Favicon (paths are already root-relative) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+</head>
+
+<body>
+    <header data-include="header"></header>
+    <div class="content-wrapper">
+        <main id="tool-container">
+            <section id="backgroundRemover" class="tool-content active">
+                <h1>Background Remover</h1>
+                <p style="text-align: center; max-width: 65ch; margin: 0 auto var(--spacing-xl);">
+                    Select an image and the background will be magically whisked away.
+                    Choose your desired quality and let the tool do the rest.
+                </p>
+
+                <div class="br-main-interface">
+                    <!-- The combined workspace for upload, preview, and result -->
+                    <div id="br-workspace" class="br-workspace">
+                        <input type="file" id="br-image-input" accept="image/png, image/jpeg, image/webp"
+                            class="sr-only">
+
+                        <!-- Initial State: Upload Prompt -->
+                        <label for="br-image-input" id="br-upload-label" class="br-upload-label">
+                            <svg class="br-upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
+                            </svg>
+                            <span class="br-upload-text">Click to Upload or Drop Image</span>
+                            <span class="br-upload-hint">PNG, JPG, or WEBP</span>
+                        </label>
+
+                        <!-- Preview & Result Elements (initially hidden) -->
+                        <img id="br-preview-img" src="#" alt="Image preview" class="br-image-display"
+                            style="display: none;">
+                        <canvas id="br-output-canvas" class="br-image-display" style="display: none;"></canvas>
+
+                        <!-- Status Overlay (for loading/errors) -->
+                        <div id="br-status-overlay" class="br-status-overlay" aria-live="polite" style="display: none;">
+                        </div>
+                    </div>
+
+                    <!-- Action buttons are now outside the workspace -->
+                    <div id="br-actions-container" class="br-actions" style="display: none;">
+                        <fieldset id="br-quality-selector" class="br-quality-selector quality-options-group">
+                            <legend class="sr-only">Output Quality</legend>
+                            <button type="button" id="br-quality-fast" class="btn-secondary" data-quality="small"
+                                title="Faster processing, good for general use.">Fast</button>
+                            <button type="button" id="br-quality-quality" class="btn-secondary" data-quality="medium"
+                                title="Slower processing, better for detailed images.">Quality</button>
+                        </fieldset>
+                        <button id="br-process-btn" class="button btn-secondary">Remove Background</button>
+                        <a id="br-download-btn" href="#" class="button btn-secondary" download="bg-removed.png"
+                            role="button" style="display: none;">Download Image</a>
+                    </div>
+                </div>
+            </section>
+
+            <div data-include="tool-text-section"></div>
+        </main>
+    </div>
+
+    <footer data-include="footer"></footer>
+
+    <!-- Data Island (No changes needed here) -->
+    <script type="application/json" id="tool-text-data">{
+    "sections": [
+        {
+            "type": "how-to",
+            "title": "How to Vanish a Background",
+            "icon": "💡",
+            "intro": "Making your image's background disappear is a simple, three-step magic trick.",
+            "steps": [
+                {
+                    "icon": "1️⃣",
+                    "title": "Upload Your Image",
+                    "description": "Click the big box to select an image file (PNG, JPG, or WEBP) from your device, or just drag and drop it right into the workspace. You'll see a preview instantly."
+                },
+                {
+                    "icon": "2️⃣",
+                    "title": "Choose Quality & Process",
+                    "description": "Select 'Fast' for quicker results or 'Quality' for more detailed cutouts. Hit the 'Remove Background' button to start the process on your computer."
+                },
+                {
+                    "icon": "3️⃣",
+                    "title": "Download the Result",
+                    "description": "Once complete, a 'Download Image' button will appear. Click it to save your new image with a transparent background as a high-quality PNG file."
+                }
+            ]
+        },
+        {
+            "type": "features",
+            "title": "Key Features & Guarantees",
+            "icon": "✨",
+            "intro": "This tool was built with a few core principles in mind: privacy, speed, and simplicity.",
+            "features": [
+                {
+                    "icon": "🔒",
+                    "title": "100% Client-Side & Private",
+                    "description": "Your images are processed directly in your browser. They are never uploaded to a server, viewed by anyone, or stored anywhere. What happens on your computer stays on your computer."
+                },
+                {
+                    "icon": "⚙️",
+                    "title": "Selectable Output Quality",
+                    "description": "You have control. Choose the 'Fast' model for speed or the 'Quality' model for higher fidelity results on more complex images. Both run entirely in your browser."
+                },
+                {
+                    "icon": "💸",
+                    "title": "Completely Free, No Shenanigans",
+                    "description": "This is a free tool. There's no login required, no trial period, no watermarks, and no up-sell. Just a utility that does what it says on the tin."
+                },
+                {
+                    "icon": "🚀",
+                    "title": "Fast AI-Powered Processing",
+                    "description": "Using modern, efficient AI models that run locally, the tool removes backgrounds quickly. No waiting in an upload queue or for a server to process your request."
+                }
+            ]
+        },
+        {
+            "type": "prose",
+            "title": "The Magic Happens in Your Browser",
+            "icon": "🧙‍♂️",
+            "content": [
+                "You might wonder how this works without uploading your image. The first time you click 'Remove Background', your browser downloads a specialized AI model based on your quality selection. This model is the 'engine' that performs the background removal. Once downloaded, it runs entirely on your device.",
+                "This client-side approach is the key to ensuring your privacy. Since your file never leaves your machine, you maintain complete control. It's a bit like having a powerful image editing studio right in your browser tab, without the installation hassle or privacy concerns of traditional software or online services."
+            ]
+        },
+        {
+            "type": "faq",
+            "title": "Frequently Asked Questions (FAQ)",
+            "icon": "❓",
+            "faqs": [
+                {
+                    "icon": "🛡️",
+                    "question": "Are my images safe and private?",
+                    "answer": "Yes, absolutely. The entire background removal process happens on your computer using JavaScript in your browser. Your files are never sent to or stored on any server."
+                },
+                {
+                    "icon": "🤔",
+                    "question": "What's the catch? Why is it free?",
+                    "answer": "There isn't one. The 'catch,' if you can call it that, is that the first time you use the tool, your browser needs to download the AI model (a few megabytes). This might take a moment on slower connections. The site is a personal project, not a corporate venture."
+                },
+                {
+                    "icon": "📊",
+                    "question": "What's the difference between 'Fast' and 'Quality'?",
+                    "answer": "'Fast' uses a smaller, quicker AI model that's great for simple images or when speed is a priority. 'Quality' uses a larger, more advanced model that provides a more accurate result, especially for images with fine details like hair or fur. The quality model will take longer to download and process."
+                },
+                {
+                    "icon": "💥",
+                    "question": "Why does the output look weird?",
+                    "answer": "Images with a clear subject and a distinct background work best. A portrait of a person against a blurry landscape is ideal. A photo of a white cat in a snowstorm might be... challenging, even for the 'Quality' model."
+                }
+            ]
+        }
+    ]
+}</script>
+
+    <!-- Scripts (paths relative to root) -->
+    <script type="module" src="/tools/images/bg-remover/bgRemover.js"></script>
+    <script src="/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,185 @@
+/* === Background Remover Specific Styles === */
+
+.br-main-interface {
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* --- The All-in-One Workspace --- */
+.br-workspace {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-lg);
+    border: 2px dashed var(--border-color);
+    background-color: var(--surface-bg-color);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    overflow: hidden;
+    /* Checkerboard background to show transparency */
+    background-image:
+        linear-gradient(45deg, var(--bg-deep-dark) 25%, transparent 25%),
+        linear-gradient(-45deg, var(--bg-deep-dark) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, var(--bg-deep-dark) 75%),
+        linear-gradient(-45deg, transparent 75%, var(--bg-deep-dark) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+.br-workspace.dragover {
+    border-color: var(--accent-color);
+    background-color: var(--accent-color-bg-hover);
+}
+
+/* --- Upload Label (Overlay) --- */
+.br-upload-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-align: center;
+    color: var(--text-secondary-color);
+    z-index: 10;
+    background-color: var(--surface-bg-color);
+    /* Hides checkerboard initially */
+    transition: opacity 0.3s ease;
+}
+
+.br-workspace.has-image .br-upload-label {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.br-upload-icon {
+    width: 60px;
+    height: 60px;
+    color: var(--accent-color);
+    margin-bottom: var(--spacing-md);
+}
+
+.br-upload-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary-color);
+}
+
+.br-upload-hint {
+    font-size: 0.9rem;
+    margin-top: var(--spacing-xs);
+}
+
+/* --- Preview Image & Result Canvas --- */
+.br-image-display {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    width: auto;
+    object-fit: contain;
+    z-index: 1;
+}
+
+/* --- Status Overlay --- */
+.br-status-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: var(--text-primary-color);
+    z-index: 20;
+    padding: 1rem;
+    text-align: center;
+}
+
+.br-loader {
+    display: inline-block;
+    border: 4px solid var(--border-color);
+    border-top: 4px solid var(--accent-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: br-spin 1s linear infinite;
+    margin-bottom: var(--spacing-md);
+}
+
+@keyframes br-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.br-error-message {
+    color: var(--error-color);
+    font-weight: 600;
+}
+
+/* --- Action Buttons --- */
+.br-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- Quality Selector (MODIFIED) --- */
+.br-quality-selector {
+    display: flex;
+    gap: var(--spacing-md);
+    border: none;
+    padding: 0;
+    background-color: transparent;
+    margin: 0;
+}
+
+.quality-options-group {
+    border: 2px solid var(--border-color); /* Example border */
+    border-radius: var(--border-radius-md); /* Example border-radius */
+    padding: var(--spacing-sm) var(--spacing-md); /* Example padding */
+}
+
+.br-quality-selector .btn-secondary.active {
+    background-color: var(--accent-color-bg-hover);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    transform: translate(0, 0);
+    box-shadow: none;
+}
+
+
+/* Add hover/focus effect to download link to match other buttons */
+#br-download-btn.button:hover,
+#br-download-btn.button:focus {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-hard);
+    text-decoration: none;
+}
+
+/* Add the "thump" effect on click */
+#br-download-btn.button:active {
+    transform: translate(0, 0);
+    box-shadow: var(--shadow-hard-inset);
+}
