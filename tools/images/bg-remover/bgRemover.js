@@ -109,7 +109,7 @@ const br = {
         this.setStatus('loading', 'Warming up the AI model...');
 
         try {
-            const selectedQuality = this.qualitySelector.querySelector('input[name="quality"]:checked').value || 'medium';
+            const selectedQuality = this.selectedQuality;
 
             const config = {
                 model: selectedQuality,
