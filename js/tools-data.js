@@ -55,6 +55,17 @@ const toolsData = [
         keywords: ["text", "case", "converter", "uppercase", "lowercase", "titlecase", "capitalize", "string", "format"]
     },
     {
+        id: "duplicate-words-finder",
+        name: "Duplicate Words Finder",
+        category: "Text Tools",
+        description: "Find and highlight duplicate words in a text.",
+        icon: "/icons/text-tool-icon.png", // Placeholder, create a specific icon later
+        htmlPath: "/tools/text/duplicate-words-finder/duplicate-words-finder.html",
+        cssPaths: ["/tools/text/duplicate-words-finder/duplicate-words-finder.css"],
+        jsPath: "/tools/text/duplicate-words-finder/duplicateWordFinder.js",
+        keywords: ["duplicate", "words", "finder", "text", "analysis", "remove", "identify"]
+    },
+    {
         id: "image-converter",
         name: "Image Converter",
         category: "Image Tools",
