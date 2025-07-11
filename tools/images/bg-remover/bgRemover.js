@@ -58,17 +58,52 @@ const br = {
 
         switch (type) {
             case 'loading':
-                content = `<div class="br-loader"></div><span>${message}</span>`;
+                const funnyMessages = [
+                    "Warming up the AI model...",
+                    "Teaching the AI to distinguish between a cat and a potato...",
+                    "AI is currently debating the meaning of life with a toaster.",
+                    "Our servers are powered by hamsters on tiny treadmills. Please wait.",
+                    "Just convincing the pixels to behave themselves.",
+                    "AI is consulting its magic 8-ball for the best removal strategy.",
+                    "Applying digital elbow grease to your image.",
+                    "The AI is currently on a coffee break. Be right back!",
+                    "Making sure no stray pixels escape the matrix.",
+                    "Polishing the digital scissors for a perfect cut.",
+                    "AI is practicing its invisibility cloak spell.",
+                    "Almost there! The AI is just admiring its own reflection.",
+                    "Summoning the pixel spirits for a clean background.",
+                    "The AI is currently untangling its neural network cables.",
+                    "Just a moment, the AI is perfecting its masterpiece."
+                ];
+                let messageIndex = 0;
+                content = `<div class="br-loader"></div><span id="br-loading-message">${funnyMessages[messageIndex]}</span>`;
+                this.statusOverlay.innerHTML = content;
+
+                if (this.messageInterval) {
+                    clearInterval(this.messageInterval);
+                }
+                this.messageInterval = setInterval(() => {
+                    messageIndex = (messageIndex + 1) % funnyMessages.length;
+                    document.getElementById('br-loading-message').innerText = funnyMessages[messageIndex];
+                }, 3000); // Change message every 3 seconds
                 break;
             case 'error':
                 content = `<span class="br-error-message">${message}</span>`;
                 setTimeout(() => this.statusOverlay.style.display = 'none', 3000);
+                if (this.messageInterval) {
+                    clearInterval(this.messageInterval);
+                }
                 break;
             case 'clear':
                 this.statusOverlay.style.display = 'none';
+                if (this.messageInterval) {
+                    clearInterval(this.messageInterval);
+                }
                 break;
         }
-        this.statusOverlay.innerHTML = content;
+        if (type !== 'loading') {
+            this.statusOverlay.innerHTML = content;
+        }
     },
 
     handleFileSelect: function (event) {

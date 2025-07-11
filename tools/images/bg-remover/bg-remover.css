@@ -108,6 +108,13 @@
     z-index: 20;
     padding: 1rem;
     text-align: center;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.br-status-overlay span {
+    display: block;
+    max-width: 90%; /* Adjust as needed */
 }
 
 .br-loader {
