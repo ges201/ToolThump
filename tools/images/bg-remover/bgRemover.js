@@ -15,6 +15,7 @@ const br = {
     downloadBtn: null,
     qualityFastBtn: null,
     qualityQualityBtn: null,
+    clearBtn: null,
 
     // State
     isProcessing: false,
@@ -47,6 +48,7 @@ const br = {
         this.downloadBtn = document.getElementById('br-download-btn');
         this.qualityFastBtn = document.getElementById('br-quality-fast');
         this.qualityQualityBtn = document.getElementById('br-quality-quality');
+        this.clearBtn = document.getElementById('br-clear-btn');
     },
 
     setStatus: function (type, message = '') {
@@ -87,6 +89,7 @@ const br = {
             this.actionsContainer.style.display = 'flex';
             this.downloadBtn.style.display = 'none';
             this.processBtn.style.display = 'inline-flex';
+            this.clearBtn.style.display = 'inline-flex';
             // this.qualitySelector.style.display = 'flex'; // No longer needed
             this.qualityFastBtn.style.display = 'inline-flex';
             this.qualityQualityBtn.style.display = 'inline-flex';
@@ -99,6 +102,17 @@ const br = {
         };
 
         reader.readAsDataURL(file);
+    },
+
+    clearImage: function () {
+        this.currentFile = null;
+        this.imageInput.value = '';
+        this.workspace.classList.remove('has-image');
+        this.previewImg.style.display = 'none';
+        this.outputCanvas.style.display = 'none';
+        this.actionsContainer.style.display = 'none';
+        this.clearBtn.style.display = 'none';
+        this.setStatus('clear');
     },
 
     processImage: async function () {
@@ -134,6 +148,7 @@ const br = {
             this.qualityFastBtn.style.display = 'none';
             this.qualityQualityBtn.style.display = 'none';
             this.downloadBtn.style.display = 'inline-flex';
+            this.clearBtn.style.display = 'inline-flex';
             this.setStatus('clear');
 
         } catch (error) {
@@ -195,6 +210,7 @@ const br = {
 
         this.imageInput.addEventListener('change', (e) => this.handleFileSelect(e));
         this.processBtn.addEventListener('click', () => this.processImage());
+        this.clearBtn.addEventListener('click', () => this.clearImage());
         this.qualityFastBtn.addEventListener('click', () => this.updateQualitySelection('small'));
         this.qualityQualityBtn.addEventListener('click', () => this.updateQualitySelection('medium'));
         this.initDragAndDrop();
