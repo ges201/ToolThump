@@ -59,21 +59,21 @@ const br = {
         switch (type) {
             case 'loading':
                 const funnyMessages = [
-                    "Warming up the AI model...",
-                    "Teaching the AI to distinguish between a cat and a potato...",
-                    "AI is currently debating the meaning of life with a toaster.",
-                    "Our servers are powered by hamsters on tiny treadmills. Please wait.",
-                    "Just convincing the pixels to behave themselves.",
-                    "AI is consulting its magic 8-ball for the best removal strategy.",
-                    "Applying digital elbow grease to your image.",
-                    "The AI is currently on a coffee break. Be right back!",
-                    "Making sure no stray pixels escape the matrix.",
-                    "Polishing the digital scissors for a perfect cut.",
-                    "AI is practicing its invisibility cloak spell.",
-                    "Almost there! The AI is just admiring its own reflection.",
-                    "Summoning the pixel spirits for a clean background.",
-                    "The AI is currently untangling its neural network cables.",
-                    "Just a moment, the AI is perfecting its masterpiece."
+                    "Carefully extracting your subject from its humble surroundings. It's not rocket science, but it's close.",
+                    "Persuading each pixel to reveal its true allegiance: foreground or background. Some are quite stubborn.",
+                    "Applying advanced digital sorcery to make your background... disappear. Poof!",
+                    "Our highly trained algorithms are meticulously deciding what stays and what goes. Don't worry, they have good taste.",
+                    "Just a moment while we convince your image that it never really needed that background anyway.",
+                    "The AI is currently in a deep philosophical discussion about the nature of 'belonging' in an image. Almost done!",
+                    "We're not saying it's magic, but we're not *not* saying it's magic. Background removal in progress...",
+                    "Ensuring no rogue background elements sneak into your pristine foreground. We're very thorough.",
+                    "The pixels are being rearranged for optimal aesthetic pleasure. Please stand by.",
+                    "Almost there! The digital scissors are getting a workout, snipping away the unnecessary bits.",
+                    "Your image is undergoing a dramatic transformation. Soon, it will be free of its past.",
+                    "Just tidying up the edges. We wouldn't want any stray background bits ruining the grand reveal.",
+                    "The AI is currently negotiating with your image's background for its peaceful departure.",
+                    "Preparing your subject for its solo debut. No more distracting backdrops!",
+                    "We're making sure your main subject gets all the attention it deserves. Backgrounds are so last season."
                 ];
                 let messageIndex = 0;
                 content = `<div class="br-loader"></div><span id="br-loading-message">${funnyMessages[messageIndex]}</span>`;
@@ -85,7 +85,7 @@ const br = {
                 this.messageInterval = setInterval(() => {
                     messageIndex = (messageIndex + 1) % funnyMessages.length;
                     document.getElementById('br-loading-message').innerText = funnyMessages[messageIndex];
-                }, 3000); // Change message every 3 seconds
+                }, 4000); // Change message every 4 seconds
                 break;
             case 'error':
                 content = `<span class="br-error-message">${message}</span>`;
