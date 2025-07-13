@@ -1,4 +1,4 @@
-// tools/text/duplicate-word-finder/duplicateWordFinder.js
+// tools/text/duplicate-words-finder/duplicateWordsFinder.js
 const dwf = {
     textInput: null,
     findBtn: null,
@@ -172,6 +172,6 @@ const dwf = {
     }
 };
 
-if (document.getElementById('duplicateWordFinder')) {
+if (document.getElementById('duplicateWordsFinder')) {
     document.addEventListener('DOMContentLoaded', () => dwf.init());
 }

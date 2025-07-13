@@ -62,7 +62,7 @@ const toolsData = [
         icon: "/icons/text-tool-icon.png", // Placeholder, create a specific icon later
         htmlPath: "/tools/text/duplicate-words-finder/duplicate-words-finder.html",
         cssPaths: ["/tools/text/duplicate-words-finder/duplicate-words-finder.css"],
-        jsPath: "/tools/text/duplicate-words-finder/duplicateWordFinder.js",
+        jsPath: "/tools/text/duplicate-words-finder/duplicateWordsFinder.js",
         keywords: ["duplicate", "words", "finder", "text", "analysis", "remove", "identify"]
     },
     {
