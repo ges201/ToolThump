@@ -4,25 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encoder & Decoder (Base64, URL) - Free Online Tool | ToolThump</title>
+    <title>Encoder, Decoder & Hasher (Base64, URL, SHA256) - Free Online Tool | ToolThump</title>
     <meta name="description"
-        content="Easily encode and decode text with ToolThump's free online tool. Supports Base64, URL encoding (percent-encoding), and HTML entities. All operations are done in your browser for privacy.">
+        content="Easily encode, decode, and hash text with ToolThump's free online tool. Supports Base64, URL encoding, SHA256, and more. All operations are done in your browser for privacy.">
     <link rel="canonical" href="https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html">
     <meta name="robots" content="index, follow">
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html">
-    <meta property="og:title" content="Encoder & Decoder (Base64, URL) - Free Online Tool | ToolThump">
+    <meta property="og:title" content="Encoder, Decoder & Hasher (Base64, URL, SHA256) - Free Online Tool | ToolThump">
     <meta property="og:description"
-        content="A simple, free tool to encode and decode text into various formats like Base64 and URL encoding. Fast, secure, and client-side.">
+        content="A simple, free tool to encode, decode, and hash text into various formats. Fast, secure, and client-side.">
     <meta property="og:image" content="https://toolthump.com/icons/encoder-decoder-icon.png">
     <meta property="og:site_name" content="ToolThump" />
 
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html">
-    <meta property="twitter:title" content="Encoder & Decoder (Base64, URL) - Free Online Tool | ToolThump">
+    <meta property="twitter:title"
+        content="Encoder, Decoder & Hasher (Base64, URL, SHA256) - Free Online Tool | ToolThump">
     <meta property="twitter:description"
-        content="A simple, free tool to encode and decode text into various formats like Base64 and URL encoding. Fast, secure, and client-side.">
+        content="A simple, free tool to encode, decode, and hash text into various formats. Fast, secure, and client-side.">
     <meta property="twitter:image" content="https://toolthump.com/icons/encoder-decoder-icon.png">
 
     <link rel="stylesheet" href="/global_css/theme.css">
@@ -39,8 +40,8 @@
       "@type": "WebPage",
       "@id": "https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html#webpage",
       "url": "https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html",
-      "name": "Encoder & Decoder",
-      "description": "A free online tool to encode and decode text in various formats like Base64 and URL encoding, performed securely in your browser.",
+      "name": "Encoder, Decoder & Hasher",
+      "description": "A free online tool to encode, decode, and hash text in various formats like Base64, URL, and SHA256, performed securely in your browser.",
       "isPartOf": {
         "@type": "WebSite",
         "@id": "https://toolthump.com/#website"
@@ -88,9 +89,10 @@
                 <div class="tool-header">
                     <h1>Encoder / Decoder</h1>
                 </div>
-                <p style="margin-bottom: var(--spacing-md);">A straightforward tool for encoding and decoding text.
-                    Select a format, paste your text, and get the result instantly. All operations are performed locally
-                    in your browser.</p>
+                <p style="text-align: center; max-width: 65ch; margin: 0 auto var(--spacing-xl);">
+                    A simple tool for transforming text. Select a format, paste your data, and get the result instantly.
+                    Everything happens locally in your browser for maximum privacy.
+                </p>
 
                 <div class="tool-placeholder">
                     <div class="ed-controls">
@@ -151,91 +153,97 @@
 
     <footer data-include="footer"></footer>
 
-    <!-- Data Island (No changes needed) -->
-    <script type="application/json" id="tool-text-data">
-    {
-        "sections": [
-            {
-                "type": "how-to",
-                "title": "How It Works",
-                "icon": "💡",
-                "intro": "Transforming text is a simple, three-step process with this tool.",
-                "steps": [
-                    {
-                        "icon": "1️⃣",
-                        "title": "Input Your Text",
-                        "description": "Paste or type the text you want to transform into the 'Input' box."
-                    },
-                    {
-                        "icon": "2️⃣",
-                        "title": "Choose Format & Action",
-                        "description": "Select the desired format (like Base64 or URL) from the dropdown menu, then click either 'Encode' or 'Decode'."
-                    },
-                    {
-                        "icon": "3️⃣",
-                        "title": "Copy the Result",
-                        "description": "Your result will instantly appear in the 'Output' box. Use the 'Copy' button to save it to your clipboard, or the 'Swap' button (⇅) to use the output as your next input."
-                    }
-                ]
-            },
-            {
-                "type": "features",
-                "title": "Key Features",
-                "icon": "✨",
-                "intro": "This tool is designed for simplicity, security, and utility.",
-                "features": [
-                    {
-                        "icon": "🔒",
-                        "title": "100% Client-Side",
-                        "description": "Your data is never sent to a server. All encoding and decoding happens securely within your browser, ensuring your information remains private."
-                    },
-                    {
-                        "icon": "🔄",
-                        "title": "Multiple Formats",
-                        "description": "Supports common encoding schemes essential for web development and data transmission, including Base64, URL (Percent) Encoding, and HTML Entities."
-                    },
-                    {
-                        "icon": "⚡",
-                        "title": "Instant Transformation",
-                        "description": "Get immediate results with the click of a button. The clean interface removes distractions and lets you get the job done quickly."
-                    },
-                    {
-                        "icon": "📋",
-                        "title": "Easy Workflow",
-                        "description": "Features like one-click copy and the ability to swap input/output make it easy to perform multiple transformations in a row."
-                    }
-                ]
-            },
-            {
-                "type": "faq",
-                "title": "Frequently Asked Questions (FAQ)",
-                "icon": "❓",
-                "faqs": [
-                    {
-                        "icon": "🛡️",
-                        "question": "Is it safe to put sensitive data in this tool?",
-                        "answer": "Yes. The tool operates entirely on your device (client-side). No data is transmitted to our servers, so it's as safe as any offline application on your computer."
-                    },
-                    {
-                        "icon": "🤔",
-                        "question": "What is Base64 encoding used for?",
-                        "answer": "Base64 is used to represent binary data (like images or files) as ASCII text. It's commonly used in data URLs (e.g., embedding a small image directly in CSS) and for transmitting data in text-based formats like JSON."
-                    },
-                    {
-                        "icon": "🌐",
-                        "question": "What is URL (Percent) encoding?",
-                        "answer": "URL encoding ensures that text can be safely transmitted over the internet. It replaces reserved characters (like spaces, '/', '&') with a '%' followed by a two-digit hexadecimal code, preventing them from being misinterpreted by web servers or browsers."
-                    },
-                    {
-                        "icon": "❌",
-                        "question": "Why did I get a 'Failed to decode' error?",
-                        "answer": "This error usually happens when the input text is not a valid string for the selected decoding format. For example, trying to decode 'hello world' as Base64 will fail because it's not a valid Base64 sequence. Ensure your input text is correctly formatted."
-                    }
-                ]
-            }
-        ]
-    }
-    </script>
+    <script type="application/json" id="tool-text-data">{
+    "sections": [
+        {
+            "type": "how-to",
+            "title": "How to Transform Your Text",
+            "icon": "💡",
+            "intro": "It only takes a few clicks to encode, decode, or hash your data.",
+            "steps": [
+                {
+                    "icon": "1️⃣",
+                    "title": "Provide the Input",
+                    "description": "Paste or type the text you want to transform into the left 'Input' box."
+                },
+                {
+                    "icon": "2️⃣",
+                    "title": "Choose Format & Action",
+                    "description": "Select the desired transformation format from the dropdown menu, then click either 'Encode' or 'Decode' (or just 'Encode' for one-way hashing)."
+                },
+                {
+                    "icon": "3️⃣",
+                    "title": "Get the Result",
+                    "description": "Your result instantly appears in the 'Output' box. Use the 'Copy' button to grab it, or the 'Swap' button (⇄) to use the output as your next input."
+                }
+            ]
+        },
+        {
+            "type": "features",
+            "title": "Key Features & Guarantees",
+            "icon": "✨",
+            "intro": "This tool is designed for simplicity, security, and utility.",
+            "features": [
+                {
+                    "icon": "🔒",
+                    "title": "100% Client-Side & Private",
+                    "description": "Your data is never sent to a server. All transformations happen securely within your browser, ensuring your information remains confidential."
+                },
+                {
+                    "icon": "🔄",
+                    "title": "Versatile Formats",
+                    "description": "Supports a growing list of formats for various needs, from web development (URL, HTML) and data handling (Base64, Hex) to security checks (SHA256)."
+                },
+                {
+                    "icon": "⚡",
+                    "title": "Instant Results",
+                    "description": "Get immediate feedback with the click of a button. The clean interface removes distractions and lets you get the job done quickly and efficiently."
+                },
+                {
+                    "icon": "📋",
+                    "title": "Convenient Workflow",
+                    "description": "Helpful features like one-click copy, paste, clear, and the ability to swap input/output make it easy to perform multiple transformations in a row."
+                }
+            ]
+        },
+        {
+            "type": "prose",
+            "title": "Why Bother with All This?",
+            "icon": "🤔",
+            "content": [
+                "Text transformations are the secret language of the internet and computing. 'Encoding' is like translating a phrase into a different dialect so it can be understood in a new context, like sending special characters in a URL. It's a two-way street; what is encoded can be decoded back to its original form.",
+                "'Hashing', on the other hand, is more like creating a unique, irreversible fingerprint for your data. You can't get the original data back from the hash, but you can check if data has been changed by comparing its hash before and after. It's essential for verifying file integrity and securing passwords."
+            ]
+        },
+        {
+            "type": "faq",
+            "title": "Frequently Asked Questions (FAQ)",
+            "icon": "❓",
+            "faqs": [
+                {
+                    "icon": "🛡️",
+                    "question": "Is it safe to put sensitive data in this tool?",
+                    "answer": "Yes. The tool operates entirely on your device (client-side). No data is transmitted to any server, so it's as safe as an offline application on your computer."
+                },
+                {
+                    "icon": "🔁",
+                    "question": "What's the difference between Encoding and Hashing?",
+                    "answer": "Encoding is a reversible process used to represent data in a different format (e.g., Base64, URL). Hashing is a one-way process that creates a unique, fixed-size fingerprint of the data (e.g., SHA256). You can decode encoded data, but you cannot 'un-hash' a hash."
+                },
+                {
+                    "icon": "⁉️",
+                    "question": "Why is the 'Decode' button sometimes disabled?",
+                    "answer": "Some formats, like SHA256, are one-way hashing algorithms. They are designed to be irreversible, so there is no 'decode' process. The tool disables the button for these formats automatically."
+                },
+                {
+                    "icon": "❌",
+                    "question": "Why did I get a 'Failed to decode' error?",
+                    "answer": "This usually means the input text is not valid for the selected format. For example, trying to decode 'hello world' as Base64 will fail because it's not a valid Base64 sequence. Check that your input is correctly formatted."
+                }
+            ]
+        }
+    ]
+    }</script>
 
     <script src="base64.js"></script>
     <script src="url.js"></script>
