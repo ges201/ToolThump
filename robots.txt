@@ -1,3 +1,4 @@
 User-agent: *
-Allow: /
+Disallow: /_includes/
+Disallow: /libs/
 Sitemap: https://toolthump.com/sitemap.xml
