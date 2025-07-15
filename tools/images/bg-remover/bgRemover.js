@@ -207,7 +207,6 @@ const br = {
             this.previewImg.style.display = 'none';
             this.outputCanvas.style.display = 'block';
 
-            URL.revokeObjectURL(imageUrl);
         };
         img.src = imageUrl;
     },
