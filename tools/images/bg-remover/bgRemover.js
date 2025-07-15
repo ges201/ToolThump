@@ -16,6 +16,7 @@ const br = {
     qualityFastBtn: null,
     qualityQualityBtn: null,
     clearBtn: null,
+    qualitySelector: null,
 
     // State
     isProcessing: false,
@@ -49,6 +50,7 @@ const br = {
         this.qualityFastBtn = document.getElementById('br-quality-fast');
         this.qualityQualityBtn = document.getElementById('br-quality-quality');
         this.clearBtn = document.getElementById('br-clear-btn');
+        this.qualitySelector = document.getElementById('br-quality-selector');
     },
 
     setStatus: function (type, message = '') {
@@ -122,10 +124,11 @@ const br = {
             this.outputCanvas.style.display = 'none';
 
             this.actionsContainer.style.display = 'flex';
+            this.actionsContainer.style.justifyContent = '';
             this.downloadBtn.style.display = 'none';
             this.processBtn.style.display = 'inline-flex';
             this.clearBtn.style.display = 'inline-flex';
-            // this.qualitySelector.style.display = 'flex'; // No longer needed
+            this.qualitySelector.style.display = 'flex';
             this.qualityFastBtn.style.display = 'inline-flex';
             this.qualityQualityBtn.style.display = 'inline-flex';
             this.processBtn.disabled = false;
@@ -180,9 +183,9 @@ const br = {
 
             this.downloadBtn.href = url;
             this.processBtn.style.display = 'none';
-            this.qualityFastBtn.style.display = 'none';
-            this.qualityQualityBtn.style.display = 'none';
+            this.qualitySelector.style.display = 'none';
             this.downloadBtn.style.display = 'inline-flex';
+            this.actionsContainer.style.justifyContent = 'center';
             this.clearBtn.style.display = 'inline-flex';
             this.setStatus('clear');
 
