@@ -37,6 +37,8 @@
     <!-- Tool-Specific Stylesheet -->
     <link rel="stylesheet" href="text-comparison.css">
 
+    <link rel="stylesheet" href="/_includes/tool-text-section.css">
+
     <!-- Schema.org for a specific tool page -->
     <script type="application/ld+json">
     {
@@ -122,10 +124,86 @@
                     </div>
                 </div>
             </section>
+
+            <div data-include="tool-text-section"></div>
         </main>
     </div>
 
     <footer data-include="footer"></footer>
+
+    <!-- Data Island for the text sections -->
+    <script type="application/json" id="tool-text-data">{
+    "sections": [
+        {
+            "type": "how-to",
+            "title": "How to Compare Texts",
+            "icon": "💡",
+            "intro": "Finding the differences between two texts is simple with this tool.",
+            "steps": [
+                {
+                    "icon": "1️⃣",
+                    "title": "Paste Your Texts",
+                    "description": "Copy the original text and paste it into the 'Text 1' box. Then, paste the new or modified text into the 'Text 2' box."
+                },
+                {
+                    "icon": "2️⃣",
+                    "title": "Click Compare",
+                    "description": "Press the 'Compare Texts' button. The tool will analyze both texts and highlight the differences in the results area below."
+                },
+                {
+                    "icon": "3️⃣",
+                    "title": "Review the Differences",
+                    "description": "In the results, you'll see words that were added highlighted in green, and words that were removed will be in red with a strikethrough. This makes it easy to spot the changes."
+                }
+            ]
+        },
+        {
+            "type": "features",
+            "title": "Key Features",
+            "icon": "✨",
+            "intro": "This tool is designed for accuracy and ease of use.",
+            "features": [
+                {
+                    "icon": "🔒",
+                    "title": "Client-Side Comparison",
+                    "description": "All comparisons happen in your browser. Your text is never sent to a server, ensuring your data remains private."
+                },
+                {
+                    "icon": "⚙️",
+                    "title": "Word-by-Word Highlighting",
+                    "description": "The tool highlights differences at the word level, making it easy to see exactly what has been added or removed."
+                },
+                {
+                    "icon": "💸",
+                    "title": "Completely Free",
+                    "description": "This is a free tool. No sign-up or payment is required."
+                }
+            ]
+        },
+        {
+            "type": "faq",
+            "title": "Frequently Asked Questions (FAQ)",
+            "icon": "❓",
+            "faqs": [
+                {
+                    "icon": "🛡️",
+                    "question": "Is my data safe?",
+                    "answer": "Yes, your data is safe. The comparison is done entirely in your browser, and no data is sent to our servers."
+                },
+                {
+                    "icon": "🤔",
+                    "question": "What does 'client-side' mean?",
+                    "answer": "Client-side means that all the processing is done on your computer (the 'client'), not on a remote server. This is why your data remains private."
+                },
+                {
+                    "icon": "⁉️",
+                    "question": "What library is used for the comparison?",
+                    "answer": "This tool uses the popular and reliable 'diff.js' library to find the differences between the two texts."
+                }
+            ]
+        }
+    ]
+}</script>
 
     <!-- JSDiff Library -->
     <script src="/libs/diff.js"></script>
