@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>404 Not Found - ToolThump</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <link rel="stylesheet" href="/global_css/theme.css">
+    <link rel="stylesheet" href="/global_css/base.css">
+    <link rel="stylesheet" href="/global_css/components.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: var(--spacing-lg);
+        }
+
+        .container {
+            max-width: 600px;
+            padding: var(--spacing-xl);
+            background-color: var(--surface-bg-color);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-soft-md);
+        }
+
+        .logo {
+            width: 200px; /* Increased logo size */
+            height: auto; /* Maintain aspect ratio */
+            margin: 0 auto var(--spacing-lg);
+        }
+
+        h1 {
+            font-family: monospace;
+            font-size: 2.5rem; /* Adjusted font size */
+            color: var(--accent-color);
+            margin-bottom: var(--spacing-md);
+            white-space: nowrap; /* Prevent wrapping */
+            text-transform: none; /* Ensure text is not transformed to uppercase */
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: var(--text-secondary-color);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .btn-secondary:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: var(--shadow-hard);
+            text-decoration: none;
+        }
+
+        .btn-secondary:active {
+            transform: translate(0, 0);
+            box-shadow: var(--shadow-hard-inset);
+        }
+
+        .btn-secondary a {
+            text-decoration: none;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <script>
+        // --- Smart Redirect Logic ---
+        const path = window.location.pathname;
+        const redirects = {
+            '/about.html': '/pages/about.html',
+            '/privacy.html': '/pages/privacy.html',
+            // Add the full incorrect path for the duplicate word finder
+            '/tools/text/duplicate-word-finder/duplicate-word-finder.html': '/tools/text/duplicate-words-finder/duplicate-words-finder.html'
+        };
+
+        if (redirects[path]) {
+            window.location.replace('https://toolthump.com' + redirects[path]);
+        }
+    </script>
+
+    <div class="container">
+        <img src="/ToolThump.png" alt="ToolThump Logo" class="logo">
+        <h1>Error 404</h1>
+        <p>Oops! The page you're looking for has wandered off. <span id="redirect-message"></span></p>
+        <a href="/" class="btn btn-secondary">Go to Homepage</a>
+    </div>
+
+    <script>
+      (function() {
+        var count = 10;
+        var redirectMessage = document.getElementById('redirect-message');
+        
+        redirectMessage.textContent = ' Redirecting to homepage in ' + count + ' seconds...';
+
+        var interval = setInterval(function() {
+          count--;
+          redirectMessage.textContent = ' Redirecting to homepage in ' + count + ' seconds...';
+          if (count <= 0) {
+            clearInterval(interval);
+            window.location.href = '/';
+          }
+        }, 1000);
+      })();
+    </script>
+
+</body>
+
+</html>
