@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="/global_css/layout.css">
     <link rel="stylesheet" href="/global_css/components.css">
     <link rel="stylesheet" href="/global_css/responsive.css">
+    <link rel="stylesheet" href="/_includes/tool-text-section.css">
 
     <!-- Tool Specific Stylesheet -->
     <link rel="stylesheet" href="image-converter.css">
@@ -165,96 +166,111 @@
                     <button id="convertBtn" class="ic-convert-btn btn-secondary" disabled>Convert & Download</button>
                 </div>
             </section>
-            <!-- How-to section -->
-            <section class="tool-content active ic-features-section">
-                <h2><span class="section-icon">💡</span>How to Use</h2>
-                <p>Follow these simple steps to convert your images. All processing is done securely in your browser for
-                    maximum speed and privacy.</p>
-                <ul class="ic-features-list">
-                    <li class="ic-feature-item">
-                        <span class="ic-feature-icon">1️⃣</span>
-                        <div class="ic-feature-text">
-                            <strong>Select Your Images:</strong> Use the "Choose File" button for a single image or
-                            "Choose Folder" for batch processing. The tool intelligently finds all supported images
-                            (JPG, PNG, GIF, WEBP) within a folder and its subdirectories.
-                        </div>
-                    </li>
-                    <li class="ic-feature-item">
-                        <span class="ic-feature-icon">2️⃣</span>
-                        <div class="ic-feature-text">
-                            <strong>Choose the Format:</strong> From the dropdown menu, select your desired output
-                            format: PNG, JPEG, WEBP, or GIF.
-                        </div>
-                    </li>
-                    <li class="ic-feature-item">
-                        <span class="ic-feature-icon">3️⃣</span>
-                        <div class="ic-feature-text">
-                            <strong>Convert and Download:</strong> Hit the "Convert & Download" button. Single files
-                            will download immediately. Multiple files from a folder will be conveniently packaged and
-                            downloaded as a single ZIP archive.
-                        </div>
-                    </li>
-                </ul>
-            </section>
-            <!-- Features section is now in its own, separate box -->
-            <section class="tool-content active ic-features-section">
-                <h2><span class="section-icon">✨</span>Key Features</h2>
-                <p>Our Image Converter is designed for speed, privacy, and power. Here's what makes it stand out:</p>
-                <ul class="ic-features-list">
-                    <li class="ic-feature-item">
-                        <span class="ic-feature-icon">🔒</span>
-                        <div class="ic-feature-text">
-                            <strong>Completely Private:</strong> All conversions happen in your browser. Images are
-                            never uploaded to a server, ensuring 100% privacy.
-                        </div>
-                    </li>
-                    <li class="ic-feature-item">
-                        <span class="ic-feature-icon">📂</span>
-                        <div class="ic-feature-text">
-                            <strong>Bulk Image Converter:</strong> Process an entire folder of images at once, saving
-                            time and effort.
-                        </div>
-                    </li>
-                    <li class="ic-feature-item">
-                        <span class="ic-feature-icon">🔄</span>
-                        <div class="ic-feature-text">
-                            <strong>Recursive Folder Processing:</strong> The converter finds images in all subfolders.
-                            You can keep the original folder structure in the final ZIP file.
-                        </div>
-                    </li>
-                    <li class="ic-feature-item">
-                        <span class="ic-feature-icon">⚡</span>
-                        <div class="ic-feature-text">
-                            <strong>Fast & Efficient:</strong> Using your computer's power, conversions are incredibly
-                            fast. Get images ready in seconds.
-                        </div>
-                    </li>
-                    <li class="ic-feature-item">
-                        <span class="ic-feature-icon">🗂️</span>
-                        <div class="ic-feature-text">
-                            <strong>Folder Structure:</strong> When converting a folder, you can check the "Retain
-                            folder structure" box. If enabled, the original hierarchy of your subfolders will be
-                            recreated inside the final ZIP file.
-                        </div>
-                    </li>
-                    <li class="ic-feature-item">
-                        <span class="ic-feature-icon">⚪</span>
-                        <div class="ic-feature-text">
-                            <strong>Handling Transparency:</strong> When converting an image with a transparent
-                            background (like a PNG) to a format that doesn't support it (like JPEG), the transparent
-                            area will be automatically filled with a solid white color.
-                        </div>
-                    </li>
-                </ul>
-            </section>
+            <div data-include="tool-text-section"></div>
         </main>
     </div>
 
     <footer data-include="footer"></footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script type="application/json" id="tool-text-data">{
+    "sections": [
+        {
+            "type": "how-to",
+            "title": "How to Convert Your Images",
+            "icon": "💡",
+            "intro": "Converting images is a straightforward process. You can convert a single file, multiple files, or an entire folder of images right in your browser.",
+            "steps": [
+                {
+                    "icon": "1️⃣",
+                    "title": "Select Your Image(s)",
+                    "description": "Drag and drop an image, multiple images, or a folder directly into the upload area. Alternatively, use the 'Select Files' or 'Select Folder' buttons to browse your device."
+                },
+                {
+                    "icon": "2️⃣",
+                    "title": "Choose the Output Format",
+                    "description": "Use the dropdown menu to select your desired format: PNG, JPEG, WEBP, or GIF."
+                },
+                {
+                    "icon": "3️⃣",
+                    "title": "Convert and Download",
+                    "description": "Click the 'Convert & Download' button. A single converted image will download directly. Multiple images or a folder will be zipped up for a single, convenient download."
+                }
+            ]
+        },
+        {
+            "type": "features",
+            "title": "Powerful Features, Total Privacy",
+            "icon": "✨",
+            "intro": "This converter is built to be fast, private, and flexible, handling all your conversion needs without ever uploading a single file.",
+            "features": [
+                {
+                    "icon": "🔒",
+                    "title": "100% Client-Side & Private",
+                    "description": "All image processing happens in your browser. Your files are never sent to a server, ensuring your data remains completely private and secure."
+                },
+                {
+                    "icon": "📂",
+                    "title": "Bulk Folder Conversion",
+                    "description": "Save time by converting an entire folder of images at once. The tool recursively finds all supported images (JPG, PNG, WEBP, GIF) in all subdirectories."
+                },
+                {
+                    "icon": "🗂️",
+                    "title": "Retain Folder Structure",
+                    "description": "When converting a folder, you can choose to keep the original subfolder hierarchy in the output ZIP file, keeping your project perfectly organized."
+                },
+                {
+                    "icon": "⚡",
+                    "title": "Fast and Efficient",
+                    "description": "By using your computer's processing power, conversions are completed in seconds, not minutes. No queues, no waiting."
+                },
+                {
+                    "icon": "⚪",
+                    "title": "Automatic Transparency Handling",
+                    "description": "When converting from a format with transparency (like PNG) to one without (like JPEG), the background is automatically filled with white for a clean result."
+                }
+            ]
+        },
+        {
+            "type": "prose",
+            "title": "Your In-Browser Conversion Engine",
+            "icon": "⚙️",
+            "content": [
+                "This tool transforms your web browser into a powerful image processing utility. Unlike traditional online converters that require you to upload your files to a remote server, this tool leverages the capabilities of modern browsers to perform all the work locally on your machine.",
+                "This client-side approach means your sensitive images stay with you, eliminating privacy risks and the delays associated with uploading and downloading. Whether you're converting a single photo or a large batch of images for a project, the process is fast, secure, and entirely under your control."
+            ]
+        },
+        {
+            "type": "faq",
+            "title": "Frequently Asked Questions (FAQ)",
+            "icon": "❓",
+            "faqs": [
+                {
+                    "icon": "🛡️",
+                    "question": "Are my images uploaded to a server?",
+                    "answer": "No. Every part of the conversion process happens on your computer, in your browser. Your files are never sent over the internet, making this tool completely private."
+                },
+                {
+                    "icon": "🤔",
+                    "question": "What happens when I convert a folder?",
+                    "answer": "The tool scans the selected folder and all its subfolders for valid image files (JPG, PNG, WEBP, GIF). It then converts them to your chosen format and bundles them into a single ZIP file for easy download."
+                },
+                {
+                    "icon": "📂",
+                    "question": "What does 'Retain folder structure' do?",
+                    "answer": "If you check this box before converting a folder, the final ZIP file will recreate the original subfolder hierarchy. For example, if you had images in 'Folder/Subfolder/image.png', the ZIP will also contain that 'Subfolder' with the converted image inside."
+                },
+                {
+                    "icon": "💥",
+                    "question": "Why did my transparent image get a white background?",
+                    "answer": "Image formats like JPEG do not support transparency. When you convert a transparent image (e.g., a PNG) to JPEG, the tool automatically fills the transparent areas with a solid white color to ensure a clean, predictable result."
+                }
+            ]
+        }
+    ]
+}</script>
     <script src="/main.js"></script>
-    <script src="imageConverter.js"></script>
+    <script src="imageConverter.js" defer></script>
 </body>
 
 </html>

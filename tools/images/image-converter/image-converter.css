@@ -85,38 +85,9 @@
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.ic-option-group.input-active {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px var(--focus-ring-color);
-}
-
 .ic-label {
     font-weight: 600;
     font-family: var(--font-family-heading);
-}
-
-/* --- Custom File Input --- */
-.ic-file-input-controls {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
-
-.ic-file-select-text {
-    font-size: 0.9em;
-    color: var(--text-secondary-color);
-    flex-grow: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border: 1px solid var(--border-color);
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius-sm);
-    background-color: var(--bg-deep-dark);
-}
-
-.ic-file-select-text.text-placeholder {
-    font-style: italic;
 }
 
 /* --- Folder Specific Options --- */
@@ -267,65 +238,3 @@
     color: var(--error-color);
 }
 
-/* === Features Section (Mirrors Password Generator) === */
-/* The section container is styled by the global .tool-content class. */
-.ic-features-section h2 {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
-
-.ic-features-section h2 .section-icon {
-    font-size: 1.2em;
-}
-
-.ic-features-section p {
-    line-height: 1.7;
-    margin-bottom: var(--spacing-lg);
-}
-
-.ic-features-list {
-    list-style: none;
-    padding-left: 0;
-}
-
-.ic-feature-item {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: var(--spacing-lg);
-    background-color: var(--bg-deep-dark);
-    padding: var(--spacing-md);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-color);
-}
-
-.ic-feature-item:last-child {
-    margin-bottom: 0;
-}
-
-.ic-feature-icon {
-    font-size: 1.6em;
-    margin-right: var(--spacing-md);
-    line-height: 1.4;
-    flex-shrink: 0;
-    margin-top: -2px;
-}
-
-.ic-feature-text strong {
-    display: block;
-    font-size: 1.1em;
-    margin-bottom: var(--spacing-xs);
-    color: var(--text-heading-color);
-}
-
-/* --- Responsive Adjustments --- */
-@media (max-width: 768px) {
-    .ic-file-input-controls {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .ic-file-select-text {
-        text-align: center;
-    }
-}
