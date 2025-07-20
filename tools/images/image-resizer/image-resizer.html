@@ -39,6 +39,9 @@
 
     <!-- Tool-Specific Stylesheet -->
     <link rel="stylesheet" href="image-resizer.css">
+    <!-- Reusable Text Section Stylesheet -->
+    <link rel="stylesheet" href="/_includes/tool-text-section.css">
+
 
     <!-- AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7245857649397014"
@@ -87,7 +90,7 @@
     <meta name="msapplication-TileColor" content="#1a1c2c">
     <meta name="theme-color" content="#1a1c2c">
 
-    
+
 </head>
 
 <body>
@@ -234,94 +237,117 @@
                 </div> <!-- /tool-content-area -->
             </section>
 
-            <!-- How-to section -->
-            <section class="tool-content active cp-features-section">
-                <h2><span class="section-icon">💡</span>How to Use</h2>
-                <p>Follow these simple steps to effectively crop and resize your images. All processing is done securely
-                    in your browser.</p>
-                <ul class="cp-features-list">
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">1️⃣</span>
-                        <div class="cp-feature-text">
-                            <strong>Upload Your Image:</strong> Click the "Choose Image" button or drag and drop your
-                            image onto the preview area. Your image will appear in the main canvas.
-                        </div>
-                    </li>
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">2️⃣</span>
-                        <div class="cp-feature-text">
-                            <strong>Adjust Crop & Resize Options:</strong>
-                            Choose between "Free Crop" to manually select any area, or "Fixed Ratio" for predefined
-                            aspect ratios (e.g., 1:1, 16:9). You can also input target dimensions.
-                        </div>
-                    </li>
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">3️⃣</span>
-                        <div class="cp-feature-text">
-                            <strong>Process & Download:</strong> Once satisfied with your selection, click "Process &
-                            Download Image". The tool will crop and resize your image, then automatically download it to
-                            your device.
-                        </div>
-                    </li>
-                </ul>
-            </section>
-
-            <!-- Features section -->
-            <section class="tool-content active cp-features-section">
-                <h2><span class="section-icon">✨</span>Key Features</h2>
-                <p>Our Image Resizer & Cropper is designed for efficiency, privacy, and ease of use. Here's what makes
-                    it stand out:</p>
-                <ul class="cp-features-list">
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">🔒</span>
-                        <div class="cp-feature-text">
-                            <strong>Client-Side Processing:</strong> All image manipulation happens directly in your
-                            browser. Your images are never uploaded to our servers, ensuring complete privacy and fast
-                            processing.
-                        </div>
-                    </li>
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">✂️</span>
-                        <div class="cp-feature-text">
-                            <strong>Flexible Cropping:</strong> Use the intuitive cropping interface to select any
-                            portion of your image. Adjust the crop box freely or lock it to popular aspect ratios.
-                        </div>
-                    </li>
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">📐</span>
-                        <div class="cp-feature-text">
-                            <strong>Precise Resizing:</strong> Easily resize images to exact pixel dimensions. Maintain
-                            aspect ratio or set custom width and height for specific needs.
-                        </div>
-                    </li>
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">⚡</span>
-                        <div class="cp-feature-text">
-                            <strong>Instant Download:</strong> Once processed, your new image is immediately available
-                            for download. No waiting, no extra steps.
-                        </div>
-                    </li>
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">🖼️</span>
-                        <div class="cp-feature-text">
-                            <strong>Multiple Formats:</strong> Supports common image formats like JPEG, PNG, and WebP,
-                            allowing you to work with a variety of image files.
-                        </div>
-                    </li>
-                    <li class="cp-feature-item">
-                        <span class="cp-feature-icon">🔄</span>
-                        <div class="cp-feature-text">
-                            <strong>Original Image Preservation:</strong> Your original image file remains untouched on
-                            your device. The tool creates a new, modified version for download.
-                        </div>
-                    </li>
-                </ul>
-            </section>
+            <!-- Templated sections will be injected here by main.js -->
+            <div data-include="tool-text-section"></div>
 
         </main>
     </div>
 
     <footer data-include="footer"></footer>
+
+    <!-- Data for the templated text sections -->
+    <script id="tool-text-data" type="application/json">
+        {
+            "sections": [
+                {
+                    "icon": "💡",
+                    "title": "How to Use",
+                    "intro": "Follow these simple steps to effectively crop and resize your images. All processing is done securely in your browser.",
+                    "steps": [
+                        {
+                            "icon": "1️⃣",
+                            "title": "Upload Your Image",
+                            "description": "Click the \"Choose Image\" button or drag and drop your image onto the preview area. Your image will appear in the main canvas."
+                        },
+                        {
+                            "icon": "2️⃣",
+                            "title": "Adjust Crop & Resize Options",
+                            "description": "Choose between \"Free Crop\" to manually select any area, or \"Fixed Ratio\" for predefined aspect ratios (e.g., 1:1, 16:9). You can also input target dimensions."
+                        },
+                        {
+                            "icon": "3️⃣",
+                            "title": "Process & Download",
+                            "description": "Once satisfied with your selection, click \"Process & Download Image\". The tool will crop and resize your image, then automatically download it to your device."
+                        }
+                    ]
+                },
+                {
+                    "icon": "✨",
+                    "title": "Key Features",
+                    "intro": "This Image Resizer & Cropper is designed for efficiency, privacy, and ease of use. Here's what makes it stand out:",
+                    "features": [
+                        {
+                            "icon": "🔒",
+                            "title": "Client-Side Processing",
+                            "description": "All image manipulation happens directly in your browser. Your images are never uploaded to any servers, ensuring complete privacy and fast processing."
+                        },
+                        {
+                            "icon": "✂️",
+                            "title": "Flexible Cropping",
+                            "description": "Use the intuitive cropping interface to select any portion of your image. Adjust the crop box freely or lock it to popular aspect ratios."
+                        },
+                        {
+                            "icon": "📐",
+                            "title": "Precise Resizing",
+                            "description": "Easily resize images to exact pixel dimensions. Maintain aspect ratio or set custom width and height for specific needs."
+                        },
+                        {
+                            "icon": "🧊",
+                            "title": "Transparency Support",
+                            "description": "Preserves transparency from PNG files. When you crop or resize a transparent PNG, the output will also be a transparent PNG, not a flattened image with a white background."
+                        },
+                        {
+                            "icon": "⚡",
+                            "title": "Instant Download",
+                            "description": "Once processed, your new image is immediately available for download. No waiting, no extra steps."
+                        },
+                        {
+                            "icon": "🖼️",
+                            "title": "Multiple Formats",
+                            "description": "Supports common image formats like JPEG, PNG, and WebP, allowing you to work with a variety of image files."
+                        }
+                    ]
+                },
+                {
+                    "icon": "🤔",
+                    "title": "Frequently Asked Questions",
+                    "intro": "Have questions? Here are some common ones. If you don't find your answer here, well, that's unfortunate.",
+                    "faqs": [
+                        {
+                            "icon": "🔒",
+                            "question": "Are my images uploaded to a server?",
+                            "answer": "Absolutely not. All processing happens directly in your web browser. Your images never leave your computer, which makes this tool fast, free, and completely private."
+                        },
+                        {
+                            "icon": "💰",
+                            "question": "Is this tool really free to use?",
+                            "answer": "Yes, it's 100% free. There are no hidden fees, subscriptions, or watermarks. The site is supported by the occasional, tastefully placed ad, which helps keep the lights on."
+                        },
+                        {
+                            "icon": "🖼️",
+                            "question": "What image formats can I upload?",
+                            "answer": "The tool works best with standard web formats like <strong>JPEG, PNG, WebP, GIF, and BMP</strong>. When you download, the image will be converted to PNG, JPEG, or WebP to ensure compatibility and quality."
+                        },
+                        {
+                            "icon": "📉",
+                            "question": "Will resizing or cropping reduce my image quality?",
+                            "answer": "Cropping does not reduce quality; it simply removes parts of the image. Resizing, especially making an image smaller, involves creating new pixels and can result in a slight loss of quality. This tool uses high-quality algorithms to minimize this, and for JPEG/WebP formats, it saves at a high quality setting (92%) to keep your images looking sharp."
+                        },
+                        {
+                            "icon": "🧊",
+                            "question": "Does this tool handle transparent backgrounds?",
+                            "answer": "Yes! If you upload a PNG with a transparent background, the transparency will be preserved in the final cropped/resized image when you download it as a PNG. If you download as a JPEG, the transparent areas will become white, as the JPEG format does not support transparency."
+                        },
+                        {
+                            "icon": "📏",
+                            "question": "Is there a maximum file size or dimension limit?",
+                            "answer": "While there's no strict file size limit imposed by the tool itself, your browser's performance is the main factor. Very large images (e.g., over 25MB or 10,000+ pixels) might cause your browser to slow down or become unresponsive. For best results, work with images of a reasonable size."
+                        }
+                    ]
+                }
+            ]
+        }
+    </script>
 
     <!-- Cropper.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
