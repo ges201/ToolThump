@@ -48,7 +48,7 @@ const toolsData = [
         name: "Text Case Converter",
         category: "Text Tools",
         description: "Convert text to uppercase, lowercase, or title case.",
-        icon: "/icons/text-case-converter-color.png",
+        icon: "/icons/text-case-converter-icon.png",
         htmlPath: "/tools/text/text-converter/text-converter.html",
         cssPaths: ["/tools/text/text-converter/text-converter.css"],
         jsPath: "/tools/text/text-converter/textConverter.js",
