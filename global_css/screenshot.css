@@ -1,0 +1,156 @@
+/* --- UPDATED FOR DITHER BACKGROUND V2 --- */
+@keyframes moveDither {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        /* A multiple of the background-size ensures a seamless loop */
+        background-position: 60px 60px;
+    }
+}
+
+/* General styles for the screenshot page */
+body.screenshot-body {
+    /* Fallback color */
+    background-color: var(--bg-deep-dark);
+
+    /*
+       Layered Background:
+       1. Top layer: Dither pattern (green, larger dots)
+       2. Bottom layer: Large radial gradient for a green glow
+    */
+    background-image:
+        radial-gradient(rgba(20, 80, 40, 0.7) 1px, transparent 0),
+        radial-gradient(ellipse at center, #003d31 0%, var(--bg-deep-dark) 70%);
+
+    /* Dither pattern size - slightly larger */
+    background-size: 6px 6px, auto;
+    /* Size for each background layer */
+
+    /* Animation for the dither pattern */
+    animation: moveDither 10s linear infinite;
+    /* Slightly slower animation */
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.screenshot-logo {
+    max-width: 280px;
+    height: auto;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.screenshot-description {
+    text-align: center;
+    color: var(--text-color-light);
+    margin-bottom: 40px;
+    max-width: 1300px;
+    padding: 0 20px;
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+    font-family: var(--font-family-sans);
+    line-height: 1.6;
+}
+
+.screenshot-description h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.screenshot-description p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-color-light);
+}
+
+.screenshot-main {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+}
+
+.tool-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 25px;
+    justify-content: center;
+    align-items: start;
+}
+
+
+.tool-card {
+    background-color: var(--surface-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, background-color 0.2s ease, border-color 0.2s ease;
+
+    /* --- MODIFIED FOR ALIGNMENT --- */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content is removed to allow for top alignment */
+
+    /* Retaining original layout properties */
+    text-align: center;
+    padding: 20px;
+    height: 180px;
+}
+
+.tool-card:hover {
+    background-color: #203E45;
+    border-color: var(--accent-color);
+    box-shadow: 4px 4px 0 var(--accent-color-dark);
+    transform: translate(-4px, -4px);
+}
+
+.tool-card:hover h3 {
+    color: #ffffff;
+}
+
+.tool-card img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    /* margin-bottom is removed */
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    flex-shrink: 0;
+    /* Prevents icon from shrinking */
+}
+
+.tool-card h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-secondary-color);
+    /* White text as requested */
+    font-weight: 600;
+    line-height: 1.4;
+    width: 100%;
+    /* Ensures text wraps correctly */
+
+    /* --- NEW --- */
+    margin-top: auto;
+    /* Pushes the title to the bottom, aligning icons at the top */
+}
+
+/* Highlighted tool card for animation */
+.tool-card.highlighted-tool {
+    background-color: #203E45;
+    border-color: var(--accent-color);
+    box-shadow: 4px 4px 0 var(--accent-color-dark);
+    transform: translate(-4px, -4px);
+}
+
+.tool-card.highlighted-tool h3 {
+    color: #ffffff;
+}
