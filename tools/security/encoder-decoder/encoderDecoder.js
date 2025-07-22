@@ -62,8 +62,8 @@ const ed = {
             return;
         }
 
-        if (format === 'sha256' && mode === 'decode') {
-            const warningMessage = 'SHA-256 is a one-way cryptographic hash function. It is designed to be irreversible and cannot be \'decoded\'. The original input cannot be recovered from the hash.';
+        if ((format === 'sha256' || format === 'md5') && mode === 'decode') {
+            const warningMessage = `${format.toUpperCase()} is a one-way cryptographic hash function. It is designed to be irreversible and cannot be 'decoded'. The original input cannot be recovered from the hash.`;
             this.outputArea.value = warningMessage;
             this.outputArea.classList.add('warning');
             return;
@@ -83,8 +83,14 @@ const ed = {
                 case 'hex':
                     output = mode === 'encode' ? hexEncode(input) : hexDecode(input);
                     break;
+                case 'binary':
+                    output = mode === 'encode' ? binaryEncode(input) : binaryDecode(input);
+                    break;
                 case 'sha256':
                     output = await sha256Hash(input);
+                    break;
+                case 'md5':
+                    output = hex_md5(input);
                     break;
             }
             this.outputArea.value = output;
@@ -145,9 +151,9 @@ const ed = {
         this.clearFeedback();
         this.outputArea.value = '';
 
-        if (selectedFormat === 'sha256') {
+        if (selectedFormat === 'sha256' || selectedFormat === 'md5') {
             this.encodeBtn.textContent = 'Hash';
-            this.formatWarning.textContent = 'SHA-256 is a one-way hash.';
+            this.formatWarning.textContent = `${selectedFormat.toUpperCase()} is a one-way hash.`;
             this.formatWarning.classList.add('show');
         } else {
             this.encodeBtn.textContent = 'Encode';
