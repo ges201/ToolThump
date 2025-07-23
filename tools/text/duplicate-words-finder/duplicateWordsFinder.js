@@ -67,7 +67,7 @@ const dwf = {
         const thead = table.createTHead();
         const headerRow = thead.insertRow();
         const thWord = document.createElement('th');
-        thWord.textContent = 'Duplicate Word';
+        thWord.textContent = 'Duplicate words';
         const thCount = document.createElement('th');
         thCount.textContent = 'Count';
         headerRow.appendChild(thWord);
@@ -168,7 +168,7 @@ const dwf = {
             if (this.textInput.textContent.trim().length > 0) this.findDuplicates();
         });
 
-        console.log("Duplicate Word Finder Initialized.");
+        console.log("Duplicate words Finder Initialized.");
     }
 };
 
