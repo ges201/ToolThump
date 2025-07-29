@@ -154,3 +154,36 @@ body.screenshot-body {
 .tool-card.highlighted-tool h3 {
     color: #ffffff;
 }
+
+/* Coming soon card styles */
+.tool-card.coming-soon {
+    background-color: var(--surface-bg-color);
+    border-style: dashed;
+    cursor: default; /* Not a clickable item */
+}
+
+.tool-card.coming-soon:hover {
+    /* Override hover effect to make it static */
+    background-color: var(--surface-bg-color);
+    border-color: var(--border-color);
+    box-shadow: none;
+    transform: none;
+}
+
+.tool-card.coming-soon h3 {
+    color: #2ecc71; /* A nice green */
+    animation: shine 2s linear infinite;
+}
+
+.tool-card.coming-soon:hover h3 {
+    color: #2ecc71; /* Keep the text color on hover */
+}
+
+@keyframes shine {
+  0%, 100% {
+    text-shadow: 0 0 5px #2ecc71, 0 0 10px #2ecc71, 0 0 15px #2ecc71;
+  }
+  50% {
+    text-shadow: 0 0 10px #2ecc71, 0 0 20px #2ecc71, 0 0 30px #2ecc71;
+  }
+}
