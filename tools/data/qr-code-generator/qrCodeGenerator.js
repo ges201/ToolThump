@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
             wifiSsidInput: document.getElementById('qrg-wifi-ssid'),
             wifiPasswordInput: document.getElementById('qrg-wifi-password'),
             wifiEncryptionSelect: document.getElementById('qrg-wifi-encryption'),
+            togglePasswordBtn: document.getElementById('qrg-toggle-password-visibility'),
             generateBtn: document.getElementById('qrg-generate-btn'),
             qrCodeContainer: document.getElementById('qrg-qrcode-container'),
             downloadBtn: document.getElementById('qrg-download-btn'),
@@ -20,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- State ---
         state: {
             activeTab: 'text',
-            // REMOVED: qrCodeInstance is no longer stored in state.
         },
 
         // --- Initialization ---
@@ -37,10 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.tabWifi.addEventListener('click', () => this.setActiveTab('wifi'));
             elements.generateBtn.addEventListener('click', () => this.generateQRCode());
             elements.downloadBtn.addEventListener('click', () => this.downloadQRCode());
-
-            elements.wifiPasswordInput.addEventListener('dblclick', (e) => {
-                e.target.type = e.target.type === 'password' ? 'text' : 'password';
-            });
+            elements.togglePasswordBtn.addEventListener('click', () => this.togglePasswordVisibility());
         },
 
         // --- Core Logic ---
@@ -63,6 +60,21 @@ document.addEventListener('DOMContentLoaded', () => {
             panelWifi.classList.toggle('active', !isTextTab);
         },
 
+        togglePasswordVisibility() {
+            const { wifiPasswordInput, togglePasswordBtn } = this.elements;
+            const isPassword = wifiPasswordInput.type === 'password';
+
+            if (isPassword) {
+                wifiPasswordInput.type = 'text';
+                togglePasswordBtn.textContent = '🙈'; // See-no-evil monkey
+                togglePasswordBtn.setAttribute('aria-label', 'Hide password');
+            } else {
+                wifiPasswordInput.type = 'password';
+                togglePasswordBtn.textContent = '👀'; // Eyes
+                togglePasswordBtn.setAttribute('aria-label', 'Show password');
+            }
+        },
+
         getQRCodeData() {
             if (this.state.activeTab === 'text') {
                 return this.elements.textInput.value.trim();
@@ -75,29 +87,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         },
 
-        /**
-         * MODIFIED: This function is completely rewritten to be stateless.
-         * It clears the container and creates a new QRCode instance on every call,
-         * which resolves the bug where subsequent generations failed.
-         */
         generateQRCode() {
             const data = this.getQRCodeData();
             const { qrCodeContainer, downloadBtn, placeholderText } = this.elements;
 
-            // Clear previous QR code or placeholder text
             qrCodeContainer.innerHTML = '';
 
             if (!data) {
-                // If there's no data, restore the placeholder and hide the download button.
                 qrCodeContainer.appendChild(placeholderText);
                 downloadBtn.style.display = 'none';
                 return;
             }
 
-            // If there is data, generate a new QR Code.
             try {
-                // By creating a new QRCode instance each time, we avoid state issues.
-                // The library will append the QR code (as a canvas or img) to the container.
                 new QRCode(qrCodeContainer, {
                     text: data,
                     width: 224,
@@ -107,10 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     correctLevel: QRCode.CorrectLevel.H
                 });
 
-                // Show the download button upon successful generation.
                 downloadBtn.style.display = 'block';
             } catch (error) {
-                // Handle cases where the input data is too long for a QR code.
                 console.error("QR Code generation failed:", error);
                 qrCodeContainer.innerHTML = '<p class="qrg-placeholder" style="color: var(--error-color);">Error: Input too long or invalid.</p>';
                 downloadBtn.style.display = 'none';

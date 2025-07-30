@@ -127,7 +127,11 @@
                             </div>
                             <div class="qrg-input-group">
                                 <label for="qrg-wifi-password">Password</label>
-                                <input type="password" id="qrg-wifi-password" placeholder="Double-click to show/hide">
+                                <div class="password-input-container">
+                                    <input type="password" id="qrg-wifi-password" placeholder="Your secret password">
+                                    <button id="qrg-toggle-password-visibility" class="password-toggle-btn"
+                                        aria-label="Show password">👀</button>
+                                </div>
                             </div>
                             <div class="qrg-input-group">
                                 <label for="qrg-wifi-encryption">Encryption</label>
@@ -241,8 +245,8 @@
                 },
                 {
                     "icon": "👀",
-                    "question": "Why does the Wi-Fi password field have a double-click feature?",
-                    "answer": "It's a small convenience. Double-clicking the password field toggles its visibility, so you can quickly check for typos without permanently exposing the password on your screen."
+                    "question": "How can I check for typos in the password?",
+                    "answer": "Click the 'eye' icon next to the password field. This will temporarily show the password, allowing you to check for mistakes. Click the icon again to hide it."
                 },
                 {
                     "icon": "🤔",
