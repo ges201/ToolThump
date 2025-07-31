@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Metadata Viewer - View Image Metadata | ToolThump</title>
+    <meta name="description"
+        content="View and analyze image metadata from your images. A free, client-side tool that respects your privacy. No uploads required.">
+    <link rel="canonical" href="https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html">
+    <meta property="og:title" content="Image Metadata Viewer - View Image Metadata | ToolThump">
+    <meta property="og:description"
+        content="Instantly inspect hidden data in your photos. Check GPS location, camera settings, and more, right in your browser.">
+    <meta property="og:image" content="https://toolthump.com/icons/image-metadata-viewer-icon.png">
+    <meta property="og:site_name" content="ToolThump" />
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url"
+        content="https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html">
+    <meta property="twitter:title" content="Image Metadata Viewer - View Image Metadata | ToolThump">
+    <meta property="twitter:description"
+        content="Instantly inspect hidden data in your photos. Check GPS location, camera settings, and more, right in your browser.">
+    <meta property="twitter:image" content="https://toolthump.com/icons/image-metadata-viewer-icon.png">
+
+    <!-- Common Stylesheets (paths relative to root) -->
+    <link rel="stylesheet" href="/global_css/theme.css">
+    <link rel="stylesheet" href="/global_css/base.css">
+    <link rel="stylesheet" href="/global_css/layout.css">
+    <link rel="stylesheet" href="/global_css/components.css">
+    <link rel="stylesheet" href="/global_css/responsive.css">
+    <link rel="stylesheet" href="/_includes/tool-text-section.css">
+
+    <!-- Tool-Specific Stylesheet (path relative to root) -->
+    <link rel="stylesheet" href="/tools/data/image-metadata-viewer/image-metadata-viewer.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": "https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html#webpage",
+      "url": "https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html",
+      "name": "Image Metadata Viewer",
+      "description": "View and analyze image metadata from images directly in your browser. 100% client-side and privacy-focused.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://toolthump.com/#website"
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ToolThump",
+          "item": "https://toolthump.com/"
+        },{
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Data Tools",
+          "item": "https://toolthump.com/#data-tools"
+        },{
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Image Metadata Viewer"
+        }]
+      }
+    }
+    </script>
+
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7245857649397014"
+        crossorigin="anonymous"></script>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+</head>
+
+<body>
+    <header data-include="header"></header>
+    <div class="content-wrapper">
+        <main id="tool-container">
+            <section id="imageMetadataViewer" class="tool-content active">
+                <div class="tool-header">
+                    <img src="/icons/image-metadata-viewer-icon.png" alt="Image Metadata Viewer Icon" class="tool-icon">
+                    <h1>Image Metadata Viewer</h1>
+                </div>
+                <p style="text-align: center; max-width: 65ch; margin: 0 auto var(--spacing-xl);">
+                    View and analyze image metadata from images directly in your browser. 100% client-side and
+                    privacy-focused.
+                </p>
+
+                <div class="edv-main-interface">
+                    <div id="edv-actions-container-top" class="edv-actions-container" style="display: none;">
+                        <button id="edv-clear-btn-top" class="btn-secondary">Clear & Start Over</button>
+                    </div>
+                    <div id="edv-workspace" class="edv-workspace">
+                        <input type="file" id="edv-file-input" accept="image/*" class="sr-only"
+                            aria-label="Image file input">
+
+                        <!-- Initial State: Upload Prompt -->
+                        <label for="edv-file-input" id="edv-upload-label" class="edv-upload-label">
+                            <svg class="edv-upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
+                            </svg>
+                            <span class="edv-upload-text">Click to Upload or Drop Image</span>
+                            <span class="edv-upload-hint">Supports all common image formats</span>
+                        </label>
+
+                        <!-- Results View (initially hidden) -->
+                        <div id="edv-results-view" class="edv-results-view" style="display: none;">
+                            <div id="edv-image-preview" class="edv-image-preview"></div>
+                            <div id="edv-results-container" class="edv-results-container">
+                                <!-- Results will be injected here by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div id="edv-status-overlay" class="edv-status-overlay" style="display: none;"></div>
+                    </div>
+
+                    <div id="edv-error-message" class="edv-error-message" role="alert"></div>
+
+                    <!-- Action buttons are now outside the workspace -->
+                    <div id="edv-actions-container" class="edv-actions-container" style="display: none;">
+                        <button id="edv-clear-btn" class="btn-secondary">Clear & Start Over</button>
+                    </div>
+                </div>
+            </section>
+
+            <div data-include="tool-text-section"></div>
+        </main>
+    </div>
+
+    <div id="edv-modal" class="edv-modal" style="display: none;">
+        <div class="edv-modal-content">
+            <span id="edv-modal-close" class="edv-modal-close">×</span>
+            <h3 id="edv-modal-title">Full EXIF Value</h3>
+            <pre id="edv-modal-text"></pre>
+        </div>
+    </div>
+
+    <footer data-include="footer"></footer>
+
+    <!-- Data Island for the text sections -->
+    <script type="application/json" id="tool-text-data">{
+    "sections": [
+        {
+            "type": "how-to",
+            "title": "How to View Image Metadata",
+            "icon": "💡",
+            "intro": "Uncovering hidden data in your photos is a simple, two-step process.",
+            "steps": [
+                {
+                    "icon": "1️⃣",
+                    "title": "Upload Your Image",
+                    "description": "Click the upload area to select an image file from your device, or simply drag and drop it onto the designated zone. The file is not uploaded to any server; it stays on your computer."
+                },
+                {
+                    "icon": "2️⃣",
+                    "title": "Analyze the Results",
+                    "description": "Instantly, the tool will display a preview of your image and a detailed table of all the EXIF metadata it finds. This can include camera settings, timestamps, and even GPS coordinates."
+                }
+            ]
+        },
+        {
+            "type": "features",
+            "title": "Key Features & Guarantees",
+            "icon": "✨",
+            "intro": "This tool is designed with privacy, speed, and clarity as its core principles.",
+            "features": [
+                {
+                    "icon": "🔒",
+                    "title": "100% Client-Side & Private",
+                    "description": "Your images are never sent to a server. All processing happens within your browser, ensuring your photos and their metadata remain completely private."
+                },
+                {
+                    "icon": "📊",
+                    "title": "Comprehensive Data Display",
+                    "description": "Get a clearly organized view of all available EXIF tags, from basic camera information (model, shutter speed, aperture) to advanced data like GPS coordinates and image orientation."
+                },
+                {
+                    "icon": "⚡",
+                    "title": "Instant Processing",
+                    "description": "There's no waiting for uploads or server-side queues. The analysis is performed instantly, giving you immediate access to the information you need."
+                }
+            ]
+        },
+        {
+            "type": "prose",
+            "title": "What is Image Metadata, Anyway?",
+            "icon": "🧠",
+            "content": [
+                "EXIF (Exchangeable Image File Format) is a standard that specifies formats for images, sound, and ancillary tags used by digital cameras, smartphones, and other systems. When you take a picture, your camera saves a file (like a JPEG), but it also embeds a wealth of information right into that file.",
+                "This hidden data can include the date and time the photo was taken, the camera or phone model, and detailed camera settings like ISO speed, aperture, and focal length. Most critically for privacy, it can also include the precise GPS coordinates of where the photo was taken. While useful for organizing photos, this data can be a privacy risk when sharing images online."
+            ]
+        },
+        {
+            "type": "faq",
+            "title": "Frequently Asked Questions (FAQ)",
+            "icon": "❓",
+            "faqs": [
+                {
+                    "icon": "🛡️",
+                    "question": "Is it safe to use my personal photos here?",
+                    "answer": "Absolutely. The entire process is client-side, meaning your photos never leave your computer. They are not uploaded, stored, or seen by anyone else. This tool is as private as an offline desktop application."
+                },
+                {
+                    "icon": "🤔",
+                    "question": "Why should I care about image metadata?",
+                    "answer": "The primary reason is privacy. If you share a photo online that contains GPS metadata, you could be unintentionally revealing your location (e.g., your home, workplace, or child's school). Being aware of this data is a good digital safety practice."
+                },
+                {
+                    "icon": "🖼️",
+                    "question": "What image formats does this tool support?",
+                    "answer": "This tool supports all common image formats like JPEG, TIFF, PNG, HEIC, and WEBP. However, EXIF metadata is most commonly found in JPEG and TIFF files. You can upload any supported image, but it may not contain any metadata to display."
+                }
+            ]
+        }
+    ]
+}</script>
+
+    <!-- Scripts (paths relative to root) -->
+    <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
+    <script src="/tools/data/image-metadata-viewer/imageMetadataViewer.js"></script>
+    <script src="/main.js"></script>
+</body>
+
+</html>

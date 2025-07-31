@@ -1,0 +1,271 @@
+/* Styles for the EXIF Data Viewer tool */
+
+.edv-main-interface {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* --- The All-in-One Workspace --- */
+.edv-workspace {
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-lg);
+    border: 2px dashed var(--border-color);
+    background-color: var(--surface-bg-color);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    overflow: hidden;
+}
+
+.edv-workspace.dragover {
+    border-color: var(--accent-color);
+    background-color: var(--accent-color-bg-hover);
+}
+
+/* --- Upload Label (Overlay) --- */
+.edv-upload-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-align: center;
+    color: var(--text-secondary-color);
+    z-index: 10;
+    background-color: var(--surface-bg-color);
+    transition: opacity 0.3s ease;
+}
+
+.edv-workspace.has-image .edv-upload-label {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.edv-upload-icon {
+    width: 60px;
+    height: 60px;
+    color: var(--accent-color);
+    margin-bottom: var(--spacing-md);
+}
+
+.edv-upload-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary-color);
+}
+
+.edv-upload-hint {
+    font-size: 0.9rem;
+    margin-top: var(--spacing-xs);
+}
+
+/* --- Results View --- */
+.edv-results-view {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    animation: fadeInPageContent 0.3s ease-out;
+    overflow-y: auto;
+}
+
+.edv-image-preview {
+    background-color: var(--bg-deep-dark);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 400px;
+    flex-shrink: 0;
+}
+
+.edv-image-preview img {
+    max-width: 100%;
+    max-height: 380px;
+    object-fit: contain;
+    border-radius: var(--border-radius-sm);
+}
+
+/* --- Action Buttons --- */
+.edv-actions-container {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.edv-actions-container .btn-secondary {
+    min-width: 180px;
+}
+
+/* --- Results Table --- */
+.edv-results-container {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    background-color: var(--surface-bg-color);
+    flex-grow: 1;
+}
+
+.edv-results-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.edv-results-table th,
+.edv-results-table td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: top;
+}
+
+.edv-results-table th {
+    background-color: var(--bg-deep-dark);
+    color: var(--accent-color);
+    font-weight: 600;
+    width: 30%;
+}
+
+.edv-results-table td {
+    color: var(--text-primary-color);
+    font-family: var(--font-family-monospace);
+    word-break: break-all;
+}
+
+.edv-results-table tr:last-child th,
+.edv-results-table tr:last-child td {
+    border-bottom: none;
+}
+
+.edv-results-table tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* --- Status & Error Messages --- */
+.edv-status-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 20;
+}
+
+.edv-value-container {
+    max-height: 150px;
+    overflow: hidden;
+    position: relative;
+    transition: max-height 0.3s ease-in-out;
+}
+
+.edv-value-container.expanded {
+    max-height: none;
+}
+
+.edv-show-more-btn {
+    background: var(--accent-color-bg-hover);
+    color: var(--accent-color);
+    border: none;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: var(--spacing-sm);
+    display: inline-block;
+}
+
+.edv-show-more-btn:hover {
+    background: var(--accent-color);
+    color: var(--bg-color);
+}
+
+.edv-loading,
+.edv-no-results {
+    padding: var(--spacing-xl);
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--text-secondary-color);
+}
+
+.edv-error-message {
+    color: var(--error-color);
+    font-weight: 600;
+    text-align: center;
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    background-color: rgba(229, 75, 75, 0.1);
+    display: none;
+    /* Shown by JS */
+}
+
+/* --- Modal Styles --- */
+.edv-modal {
+    display: none; /* Hidden by default */
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.6); 
+}
+
+.edv-modal-content {
+    background-color: var(--surface-bg-color);
+    margin: 10% auto; 
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    width: 80%; 
+    max-width: 800px;
+    position: relative;
+    animation: fadeInPageContent 0.3s;
+}
+
+.edv-modal-close {
+    color: var(--text-secondary-color);
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.edv-modal-close:hover,
+.edv-modal-close:focus {
+    color: var(--text-primary-color);
+}
+
+#edv-modal-text {
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 60vh;
+    overflow-y: auto;
+    background: var(--bg-deep-dark);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+}
