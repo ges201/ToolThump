@@ -269,3 +269,8 @@
     padding: var(--spacing-md);
     border-radius: var(--border-radius-md);
 }
+
+.highlight-green {
+    color: var(--accent-color);
+    font-weight: 600;
+}

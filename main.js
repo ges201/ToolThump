@@ -189,7 +189,7 @@ function initializeToolTextSections() {
             if (sectionData.content) {
                 sectionData.content.forEach(paragraphText => {
                     const p = document.createElement('p');
-                    p.textContent = paragraphText;
+                    p.innerHTML = paragraphText;
                     sectionContent.appendChild(p);
                 });
             }

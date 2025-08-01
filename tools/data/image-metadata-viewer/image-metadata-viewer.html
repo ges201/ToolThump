@@ -204,8 +204,13 @@
             "title": "What is Image Metadata, Anyway?",
             "icon": "🧠",
             "content": [
-                "EXIF (Exchangeable Image File Format) is a standard that specifies formats for images, sound, and ancillary tags used by digital cameras, smartphones, and other systems. When you take a picture, your camera saves a file (like a JPEG), but it also embeds a wealth of information right into that file.",
-                "This hidden data can include the date and time the photo was taken, the camera or phone model, and detailed camera settings like ISO speed, aperture, and focal length. Most critically for privacy, it can also include the precise GPS coordinates of where the photo was taken. While useful for organizing photos, this data can be a privacy risk when sharing images online."
+                "Think of an image file not as a single object, but as a container. Inside, right alongside the pixels that make up the photo, is a collection of hidden data that tells the story behind the image. This is its metadata.",
+                "This data isn't just one thing; it's often a mix of different standards, each with a specific job. The most common types you'll encounter are:",
+                "• <span class=\"highlight-green\">EXIF (Exchangeable Image File Format):</span> This is your camera's automatic logbook. It records the technical details—camera model, lens, shutter speed, aperture, and often, the 'when' (timestamp) and 'where' (precise GPS location).",
+                "• <span class=\"highlight-green\">IPTC (International Press Telecommunications Council):</span> This is the standard for professional cataloging. It holds descriptive information added by a person, like captions, keywords, copyright notices, and creator details.",
+                "• <span class=\"highlight-green\">XMP (Extensible Metadata Platform):</span> A more modern and flexible standard created by Adobe. It can store a vast range of information, including data from EXIF and IPTC, plus things like edit history and star ratings.",
+                "For a photographer, this combined data is a goldmine for reviewing settings and organizing archives. For everyone else, it can be a major privacy issue. That cute photo of your dog in the garden could be broadcasting your home address via GPS data. That picture of a product you're selling online could contain your name in the copyright field.",
+                "Being aware of this hidden data isn't about being paranoid; it's about making smart, informed decisions. This tool exists to pull back the curtain, decoding all these different formats and presenting them in one clear view, so you know exactly what story your photos are telling before you share them."
             ]
         },
         {
@@ -215,18 +220,43 @@
             "faqs": [
                 {
                     "icon": "🛡️",
-                    "question": "Is it safe to use my personal photos here?",
-                    "answer": "Absolutely. The entire process is client-side, meaning your photos never leave your computer. They are not uploaded, stored, or seen by anyone else. This tool is as private as an offline desktop application."
+                    "question": "Is it truly safe to use my personal photos here?",
+                    "answer": "Absolutely. The tool operates entirely on your computer. Once the page is loaded, you could disconnect from the internet and it would still work perfectly. Your files are never uploaded, so your privacy is guaranteed."
                 },
                 {
                     "icon": "🤔",
-                    "question": "Why should I care about image metadata?",
-                    "answer": "The primary reason is privacy. If you share a photo online that contains GPS metadata, you could be unintentionally revealing your location (e.g., your home, workplace, or child's school). Being aware of this data is a good digital safety practice."
+                    "question": "Why should I even care about image metadata?",
+                    "answer": "Primarily for privacy. Sharing a photo online with GPS data can reveal sensitive locations. But it's also a goldmine for photographers wanting to review camera settings (Aperture, ISO, Shutter Speed). It can even help verify details about a photo's origin."
                 },
                 {
                     "icon": "🖼️",
                     "question": "What image formats does this tool support?",
-                    "answer": "This tool supports all common image formats like JPEG, TIFF, PNG, HEIC, and WEBP. It also supports many RAW file formats such as DNG (Adobe), CR2 (Canon), NEF (Nikon), and ARW (Sony). You can upload any supported image, but it may not contain any metadata to display."
+                    "answer": "It handles the usual suspects like JPEG, PNG, HEIC, and WEBP. More importantly, it's built to parse many RAW camera formats, including .CR2 (Canon), .NEF (Nikon), .ARW (Sony), .DNG (Adobe), and others. If your camera shoots it, there's a good chance this tool can read it."
+                },
+                {
+                    "icon": "🚫",
+                    "question": "Can this tool remove or edit the metadata from my image?",
+                    "answer": "This is a 'viewer', not an 'editor'. It's designed to reveal what's inside your files, not to change them. To maintain its speed and simplicity, it doesn't offer stripping or editing features. Think of it as a read-only tool for inspection."
+                },
+                {
+                    "icon": "🗑️",
+                    "question": "How do I remove sensitive metadata (like GPS location)?",
+                    "answer": "This tool is a viewer only and cannot remove metadata. To do this, you need a metadata editor. The industry gold standard for this is <b>ExifTool by Phil Harvey</b>, a powerful and free command-line tool. You can download it from its official website: <a href='https://exiftool.org' target='_blank' rel='noopener noreferrer'>exiftool.org</a>. Always edit copies of your images to prevent accidental data loss."
+                },
+                {
+                    "icon": "🤷",
+                    "question": "I uploaded an image and it said 'No EXIF metadata found'. Why?",
+                    "answer": "This usually means the metadata was never there or was scrubbed. Many social media sites automatically remove metadata when you upload photos. Also, simple images created with basic graphics editors often don't contain any camera-related metadata to begin with."
+                },
+                {
+                    "icon": " RAW ",
+                    "question": "My RAW file's metadata showed up, but the image preview is blank. Is it broken?",
+                    "answer": "Not at all. Some RAW formats are like a camera's digital negative and can't be displayed directly by web browsers. The tool can still read the metadata perfectly, which is the main event. For a visual, you'd need specialized software, but for data-checking, you're in the right place."
+                },
+                {
+                    "icon": "💾",
+                    "question": "What's the 'Export as JSON' button for?",
+                    "answer": "For the data hoarders and developers. This button lets you download all the extracted metadata as a clean, structured JSON file. You can keep it for your records, use it in a script, or analyze it further in other applications. It's your data, so you should be able to take it with you."
                 }
             ]
         }
