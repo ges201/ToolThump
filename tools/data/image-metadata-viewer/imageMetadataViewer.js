@@ -15,19 +15,19 @@ const edv = {
     clearBtnTop: null,
     exportJsonBtn: null,
     exportJsonBtnTop: null,
-    exportJsonBtn: null,
-    exportJsonBtnTop: null,
+    removeMetadataBtn: null,
+    removeMetadataBtnTop: null,
     modal: null,
     modalClose: null,
     modalTitle: null,
     modalText: null,
 
     originalFile: null,
+    isJpeg: false,
     currentTags: null, // To store the latest metadata
     rawExtensions: ['dng', 'cr2', 'nef', 'arw', 'orf', 'raf', 'rw2', 'pef', 'srw', 'heic', 'heif', 'avif'],
     unrenderableExtensions: ['dng', 'cr2', 'nef', 'arw', 'orf', 'raf', 'rw2', 'pef', 'srw'],
 
-    // New: A map to translate common EXIF tag IDs to names as a fallback.
     tagMap: {
         // Image Data Structure
         '256': 'ImageWidth', '257': 'ImageHeight', '258': 'BitsPerSample', '259': 'Compression', '262': 'PhotometricInterpretation',
@@ -68,6 +68,8 @@ const edv = {
         this.clearBtnTop = document.getElementById('edv-clear-btn-top');
         this.exportJsonBtn = document.getElementById('edv-export-json-btn');
         this.exportJsonBtnTop = document.getElementById('edv-export-json-btn-top');
+        this.removeMetadataBtn = document.getElementById('edv-remove-metadata-btn');
+        this.removeMetadataBtnTop = document.getElementById('edv-remove-metadata-btn-top');
         this.modal = document.getElementById('edv-modal');
         this.modalClose = document.getElementById('edv-modal-close');
         this.modalTitle = document.getElementById('edv-modal-title');
@@ -90,6 +92,8 @@ const edv = {
         this.clearBtnTop.addEventListener('click', () => this.clearAll());
         this.exportJsonBtn.addEventListener('click', () => this.exportAsJson());
         this.exportJsonBtnTop.addEventListener('click', () => this.exportAsJson());
+        this.removeMetadataBtn.addEventListener('click', () => this.removeMetadata());
+        this.removeMetadataBtnTop.addEventListener('click', () => this.removeMetadata());
         this.modalClose.addEventListener('click', () => this.closeModal());
         window.addEventListener('click', (event) => {
             if (event.target == this.modal) {
@@ -124,6 +128,18 @@ const edv = {
     handleFileSelect: function (files) {
         if (files.length === 0) return;
         const file = files[0];
+        this.originalFile = file;
+        this.hideError();
+
+        this.isJpeg = file.type === 'image/jpeg';
+        if (this.isJpeg) {
+            this.removeMetadataBtn.style.display = 'inline-block';
+            this.removeMetadataBtnTop.style.display = 'inline-block';
+        } else {
+            this.removeMetadataBtn.style.display = 'none';
+            this.removeMetadataBtnTop.style.display = 'none';
+        }
+
         const extension = file.name.split('.').pop().toLowerCase();
         const isSupportedExtension = this.rawExtensions.includes(extension);
 
@@ -131,9 +147,6 @@ const edv = {
             this.showError('Invalid file type. Please select a supported image or RAW file.');
             return;
         }
-
-        this.originalFile = file;
-        this.hideError();
 
         this.workspace.classList.add('has-image');
         this.resultsView.style.display = 'flex';
@@ -217,7 +230,6 @@ const edv = {
             }
 
             const row = tbody.insertRow();
-            // Use the mapped name if available, otherwise fall back to the original tag ID
             const tagName = this.tagMap[tag] || tag;
             const th = document.createElement('th');
             th.textContent = tagName;
@@ -256,17 +268,14 @@ const edv = {
         }
 
         try {
-            // Create a serializable version of the data
             const dataToExport = {};
             for (const key in this.currentTags) {
                 const value = this.currentTags[key];
                 if (value instanceof Uint8Array) {
-                    // Convert Uint8Array to a regular array of numbers
                     dataToExport[key] = Array.from(value);
                 } else if (value instanceof Date) {
                     dataToExport[key] = value.toISOString();
                 } else if (typeof value !== 'function' && value !== null) {
-                    // Exclude functions and nulls
                     dataToExport[key] = value;
                 }
             }
@@ -290,10 +299,83 @@ const edv = {
         }
     },
 
+    removeMetadata: function () {
+        if (!this.originalFile || !this.isJpeg) {
+            this.showError("Metadata removal is only available for JPEG files.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const buffer = e.target.result;
+                const originalBytes = new Uint8Array(buffer);
+                const dataView = new DataView(buffer);
+
+                if (dataView.getUint16(0) !== 0xFFD8) {
+                    this.showError("Invalid JPEG file. Start of Image marker not found.");
+                    return;
+                }
+
+                const cleanSegments = [];
+                cleanSegments.push(originalBytes.slice(0, 2)); // Keep SOI marker
+
+                let offset = 2;
+                while (offset < originalBytes.length) {
+                    if (originalBytes[offset] !== 0xFF) {
+                        this.showError("Could not parse JPEG structure. File might be corrupt.");
+                        return;
+                    }
+
+                    const marker = originalBytes[offset + 1];
+
+                    if (marker === 0xDA || marker === 0xD9) { // SOS or EOI
+                        cleanSegments.push(originalBytes.slice(offset));
+                        break;
+                    }
+
+                    const length = dataView.getUint16(offset + 2);
+
+                    if (marker >= 0xE0 && marker <= 0xEF) { // APPn markers (metadata)
+                        offset += length + 2;
+                    } else {
+                        const segment = originalBytes.slice(offset, offset + length + 2);
+                        cleanSegments.push(segment);
+                        offset += length + 2;
+                    }
+                }
+
+                const cleanBlob = new Blob(cleanSegments, { type: 'image/jpeg' });
+                const url = URL.createObjectURL(cleanBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                const originalFileName = this.originalFile.name.split('.').slice(0, -1).join('.');
+                a.download = `${originalFileName}_cleaned.jpeg`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+            } catch (error) {
+                console.error("Error during metadata removal:", error);
+                this.showError("An unexpected error occurred while removing metadata.");
+            }
+        };
+
+        reader.onerror = () => {
+            this.showError("Failed to read the file for processing.");
+        };
+
+        reader.readAsArrayBuffer(this.originalFile);
+    },
+
     clearAll: function () {
         this.fileInput.value = '';
         this.originalFile = null;
-        this.currentTags = null; // Clear stored tags
+        this.currentTags = null;
+        this.isJpeg = false;
+        this.removeMetadataBtn.style.display = 'none';
+        this.removeMetadataBtnTop.style.display = 'none';
         this.workspace.classList.remove('has-image');
         this.resultsView.style.display = 'none';
         this.actionsContainer.style.display = 'none';

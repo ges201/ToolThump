@@ -4,26 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Metadata Viewer - View Image Metadata | ToolThump</title>
+    <title>Image Metadata Viewer - View & Remove Metadata | ToolThump</title>
     <meta name="description"
-        content="View and analyze image metadata from your images, including RAW formats (.dng, .cr2, .nef). A free, client-side tool that respects your privacy. No uploads required.">
+        content="View, analyze, and remove image metadata from your images (JPEG, RAW). A free, client-side tool that respects your privacy. No uploads required.">
     <link rel="canonical" href="https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html">
     <meta name="robots" content="index, follow">
 
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html">
-    <meta property="og:title" content="Image Metadata Viewer - View Image Metadata | ToolThump">
+    <meta property="og:title" content="Image Metadata Viewer - View & Remove Metadata | ToolThump">
     <meta property="og:description"
-        content="Instantly inspect hidden data in your photos (JPEG, HEIC, RAW). Check GPS location, camera settings, and more, right in your browser.">
+        content="Instantly inspect and strip hidden data (GPS, camera settings) from your photos right in your browser. Supports JPEG, HEIC, and RAW files.">
     <meta property="og:image" content="https://toolthump.com/icons/image-metadata-viewer-icon.png">
     <meta property="og:site_name" content="ToolThump" />
 
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url"
         content="https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html">
-    <meta property="twitter:title" content="Image Metadata Viewer - View Image Metadata | ToolThump">
+    <meta property="twitter:title" content="Image Metadata Viewer - View & Remove Metadata | ToolThump">
     <meta property="twitter:description"
-        content="Instantly inspect hidden data in your photos (JPEG, HEIC, RAW). Check GPS location, camera settings, and more, right in your browser.">
+        content="Instantly inspect and strip hidden data (GPS, camera settings) from your photos right in your browser. Supports JPEG, HEIC, and RAW files.">
     <meta property="twitter:image" content="https://toolthump.com/icons/image-metadata-viewer-icon.png">
 
     <!-- Common Stylesheets (paths relative to root) -->
@@ -43,8 +43,8 @@
       "@type": "WebPage",
       "@id": "https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html#webpage",
       "url": "https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html",
-      "name": "Image Metadata Viewer",
-      "description": "View and analyze image metadata from images, including RAW files, directly in your browser. 100% client-side and privacy-focused.",
+      "name": "Image Metadata Viewer & Remover",
+      "description": "View, analyze, and remove metadata from images, including RAW files, directly in your browser. 100% client-side and privacy-focused.",
       "isPartOf": {
         "@type": "WebSite",
         "@id": "https://toolthump.com/#website"
@@ -94,12 +94,14 @@
                     <h1>Image Metadata Viewer</h1>
                 </div>
                 <p style="text-align: center; max-width: 65ch; margin: 0 auto var(--spacing-xl);">
-                    View and analyze image metadata from images directly in your browser. 100% client-side and
+                    View, analyze, and safely remove metadata from images directly in your browser. 100% client-side and
                     privacy-focused.
                 </p>
 
                 <div class="edv-main-interface">
                     <div id="edv-actions-container-top" class="edv-actions-container" style="display: none;">
+                        <button id="edv-remove-metadata-btn-top" class="btn-primary" style="display: none;">Remove
+                            Metadata & Download</button>
                         <button id="edv-export-json-btn-top" class="btn-secondary">Export as JSON</button>
                         <button id="edv-clear-btn-top" class="btn-secondary">Clear & Start Over</button>
                     </div>
@@ -135,6 +137,8 @@
 
                     <!-- Action buttons are now outside the workspace -->
                     <div id="edv-actions-container" class="edv-actions-container" style="display: none;">
+                        <button id="edv-remove-metadata-btn" class="btn-primary" style="display: none;">Remove Metadata
+                            & Download</button>
                         <button id="edv-export-json-btn" class="btn-secondary">Export as JSON</button>
                         <button id="edv-clear-btn" class="btn-secondary">Clear & Start Over</button>
                     </div>
@@ -160,9 +164,9 @@
     "sections": [
         {
             "type": "how-to",
-            "title": "How to View Image Metadata",
+            "title": "How to View & Remove Image Metadata",
             "icon": "💡",
-            "intro": "Uncovering hidden data in your photos is a simple, two-step process.",
+            "intro": "Uncovering or removing hidden data in your photos is a simple process.",
             "steps": [
                 {
                     "icon": "1️⃣",
@@ -171,8 +175,8 @@
                 },
                 {
                     "icon": "2️⃣",
-                    "title": "Analyze the Results",
-                    "description": "Instantly, the tool will display a preview of your image (if supported) and a detailed table of all the EXIF metadata it finds. This can include camera settings, timestamps, and even GPS coordinates."
+                    "title": "Analyze or Remove",
+                    "description": "Instantly, the tool displays all found metadata. If you uploaded a JPEG, a 'Remove Metadata' button will appear. Clicking it downloads a clean, metadata-free copy of your image without affecting the original."
                 }
             ]
         },
@@ -188,14 +192,14 @@
                     "description": "Your images are never sent to a server. All processing happens within your browser, ensuring your photos and their metadata remain completely private."
                 },
                 {
+                    "icon": "🗑️",
+                    "title": "Lossless Metadata Removal",
+                    "description": "For JPEG images, you can strip all metadata without any loss of image quality. The tool surgically removes metadata segments, leaving the image data untouched."
+                },
+                {
                     "icon": "📊",
                     "title": "Comprehensive Data Display",
                     "description": "Get a clearly organized view of all available EXIF tags, from basic camera information (model, shutter speed, aperture) to advanced data like GPS coordinates and image orientation."
-                },
-                {
-                    "icon": "⚡",
-                    "title": "Instant Processing",
-                    "description": "There's no waiting for uploads or server-side queues. The analysis is performed instantly, giving you immediate access to the information you need."
                 }
             ]
         },
@@ -235,13 +239,13 @@
                 },
                 {
                     "icon": "🚫",
-                    "question": "Can this tool remove or edit the metadata from my image?",
-                    "answer": "This is a 'viewer', not an 'editor'. It's designed to reveal what's inside your files, not to change them. To maintain its speed and simplicity, it doesn't offer stripping or editing features. Think of it as a read-only tool for inspection."
+                    "question": "Can this tool remove metadata from my image?",
+                    "answer": "Yes, but only for JPEG images. For JPEGs, a 'Remove Metadata' button will appear, allowing you to download a clean version. For all other formats (PNG, RAW, etc.), this tool is a 'viewer' only and cannot alter the file."
                 },
                 {
-                    "icon": "🗑️",
-                    "question": "How do I remove sensitive metadata (like GPS location)?",
-                    "answer": "This tool is a viewer only and cannot remove metadata. To do this, you need a metadata editor. The industry gold standard for this is <b>ExifTool by Phil Harvey</b>, a powerful and free command-line tool. You can download it from its official website: <a href='https://exiftool.org' target='_blank' rel='noopener noreferrer'>exiftool.org</a>. Always edit copies of your images to prevent accidental data loss."
+                    "icon": "✨",
+                    "question": "Will removing metadata reduce my image quality?",
+                    "answer": "No. The removal process for jpgs is completely 'lossless'. It works by identifying and discarding the data blocks containing metadata, then stitching the file back together with only the essential image data. The picture itself is not re-compressed or altered in any way."
                 },
                 {
                     "icon": "🤷",
@@ -260,12 +264,11 @@
                 }
             ]
         }
-    ]
-}</script>
+    ]}</script>
 
     <!-- Scripts (paths relative to root) -->
     <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
-    <script src="/tools/data/image-metadata-viewer/imageMetadataViewer.js?v=1.2"></script>
+    <script src="/tools/data/image-metadata-viewer/imageMetadataViewer.js?v=1.3"></script>
     <script src="/main.js"></script>
 </body>
 
