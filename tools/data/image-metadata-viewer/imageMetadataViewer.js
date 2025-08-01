@@ -19,6 +19,34 @@ const edv = {
     modalText: null,
 
     originalFile: null,
+    rawExtensions: ['dng', 'cr2', 'nef', 'arw', 'orf', 'raf', 'rw2', 'pef', 'srw', 'heic', 'heif', 'avif'],
+    unrenderableExtensions: ['dng', 'cr2', 'nef', 'arw', 'orf', 'raf', 'rw2', 'pef', 'srw'],
+
+    // New: A map to translate common EXIF tag IDs to names as a fallback.
+    tagMap: {
+        // Image Data Structure
+        '256': 'ImageWidth', '257': 'ImageHeight', '258': 'BitsPerSample', '259': 'Compression', '262': 'PhotometricInterpretation',
+        '274': 'Orientation', '277': 'SamplesPerPixel', '284': 'PlanarConfiguration', '531': 'YCbCrPositioning', '282': 'XResolution',
+        '283': 'YResolution', '296': 'ResolutionUnit',
+        // Image Data Characteristics
+        '273': 'StripOffsets', '278': 'RowsPerStrip', '279': 'StripByteCounts', '513': 'JPEGInterchangeFormat', '514': 'JPEGInterchangeFormatLength',
+        // Camera & Device Information
+        '271': 'Make', '272': 'Model', '305': 'Software', '306': 'DateTime', '315': 'Artist', '33432': 'Copyright',
+        // EXIF Main Tags
+        '33434': 'ExposureTime', '33437': 'FNumber', '34850': 'ExposureProgram', '34852': 'SpectralSensitivity', '34855': 'ISOSpeedRatings',
+        '34864': 'SensitivityType', '36864': 'ExifVersion', '36867': 'DateTimeOriginal', '36868': 'DateTimeDigitized',
+        '37121': 'ComponentsConfiguration', '37122': 'CompressedBitsPerPixel', '37377': 'ShutterSpeedValue', '37378': 'ApertureValue',
+        '37379': 'BrightnessValue', '37380': 'ExposureBiasValue', '37381': 'MaxApertureValue', '37382': 'SubjectDistance',
+        '37383': 'MeteringMode', '37384': 'LightSource', '37385': 'Flash', '37386': 'FocalLength', '37500': 'MakerNote',
+        '37510': 'UserComment', '40961': 'ColorSpace', '40962': 'PixelXDimension', '40963': 'PixelYDimension',
+        '41486': 'FocalPlaneXResolution', '41487': 'FocalPlaneYResolution', '41488': 'FocalPlaneResolutionUnit',
+        '41729': 'SensingMethod', '41985': 'CustomRendered', '41986': 'ExposureMode', '41987': 'WhiteBalance',
+        '41988': 'DigitalZoomRatio', '41989': 'FocalLengthIn35mmFilm', '41990': 'SceneCaptureType', '41991': 'GainControl',
+        '41992': 'Contrast', '41993': 'Saturation', '41994': 'Sharpness', '42034': 'LensSpecification', '42035': 'LensMake',
+        '42036': 'LensModel',
+        // GPS Info
+        '34853': 'GPSInfoIFDPointer'
+    },
 
     fetchElements: function () {
         this.workspace = document.getElementById('edv-workspace');
@@ -87,9 +115,11 @@ const edv = {
     handleFileSelect: function (files) {
         if (files.length === 0) return;
         const file = files[0];
+        const extension = file.name.split('.').pop().toLowerCase();
+        const isSupportedExtension = this.rawExtensions.includes(extension);
 
-        if (!file.type.match('image.*')) {
-            this.showError('Invalid file type. Please select an image file.');
+        if (!file.type.match('image.*') && !isSupportedExtension) {
+            this.showError('Invalid file type. Please select a supported image or RAW file.');
             return;
         }
 
@@ -107,6 +137,14 @@ const edv = {
     },
 
     displayImagePreview: function (file) {
+        const extension = file.name.split('.').pop().toLowerCase();
+        const isUnrenderable = this.unrenderableExtensions.includes(extension);
+
+        if (isUnrenderable) {
+            this.imagePreview.innerHTML = '<div class="edv-no-results">Preview is not available for this RAW file format, but metadata can still be extracted.</div>';
+            return;
+        }
+
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = document.createElement('img');
@@ -128,7 +166,12 @@ const edv = {
 
     readExifData: async function (file) {
         try {
-            const tags = await exifr.parse(file, true);
+            const options = {
+                tiff: true, xmp: true, iptc: true, icc: true, jfif: true,
+                exif: true, gps: true, interop: true,
+                makerNote: true, merge: true, sanitize: true,
+            };
+            const tags = await exifr.parse(file, options);
             this.displayExifData(tags);
         } catch (error) {
             console.error('Error parsing EXIF data:', error);
@@ -146,49 +189,49 @@ const edv = {
         const table = document.createElement('table');
         table.className = 'edv-results-table';
         const tbody = document.createElement('tbody');
-
         const sortedKeys = Object.keys(tags).sort();
         const LONG_TEXT_THRESHOLD = 200;
 
         for (const tag of sortedKeys) {
             let value = tags[tag];
+            let displayValue;
 
-            if (value === null || value === '' || (typeof value === 'object' && !Array.isArray(value) && !(value instanceof Date) && Object.keys(value).length === 0)) {
-                continue;
-            }
-
-            if (typeof value === 'object') {
-                value = value instanceof Date ? value.toLocaleString() : JSON.stringify(value, null, 2);
+            if (value instanceof Uint8Array || value instanceof ArrayBuffer) {
+                displayValue = `[Binary Data: ${value.byteLength || value.length} bytes]`;
+            } else if (value instanceof Date) {
+                displayValue = value.toLocaleString();
+            } else if (typeof value === 'object' && value !== null) {
+                displayValue = JSON.stringify(value, null, 2);
+            } else {
+                displayValue = value;
             }
 
             const row = tbody.insertRow();
-            row.insertCell().textContent = tag;
-            row.cells[0].tagName = 'th';
+            // Use the mapped name if available, otherwise fall back to the original tag ID
+            const tagName = this.tagMap[tag] || tag;
+            const th = document.createElement('th');
+            th.textContent = tagName;
+            row.appendChild(th);
 
             const td = row.insertCell();
-            const isLongText = typeof value === 'string' && value.length > LONG_TEXT_THRESHOLD;
+            const isLongText = typeof displayValue === 'string' && displayValue.length > LONG_TEXT_THRESHOLD;
 
             if (isLongText) {
-                const truncatedValue = value.substring(0, LONG_TEXT_THRESHOLD) + '...';
-                const textNode = document.createTextNode(truncatedValue);
-                td.appendChild(textNode);
-
+                td.textContent = displayValue.substring(0, LONG_TEXT_THRESHOLD) + '...';
                 const button = document.createElement('button');
                 button.textContent = 'View Full Text';
                 button.className = 'edv-show-more-btn';
                 button.style.marginLeft = '8px';
-                button.onclick = () => {
-                    this.showModal(tag, value);
-                };
+                button.onclick = () => this.showModal(tagName, displayValue);
                 td.appendChild(button);
-            } else if (typeof value === 'string' && (value.startsWith('{') || value.startsWith('['))) {
+            } else if (typeof displayValue === 'string' && (displayValue.startsWith('{') || displayValue.startsWith('['))) {
                 const pre = document.createElement('pre');
                 pre.style.margin = '0';
                 pre.style.whiteSpace = 'pre-wrap';
-                pre.textContent = value;
+                pre.textContent = displayValue;
                 td.appendChild(pre);
             } else {
-                td.textContent = value;
+                td.textContent = displayValue;
             }
         }
         table.appendChild(tbody);

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Metadata Viewer - View Image Metadata | ToolThump</title>
     <meta name="description"
-        content="View and analyze image metadata from your images. A free, client-side tool that respects your privacy. No uploads required.">
+        content="View and analyze image metadata from your images, including RAW formats (.dng, .cr2, .nef). A free, client-side tool that respects your privacy. No uploads required.">
     <link rel="canonical" href="https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html">
     <meta name="robots" content="index, follow">
 
@@ -14,7 +14,7 @@
     <meta property="og:url" content="https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html">
     <meta property="og:title" content="Image Metadata Viewer - View Image Metadata | ToolThump">
     <meta property="og:description"
-        content="Instantly inspect hidden data in your photos. Check GPS location, camera settings, and more, right in your browser.">
+        content="Instantly inspect hidden data in your photos (JPEG, HEIC, RAW). Check GPS location, camera settings, and more, right in your browser.">
     <meta property="og:image" content="https://toolthump.com/icons/image-metadata-viewer-icon.png">
     <meta property="og:site_name" content="ToolThump" />
 
@@ -23,7 +23,7 @@
         content="https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html">
     <meta property="twitter:title" content="Image Metadata Viewer - View Image Metadata | ToolThump">
     <meta property="twitter:description"
-        content="Instantly inspect hidden data in your photos. Check GPS location, camera settings, and more, right in your browser.">
+        content="Instantly inspect hidden data in your photos (JPEG, HEIC, RAW). Check GPS location, camera settings, and more, right in your browser.">
     <meta property="twitter:image" content="https://toolthump.com/icons/image-metadata-viewer-icon.png">
 
     <!-- Common Stylesheets (paths relative to root) -->
@@ -44,7 +44,7 @@
       "@id": "https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html#webpage",
       "url": "https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html",
       "name": "Image Metadata Viewer",
-      "description": "View and analyze image metadata from images directly in your browser. 100% client-side and privacy-focused.",
+      "description": "View and analyze image metadata from images, including RAW files, directly in your browser. 100% client-side and privacy-focused.",
       "isPartOf": {
         "@type": "WebSite",
         "@id": "https://toolthump.com/#website"
@@ -103,7 +103,8 @@
                         <button id="edv-clear-btn-top" class="btn-secondary">Clear & Start Over</button>
                     </div>
                     <div id="edv-workspace" class="edv-workspace">
-                        <input type="file" id="edv-file-input" accept="image/*" class="sr-only"
+                        <input type="file" id="edv-file-input"
+                            accept="image/*,.dng,.cr2,.nef,.arw,.orf,.raf,.rw2,.pef,.srw" class="sr-only"
                             aria-label="Image file input">
 
                         <!-- Initial State: Upload Prompt -->
@@ -114,7 +115,8 @@
                                     d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
                             </svg>
                             <span class="edv-upload-text">Click to Upload or Drop Image</span>
-                            <span class="edv-upload-hint">Supports all common image formats</span>
+                            <span class="edv-upload-hint">Supports JPEG, PNG, HEIC, and various RAW formats (.dng, .cr2,
+                                .nef...)</span>
                         </label>
 
                         <!-- Results View (initially hidden) -->
@@ -168,7 +170,7 @@
                 {
                     "icon": "2️⃣",
                     "title": "Analyze the Results",
-                    "description": "Instantly, the tool will display a preview of your image and a detailed table of all the EXIF metadata it finds. This can include camera settings, timestamps, and even GPS coordinates."
+                    "description": "Instantly, the tool will display a preview of your image (if supported) and a detailed table of all the EXIF metadata it finds. This can include camera settings, timestamps, and even GPS coordinates."
                 }
             ]
         },
@@ -222,7 +224,7 @@
                 {
                     "icon": "🖼️",
                     "question": "What image formats does this tool support?",
-                    "answer": "This tool supports all common image formats like JPEG, TIFF, PNG, HEIC, and WEBP. However, EXIF metadata is most commonly found in JPEG and TIFF files. You can upload any supported image, but it may not contain any metadata to display."
+                    "answer": "This tool supports all common image formats like JPEG, TIFF, PNG, HEIC, and WEBP. It also supports many RAW file formats such as DNG (Adobe), CR2 (Canon), NEF (Nikon), and ARW (Sony). You can upload any supported image, but it may not contain any metadata to display."
                 }
             ]
         }
@@ -231,7 +233,7 @@
 
     <!-- Scripts (paths relative to root) -->
     <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
-    <script src="/tools/data/image-metadata-viewer/imageMetadataViewer.js"></script>
+    <script src="/tools/data/image-metadata-viewer/imageMetadataViewer.js?v=1.2"></script>
     <script src="/main.js"></script>
 </body>
 
