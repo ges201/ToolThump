@@ -13,12 +13,17 @@ const edv = {
     actionsContainerTop: null,
     clearBtn: null,
     clearBtnTop: null,
+    exportJsonBtn: null,
+    exportJsonBtnTop: null,
+    exportJsonBtn: null,
+    exportJsonBtnTop: null,
     modal: null,
     modalClose: null,
     modalTitle: null,
     modalText: null,
 
     originalFile: null,
+    currentTags: null, // To store the latest metadata
     rawExtensions: ['dng', 'cr2', 'nef', 'arw', 'orf', 'raf', 'rw2', 'pef', 'srw', 'heic', 'heif', 'avif'],
     unrenderableExtensions: ['dng', 'cr2', 'nef', 'arw', 'orf', 'raf', 'rw2', 'pef', 'srw'],
 
@@ -61,6 +66,8 @@ const edv = {
         this.actionsContainerTop = document.getElementById('edv-actions-container-top');
         this.clearBtn = document.getElementById('edv-clear-btn');
         this.clearBtnTop = document.getElementById('edv-clear-btn-top');
+        this.exportJsonBtn = document.getElementById('edv-export-json-btn');
+        this.exportJsonBtnTop = document.getElementById('edv-export-json-btn-top');
         this.modal = document.getElementById('edv-modal');
         this.modalClose = document.getElementById('edv-modal-close');
         this.modalTitle = document.getElementById('edv-modal-title');
@@ -81,6 +88,8 @@ const edv = {
 
         this.clearBtn.addEventListener('click', () => this.clearAll());
         this.clearBtnTop.addEventListener('click', () => this.clearAll());
+        this.exportJsonBtn.addEventListener('click', () => this.exportAsJson());
+        this.exportJsonBtnTop.addEventListener('click', () => this.exportAsJson());
         this.modalClose.addEventListener('click', () => this.closeModal());
         window.addEventListener('click', (event) => {
             if (event.target == this.modal) {
@@ -181,6 +190,7 @@ const edv = {
     },
 
     displayExifData: function (tags) {
+        this.currentTags = tags; // Store the tags
         if (!tags || Object.keys(tags).length === 0) {
             this.resultsContainer.innerHTML = '<div class="edv-no-results">No EXIF metadata found in this image.</div>';
             return;
@@ -239,9 +249,51 @@ const edv = {
         this.resultsContainer.appendChild(table);
     },
 
+    exportAsJson: function () {
+        if (!this.currentTags || Object.keys(this.currentTags).length === 0) {
+            this.showError("No metadata available to export.");
+            return;
+        }
+
+        try {
+            // Create a serializable version of the data
+            const dataToExport = {};
+            for (const key in this.currentTags) {
+                const value = this.currentTags[key];
+                if (value instanceof Uint8Array) {
+                    // Convert Uint8Array to a regular array of numbers
+                    dataToExport[key] = Array.from(value);
+                } else if (value instanceof Date) {
+                    dataToExport[key] = value.toISOString();
+                } else if (typeof value !== 'function' && value !== null) {
+                    // Exclude functions and nulls
+                    dataToExport[key] = value;
+                }
+            }
+
+            const jsonString = JSON.stringify(dataToExport, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            const originalFileName = this.originalFile ? this.originalFile.name.split('.').slice(0, -1).join('.') : 'metadata';
+            a.download = `${originalFileName}_metadata.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+        } catch (error) {
+            console.error('Error exporting JSON:', error);
+            this.showError('An error occurred while preparing the JSON file.');
+        }
+    },
+
     clearAll: function () {
         this.fileInput.value = '';
         this.originalFile = null;
+        this.currentTags = null; // Clear stored tags
         this.workspace.classList.remove('has-image');
         this.resultsView.style.display = 'none';
         this.actionsContainer.style.display = 'none';
