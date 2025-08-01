@@ -1,4 +1,3 @@
 User-agent: *
 Disallow: /libs/
-Disallow: /search
 Sitemap: https://toolthump.com/sitemap.xml
