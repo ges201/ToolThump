@@ -81,6 +81,65 @@
     margin-top: var(--spacing-xs);
 }
 
+/* --- Image Container & Crop Box --- */
+.br-image-container {
+    position: relative;
+    display: none;
+    /* Initially hidden */
+    line-height: 0;
+    /* Removes bottom space from inline-block */
+    user-select: none;
+    /* Prevent blue selection highlight on drag */
+    -webkit-user-select: none;
+    /* For Safari/Chrome */
+}
+
+#br-crop-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+    /* Dimming overlay */
+    z-index: 2;
+    cursor: move;
+}
+
+.br-resize-handle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: var(--accent-color);
+    border: 2px solid var(--surface-bg-color);
+    border-radius: 50%;
+    z-index: 3;
+}
+
+.br-resize-handle.tl {
+    top: -8px;
+    left: -8px;
+    cursor: nwse-resize;
+}
+
+.br-resize-handle.tr {
+    top: -8px;
+    right: -8px;
+    cursor: nesw-resize;
+}
+
+.br-resize-handle.bl {
+    bottom: -8px;
+    left: -8px;
+    cursor: nesw-resize;
+}
+
+.br-resize-handle.br {
+    bottom: -8px;
+    right: -8px;
+    cursor: nwse-resize;
+}
+
+
 /* --- Preview Image & Result Canvas --- */
 .br-image-display {
     display: block;
@@ -114,7 +173,8 @@
 
 .br-status-overlay span {
     display: block;
-    max-width: 90%; /* Adjust as needed */
+    max-width: 90%;
+    /* Adjust as needed */
 }
 
 .br-loader {
@@ -163,9 +223,12 @@
 }
 
 .quality-options-group {
-    border: 2px solid var(--border-color); /* Example border */
-    border-radius: var(--border-radius-md); /* Example border-radius */
-    padding: var(--spacing-sm) var(--spacing-md); /* Example padding */
+    border: 2px solid var(--border-color);
+    /* Example border */
+    border-radius: var(--border-radius-md);
+    /* Example border-radius */
+    padding: var(--spacing-sm) var(--spacing-md);
+    /* Example padding */
 }
 
 .br-quality-selector .btn-secondary.active {
@@ -191,15 +254,30 @@
     box-shadow: var(--shadow-hard-inset);
 }
 
-#br-clear-btn {
+/* --- Workspace Buttons (Clear & Reset) --- */
+#br-clear-btn,
+#br-reset-crop-btn {
     position: absolute;
     top: 10px;
-    right: 10px;
     z-index: 11;
     width: 40px;
     height: 40px;
-    font-size: 1.5rem;
     line-height: 1;
     padding: 0;
 }
 
+#br-clear-btn {
+    right: 10px;
+    font-size: 1.5rem;
+}
+
+#br-reset-crop-btn {
+    left: 10px;
+    padding: 8px;
+    /* Adjust padding for SVG icon */
+}
+
+#br-reset-crop-btn svg {
+    width: 100%;
+    height: 100%;
+}
