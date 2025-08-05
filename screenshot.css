@@ -155,35 +155,34 @@ body.screenshot-body {
     color: #ffffff;
 }
 
-/* Coming soon card styles */
-.tool-card.coming-soon {
+
+.coming-soon {
     background-color: var(--surface-bg-color);
-    border-style: dashed;
-    cursor: default; /* Not a clickable item */
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    padding: 20px;
+    text-align: center;
+    margin-top: 40px;
 }
 
-.tool-card.coming-soon:hover {
-    /* Override hover effect to make it static */
-    background-color: var(--surface-bg-color);
-    border-color: var(--border-color);
-    box-shadow: none;
-    transform: none;
+.coming-soon p {
+    font-size: 1.2rem;
+    font-weight: 600;
+    background: linear-gradient(to right, #ffffff 20%, var(--accent-color) 40%, var(--accent-color) 60%, #ffffff 80%);
+    background-size: 200% auto;
+    color: #ffffff;
+    background-clip: text;
+    -webkit-background-clip: text;
+    text-fill-color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: shine-left-to-right 2s linear infinite;
 }
 
-.tool-card.coming-soon h3 {
-    color: #2ecc71; /* A nice green */
-    animation: shine 2s linear infinite;
-}
-
-.tool-card.coming-soon:hover h3 {
-    color: #2ecc71; /* Keep the text color on hover */
-}
-
-@keyframes shine {
-  0%, 100% {
-    text-shadow: 0 0 5px #2ecc71, 0 0 10px #2ecc71, 0 0 15px #2ecc71;
+@keyframes shine-left-to-right {
+  from {
+    background-position: 200% center;
   }
-  50% {
-    text-shadow: 0 0 10px #2ecc71, 0 0 20px #2ecc71, 0 0 30px #2ecc71;
+  to {
+    background-position: -200% center;
   }
 }
