@@ -2,74 +2,90 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 :root {
-    /* Core Palette - "Soft-Bit Dark" */
+    /* --- DARK THEME (DEFAULT) --- */
     --accent-color: #00ff9c;
-    /* Electric, high-contrast green */
     --accent-color-dark: #00d181;
-    /* A slightly darker shade for interaction */
     --accent-color-rgb: 0, 255, 156;
     --accent-color-bg-hover: rgba(var(--accent-color-rgb), 0.1);
-    /* Subtle hover background */
 
     --bg-deep-dark: #1a1c2c;
-    /* Main background, a deep desaturated blue */
     --bg-dark: #24283b;
-    /* Surface color, brighter for better contrast */
     --bg-medium: #4a5073;
-    /* A much lighter, more visible border color */
 
     --text-primary-color: #eef2f7;
-    /* Light, slightly off-white for body text */
     --text-secondary-color: #a0a4c0;
-    /* Muted text for secondary info */
     --text-heading-color: #ffffff;
-    /* Pure white for high-impact headings */
     --text-on-accent-bg: #1a1c2c;
-    /* Text on top of the accent color */
 
-    /* Semantic Colors */
     --success-color: #28a745;
     --error-color: #e54b4b;
     --warning-color: #ffc107;
     --info-color: #17a2b8;
 
-    /* Backgrounds */
     --body-bg-color: var(--bg-deep-dark);
     --surface-bg-color: var(--bg-dark);
     --input-bg-color: var(--bg-dark);
     --disabled-bg-color: #3f4254;
 
-    /* Borders & Outlines */
     --border-color: var(--bg-medium);
-    /* High-contrast border */
     --focus-outline-color: rgba(var(--accent-color-rgb), 0.75);
 
-    /* Shadows: Combination of soft depth and hard interactive feedback */
     --shadow-soft-md: 0 4px 10px rgba(0, 0, 0, 0.2);
     --shadow-hard: 2px 2px 0 var(--accent-color-dark);
     --shadow-hard-inset: inset 2px 2px 0 rgba(0, 0, 0, 0.2);
 
-    /* Spacing (Unchanged) */
     --spacing-xs: 0.25rem;
-    /* 4px */
     --spacing-sm: 0.5rem;
-    /* 8px */
     --spacing-md: 1rem;
-    /* 16px */
     --spacing-lg: 1.5rem;
-    /* 24px */
     --spacing-xl: 2rem;
-    /* 32px */
 
-    /* Radii -> Softened corners */
     --border-radius-sm: 3px;
     --border-radius-md: 5px;
     --border-radius-lg: 8px;
 
-    /* Typography */
     --font-family-pixel: 'Press Start 2P', cursive;
     --font-family-heading: monospace;
-    /* For h2, h3, etc. */
     --font-family-sans: monospace;
     --font-family-monospace: monospace;
+}
+
+[data-theme="light"] {
+    /* --- LIGHT THEME (High-Contrast, Less Bright) --- */
+    --accent-color: #2563eb;
+    /* A strong, accessible blue */
+    --accent-color-dark: #1d4ed8;
+    /* A darker shade for interaction */
+    --accent-color-rgb: 37, 99, 235;
+    --accent-color-bg-hover: rgba(var(--accent-color-rgb), 0.1);
+
+    --bg-deep-dark: #f3f4f6;
+    /* A soft, cool gray for the main background */
+    --bg-dark: #ffffff;
+    /* Pure white for surfaces like cards and inputs */
+    --bg-medium: #e5e7eb;
+    /* A slightly darker gray for subtle divisions */
+
+    --text-primary-color: #111827;
+    /* A very dark gray, almost black, for high contrast */
+    --text-secondary-color: #6b7280;
+    /* A mid-gray that passes AA contrast */
+    --text-heading-color: #111827;
+    /* Same as primary for consistency */
+    --text-on-accent-bg: #ffffff;
+    /* White text on the accent color */
+
+    /* Re-map semantic variables for the light theme */
+    --body-bg-color: var(--bg-deep-dark);
+    --surface-bg-color: var(--bg-dark);
+    --input-bg-color: var(--bg-dark);
+    --disabled-bg-color: #e5e7eb;
+
+    --border-color: #d1d5db;
+    /* A clear but not distracting border color */
+    --focus-outline-color: rgba(var(--accent-color-rgb), 0.5);
+
+    --shadow-soft-md: 0 4px 10px rgba(0, 0, 0, 0.08);
+    --shadow-hard: 2px 2px 0 var(--accent-color-dark);
+    --shadow-hard-inset: inset 2px 2px 0 rgba(0, 0, 0, 0.1);
 }

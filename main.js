@@ -1,4 +1,22 @@
 // =================================================================
+// SECTION 0: IMMEDIATE THEME INITIALIZATION
+// =================================================================
+// This IIFE runs instantly to set the theme from localStorage or system preference,
+// preventing a flash of the wrong theme on page load.
+(function () {
+    const THEME_KEY = 'toolthump-theme';
+    const savedTheme = localStorage.getItem(THEME_KEY);
+    const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    } else if (prefersLight) {
+        document.documentElement.setAttribute('data-theme', 'light');
+    }
+})();
+
+
+// =================================================================
 // SECTION 1: DYNAMIC CONTENT LOADING
 // =================================================================
 
@@ -235,17 +253,111 @@ function initializeToolTextSections() {
 
 
 // =================================================================
-// SECTION 5: INITIALIZATION
+// SECTION 5: THEME TOGGLE LOGIC (NEW)
+// =================================================================
+
+// Function to fetch and cache SVG content
+const svgCache = {};
+async function fetchAndCacheSvg(url) {
+    if (svgCache[url]) {
+        return svgCache[url];
+    }
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch SVG: ${response.statusText}`);
+        }
+        const svgText = await response.text();
+        svgCache[url] = svgText;
+        return svgText;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+// Function to replace <img> with inline <svg>
+async function inlineSvgImages() {
+    const images = document.querySelectorAll('img.theme-icon-svg');
+    for (const img of images) {
+        const svgUrl = img.src;
+        const svgContent = await fetchAndCacheSvg(svgUrl);
+        if (svgContent) {
+            // Create a new element to parse the SVG content
+            const div = document.createElement('div');
+            div.innerHTML = svgContent;
+            const svgElement = div.querySelector('svg');
+
+            if (svgElement) {
+                // Copy attributes from <img> to <svg>
+                svgElement.setAttribute('class', img.getAttribute('class'));
+                svgElement.setAttribute('id', img.getAttribute('id'));
+                svgElement.setAttribute('alt', img.getAttribute('alt'));
+
+                // Replace <img> with <svg>
+                img.parentNode.replaceChild(svgElement, img);
+            }
+        }
+    }
+}
+
+const THEME_KEY = 'toolthump-theme';
+
+/**
+ * Applies the selected theme and updates the toggle button's state.
+ * @param {string} theme - The theme to apply ('light' or 'dark').
+ */
+function applyTheme(theme) {
+    const root = document.documentElement;
+    const toggleButton = document.getElementById('theme-toggle');
+    const sunIcon = document.getElementById('theme-icon-sun');
+    const moonIcon = document.getElementById('theme-icon-moon');
+
+    if (!toggleButton || !sunIcon || !moonIcon) return;
+
+    const isDark = theme === 'dark';
+
+    root.setAttribute('data-theme', theme);
+    localStorage.setItem(THEME_KEY, theme);
+
+    moonIcon.classList.toggle('hidden', !isDark);
+    sunIcon.classList.toggle('hidden', isDark);
+
+    toggleButton.setAttribute('aria-label', `Switch to ${isDark ? 'light' : 'dark'} theme`);
+}
+
+/**
+ * Sets up the theme toggle button and syncs its UI with the current theme.
+ */
+function setupThemeToggle() {
+    const toggleButton = document.getElementById('theme-toggle');
+    if (!toggleButton) return;
+
+    // Sync button UI with the theme set by the FOUC script
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(currentTheme);
+
+    toggleButton.addEventListener('click', () => {
+        const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(newTheme);
+    });
+}
+
+
+// =================================================================
+// SECTION 6: INITIALIZATION (was Section 5)
 // =================================================================
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Load all includes (header, footer, tool-text-section, etc.)
+    // 1. Load all includes (header, footer, etc.)
     await loadIncludes();
 
     // 2. Setup components that depend on the includes
+    await inlineSvgImages();
     setupHeader();
     setupFooter();
-    initializeToolTextSections(); // This will now run on every page
+    setupThemeToggle(); // Setup the theme toggle after header is loaded
+    initializeToolTextSections();
 
     // 3. Trigger the specific tool's unique rendering logic if it exists
     if (typeof window.initializeTool === 'function') {
