@@ -119,5 +119,16 @@ const toolsData = [
         cssPaths: ["/tools/data/qr-code-generator/qr-code-generator.css"],
         jsPath: "/tools/data/qr-code-generator/qrCodeGenerator.js",
         keywords: ["qr", "code", "generator", "data", "link", "url", "barcode"]
+    },
+    {
+        id: "image-metadata-viewer",
+        name: "Image Metadata Viewer",
+        category: "Data Tools",
+        description: "View metadata of an image file.",
+        icon: "/icons/duplicate-words-finder-icon.png",
+        htmlPath: "/tools/data/image-metadata-viewer/image-metadata-viewer.html",
+        cssPaths: ["/tools/data/image-metadata-viewer/image-metadata-viewer.css"],
+        jsPath: "/tools/data/image-metadata-viewer/imageMetadataViewer.js",
+        keywords: ["image", "metadata", "viewer", "exif", "data", "info"]
     }
 ];
