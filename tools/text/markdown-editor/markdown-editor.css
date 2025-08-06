@@ -1,0 +1,245 @@
+/* === Tool Title & Description === */
+.tool-content h1 {
+    /* text-align is already centered in global_css/base.css */
+    margin-bottom: var(--spacing-sm);
+}
+
+.tool-description {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--text-primary-color);
+    max-width: 65ch;
+    margin: 0 auto var(--spacing-xl) auto;
+}
+
+/* === Markdown Editor Layout === */
+.markdown-editor-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+}
+
+.editor-column {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-pane,
+.preview-pane {
+    flex: 1;
+    min-width: 300px;
+    height: 70vh;
+    min-height: 500px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background-color: var(--bg-deep-dark);
+    position: relative;
+}
+
+/* === Editor (Textarea) & Preview Styles === */
+#markdown-input,
+#html-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: var(--spacing-lg);
+}
+
+/* === Specific Styling for Textarea === */
+#markdown-input {
+    resize: none;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-family: var(--font-family-monospace);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-secondary-color);
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+#markdown-input:focus {
+    box-shadow: none;
+}
+
+/* === Pane-Specific Action Buttons === */
+.pane-actions {
+    padding-top: var(--spacing-md);
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* Align content to the right for the preview pane's actions */
+.pane-actions.actions-right {
+    justify-content: flex-end;
+}
+
+/* Add a gap for buttons with an icon and text */
+.pane-actions .btn,
+#export-md-button {
+    gap: var(--spacing-sm);
+}
+
+/* === Main Action Button Container === */
+.tool-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Adjusted padding as it only holds the status message now */
+    padding: var(--spacing-md) 0;
+}
+
+/* === Status Message Styling === */
+.status-message {
+    min-height: 1.5em;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    text-align: center;
+}
+
+.status-message.visible {
+    opacity: 1;
+}
+
+.status-message.warning {
+    color: var(--warning-color);
+}
+
+.status-message.error {
+    color: var(--error-color);
+}
+
+/* === Scoped styles for rendered Markdown content === */
+#html-preview>*:first-child {
+    margin-top: 0;
+}
+
+#html-preview h1,
+#html-preview h2,
+#html-preview h3,
+#html-preview h4 {
+    font-family: var(--font-family-sans);
+    text-transform: none;
+    letter-spacing: normal;
+    text-align: left;
+    margin-top: 1.5em;
+    margin-bottom: 0.75em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#html-preview h1 {
+    font-size: 2em;
+}
+
+#html-preview h2 {
+    font-size: 1.5em;
+}
+
+#html-preview h3 {
+    font-size: 1.25em;
+}
+
+#html-preview p {
+    margin-bottom: 1em;
+    line-height: 1.7;
+}
+
+#html-preview a {
+    text-decoration: underline;
+}
+
+#html-preview ul,
+#html-preview ol {
+    list-style: initial;
+    margin-left: 2em;
+    margin-bottom: 1em;
+}
+
+#html-preview ol {
+    list-style: decimal;
+}
+
+#html-preview li {
+    margin-bottom: 0.5em;
+}
+
+#html-preview blockquote {
+    margin: 1.5em 0;
+    padding: 0.5em 1.5em;
+    border-left: 4px solid var(--accent-color);
+    background-color: var(--accent-color-bg-hover);
+    color: var(--text-secondary-color);
+}
+
+#html-preview blockquote p {
+    margin-bottom: 0;
+}
+
+#html-preview code {
+    font-family: var(--font-family-monospace);
+    background-color: var(--accent-color-bg-hover);
+    color: var(--accent-color);
+    padding: 0.2em 0.4em;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.9em;
+}
+
+#html-preview pre {
+    background-color: var(--bg-dark);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color);
+    overflow-x: auto;
+    margin-bottom: 1em;
+}
+
+#html-preview pre code {
+    background-color: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+}
+
+#html-preview table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+}
+
+#html-preview th,
+#html-preview td {
+    border: 1px solid var(--border-color);
+    padding: 0.75em;
+    text-align: left;
+}
+
+#html-preview th {
+    background-color: var(--bg-dark);
+    font-weight: 600;
+}
+
+#html-preview hr {
+    border: none;
+    border-top: 2px solid var(--border-color);
+    margin: 2em 0;
+}
+
+/* === Responsive Adjustments === */
+@media (max-width: 992px) {
+    .markdown-editor-container {
+        flex-direction: column;
+    }
+
+    .editor-pane,
+    .preview-pane {
+        height: 50vh;

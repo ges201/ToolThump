@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Markdown Editor | ToolThump</title>
+    <meta name="description"
+        content="A free, fast, and private client-side Markdown editor with a live preview. Write Markdown on the left and see the rendered HTML on the right, instantly.">
+
+    <!-- Favicon and Manifest -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <!-- Global Stylesheets -->
+    <link rel="stylesheet" href="/global_css/theme.css">
+    <link rel="stylesheet" href="/global_css/base.css">
+    <link rel="stylesheet" href="/global_css/layout.css">
+    <link rel="stylesheet" href="/global_css/components.css">
+    <link rel="stylesheet" href="/global_css/responsive.css">
+    <link rel="stylesheet" href="/_includes/tool-text-section.css">
+
+    <!-- Tool-Specific Stylesheet -->
+    <link rel="stylesheet" href="/tools/text/markdown-editor/markdown-editor.css">
+</head>
+
+<body>
+    <header data-include="header"></header>
+
+    <main id="tool-container">
+        <!-- Main Tool UI -->
+        <div class="tool-content active">
+            <h1>Markdown Editor</h1>
+            <p class="tool-description">Write, preview, and export Markdown in real-time. Fast, private, and all in your
+                browser.</p>
+
+            <div class="markdown-editor-container">
+                <!-- Left column containing the editor and its action button -->
+                <div class="editor-column">
+                    <div class="editor-pane">
+                        <label for="markdown-input" class="sr-only">Markdown Input</label>
+                        <textarea id="markdown-input"
+                            placeholder="Type your Markdown here...&#10;&#10;# Like this!&#10;* And this!&#10;`And this!`"
+                            aria-label="Markdown Input"></textarea>
+                    </div>
+                    <div class="pane-actions">
+                        <button id="clear-button" class="btn btn-secondary" title="Clear editor content">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path
+                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                </path>
+                            </svg>
+                            <span>Clear</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Right column for the preview and its action button -->
+                <div class="editor-column">
+                    <div class="preview-pane">
+                        <div id="html-preview" aria-live="polite"></div>
+                    </div>
+                    <div class="pane-actions actions-right">
+                        <button id="export-md-button" class="btn btn-secondary" title="Export as .md file">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            <span>Export .md</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Centered container for status messages -->
+            <div class="tool-actions">
+                <p id="export-status-message" class="status-message" aria-live="polite"></p>
+            </div>
+        </div>
+
+        <!-- Dynamic How-to, Features, FAQ sections -->
+        <div data-include="tool-text-section"></div>
+    </main>
+
+    <footer data-include="footer"></footer>
+
+    <!-- JSON data for the tool's text sections (content unchanged) -->
+    <script type="application/json" id="tool-text-data">
+    {
+        "sections": [
+            {
+                "type": "how-to",
+                "icon": "❓",
+                "title": "How to Use the Markdown Editor",
+                "intro": "Using this editor is as simple as it gets. Just type on the left and see the magic happen on the right.",
+                "steps": [
+                    {
+                        "icon": "✍️",
+                        "title": "Write Markdown",
+                        "description": "Start typing in the left-hand pane. Use standard Markdown syntax to format your text (e.g., `# Heading`, `*bold*`, `[link](https://toolthump.com))."
+                    },
+                    {
+                        "icon": "👀",
+                        "title": "See Live Preview",
+                        "description": "As you type, the right-hand pane will instantly update with a preview of the rendered HTML. No buttons to press, no waiting."
+                    },
+                    {
+                        "icon": "🗑️",
+                        "title": "Clear or Export",
+                        "description": "Use the 'Clear' button to wipe the editor clean. When you're done, click 'Export .md' to download your raw Markdown text as a file."
+                    }
+                ]
+            },
+            {
+                "type": "features",
+                "icon": "✨",
+                "title": "Core Features",
+                "features": [
+                    {
+                        "icon": "⚡",
+                        "title": "Instant Real-Time Preview",
+                        "description": "The editor renders your Markdown as you type. This immediate feedback loop helps you write faster and spot formatting errors instantly."
+                    },
+                    {
+                        "icon": "🧹",
+                        "title": "One-Click Clear & Export",
+                        "description": "Easily clear the editor or save your work by exporting the raw Markdown to a `.md` file directly from the interface."
+                    },
+                    {
+                        "icon": "🔒",
+                        "title": "Completely Client-Side",
+                        "description": "Your text never leaves your browser. All parsing and rendering happens on your machine, ensuring your work remains 100% private."
+                    },
+                    {
+                        "icon": "🛡️",
+                        "title": "Secure & Sanitized Output",
+                        "description": "The tool uses DOMPurify to sanitize the HTML output, preventing any potential cross-site scripting (XSS) issues. You can be sure the output is safe to use anywhere."
+                    }
+                ]
+            },
+            {
+                "type": "faq",
+                "icon": "🤔",
+                "title": "Frequently Asked Questions",
+                "faqs": [
+                    {
+                        "icon": "🌐",
+                        "question": "What is Markdown?",
+                        "answer": "Markdown is a lightweight markup language with plain-text-formatting syntax. It's designed so that it can be converted to HTML and many other formats. It's often used for writing README files, forum posts, and quick documentation."
+                    },
+                    {
+                        "icon": "💰",
+                        "question": "Is this tool really free?",
+                        "answer": "Yes, completely. No ads, no subscriptions, no hidden costs. Just a useful tool for anyone who needs it."
+                    },
+                    {
+                        "icon": "💻",
+                        "question": "What libraries does this tool use?",
+                        "answer": "This editor is powered by two excellent open-source libraries: 'marked.js' for the fast Markdown parsing and 'DOMPurify' for ensuring the rendered HTML is secure. All credit to their creators."
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+
+    <!-- Core & Tool-Specific Scripts -->
+    <script src="/main.js"></script>
+    <script src="/tools/text/markdown-editor/markdownEditor.js"></script>
+
+</body>
+
+</html>
