@@ -220,7 +220,9 @@ const edv = {
             let displayValue;
 
             if (value instanceof Uint8Array || value instanceof ArrayBuffer) {
-                displayValue = `[Binary Data: ${value.byteLength || value.length} bytes]`;
+                const byteArray = (value instanceof Uint8Array) ? value : new Uint8Array(value);
+                // Represent binary data as a readable array of bytes, similar to the JSON export.
+                displayValue = `[${Array.from(byteArray).join(', ')}]`;
             } else if (value instanceof Date) {
                 displayValue = value.toLocaleString();
             } else if (typeof value === 'object' && value !== null) {
