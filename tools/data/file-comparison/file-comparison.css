@@ -5,7 +5,6 @@
     justify-content: center;
     gap: var(--spacing-md);
     margin-bottom: var(--spacing-sm);
-    /* Reduced margin for this tool */
 }
 
 .tool-header .tool-icon {
@@ -47,6 +46,10 @@
     cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease;
     min-height: 200px;
+
+    /* === THE ACTUAL FIX - PART 1 === */
+    /* Force the grid item to be smaller than its content */
+    min-width: 0;
 }
 
 .file-drop-zone.dragover {
@@ -116,8 +119,8 @@
 #reset-button {
     font-size: 1.1rem;
     padding: var(--spacing-md) var(--spacing-xl);
-    width: 240px; /* Set fixed width for consistency */
-    justify-content: center; /* Center content */
+    width: 240px;
+    justify-content: center;
 }
 
 /* === Result Container === */
@@ -126,7 +129,6 @@
     padding: var(--spacing-lg);
     border-radius: var(--border-radius-md);
     display: none;
-    /* Hidden by default */
     animation: fadeInPageContent 0.3s ease-out;
     border: 1px solid transparent;
 }
@@ -177,7 +179,6 @@
 
 .result-container.error {
     background-color: rgba(229, 75, 75, 0.1);
-    /* Using literal color for error */
     border-color: #e54b4b;
     color: #e54b4b;
 }
@@ -201,25 +202,28 @@
     justify-content: center;
     width: 100%;
     height: 100%;
+    /* === THE ACTUAL FIX - PART 2 === */
+    /* Add overflow hidden as a safeguard */
+    overflow: hidden;
 }
 
 .file-details-wrapper {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     width: 100%;
     gap: var(--spacing-sm);
+    min-width: 0;
+    /* Allow wrapper to shrink */
 }
 
 .file-details-wrapper .file-details {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
-    overflow: hidden;
-    /* Override existing styles */
-    padding: 0;
-    word-break: normal;
     text-align: left;
+    flex: 1;
+    min-width: 0;
+    /* Allow this flex item to shrink */
 }
 
 .file-details .file-icon {
@@ -231,7 +235,8 @@
 .file-details .file-name-size {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    min-width: 0;
+    /* Allow this nested flex item to shrink */
 }
 
 .file-details .file-name {
@@ -244,27 +249,25 @@
 .remove-file-button.btn-secondary {
     position: relative;
     z-index: 2;
-    font-size: 1.8rem; /* Adjusted size */
+    font-size: 1.8rem;
     padding: 0;
-    min-height: 36px; /* Smaller */
-    min-width: 36px; /* Smaller */
+    min-height: 36px;
+    min-width: 36px;
     line-height: 1;
     background-color: transparent;
     border: 1px solid var(--border-color);
     color: var(--text-secondary-color);
     transition: color 0.2s ease;
-    /* Reset base button styles */
     transform: none;
     box-shadow: none;
 }
 
 .remove-file-button.btn-secondary:hover,
 .remove-file-button.btn-secondary:focus {
-    color: #e54b4b; /* Red 'x' on hover */
+    color: #e54b4b;
     background-color: transparent;
     border-color: var(--border-color);
     outline: none;
-    /* Override global hover effects */
     transform: none;
     box-shadow: none;
 }
