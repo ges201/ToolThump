@@ -1,0 +1,270 @@
+/* Styles for the tool header */
+.tool-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    /* Reduced margin for this tool */
+}
+
+.tool-header .tool-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+}
+
+.tool-description {
+    text-align: center;
+    max-width: 100ch;
+    margin: 0 auto var(--spacing-xl);
+    color: var(--text-secondary-color);
+}
+
+.comparison-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+    .comparison-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.file-drop-zone {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--spacing-xl);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius-lg);
+    background-color: var(--input-bg-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    min-height: 200px;
+}
+
+.file-drop-zone.dragover {
+    border-color: var(--accent-color);
+    background-color: var(--accent-color-bg-hover);
+}
+
+.file-drop-zone.file-loaded {
+    border-style: solid;
+    border-color: var(--accent-color);
+}
+
+.file-drop-zone.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-info .file-placeholder-icon {
+    font-size: 3rem;
+    color: var(--text-secondary-color);
+    margin-bottom: var(--spacing-sm);
+    display: block;
+}
+
+.file-info .placeholder-text {
+    color: var(--text-secondary-color);
+    font-weight: 600;
+}
+
+.file-info .file-details {
+    font-weight: 600;
+    color: var(--text-primary-color);
+    word-break: break-all;
+    padding: 0 var(--spacing-sm);
+}
+
+.file-details .file-name {
+    display: block;
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.file-details .file-size {
+    font-size: 0.9rem;
+    color: var(--text-secondary-color);
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+#compare-button,
+#reset-button {
+    font-size: 1.1rem;
+    padding: var(--spacing-md) var(--spacing-xl);
+    width: 240px; /* Set fixed width for consistency */
+    justify-content: center; /* Center content */
+}
+
+/* === Result Container === */
+.result-container {
+    text-align: center;
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+    display: none;
+    /* Hidden by default */
+    animation: fadeInPageContent 0.3s ease-out;
+    border: 1px solid transparent;
+}
+
+.result-container.show {
+    display: block;
+}
+
+.result-icon {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.result-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+}
+
+.result-message {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-lg);
+}
+
+.result-progress-bar {
+    width: 100%;
+    max-width: 400px;
+    margin: var(--spacing-md) auto 0;
+    height: 8px;
+    background-color: var(--border-color);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+}
+
+.result-progress-bar-inner {
+    height: 100%;
+    width: 0;
+    background-color: var(--accent-color);
+    transition: width 0.1s linear;
+}
+
+/* Result states */
+.result-container.success {
+    background-color: rgba(var(--accent-color-rgb), 0.1);
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.result-container.error {
+    background-color: rgba(229, 75, 75, 0.1);
+    /* Using literal color for error */
+    border-color: #e54b4b;
+    color: #e54b4b;
+}
+
+.result-container.info {
+    background-color: var(--surface-bg-color);
+    border-color: var(--border-color);
+    color: var(--text-primary-color);
+}
+
+/* === Improved File Selection UI === */
+.file-drop-zone.file-loaded {
+    padding: var(--spacing-md);
+    background-color: var(--surface-bg-color);
+}
+
+.file-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.file-details-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: var(--spacing-sm);
+}
+
+.file-details-wrapper .file-details {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    overflow: hidden;
+    /* Override existing styles */
+    padding: 0;
+    word-break: normal;
+    text-align: left;
+}
+
+.file-details .file-icon {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    flex-shrink: 0;
+}
+
+.file-details .file-name-size {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.file-details .file-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0;
+}
+
+.remove-file-button.btn-secondary {
+    position: relative;
+    z-index: 2;
+    font-size: 1.8rem; /* Adjusted size */
+    padding: 0;
+    min-height: 36px; /* Smaller */
+    min-width: 36px; /* Smaller */
+    line-height: 1;
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary-color);
+    transition: color 0.2s ease;
+    /* Reset base button styles */
+    transform: none;
+    box-shadow: none;
+}
+
+.remove-file-button.btn-secondary:hover,
+.remove-file-button.btn-secondary:focus {
+    color: #e54b4b; /* Red 'x' on hover */
+    background-color: transparent;
+    border-color: var(--border-color);
+    outline: none;
+    /* Override global hover effects */
+    transform: none;
+    box-shadow: none;
+}

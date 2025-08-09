@@ -130,5 +130,16 @@ const toolsData = [
         cssPaths: ["/tools/data/image-metadata-viewer/image-metadata-viewer.css"],
         jsPath: "/tools/data/image-metadata-viewer/imageMetadataViewer.js",
         keywords: ["image", "metadata", "viewer", "exif", "data", "info"]
+    },
+    {
+        id: "file-comparison",
+        name: "File Comparison",
+        category: "Data Tools",
+        description: "Compare two files and highlight differences.",
+        icon: "/icons/file-comparison-icon.png",
+        htmlPath: "/tools/data/file-comparison/file-comparison.html",
+        cssPaths: ["/tools/data/file-comparison/file-comparison.css"],
+        jsPath: "/tools/data/file-comparison/fileComparison.js",
+        keywords: ["file", "comparison", "compare", "diff", "difference", "tool"]
     }
 ];

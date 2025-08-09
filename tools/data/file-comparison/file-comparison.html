@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bit-by-Bit File Comparator - Check if Files are Identical | ToolThump</title>
+    <meta name="description"
+        content="Securely compare two files to see if they are identical. The tool performs a bit-by-bit comparison entirely in your browser. No files are uploaded.">
+    <link rel="canonical" href="https://toolthump.com/tools/file/file-comparator/file-comparator.html">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://toolthump.com/tools/file/file-comparator/file-comparator.html">
+    <meta property="og:title" content="Bit-by-Bit File Comparator | ToolThump">
+    <meta property="og:description"
+        content="Securely compare two files to see if they are identical. The tool performs a bit-by-bit comparison entirely in your browser. No files are uploaded.">
+    <meta property="og:image" content="https://toolthump.com/icons/file-comparator-icon.png">
+    <meta property="og:site_name" content="ToolThump" />
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://toolthump.com/tools/file/file-comparator/file-comparator.html">
+    <meta property="twitter:title" content="Bit-by-Bit File Comparator | ToolThump">
+    <meta property="twitter:description"
+        content="Securely compare two files to see if they are identical. The tool performs a bit-by-bit comparison entirely in your browser. No files are uploaded.">
+    <meta property="twitter:image" content="https://toolthump.com/icons/file-comparator-icon.png">
+
+    <!-- Common Stylesheets (paths relative to root) -->
+    <link rel="stylesheet" href="/global_css/theme.css">
+    <link rel="stylesheet" href="/global_css/base.css">
+    <link rel="stylesheet" href="/global_css/layout.css">
+    <link rel="stylesheet" href="/global_css/components.css">
+    <link rel="stylesheet" href="/global_css/responsive.css">
+    <link rel="stylesheet" href="/_includes/tool-text-section.css">
+
+    <!-- Tool-Specific Stylesheet (path relative to root) -->
+    <link rel="stylesheet" href="/tools/data/file-comparison/file-comparison.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "url": "https://toolthump.com/tools/file/file-comparator/file-comparator.html",
+      "name": "File Comparator",
+      "description": "Compare two files bit-by-bit to verify if they are identical. All processing is done client-side for privacy.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://toolthump.com/#website"
+      }
+    }
+    </script>
+
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7245857649397014"
+        crossorigin="anonymous"></script>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="shortcut icon" href="/favicon.ico">
+</head>
+
+<body>
+    <header data-include="header"></header>
+    <div class="content-wrapper">
+        <main id="tool-container">
+            <section id="fileComparator" class="tool-content active">
+                <div class="tool-header">
+                    <img src="/icons/file-comparator-icon.png" alt="File Comparator Icon" class="tool-icon">
+                    <h1>File Comparator</h1>
+                </div>
+                <p class="tool-description">
+                    Compare two files bit-by-bit to see if they are identical. The tool checks the file content, not the
+                    name or date. Your files are never uploaded.
+                </p>
+
+                <div class="comparison-container">
+                    <div class="file-drop-zone" id="file-drop-zone-1">
+                        <div class="file-info" id="file-info-1">
+                            <span class="file-placeholder-icon">📂</span>
+                            <p class="placeholder-text">Drop File 1 or Click to Select</p>
+                            <p class="file-details"></p>
+                        </div>
+                        <input type="file" id="file-input-1" class="file-input" aria-label="Select first file">
+                    </div>
+
+                    <div class="file-drop-zone" id="file-drop-zone-2">
+                        <div class="file-info" id="file-info-2">
+                            <span class="file-placeholder-icon">📂</span>
+                            <p class="placeholder-text">Drop File 2 or Click to Select</p>
+                            <p class="file-details"></p>
+                        </div>
+                        <input type="file" id="file-input-2" class="file-input" aria-label="Select second file">
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button id="compare-button" disabled>Compare Files</button>
+                    <button id="reset-button" class="btn-secondary" style="display: none;">Compare New Files</button>
+                </div>
+
+                <div id="result-container" class="result-container" aria-live="polite"></div>
+            </section>
+
+            <div data-include="tool-text-section"></div>
+        </main>
+    </div>
+
+    <footer data-include="footer"></footer>
+
+    <!-- Data Island for the text sections -->
+    <script type="application/json" id="tool-text-data">{
+    "sections": [
+        {
+            "type": "how-to",
+            "title": "How to Compare Two Files",
+            "icon": "💡",
+            "intro": "Verifying if two files are identical is a simple, three-step process.",
+            "steps": [
+                {
+                    "icon": "1️⃣",
+                    "title": "Select Your Files",
+                    "description": "Drag and drop each file into one of the boxes, or click on a box to open the file selector. You must select two files to proceed."
+                },
+                {
+                    "icon": "2️⃣",
+                    "title": "Start the Comparison",
+                    "description": "Once two files are selected, the 'Compare Files' button will become active. Click it to begin the bit-by-bit comparison."
+                },
+                {
+                    "icon": "3️⃣",
+                    "title": "View the Result",
+                    "description": "The tool will instantly tell you if the files are identical or different. For large files, a progress bar will show the status. No data ever leaves your computer."
+                }
+            ]
+        },
+        {
+            "type": "features",
+            "title": "Key Features & Guarantees",
+            "icon": "✨",
+            "features": [
+                {
+                    "icon": "🔒",
+                    "title": "100% Client-Side & Private",
+                    "description": "Files are read and compared directly in your browser. They are never uploaded to any server, ensuring complete privacy and security."
+                },
+                {
+                    "icon": "⚙️",
+                    "title": "Bit-by-Bit Accuracy",
+                    "description": "This isn't a superficial check. The tool reads the entire binary content of both files to ensure they are truly identical, byte for byte."
+                },
+                {
+                    "icon": "🚀",
+                    "title": "Large File Support",
+                    "description": "By processing files in chunks, the tool can handle large files (many GBs) without crashing your browser, which is a common issue with other client-side tools."
+                },
+                {
+                    "icon": "🧩",
+                    "title": "Any File Type",
+                    "description": "It doesn't matter if it's an image, a video, a PDF, or a program executable. The tool compares the raw data, making it universally compatible."
+                }
+            ]
+        },
+        {
+            "type": "faq",
+            "title": "Frequently Asked Questions (FAQ)",
+            "icon": "❓",
+            "faqs": [
+                {
+                    "icon": "🤔",
+                    "question": "Does this tool check the file name or date?",
+                    "answer": "No. It only checks the actual content of the file. Two files with different names, creation dates, or other metadata will be considered 'Identical' if their binary content is the same."
+                },
+                {
+                    "icon": "💾",
+                    "question": "Is there a file size limit?",
+                    "answer": "Technically, no. The tool is designed to handle very large files by reading them in chunks. However, performance depends on your computer's speed and available memory. The comparison will be slower for massive files."
+                },
+                {
+                    "icon": "🛡️",
+                    "question": "How can I be sure my files are private?",
+                    "answer": "The tool uses the JavaScript File API to read files from your disk into your browser's memory. This process is sandboxed; the code has no ability to send that data anywhere. You can verify this by disconnecting from the internet after loading the page—the tool will still work perfectly."
+                }
+            ]
+        }
+    ]
+}</script>
+
+    <!-- Scripts (paths relative to root) -->
+    <script src="/tools/data/file-comparison/fileComparison.js"></script>
+    <script src="/main.js"></script>
+</body>
+
+</html>
