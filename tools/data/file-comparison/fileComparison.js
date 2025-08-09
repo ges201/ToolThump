@@ -105,7 +105,7 @@ const fc = {
         this.compareButton.disabled = !(this.files[0] && this.files[1]);
     },
 
-    removeFile: function(index) {
+    removeFile: function (index) {
         this.files[index] = null;
         this.fileInputs[index].value = ''; // Reset file input
         this.updateFileInfo(index);
@@ -166,6 +166,10 @@ const fc = {
         }
     },
 
+    // PASTE THIS CODE INTO fileComparison.js, REPLACING THE EXISTING compareFiles FUNCTION
+
+    // PASTE THIS CODE INTO fileComparison.js, REPLACING THE EXISTING compareFiles FUNCTION
+
     compareFiles: async function () {
         const [file1, file2] = this.files;
 
@@ -184,40 +188,90 @@ const fc = {
         try {
             const reader1 = file1.stream().getReader();
             const reader2 = file2.stream().getReader();
-            let position = 0;
+
+            let chunk1 = new Uint8Array();
+            let chunk2 = new Uint8Array();
+            let pos1 = 0;
+            let pos2 = 0;
+            let totalPosition = 0;
+            let done1 = false;
+            let done2 = false;
 
             while (true) {
-                const [result1, result2] = await Promise.all([reader1.read(), reader2.read()]);
+                // If we've processed the current chunk for file 1, read the next one.
+                if (pos1 >= chunk1.length && !done1) {
+                    const result = await reader1.read();
+                    if (result.done) {
+                        done1 = true;
+                    } else {
+                        chunk1 = result.value;
+                        pos1 = 0;
+                    }
+                }
 
-                if (result1.done && result2.done) {
+                // If we've processed the current chunk for file 2, read the next one.
+                if (pos2 >= chunk2.length && !done2) {
+                    const result = await reader2.read();
+                    if (result.done) {
+                        done2 = true;
+                    } else {
+                        chunk2 = result.value;
+                        pos2 = 0;
+                    }
+                }
+
+                const remaining1 = chunk1.length - pos1;
+                const remaining2 = chunk2.length - pos2;
+
+                // If both streams are finished and there's no data left, they are identical.
+                if (done1 && done2 && remaining1 === 0 && remaining2 === 0) {
                     this.updateProgress(100);
                     this.showResult('success', '✓', 'Files are Identical', 'The files have the same size and content.');
                     break;
                 }
 
-                if (result1.done || result2.done || result1.value.length !== result2.value.length) {
+                // This is a safeguard. The initial size check should prevent this,
+                // but it catches any case where streams end unevenly.
+                if ((done1 && remaining1 === 0) !== (done2 && remaining2 === 0)) {
                     this.showResult('error', '≠', 'Files are Different', 'A mismatch was found during comparison.');
                     break;
                 }
 
-                const chunk1 = result1.value;
-                const chunk2 = result2.value;
+                // Determine the number of bytes to compare in this pass.
+                const compareLength = Math.min(remaining1, remaining2);
 
-                for (let i = 0; i < chunk1.length; i++) {
-                    if (chunk1[i] !== chunk2[i]) {
-                        this.showResult('error', '≠', 'Files are Different', `A byte mismatch was found at position ${position + i}.`);
-                        return;
+                // If there's nothing to compare, loop again to fetch more data.
+                if (compareLength === 0) {
+                    continue;
+                }
+
+                // Compare the bytes in the overlapping region of the chunks.
+                // Using subarray is efficient as it doesn't copy memory.
+                const view1 = chunk1.subarray(pos1, pos1 + compareLength);
+                const view2 = chunk2.subarray(pos2, pos2 + compareLength);
+
+                for (let i = 0; i < compareLength; i++) {
+                    if (view1[i] !== view2[i]) {
+                        const mismatchPosition = totalPosition + i;
+                        this.showResult('error', '≠', 'Files are Different', `A byte mismatch was found at position ${mismatchPosition}.`);
+                        reader1.releaseLock();
+                        reader2.releaseLock();
+                        return; // Exit immediately
                     }
                 }
 
-                position += chunk1.length;
-                this.updateProgress((position / file1.size) * 100);
+                // Advance our positions
+                pos1 += compareLength;
+                pos2 += compareLength;
+                totalPosition += compareLength;
+
+                this.updateProgress((totalPosition / file1.size) * 100);
             }
         } catch (error) {
             console.error('File comparison error:', error);
             this.showResult('error', '❌', 'Error', 'Could not read the files. They might be in use or you may not have permission to access them.');
         }
-    }
+    },
 };
 
 // This function will be called by main.js after includes are loaded
