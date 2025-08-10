@@ -168,19 +168,24 @@
             "icon": "❓",
             "faqs": [
                 {
-                    "icon": "🤔",
-                    "question": "Does this tool check the file name or date?",
-                    "answer": "No. It only checks the actual content of the file. Two files with different names, creation dates, or other metadata will be considered 'Identical' if their binary content is the same."
-                },
-                {
-                    "icon": "💾",
-                    "question": "Is there a file size limit?",
-                    "answer": "Technically, no. The tool is designed to handle very large files by reading them in chunks. However, performance depends on your computer's speed and available memory. The comparison will be slower for massive files."
-                },
-                {
                     "icon": "🛡️",
-                    "question": "How can I be sure my files are private?",
-                    "answer": "The tool uses the JavaScript File API to read files from your disk into your browser's memory. This process is sandboxed; the code has no ability to send that data anywhere. You can verify this by disconnecting from the internet after loading the page—the tool will still work perfectly."
+                    "question": "Are my files *really* kept private?",
+                    "answer": "Yes. The comparison happens entirely within your browser. Your files are not uploaded to any server. The code uses standard browser APIs to read file content into memory for comparison. After you close the page, it's gone. You can even disconnect from the internet after the page loads and the tool will still work."
+                },
+                {
+                    "icon": "🎯",
+                    "question": "What exactly gets compared? Just the content?",
+                    "answer": "Only the binary content of the files is compared. File names, creation dates, modification dates, and other metadata are completely ignored. If two files have different names but identical content, this tool will report them as 'Identical'."
+                },
+                {
+                    "icon": "💡",
+                    "question": "What is a practical use for this?",
+                    "answer": "It's useful for verifying file integrity. For example: confirming that a file you downloaded is not corrupt by comparing it to a trusted copy, ensuring a file was copied correctly to a USB drive, or checking that a backup file is an exact duplicate of the original."
+                },
+                {
+                    "icon": "⚙️",
+                    "question": "What does 'bit-by-bit' comparison actually mean?",
+                    "answer": "It means the tool reads both files and checks if the first byte of File A is the same as the first byte of File B, then the second byte, and so on, all the way to the end. This is the most thorough way to confirm two files are exact copies, unlike just checking file sizes."
                 }
             ]
         }
