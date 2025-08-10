@@ -70,18 +70,8 @@
         font-size: 1.5rem;
     }
 
-    .home-hero h1 {
-        font-size: 1.6rem;
-        /* Make pixel font slightly larger than other h1s on mobile */
-    }
-
-    .tool-content h2,
-    .home-section h2 {
+    .tool-content h2 {
         font-size: 1.4rem;
-    }
-
-    .features-grid {
-        gap: var(--spacing-md);
     }
 
     
