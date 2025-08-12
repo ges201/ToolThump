@@ -4,59 +4,7 @@
         font-size: 15px;
     }
 
-    header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: var(--spacing-md);
-        gap: var(--spacing-md);
-        border-bottom-width: 2px;
-    }
-
-    #header-logo {
-        height: 50px;
-        /* Make logo a bit smaller on mobile */
-    }
-
-    #top-navigation {
-        width: 100%;
-    }
-
-    .category-list {
-        flex-direction: column;
-        width: 100%;
-        gap: var(--spacing-xs);
-    }
-
-    .category-item {
-        width: 100%;
-    }
-
-    .category-button {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .dropdown-menu {
-        position: static;
-        width: 100%;
-        box-shadow: none;
-        border-top: 1px solid var(--border-color);
-        border-left: none;
-        border-right: none;
-        border-bottom: 1px solid var(--border-color);
-        border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
-        margin-top: -1px;
-        /* Overlap with button border */
-        animation: none;
-    }
-
-    .dropdown-menu.show {
-        display: block;
-    }
-
-    .dropdown-menu li a.tool-link {
-        padding-left: var(--spacing-xl);
-    }
+    
 
     main#tool-container {
         padding: var(--spacing-lg);

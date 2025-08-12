@@ -1,0 +1,204 @@
+/* === Header Layout === */
+header {
+    background-color: var(--bg-dark);
+    color: var(--text-primary-color);
+    padding: var(--spacing-md) var(--spacing-lg);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    border-bottom: 2px solid var(--accent-color);
+}
+
+.header-brand {
+    line-height: 0;
+}
+
+.logo-link {
+    display: inline-block;
+    text-decoration: none;
+}
+
+#header-logo {
+    height: 60px;
+    width: auto;
+    display: block;
+}
+
+/* === Header Navigation & Dropdowns === */
+.category-list {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.category-item {
+    position: relative;
+}
+
+
+
+.category-button {
+    gap: var(--spacing-xs);
+}
+
+.category-button[aria-expanded="true"] {
+    background-color: var(--accent-color);
+    color: var(--text-on-accent-bg);
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+.dropdown-arrow {
+    transition: transform 0.2s ease-in-out;
+    fill: currentColor;
+}
+
+.category-button[aria-expanded="true"] .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + var(--spacing-xs));
+    left: 0;
+    background-color: var(--surface-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-soft-md);
+    min-width: 250px;
+    z-index: 101;
+    padding: var(--spacing-sm) 0;
+    animation: fadeInDropdown 0.15s ease-out forwards;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+@keyframes fadeInDropdown {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tool-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: var(--spacing-md);
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.dropdown-menu li a.tool-link {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    color: var(--text-primary-color);
+    font-weight: 400;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-menu li a.tool-link:hover,
+.dropdown-menu li a.tool-link:focus {
+    background-color: var(--accent-color-bg-hover);
+    color: var(--accent-color);
+    outline: none;
+}
+
+.dropdown-menu li a.tool-link.active-link {
+    background-color: var(--accent-color);
+    color: var(--text-on-accent-bg);
+    font-weight: 600;
+}
+
+/* === Theme Toggle Button === */
+#theme-toggle {
+    padding: var(--spacing-sm);
+    line-height: 0;
+    margin-left: auto;
+}
+
+.theme-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.theme-icon-svg {
+    color: var(--text-primary-color);
+}
+
+#theme-icon-moon {
+    color: var(--accent-color);
+}
+
+[data-theme="light"] #theme-icon-sun {
+    color: var(--accent-color);
+}
+
+.theme-icon.hidden {
+    display: none;
+}
+
+/* === Header Responsive Adjustments === */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: var(--spacing-md);
+        gap: var(--spacing-md);
+    }
+
+    #header-logo {
+        height: 50px;
+    }
+
+    #top-navigation {
+        width: 100%;
+    }
+
+    .category-list {
+        flex-direction: column;
+        width: 100%;
+        gap: var(--spacing-xs);
+    }
+
+    .category-item {
+        width: 100%;
+    }
+
+    .category-button {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .dropdown-menu {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        border-top: 1px solid var(--border-color);
+        border-left: none;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+        margin-top: -1px;
+        animation: none;
+    }
+
+    .dropdown-menu.show {
+        display: block;
+    }
+
+    .dropdown-menu li a.tool-link {
+        padding-left: var(--spacing-xl);
+    }
+}

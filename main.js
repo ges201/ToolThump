@@ -21,6 +21,17 @@
 // =================================================================
 
 /**
+ * Dynamically loads a CSS file and appends it to the document's head.
+ * @param {string} href - The path to the CSS file.
+ */
+function loadCssFile(href) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    document.head.appendChild(link);
+}
+
+/**
  * Finds all elements with a `data-include` attribute and loads the
  * corresponding HTML file from the `_includes` directory into them.
  */
@@ -58,6 +69,8 @@ async function loadIncludes() {
             let contentHTML = await response.text();
 
             if (includeName === 'header') {
+                // Load header-specific CSS
+                loadCssFile(`${relativePathPrefix}_includes/header.css`);
                 contentHTML = contentHTML.replace(/(href|src)=["'](?!(?:https?:|\/\/|\/|data:|#))([^"']+)["']/g, (match, attr, url) => {
                     return `${attr}="${relativePathPrefix}${url}"`;
                 });

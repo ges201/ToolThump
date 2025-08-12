@@ -1,32 +1,6 @@
 /* ToolThump/global_css/layout.css */
 
-/* === Header === */
-header {
-    background-color: var(--bg-dark);
-    color: var(--text-primary-color);
-    padding: var(--spacing-md) var(--spacing-lg);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-lg);
-    border-bottom: 2px solid var(--accent-color);
-}
 
-.header-brand {
-    line-height: 0;
-}
-
-.logo-link {
-    display: inline-block;
-    text-decoration: none;
-}
-
-#header-logo {
-    height: 60px;
-    width: auto;
-    display: block;
-}
 
 /* === Content Wrapper & Main Content Area === */
 .content-wrapper {
