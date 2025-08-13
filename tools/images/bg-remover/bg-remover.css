@@ -85,6 +85,8 @@
 .br-image-container {
     position: relative;
     display: none;
+    width: 100%;
+    height: 100%;
     /* Initially hidden */
     line-height: 0;
     /* Removes bottom space from inline-block */
@@ -143,10 +145,8 @@
 /* --- Preview Image & Result Canvas --- */
 .br-image-display {
     display: block;
-    max-width: 100%;
-    max-height: 100%;
-    height: auto;
-    width: auto;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
     z-index: 1;
 }

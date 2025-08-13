@@ -160,11 +160,36 @@ const br = {
     },
 
     resetCropBox: function () {
-        if (!this.previewImg || !this.cropBox) return;
-        this.cropState.x = 0;
-        this.cropState.y = 0;
-        this.cropState.w = this.previewImg.offsetWidth;
-        this.cropState.h = this.previewImg.offsetHeight;
+        if (!this.previewImg || !this.cropBox || !this.originalImageSize || this.originalImageSize.w === 0 || this.originalImageSize.h === 0) return;
+
+        const containerW = this.previewImg.offsetWidth;
+        const containerH = this.previewImg.offsetHeight;
+        const imgW = this.originalImageSize.w;
+        const imgH = this.originalImageSize.h;
+
+        const containerAspectRatio = containerW / containerH;
+        const imgAspectRatio = imgW / imgH;
+
+        let renderedW, renderedH, x, y;
+
+        if (imgAspectRatio > containerAspectRatio) {
+            // Image is wider than the container; constrained by width
+            renderedW = containerW;
+            renderedH = renderedW / imgAspectRatio;
+            x = 0;
+            y = (containerH - renderedH) / 2;
+        } else {
+            // Image is taller than or same aspect as the container; constrained by height
+            renderedH = containerH;
+            renderedW = renderedH * imgAspectRatio;
+            y = 0;
+            x = (containerW - renderedW) / 2;
+        }
+
+        this.cropState.x = x;
+        this.cropState.y = y;
+        this.cropState.w = renderedW;
+        this.cropState.h = renderedH;
         this.updateCropBoxStyle();
     },
 
@@ -191,6 +216,28 @@ const br = {
     doResize: function (e) {
         if (!this.cropState.isResizing) return;
 
+        // Get image boundaries
+        const containerW = this.previewImg.offsetWidth;
+        const containerH = this.previewImg.offsetHeight;
+        const imgW = this.originalImageSize.w;
+        const imgH = this.originalImageSize.h;
+        const containerAspectRatio = containerW / containerH;
+        const imgAspectRatio = imgW / imgH;
+        let renderedW, renderedH, imgX, imgY;
+        if (imgAspectRatio > containerAspectRatio) {
+            renderedW = containerW;
+            renderedH = renderedW / imgAspectRatio;
+            imgX = 0;
+            imgY = (containerH - renderedH) / 2;
+        } else {
+            renderedH = containerH;
+            renderedW = renderedH * imgAspectRatio;
+            imgY = 0;
+            imgX = (containerW - renderedW) / 2;
+        }
+        const imgRight = imgX + renderedW;
+        const imgBottom = imgY + renderedH;
+
         const dx = e.clientX - this.cropState.startX;
         const dy = e.clientY - this.cropState.startY;
         let { x, y, w, h } = this.cropState;
@@ -200,12 +247,15 @@ const br = {
         if (this.cropState.handle.includes('t')) { y += dy; h -= dy; }
         if (this.cropState.handle.includes('b')) { h += dy; }
 
-        const maxW = this.previewImg.offsetWidth;
-        const maxH = this.previewImg.offsetHeight;
-        if (x < 0) { w += x; x = 0; }
-        if (y < 0) { h += y; y = 0; }
-        if (x + w > maxW) { w = maxW - x; }
-        if (y + h > maxH) { h = maxH - y; }
+        // Constrain resizing
+        if (x < imgX) { w += x - imgX; x = imgX; }
+        if (y < imgY) { h += y - imgY; y = imgY; }
+        if (x + w > imgRight) { w = imgRight - x; }
+        if (y + h > imgBottom) { h = imgBottom - y; }
+        
+        // prevent cropbox from inverting
+        if (w < 10) w = 10; // minimum width
+        if (h < 10) h = 10; // minimum height
 
         this.cropState.x = x; this.cropState.y = y;
         this.cropState.w = w; this.cropState.h = h;
@@ -243,12 +293,31 @@ const br = {
         let newX = this.cropState.startBoxX + dx;
         let newY = this.cropState.startBoxY + dy;
 
-        const maxW = this.previewImg.offsetWidth;
-        const maxH = this.previewImg.offsetHeight;
-        if (newX < 0) newX = 0;
-        if (newY < 0) newY = 0;
-        if (newX + this.cropState.w > maxW) newX = maxW - this.cropState.w;
-        if (newY + this.cropState.h > maxH) newY = maxH - this.cropState.h;
+        // Get image boundaries
+        const containerW = this.previewImg.offsetWidth;
+        const containerH = this.previewImg.offsetHeight;
+        const imgW = this.originalImageSize.w;
+        const imgH = this.originalImageSize.h;
+        const containerAspectRatio = containerW / containerH;
+        const imgAspectRatio = imgW / imgH;
+        let renderedW, renderedH, imgX, imgY;
+        if (imgAspectRatio > containerAspectRatio) {
+            renderedW = containerW;
+            renderedH = renderedW / imgAspectRatio;
+            imgX = 0;
+            imgY = (containerH - renderedH) / 2;
+        } else {
+            renderedH = containerH;
+            renderedW = renderedH * imgAspectRatio;
+            imgY = 0;
+            imgX = (containerW - renderedW) / 2;
+        }
+
+        // Constrain dragging
+        if (newX < imgX) newX = imgX;
+        if (newY < imgY) newY = imgY;
+        if (newX + this.cropState.w > imgX + renderedW) newX = imgX + renderedW - this.cropState.w;
+        if (newY + this.cropState.h > imgY + renderedH) newY = imgY + renderedH - this.cropState.h;
 
         this.cropState.x = newX;
         this.cropState.y = newY;
@@ -288,6 +357,7 @@ const br = {
         try {
             const imageBlob = await this.getCroppedBlob();
             const config = {
+                publicPath: 'https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/',
                 model: this.selectedQuality,
                 onProgress: (key, current, total) => {
                     const progress = (current / total) * 100;
