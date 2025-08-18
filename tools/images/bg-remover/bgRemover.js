@@ -6,27 +6,22 @@ const br = {
     // DOM Elements
     imageInput: null, workspace: null, uploadLabel: null, statusOverlay: null,
     previewImg: null, outputCanvas: null, actionsContainer: null, processBtn: null,
-    downloadBtn: null, qualityFastBtn: null, qualityQualityBtn: null, clearBtn: null,
-    qualitySelector: null, imageContainer: null, cropBox: null, resetCropBtn: null,
+    downloadBtn: null, qualityFastBtn: null, qualityQualityBtn: null, qualityUltraBtn: null,
+    clearBtn: null, qualitySelector: null, imageContainer: null,
 
     // State
-    isProcessing: false, currentFile: null, selectedQuality: 'medium',
-    originalImage: null, originalImageSize: { w: 0, h: 0 },
-    cropState: {
-        x: 0, y: 0, w: 0, h: 0,
-        isResizing: false, isDragging: false, handle: null,
-        startX: 0, startY: 0, startBoxX: 0, startBoxY: 0
-    },
-    // Bound event handlers for proper removal
-    boundDoResize: null, boundStopResize: null,
-    boundDoDrag: null, boundStopDrag: null,
+    isProcessing: false, currentFile: null, selectedQuality: 'isnet_fp16', // Default to 'Quality'
 
     updateQualitySelection: function (quality) {
         this.selectedQuality = quality;
+        // Reset all buttons
         this.qualityFastBtn.classList.remove('active');
         this.qualityQualityBtn.classList.remove('active');
-        if (quality === 'small') this.qualityFastBtn.classList.add('active');
-        else if (quality === 'medium') this.qualityQualityBtn.classList.add('active');
+        this.qualityUltraBtn.classList.remove('active');
+        // Activate the correct one
+        if (quality === 'isnet_quint8') this.qualityFastBtn.classList.add('active');
+        else if (quality === 'isnet_fp16') this.qualityQualityBtn.classList.add('active');
+        else if (quality === 'isnet') this.qualityUltraBtn.classList.add('active');
     },
 
     fetchElements: function () {
@@ -41,8 +36,8 @@ const br = {
         this.downloadBtn = document.getElementById('br-download-btn');
         this.qualityFastBtn = document.getElementById('br-quality-fast');
         this.qualityQualityBtn = document.getElementById('br-quality-quality');
+        this.qualityUltraBtn = document.getElementById('br-quality-ultra');
         this.clearBtn = document.getElementById('br-clear-btn');
-        this.resetCropBtn = document.getElementById('br-reset-crop-btn');
         this.qualitySelector = document.getElementById('br-quality-selector');
         this.imageContainer = document.getElementById('br-image-container');
     },
@@ -67,14 +62,17 @@ const br = {
                     "Your image is undergoing a dramatic transformation. Soon, it will be free of its past."
                 ];
                 let messageIndex = 0;
-                content = `<div class="br-loader"></div><span id="br-loading-message">${funnyMessages[messageIndex]}</span>`;
+                const initialMessage = message || funnyMessages[messageIndex];
+                content = `<div class="br-loader"></div><span id="br-loading-message">${initialMessage}</span>`;
                 this.statusOverlay.innerHTML = content;
 
                 if (this.messageInterval) clearInterval(this.messageInterval);
-                this.messageInterval = setInterval(() => {
-                    messageIndex = (messageIndex + 1) % funnyMessages.length;
-                    document.getElementById('br-loading-message').innerText = funnyMessages[messageIndex];
-                }, 4000);
+                if (!message) {
+                    this.messageInterval = setInterval(() => {
+                        messageIndex = (messageIndex + 1) % funnyMessages.length;
+                        document.getElementById('br-loading-message').innerText = funnyMessages[messageIndex];
+                    }, 4000);
+                }
                 break;
             case 'error':
                 content = `<span class="br-error-message">${message}</span>`;
@@ -89,6 +87,13 @@ const br = {
         if (type !== 'loading') this.statusOverlay.innerHTML = content;
     },
 
+    updateProgressMessage: function (message) {
+        const messageEl = document.getElementById('br-loading-message');
+        if (messageEl) {
+            messageEl.innerText = message;
+        }
+    },
+
     handleFileSelect: function (event) {
         if (this.isProcessing) return;
         const file = event.target.files[0];
@@ -98,251 +103,34 @@ const br = {
         const reader = new FileReader();
 
         reader.onload = (e) => {
-            this.originalImage = new Image();
-            this.originalImage.onload = () => {
-                this.originalImageSize = { w: this.originalImage.naturalWidth, h: this.originalImage.naturalHeight };
-                this.previewImg.src = e.target.result;
-
-                this.previewImg.onload = () => {
-                    this.workspace.classList.add('has-image');
-                    this.imageContainer.style.display = 'inline-block';
-                    this.outputCanvas.style.display = 'none';
-                    this.initCropBox();
-                    this.actionsContainer.style.display = 'flex';
-                    this.actionsContainer.style.justifyContent = '';
-                    this.downloadBtn.style.display = 'none';
-                    this.processBtn.style.display = 'inline-flex';
-                    this.clearBtn.style.display = 'inline-flex';
-                    this.resetCropBtn.style.display = 'inline-flex';
-                    this.qualitySelector.style.display = 'flex';
-                    this.processBtn.disabled = false;
-                    this.updateQualitySelection('medium');
-                    this.setStatus('clear');
-                };
+            this.previewImg.src = e.target.result;
+            this.previewImg.onload = () => {
+                this.workspace.classList.add('has-image');
+                this.imageContainer.style.display = 'block';
+                this.outputCanvas.style.display = 'none';
+                this.actionsContainer.style.display = 'flex';
+                this.actionsContainer.style.justifyContent = '';
+                this.downloadBtn.style.display = 'none';
+                this.processBtn.style.display = 'inline-flex';
+                this.clearBtn.style.display = 'inline-flex';
+                this.qualitySelector.style.display = 'flex';
+                this.processBtn.disabled = false;
+                this.updateQualitySelection('isnet_fp16'); // Set default to 'Quality'
+                this.setStatus('clear');
             };
-            this.originalImage.src = e.target.result;
         };
         reader.readAsDataURL(file);
     },
 
     clearImage: function () {
-        if (this.cropBox) this.cropBox.remove();
         this.currentFile = null;
-        this.originalImage = null;
         this.imageInput.value = '';
         this.workspace.classList.remove('has-image');
         this.imageContainer.style.display = 'none';
         this.outputCanvas.style.display = 'none';
         this.actionsContainer.style.display = 'none';
         this.clearBtn.style.display = 'none';
-        this.resetCropBtn.style.display = 'none';
         this.setStatus('clear');
-    },
-
-    initCropBox: function () {
-        if (this.cropBox) this.cropBox.remove();
-
-        const box = document.createElement('div');
-        box.id = 'br-crop-box';
-        this.imageContainer.appendChild(box);
-        this.cropBox = box;
-
-        ['tl', 'tr', 'bl', 'br'].forEach(handleClass => {
-            const handle = document.createElement('div');
-            handle.className = `br-resize-handle ${handleClass}`;
-            box.appendChild(handle);
-            handle.addEventListener('mousedown', this.startResize.bind(this));
-        });
-
-        box.addEventListener('mousedown', this.startDrag.bind(this));
-
-        this.resetCropBox(); // Set initial size
-    },
-
-    resetCropBox: function () {
-        if (!this.previewImg || !this.cropBox || !this.originalImageSize || this.originalImageSize.w === 0 || this.originalImageSize.h === 0) return;
-
-        const containerW = this.previewImg.offsetWidth;
-        const containerH = this.previewImg.offsetHeight;
-        const imgW = this.originalImageSize.w;
-        const imgH = this.originalImageSize.h;
-
-        const containerAspectRatio = containerW / containerH;
-        const imgAspectRatio = imgW / imgH;
-
-        let renderedW, renderedH, x, y;
-
-        if (imgAspectRatio > containerAspectRatio) {
-            // Image is wider than the container; constrained by width
-            renderedW = containerW;
-            renderedH = renderedW / imgAspectRatio;
-            x = 0;
-            y = (containerH - renderedH) / 2;
-        } else {
-            // Image is taller than or same aspect as the container; constrained by height
-            renderedH = containerH;
-            renderedW = renderedH * imgAspectRatio;
-            y = 0;
-            x = (containerW - renderedW) / 2;
-        }
-
-        this.cropState.x = x;
-        this.cropState.y = y;
-        this.cropState.w = renderedW;
-        this.cropState.h = renderedH;
-        this.updateCropBoxStyle();
-    },
-
-    updateCropBoxStyle: function () {
-        this.cropBox.style.left = `${this.cropState.x}px`;
-        this.cropBox.style.top = `${this.cropState.y}px`;
-        this.cropBox.style.width = `${this.cropState.w}px`;
-        this.cropBox.style.height = `${this.cropState.h}px`;
-    },
-
-    startResize: function (e) {
-        e.stopPropagation();
-        this.cropState.isResizing = true;
-        this.cropState.handle = e.target.className.split(' ')[1];
-        this.cropState.startX = e.clientX;
-        this.cropState.startY = e.clientY;
-
-        this.boundDoResize = this.doResize.bind(this);
-        this.boundStopResize = this.stopResize.bind(this);
-        document.addEventListener('mousemove', this.boundDoResize);
-        document.addEventListener('mouseup', this.boundStopResize);
-    },
-
-    doResize: function (e) {
-        if (!this.cropState.isResizing) return;
-
-        // Get image boundaries
-        const containerW = this.previewImg.offsetWidth;
-        const containerH = this.previewImg.offsetHeight;
-        const imgW = this.originalImageSize.w;
-        const imgH = this.originalImageSize.h;
-        const containerAspectRatio = containerW / containerH;
-        const imgAspectRatio = imgW / imgH;
-        let renderedW, renderedH, imgX, imgY;
-        if (imgAspectRatio > containerAspectRatio) {
-            renderedW = containerW;
-            renderedH = renderedW / imgAspectRatio;
-            imgX = 0;
-            imgY = (containerH - renderedH) / 2;
-        } else {
-            renderedH = containerH;
-            renderedW = renderedH * imgAspectRatio;
-            imgY = 0;
-            imgX = (containerW - renderedW) / 2;
-        }
-        const imgRight = imgX + renderedW;
-        const imgBottom = imgY + renderedH;
-
-        const dx = e.clientX - this.cropState.startX;
-        const dy = e.clientY - this.cropState.startY;
-        let { x, y, w, h } = this.cropState;
-
-        if (this.cropState.handle.includes('l')) { x += dx; w -= dx; }
-        if (this.cropState.handle.includes('r')) { w += dx; }
-        if (this.cropState.handle.includes('t')) { y += dy; h -= dy; }
-        if (this.cropState.handle.includes('b')) { h += dy; }
-
-        // Constrain resizing
-        if (x < imgX) { w += x - imgX; x = imgX; }
-        if (y < imgY) { h += y - imgY; y = imgY; }
-        if (x + w > imgRight) { w = imgRight - x; }
-        if (y + h > imgBottom) { h = imgBottom - y; }
-        
-        // prevent cropbox from inverting
-        if (w < 10) w = 10; // minimum width
-        if (h < 10) h = 10; // minimum height
-
-        this.cropState.x = x; this.cropState.y = y;
-        this.cropState.w = w; this.cropState.h = h;
-        this.updateCropBoxStyle();
-        this.cropState.startX = e.clientX;
-        this.cropState.startY = e.clientY;
-    },
-
-    stopResize: function () {
-        this.cropState.isResizing = false;
-        document.removeEventListener('mousemove', this.boundDoResize);
-        document.removeEventListener('mouseup', this.boundStopResize);
-    },
-
-    startDrag: function (e) {
-        if (e.target.classList.contains('br-resize-handle')) return;
-        e.preventDefault();
-        this.cropState.isDragging = true;
-        this.cropState.startX = e.clientX;
-        this.cropState.startY = e.clientY;
-        this.cropState.startBoxX = this.cropState.x;
-        this.cropState.startBoxY = this.cropState.y;
-
-        this.boundDoDrag = this.doDrag.bind(this);
-        this.boundStopDrag = this.stopDrag.bind(this);
-        document.addEventListener('mousemove', this.boundDoDrag);
-        document.addEventListener('mouseup', this.boundStopDrag);
-    },
-
-    doDrag: function (e) {
-        if (!this.cropState.isDragging) return;
-        e.preventDefault();
-        const dx = e.clientX - this.cropState.startX;
-        const dy = e.clientY - this.cropState.startY;
-        let newX = this.cropState.startBoxX + dx;
-        let newY = this.cropState.startBoxY + dy;
-
-        // Get image boundaries
-        const containerW = this.previewImg.offsetWidth;
-        const containerH = this.previewImg.offsetHeight;
-        const imgW = this.originalImageSize.w;
-        const imgH = this.originalImageSize.h;
-        const containerAspectRatio = containerW / containerH;
-        const imgAspectRatio = imgW / imgH;
-        let renderedW, renderedH, imgX, imgY;
-        if (imgAspectRatio > containerAspectRatio) {
-            renderedW = containerW;
-            renderedH = renderedW / imgAspectRatio;
-            imgX = 0;
-            imgY = (containerH - renderedH) / 2;
-        } else {
-            renderedH = containerH;
-            renderedW = renderedH * imgAspectRatio;
-            imgY = 0;
-            imgX = (containerW - renderedW) / 2;
-        }
-
-        // Constrain dragging
-        if (newX < imgX) newX = imgX;
-        if (newY < imgY) newY = imgY;
-        if (newX + this.cropState.w > imgX + renderedW) newX = imgX + renderedW - this.cropState.w;
-        if (newY + this.cropState.h > imgY + renderedH) newY = imgY + renderedH - this.cropState.h;
-
-        this.cropState.x = newX;
-        this.cropState.y = newY;
-        this.updateCropBoxStyle();
-    },
-
-    stopDrag: function () {
-        this.cropState.isDragging = false;
-        document.removeEventListener('mousemove', this.boundDoDrag);
-        document.removeEventListener('mouseup', this.boundStopDrag);
-    },
-
-    getCroppedBlob: async function () {
-        const scaleX = this.originalImageSize.w / this.previewImg.offsetWidth;
-        const scaleY = this.originalImageSize.h / this.previewImg.offsetHeight;
-        const crop = {
-            x: this.cropState.x * scaleX, y: this.cropState.y * scaleY,
-            width: this.cropState.w * scaleX, height: this.cropState.h * scaleY
-        };
-        const canvas = document.createElement('canvas');
-        canvas.width = crop.width;
-        canvas.height = crop.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(this.originalImage, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
-        return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
     },
 
     processImage: async function () {
@@ -350,32 +138,50 @@ const br = {
 
         this.isProcessing = true;
         this.processBtn.disabled = true;
-        this.setStatus('loading', 'Preparing image...');
-        if (this.cropBox) this.cropBox.style.display = 'none';
-        this.resetCropBtn.style.display = 'none';
+        this.setStatus('loading', 'Warming up the AI...');
+
+        let computingStarted = false; // Flag to start funny messages only once
 
         try {
-            const imageBlob = await this.getCroppedBlob();
+            let modelName;
+            switch (this.selectedQuality) {
+                case 'isnet_quint8': modelName = 'Fast'; break;
+                case 'isnet_fp16': modelName = 'Quality'; break;
+                case 'isnet': modelName = 'Ultra'; break;
+                default: modelName = 'Model';
+            }
+
             const config = {
                 publicPath: 'https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/',
+                debug: true,
                 model: this.selectedQuality,
-                onProgress: (key, current, total) => {
-                    const progress = (current / total) * 100;
-                    let message = `Processing... ${parseInt(progress, 10)}%`;
-                    if (key.startsWith('download')) {
-                        const modelName = this.selectedQuality === 'small' ? 'Fast' : 'Quality';
-                        message = `Downloading ${modelName} model... ${parseInt(progress, 10)}%`;
-                    }
-                    this.setStatus('loading', message);
+                output: {
+                    format: 'image/png',
+                    quality: 1,
+                    type: 'foreground',
                 },
+                progress: (key, current, total) => {
+                    if (key.startsWith('download')) {
+                        const percent = Math.round((current / total) * 100);
+                        this.updateProgressMessage(`Downloading ${modelName} model... ${percent}%`);
+                    } else if (key.startsWith('compute') && !computingStarted) {
+                        computingStarted = true;
+                        // Now that the model is ready, start the funny messages
+                        this.setStatus('loading');
+                    }
+                }
             };
 
-            const resultBlob = await removeBackground(imageBlob, config);
-            const url = URL.createObjectURL(resultBlob);
+            const finalBlob = await removeBackground(this.currentFile, config);
 
+            const url = URL.createObjectURL(finalBlob);
             this.displayResult(url);
 
             this.downloadBtn.href = url;
+            // Set a more descriptive download filename
+            const originalFilename = this.currentFile.name.replace(/\.[^/.]+$/, "");
+            this.downloadBtn.download = `${originalFilename}-bg-removed.png`;
+
             this.processBtn.style.display = 'none';
             this.qualitySelector.style.display = 'none';
             this.downloadBtn.style.display = 'inline-flex';
@@ -386,12 +192,9 @@ const br = {
         } catch (error) {
             console.error('Background removal failed:', error);
             this.setStatus('error', `Oof, that didn't work. Try another image?`);
-            if (this.cropBox) this.cropBox.style.display = 'block';
-            this.resetCropBtn.style.display = 'inline-flex';
         } finally {
             this.isProcessing = false;
             this.processBtn.disabled = false;
-            this.imageInput.value = '';
         }
     },
 
@@ -436,9 +239,9 @@ const br = {
         this.imageInput.addEventListener('change', (e) => this.handleFileSelect(e));
         this.processBtn.addEventListener('click', () => this.processImage());
         this.clearBtn.addEventListener('click', () => this.clearImage());
-        this.resetCropBtn.addEventListener('click', () => this.resetCropBox());
-        this.qualityFastBtn.addEventListener('click', () => this.updateQualitySelection('small'));
-        this.qualityQualityBtn.addEventListener('click', () => this.updateQualitySelection('medium'));
+        this.qualityFastBtn.addEventListener('click', () => this.updateQualitySelection('isnet_quint8'));
+        this.qualityQualityBtn.addEventListener('click', () => this.updateQualitySelection('isnet_fp16'));
+        this.qualityUltraBtn.addEventListener('click', () => this.updateQualitySelection('isnet'));
         this.initDragAndDrop();
         console.log("Background Remover Initialized.");
     }

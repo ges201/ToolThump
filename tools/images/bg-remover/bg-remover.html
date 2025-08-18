@@ -84,8 +84,8 @@
             },
             {
               "@type": "HowToStep",
-              "name": "Adjust & Process",
-              "text": "Optionally, drag and resize the selection box to focus on a specific area. Click the 'Reset Crop' button to fit the box to the image again. Select your quality, then click 'Remove Background' to start."
+              "name": "Process the Image",
+              "text": "Select your desired output quality ('Fast', 'Quality', or 'Ultra') and click the 'Remove Background' button to start the process."
             },
             {
               "@type": "HowToStep",
@@ -115,10 +115,10 @@
             },
             {
               "@type": "Question",
-              "name": "What's the crop box for?",
+              "name": "Which quality setting should I use?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "The resizable box allows you to select a specific part of the image for processing. This helps the AI focus on the subject you care about, which can improve accuracy and speed up the removal process. You can drag it, resize it, or reset it with the 'expand' button."
+                "text": "It's a trade-off. 'Fast' is quickest but less detailed. 'Quality' is the default and offers a great balance. 'Ultra' is the most precise, especially for hair and fur, but requires the largest download and is the slowest to process."
               }
             },
             {
@@ -126,7 +126,7 @@
               "name": "Why does the output look weird?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Images with a clear subject and a distinct background work best. A portrait of a person against a blurry landscape is ideal. A photo of a white cat in a snowstorm might be... challenging, even for the 'Quality' model."
+                "text": "Images with a clear subject and a distinct background work best. A portrait of a person against a blurry landscape is ideal. A photo of a white cat in a snowstorm might be... challenging, even for the 'Ultra' model."
               }
             }
           ]
@@ -157,7 +157,7 @@
       <section id="backgroundRemover" class="tool-content active">
         <h1>Background Remover</h1>
         <p style="text-align: center; max-width: 65ch; margin: 0 auto var(--spacing-xl);">
-          Select an image, crop your subject if needed, and the background will be magically whisked away.
+          Select an image, choose your quality, and the background will be magically whisked away.
         </p>
 
         <div class="br-main-interface">
@@ -175,7 +175,7 @@
               <span class="br-upload-hint">PNG, JPG, or WEBP</span>
             </label>
 
-            <!-- Container for Image and Crop Box -->
+            <!-- Container for Image Preview -->
             <div id="br-image-container" class="br-image-container" style="display: none;">
               <img id="br-preview-img" src="#" alt="Image preview" class="br-image-display">
             </div>
@@ -187,11 +187,6 @@
             </div>
 
             <!-- Workspace Buttons -->
-            <button id="br-reset-crop-btn" class="button btn-secondary" style="display: none;" title="Reset Crop">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
-              </svg>
-            </button>
             <button id="br-clear-btn" class="button btn-secondary" style="display: none;" title="Clear Image">X</button>
           </div>
 
@@ -199,10 +194,12 @@
           <div id="br-actions-container" class="br-actions" style="display: none;">
             <fieldset id="br-quality-selector" class="br-quality-selector quality-options-group">
               <legend class="sr-only">Output Quality</legend>
-              <button type="button" id="br-quality-fast" class="btn-secondary" data-quality="small"
-                title="Faster processing, good for general use.">Fast</button>
-              <button type="button" id="br-quality-quality" class="btn-secondary" data-quality="medium"
-                title="Slower processing, better for detailed images.">Quality</button>
+              <button type="button" id="br-quality-fast" class="btn-secondary" data-quality="isnet_quint8"
+                title="Fastest processing, smallest download. Good for simple images.">Fast</button>
+              <button type="button" id="br-quality-quality" class="btn-secondary" data-quality="isnet_fp16"
+                title="Great balance of speed and quality. Recommended for most images.">Quality</button>
+              <button type="button" id="br-quality-ultra" class="btn-secondary" data-quality="isnet"
+                title="Highest precision for complex edges like hair. Largest download and slowest processing.">Ultra</button>
             </fieldset>
             <button id="br-process-btn" class="button btn-secondary">Remove Background</button>
             <a id="br-download-btn" href="#" class="button btn-secondary" download="bg-removed.png" role="button"
@@ -233,8 +230,8 @@
                 },
                 {
                     "icon": "2️⃣",
-                    "title": "Adjust & Process",
-                    "description": "Optionally, drag and resize the selection box to focus on a specific area. Click the 'expand' icon to fit the box to the image again. Select your quality, then hit 'Remove Background'."
+                    "title": "Select Quality & Process",
+                    "description": "Choose between 'Fast', 'Quality', or 'Ultra', then hit the 'Remove Background' button to let the AI do its work. 'Quality' is recommended for most uses."
                 },
                 {
                     "icon": "3️⃣",
@@ -255,9 +252,9 @@
                     "description": "Your images are processed directly in your browser. They are never uploaded to a server, viewed by anyone, or stored anywhere. What happens on your computer stays on your computer."
                 },
                 {
-                    "icon": "✂️",
-                    "title": "Precision Cropping",
-                    "description": "A draggable and resizable crop box appears once you upload an image. Use it to isolate the exact subject you want to process, improving the AI's accuracy and speed."
+                    "icon": "⚙️",
+                    "title": "Three Quality Tiers",
+                    "description": "Choose your weapon: 'Fast' for speed, 'Quality' for a perfect balance, or 'Ultra' for maximum precision on the most detailed images."
                 },
                 {
                     "icon": "💸",
@@ -266,8 +263,8 @@
                 },
                 {
                     "icon": "🚀",
-                    "title": "Fast AI-Powered Processing",
-                    "description": "Using modern, efficient AI models that run locally, the tool removes backgrounds quickly. No waiting in an upload queue or for a server to process your request."
+                    "title": "AI-Powered Auto-Refinement",
+                    "description": "The tool automatically runs a second pass to refine the edges, giving you a cleaner, more professional result without any extra clicks."
                 }
             ]
         },
@@ -296,14 +293,14 @@
                     "answer": "There isn't one. The 'catch,' if you can call it that, is that the first time you use the tool, your browser needs to download the AI model (a few megabytes). This might take a moment on slower connections. The site is a personal project, not a corporate venture."
                 },
                 {
-                    "icon": "✂️",
-                    "question": "What's the crop box for?",
-                    "answer": "The resizable box allows you to select a specific part of the image for processing. This helps the AI focus on the subject you care about, which can improve accuracy and speed up the removal process. You can drag it, resize it, or reset it with the 'expand' button."
+                    "icon": "⚖️",
+                    "question": "Which quality setting should I use?",
+                    "answer": "It's a trade-off. 'Fast' is quickest but less detailed. 'Quality' is the default and offers a great balance. 'Ultra' is the most precise, especially for hair and fur, but requires the largest download and is the slowest to process."
                 },
                 {
                     "icon": "💥",
                     "question": "Why does the output look weird?",
-                    "answer": "Images with a clear subject and a distinct background work best. A portrait of a person against a blurry landscape is ideal. A photo of a white cat in a snowstorm might be... challenging, even for the 'Quality' model."
+                    "answer": "Images with a clear subject and a distinct background work best. A portrait of a person against a blurry landscape is ideal. A photo of a white cat in a snowstorm might be... challenging, even for the 'Ultra' model."
                 }
             ]
         }
