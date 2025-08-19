@@ -10,6 +10,46 @@
   <link rel="canonical" href="https://toolthump.com/tools/images/bg-remover/bg-remover.html">
   <meta name="robots" content="index, follow">
 
+  <!-- COOP/COEP Enabler via Service Worker -->
+  <script>
+    // This script registers a service worker to enable the Cross-Origin-Isolated state.
+    // This is a workaround for GitHub Pages not allowing custom headers, and is
+    // necessary for the high-performance features used in this tool.
+    (async function () {
+      if (window.crossOriginIsolated) {
+        return; // All good, the page is already isolated.
+      }
+
+      // If a service worker is already running, it might be an old version
+      // or not the COI one. A reload will force the browser to re-evaluate.
+      if (navigator.serviceWorker.controller) {
+        window.location.reload();
+        return;
+      }
+
+      // Register the service worker.
+      const registration = await navigator.serviceWorker.register('/coi-serviceworker.js');
+
+      // Wait for the new service worker to be installed and activated.
+      await new Promise(resolve => {
+        const worker = registration.installing;
+        if (!worker) { // If no worker is installing, it might be waiting.
+          resolve();
+          return;
+        }
+        worker.addEventListener('statechange', () => {
+          if (worker.state === 'activated') {
+            resolve();
+          }
+        });
+      });
+
+      // Once the service worker is active, reload the page. The reloaded page
+      // will be served with the correct headers.
+      window.location.reload();
+    })();
+  </script>
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" href="https://toolthump.com/tools/images/bg-remover/bg-remover.html">
