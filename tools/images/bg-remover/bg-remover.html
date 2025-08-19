@@ -189,7 +189,12 @@
               <img id="br-preview-img" src="#" alt="Image preview" class="br-image-display">
             </div>
             <canvas id="br-output-canvas" class="br-image-display" style="display: none;"></canvas>
-            <div id="br-status-overlay" class="br-status-overlay" aria-live="polite" style="display: none;"></div>
+            <div id="br-status-overlay" class="br-status-overlay" aria-live="polite" style="display: none;">
+              <div id="br-status-text"></div>
+              <div class="br-progress-bar-container" style="display: none;">
+                <div id="br-progress-bar" class="br-progress-bar"></div>
+              </div>
+            </div>
             <button id="br-clear-btn" class="button btn-secondary" style="display: none;" title="Clear Image">X</button>
           </div>
           <div id="br-actions-container" class="br-actions" style="display: none;">

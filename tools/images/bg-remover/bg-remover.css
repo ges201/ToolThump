@@ -228,3 +228,18 @@
     padding: 0;
     font-size: 1.5rem;
 }
+
+.br-progress-bar-container {
+    width: 80%;
+    background-color: var(--surface-bg-color);
+    border-radius: var(--border-radius-md);
+    margin-top: var(--spacing-md);
+    overflow: hidden;
+}
+
+.br-progress-bar {
+    width: 0%;
+    height: 10px;
+    background-color: var(--accent-color);
+    transition: width 0.2s ease-in-out;
+}

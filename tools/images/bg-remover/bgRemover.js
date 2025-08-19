@@ -4,7 +4,8 @@ const br = {
     // DOM Elements
     imageInput: null, workspace: null, uploadLabel: null, statusOverlay: null,
     previewImg: null, outputCanvas: null, actionsContainer: null, processBtn: null,
-    downloadBtn: null, clearBtn: null, imageContainer: null,
+    downloadBtn: null, clearBtn: null, imageContainer: null, progressBar: null,
+    progressBarContainer: null, statusText: null,
 
     // ONNX & Model State
     ortSession: null,
@@ -28,42 +29,136 @@ const br = {
         this.downloadBtn = document.getElementById('br-download-btn');
         this.clearBtn = document.getElementById('br-clear-btn');
         this.imageContainer = document.getElementById('br-image-container');
+        this.progressBar = document.getElementById('br-progress-bar');
+        this.progressBarContainer = document.querySelector('.br-progress-bar-container');
+        this.statusText = document.getElementById('br-status-text');
     },
 
-    setStatus: function (type, message = '') {
-        this.statusOverlay.innerHTML = '';
+    updateProgress: function (percentage) {
+        if (this.progressBar) {
+            this.progressBar.style.width = `${percentage}%`;
+        }
+    },
+
+    setStatus: function (type, message = '', showProgressBar = false) {
+        if (!this.statusOverlay || !this.statusText) return;
+
         this.statusOverlay.style.display = 'flex';
-        let content = '';
+        this.statusText.innerHTML = '';
+
+        if (this.progressBarContainer) {
+            this.progressBarContainer.style.display = 'none';
+        }
 
         switch (type) {
             case 'loading':
-                content = `<div class="br-loader"></div><span>${message}</span>`;
+                this.statusText.innerHTML = `<div class="br-loader"></div><span>${message}</span>`;
+                if (this.progressBarContainer && showProgressBar) {
+                    this.progressBarContainer.style.display = 'block';
+                    this.updateProgress(0);
+                }
                 break;
             case 'error':
-                content = `<span class="br-error-message">${message}</span>`;
-                setTimeout(() => this.statusOverlay.style.display = 'none', 4000);
+                this.statusText.innerHTML = `<span class="br-error-message">${message}</span>`;
+                setTimeout(() => {
+                    this.statusOverlay.style.display = 'none';
+                }, 4000);
                 break;
             case 'clear':
                 this.statusOverlay.style.display = 'none';
                 break;
         }
-        this.statusOverlay.innerHTML = content;
     },
 
     initOrtSession: async function () {
-        this.setStatus('loading', 'Initializing AI model (42 MB). This may take a moment...');
+        this.setStatus('loading', 'Downloading AI model (42 MB)...', true); // Show progress bar for download
         try {
-            // Point to the CDN for the WASM files
             ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/';
-            this.ortSession = await ort.InferenceSession.create(this.modelPath);
+
+            const response = await fetch(this.modelPath);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch model: ${response.status} ${response.statusText}`);
+            }
+
+            const contentLength = response.headers.get('content-length');
+            const totalSize = parseInt(contentLength, 10);
+            let loadedSize = 0;
+
+            const reader = response.body.getReader();
+            const chunks = [];
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                chunks.push(value);
+                loadedSize += value.length;
+                if (totalSize) {
+                    const percentage = Math.round((loadedSize / totalSize) * 100);
+                    this.updateProgress(percentage);
+                }
+            }
+
+            const modelBuffer = new Uint8Array(loadedSize);
+            let offset = 0;
+            for (const chunk of chunks) {
+                modelBuffer.set(chunk, offset);
+                offset += chunk.length;
+            }
+
+            this.setStatus('loading', 'Initializing AI model...');
+            this.updateProgress(100);
+
+            this.ortSession = await ort.InferenceSession.create(modelBuffer);
             this.setStatus('clear');
             const warningDiv = document.getElementById('tool-warning');
             if (warningDiv) { warningDiv.style.display = 'none'; }
             console.log("ONNX session initialized successfully.");
+
         } catch (error) {
             console.error("Failed to initialize ONNX session:", error);
             this.setStatus('error', 'Failed to load the AI model. Please refresh and try again.');
         }
+    },
+
+    processImage: async function () {
+        if (!this.originalImage || this.isProcessing) {
+            return;
+        }
+
+        if (!this.ortSession) {
+            await this.initOrtSession();
+            if (!this.ortSession) {
+                this.setStatus('error', 'Model could not be loaded. Please try again.');
+                return;
+            }
+        }
+
+        this.isProcessing = true;
+        this.processBtn.disabled = true;
+        this.setStatus('loading', 'Processing image...');
+
+        setTimeout(async () => {
+            try {
+                const inputTensor = this.preprocess(this.originalImage);
+                const feeds = { 'input.1': inputTensor };
+                const results = await this.ortSession.run(feeds);
+                const outputTensor = results['1959'];
+
+                this.postprocess(outputTensor, this.originalImage.naturalWidth, this.originalImage.naturalHeight);
+
+                this.imageContainer.style.display = 'none';
+                this.outputCanvas.style.display = 'block';
+                this.processBtn.style.display = 'none';
+                this.downloadBtn.style.display = 'inline-flex';
+                this.setStatus('clear');
+
+            } catch (error) {
+                console.error('Background removal failed:', error);
+                this.setStatus('error', `Processing failed. The model may not be suitable for this image.`);
+            } finally {
+                this.isProcessing = false;
+                this.processBtn.disabled = false;
+            }
+        }, 50);
     },
 
     handleFileSelect: function (event) {
@@ -174,47 +269,6 @@ const br = {
         ctx.drawImage(maskCanvas, 0, 0, originalWidth, originalHeight);
 
         ctx.globalCompositeOperation = 'source-over';
-    },
-
-    processImage: async function () {
-        if (!this.originalImage || this.isProcessing) {
-            return;
-        }
-
-        if (!this.ortSession) {
-            await this.initOrtSession();
-            if (!this.ortSession) { // Check again after attempting initialization
-                this.setStatus('error', 'Model could not be loaded. Please try again.');
-                return;
-            }
-        }
-
-        this.isProcessing = true;
-        this.processBtn.disabled = true;
-        this.setStatus('loading', 'Analyzing image...');
-
-        try {
-            const inputTensor = this.preprocess(this.originalImage);
-            const feeds = { 'input.1': inputTensor };
-            const results = await this.ortSession.run(feeds);
-            const outputTensor = results['1959'];
-
-            this.setStatus('loading', 'Applying mask...');
-            this.postprocess(outputTensor, this.originalImage.naturalWidth, this.originalImage.naturalHeight);
-
-            this.imageContainer.style.display = 'none';
-            this.outputCanvas.style.display = 'block';
-            this.processBtn.style.display = 'none';
-            this.downloadBtn.style.display = 'inline-flex';
-            this.setStatus('clear');
-
-        } catch (error) {
-            console.error('Background removal failed:', error);
-            this.setStatus('error', `Processing failed. The model may not be suitable for this image.`);
-        } finally {
-            this.isProcessing = false;
-            this.processBtn.disabled = false;
-        }
     },
 
     setupDownload: function () {
