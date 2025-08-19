@@ -19,8 +19,23 @@
 /* === Background Remover Specific Styles === */
 
 .br-main-interface {
-    max-width: 700px;
-    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-lg);
+    justify-content: center;
+    align-items: flex-start;
+}
+
+}
+
+.br-left-panel {
+    width: 250px; /* Fixed width for the left panel */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.br-right-panel {
+    flex-grow: 1; /* Take up remaining space */
+    max-width: 700px; /* Limit the width of the image preview area */
     display: flex;
     flex-direction: column;
     gap: var(--spacing-lg);
@@ -30,7 +45,6 @@
 .br-workspace {
     position: relative;
     width: 100%;
-    max-width: 700px;
     aspect-ratio: 4 / 3;
     display: flex;
     justify-content: center;
@@ -242,4 +256,57 @@
     height: 10px;
     background-color: var(--accent-color);
     transition: width 0.2s ease-in-out;
+}
+
+/* === Features Container === */
+.br-features-container {
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background-color: var(--surface-bg-color);
+    width: 100%; /* Fill the parent's width */
+}
+
+.br-feature {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.br-feature label {
+    font-weight: 600;
+}
+
+/* === Color Swatches === */
+.br-color-swatches {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.swatch {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.swatch:hover {
+    transform: scale(1.1);
+}
+
+.swatch-transparent {
+    background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 10px 10px;
+    background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+    background-color: white;
+}
+
+#br-bg-color-picker {
+    height: 40px;
+    padding: 0 var(--spacing-xs);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background-color: var(--surface-bg-color);
 }

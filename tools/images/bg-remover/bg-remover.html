@@ -175,32 +175,50 @@
         </p>
 
         <div class="br-main-interface">
-          <div id="br-workspace" class="br-workspace">
-            <input type="file" id="br-image-input" accept="image/png, image/jpeg, image/webp" class="sr-only">
-            <label for="br-image-input" id="br-upload-label" class="br-upload-label">
-              <svg class="br-upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
-              </svg>
-              <span class="br-upload-text">Click to Upload or Drop Image</span>
-              <span class="br-upload-hint">PNG, JPG, or WEBP</span>
-            </label>
-            <div id="br-image-container" class="br-image-container" style="display: none;">
-              <img id="br-preview-img" src="#" alt="Image preview" class="br-image-display">
+          <div class="br-left-panel">
+            <div id="br-features-container" style="display: none;" class="br-features-container">
+                <div id="br-bg-color-container" class="br-feature">
+                    <label for="br-bg-color-picker">Background Color:</label>
+                    <input type="color" id="br-bg-color-picker" value="#FFFFFF">
+                    <div id="br-bg-color-swatches" class="br-color-swatches">
+                        <button class="swatch swatch-transparent" data-color="transparent" title="Transparent Background"></button>
+                        <button class="swatch" data-color="#FFFFFF" style="background-color: #FFFFFF; border: 1px solid #ccc;"></button>
+                        <button class="swatch" data-color="#000000" style="background-color: #000000;"></button>
+                        <button class="swatch" data-color="#FF3B30" style="background-color: #FF3B30;"></button>
+                        <button class="swatch" data-color="#4CD964" style="background-color: #4CD964;"></button>
+                        <button class="swatch" data-color="#007AFF" style="background-color: #007AFF;"></button>
+                    </div>
+                </div>
             </div>
-            <canvas id="br-output-canvas" class="br-image-display" style="display: none;"></canvas>
-            <div id="br-status-overlay" class="br-status-overlay" aria-live="polite" style="display: none;">
-              <div id="br-status-text"></div>
-              <div class="br-progress-bar-container" style="display: none;">
-                <div id="br-progress-bar" class="br-progress-bar"></div>
-              </div>
-            </div>
-            <button id="br-clear-btn" class="button btn-secondary" style="display: none;" title="Clear Image">X</button>
           </div>
-          <div id="br-actions-container" class="br-actions" style="display: none;">
-            <button id="br-process-btn" class="button btn-secondary">Remove Background</button>
-            <a id="br-download-btn" href="#" class="button btn-secondary" download="bg-removed.png" role="button"
-              style="display: none;">Download Image</a>
+          <div class="br-right-panel">
+            <div id="br-workspace" class="br-workspace">
+              <input type="file" id="br-image-input" accept="image/png, image/jpeg, image/webp" class="sr-only">
+              <label for="br-image-input" id="br-upload-label" class="br-upload-label">
+                <svg class="br-upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
+                </svg>
+                <span class="br-upload-text">Click to Upload or Drop Image</span>
+                <span class="br-upload-hint">PNG, JPG, or WEBP</span>
+              </label>
+              <div id="br-image-container" class="br-image-container" style="display: none;">
+                <img id="br-preview-img" src="#" alt="Image preview" class="br-image-display">
+              </div>
+              <canvas id="br-output-canvas" class="br-image-display" style="display: none;"></canvas>
+              <div id="br-status-overlay" class="br-status-overlay" aria-live="polite" style="display: none;">
+                <div id="br-status-text"></div>
+                <div class="br-progress-bar-container" style="display: none;">
+                  <div id="br-progress-bar" class="br-progress-bar"></div>
+                </div>
+              </div>
+              <button id="br-clear-btn" class="button btn-secondary" style="display: none;" title="Clear Image">X</button>
+            </div>
+            <div id="br-actions-container" class="br-actions" style="display: none;">
+              <button id="br-process-btn" class="button btn-secondary">Remove Background</button>
+              <a id="br-download-btn" href="#" class="button btn-secondary" download="bg-removed.png" role="button"
+                style="display: none;">Download Image</a>
+            </div>
           </div>
         </div>
 
@@ -301,6 +319,7 @@
   <!-- Scripts (paths relative to root) -->
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
   <script src="/tools/images/bg-remover/bgRemover.js"></script>
+  <script src="/tools/images/bg-remover/features.js"></script>
   <script src="/main.js"></script>
 </body>
 

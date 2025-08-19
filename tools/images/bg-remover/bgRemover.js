@@ -16,6 +16,7 @@ const br = {
     isProcessing: false,
     currentImageFile: null,
     originalImage: null,
+    processedImage: null, // Will hold the image with transparent background
 
     fetchElements: function () {
         this.imageInput = document.getElementById('br-image-input');
@@ -143,7 +144,15 @@ const br = {
                 const results = await this.ortSession.run(feeds);
                 const outputTensor = results['1959'];
 
-                this.postprocess(outputTensor, this.originalImage.naturalWidth, this.originalImage.naturalHeight);
+                this.processedImage = this.postprocess(outputTensor, this.originalImage.naturalWidth, this.originalImage.naturalHeight);
+
+                // Set the output canvas dimensions to match the original image
+                this.outputCanvas.width = this.originalImage.naturalWidth;
+                this.outputCanvas.height = this.originalImage.naturalHeight;
+
+                const ctx = this.outputCanvas.getContext('2d');
+                ctx.clearRect(0, 0, this.outputCanvas.width, this.outputCanvas.height);
+                ctx.drawImage(this.processedImage, 0, 0);
 
                 this.imageContainer.style.display = 'none';
                 this.outputCanvas.style.display = 'block';
@@ -151,8 +160,11 @@ const br = {
                 this.downloadBtn.style.display = 'inline-flex';
                 this.setStatus('clear');
 
-                // Generate the download link now that the canvas is ready.
-                this.setupDownload();
+                // Show features and apply default background
+                if (typeof brFeatures !== 'undefined' && brFeatures.show) {
+                    brFeatures.show();
+                    brFeatures.applyBackgroundColor();
+                }
 
             } catch (error) {
                 console.error('Background removal failed:', error);
@@ -203,6 +215,7 @@ const br = {
     clearImage: function () {
         this.currentImageFile = null;
         this.originalImage = null;
+        this.processedImage = null;
         this.imageInput.value = '';
         this.workspace.classList.remove('has-image');
         this.imageContainer.style.display = 'none';
@@ -210,6 +223,10 @@ const br = {
         this.actionsContainer.style.display = 'none';
         this.clearBtn.style.display = 'none';
         this.setStatus('clear');
+
+        if (typeof brFeatures !== 'undefined' && brFeatures.hide) {
+            brFeatures.hide();
+        }
     },
 
     preprocess: function (image) {
@@ -260,9 +277,10 @@ const br = {
         }
         maskCtx.putImageData(maskImageData, 0, 0);
 
-        this.outputCanvas.width = originalWidth;
-        this.outputCanvas.height = originalHeight;
-        const ctx = this.outputCanvas.getContext('2d');
+        const resultCanvas = document.createElement('canvas');
+        resultCanvas.width = originalWidth;
+        resultCanvas.height = originalHeight;
+        const ctx = resultCanvas.getContext('2d');
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
 
@@ -272,16 +290,10 @@ const br = {
         ctx.drawImage(maskCanvas, 0, 0, originalWidth, originalHeight);
 
         ctx.globalCompositeOperation = 'source-over';
+        return resultCanvas;
     },
 
-    setupDownload: function () {
-        this.outputCanvas.toBlob((blob) => {
-            const url = URL.createObjectURL(blob);
-            this.downloadBtn.href = url;
-            const originalFilename = this.currentImageFile.name.replace(/\.[^/.]+$/, "");
-            this.downloadBtn.download = `${originalFilename}-bg-removed.png`;
-        }, 'image/png', 1);
-    },
+    
 
     initDragAndDrop: function () {
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -313,8 +325,24 @@ const br = {
             this.imageInput.addEventListener('change', (e) => this.handleFileSelect(e));
             this.processBtn.addEventListener('click', () => this.processImage());
             this.clearBtn.addEventListener('click', () => this.clearImage());
-            // The download button no longer needs a click listener.
+            this.downloadBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.outputCanvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    const originalFilename = this.currentImageFile.name.replace(/\.[^/.]+$/, "");
+                    a.download = `${originalFilename}-bg-removed.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 'image/png', 1);
+            });
             this.initDragAndDrop();
+            if (typeof brFeatures !== 'undefined' && brFeatures.init) {
+                brFeatures.init();
+            }
             console.log("Background Remover Initialized.");
         } catch (error) {
             console.error("Initialization failed:", error);
