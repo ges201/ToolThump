@@ -1,3 +1,21 @@
+/* === Tool Warning Message === */
+.tool-warning {
+    max-width: 700px;
+    margin: var(--spacing-lg) auto 0;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    background-color: var(--warning-bg-color);
+    border: 1px solid var(--warning-border-color);
+    color: var(--warning-color);
+    text-align: center;
+    line-height: 1.6;
+}
+
+.tool-warning strong {
+    /* The color is inherited from .tool-warning */
+    font-weight: 600; /* Make it bolder than the surrounding text */
+}
+
 /* === Background Remover Specific Styles === */
 
 .br-main-interface {
