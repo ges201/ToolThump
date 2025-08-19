@@ -71,7 +71,7 @@ const br = {
     },
 
     initOrtSession: async function () {
-        this.setStatus('loading', 'Downloading AI model (42 MB)...', true); // Show progress bar for download
+        this.setStatus('loading', 'Downloading AI model (42 MB)...', true);
         try {
             ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/';
 
@@ -150,6 +150,9 @@ const br = {
                 this.processBtn.style.display = 'none';
                 this.downloadBtn.style.display = 'inline-flex';
                 this.setStatus('clear');
+
+                // Generate the download link now that the canvas is ready.
+                this.setupDownload();
 
             } catch (error) {
                 console.error('Background removal failed:', error);
@@ -310,7 +313,7 @@ const br = {
             this.imageInput.addEventListener('change', (e) => this.handleFileSelect(e));
             this.processBtn.addEventListener('click', () => this.processImage());
             this.clearBtn.addEventListener('click', () => this.clearImage());
-            this.downloadBtn.addEventListener('click', () => this.setupDownload());
+            // The download button no longer needs a click listener.
             this.initDragAndDrop();
             console.log("Background Remover Initialized.");
         } catch (error) {
