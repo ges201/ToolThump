@@ -1,28 +1,20 @@
-// tools/images/bg-remover/bgRemover.js
-
-import removeBackground from "https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/browser.mjs";
+//https://github.com/jerrychan7/U2netInBrowser
 
 const br = {
     // DOM Elements
     imageInput: null, workspace: null, uploadLabel: null, statusOverlay: null,
     previewImg: null, outputCanvas: null, actionsContainer: null, processBtn: null,
-    downloadBtn: null, qualityFastBtn: null, qualityQualityBtn: null, qualityUltraBtn: null,
-    clearBtn: null, qualitySelector: null, imageContainer: null,
+    downloadBtn: null, clearBtn: null, imageContainer: null,
 
-    // State
-    isProcessing: false, currentFile: null, selectedQuality: 'isnet_fp16', // Default to 'Quality'
+    // ONNX & Model State
+    ortSession: null,
+    modelPath: '/tools/images/bg-remover/u2net.quant.onnx', // Use root-relative path
+    modelInputSize: 320,
 
-    updateQualitySelection: function (quality) {
-        this.selectedQuality = quality;
-        // Reset all buttons
-        this.qualityFastBtn.classList.remove('active');
-        this.qualityQualityBtn.classList.remove('active');
-        this.qualityUltraBtn.classList.remove('active');
-        // Activate the correct one
-        if (quality === 'isnet_quint8') this.qualityFastBtn.classList.add('active');
-        else if (quality === 'isnet_fp16') this.qualityQualityBtn.classList.add('active');
-        else if (quality === 'isnet') this.qualityUltraBtn.classList.add('active');
-    },
+    // App State
+    isProcessing: false,
+    currentImageFile: null,
+    originalImage: null,
 
     fetchElements: function () {
         this.imageInput = document.getElementById('br-image-input');
@@ -34,11 +26,7 @@ const br = {
         this.actionsContainer = document.getElementById('br-actions-container');
         this.processBtn = document.getElementById('br-process-btn');
         this.downloadBtn = document.getElementById('br-download-btn');
-        this.qualityFastBtn = document.getElementById('br-quality-fast');
-        this.qualityQualityBtn = document.getElementById('br-quality-quality');
-        this.qualityUltraBtn = document.getElementById('br-quality-ultra');
         this.clearBtn = document.getElementById('br-clear-btn');
-        this.qualitySelector = document.getElementById('br-quality-selector');
         this.imageContainer = document.getElementById('br-image-container');
     },
 
@@ -49,81 +37,74 @@ const br = {
 
         switch (type) {
             case 'loading':
-                const funnyMessages = [
-                    "Carefully extracting your subject from its humble surroundings...",
-                    "Persuading each pixel to reveal its true allegiance...",
-                    "Applying advanced digital sorcery to make your background... disappear.",
-                    "Our highly trained algorithms are meticulously deciding what stays and what goes.",
-                    "Just a moment while we convince your image that it never really needed that background anyway.",
-                    "The AI is currently in a deep philosophical discussion about the nature of 'belonging' in an image.",
-                    "We're not saying it's magic, but we're not *not* saying it's magic.",
-                    "The pixels are being rearranged for optimal aesthetic pleasure. Please stand by.",
-                    "Almost there! The digital scissors are getting a workout.",
-                    "Your image is undergoing a dramatic transformation. Soon, it will be free of its past."
-                ];
-                let messageIndex = 0;
-                const initialMessage = message || funnyMessages[messageIndex];
-                content = `<div class="br-loader"></div><span id="br-loading-message">${initialMessage}</span>`;
-                this.statusOverlay.innerHTML = content;
-
-                if (this.messageInterval) clearInterval(this.messageInterval);
-                if (!message) {
-                    this.messageInterval = setInterval(() => {
-                        messageIndex = (messageIndex + 1) % funnyMessages.length;
-                        document.getElementById('br-loading-message').innerText = funnyMessages[messageIndex];
-                    }, 4000);
-                }
+                content = `<div class="br-loader"></div><span>${message}</span>`;
                 break;
             case 'error':
                 content = `<span class="br-error-message">${message}</span>`;
-                setTimeout(() => this.statusOverlay.style.display = 'none', 3000);
-                if (this.messageInterval) clearInterval(this.messageInterval);
+                setTimeout(() => this.statusOverlay.style.display = 'none', 4000);
                 break;
             case 'clear':
                 this.statusOverlay.style.display = 'none';
-                if (this.messageInterval) clearInterval(this.messageInterval);
                 break;
         }
-        if (type !== 'loading') this.statusOverlay.innerHTML = content;
+        this.statusOverlay.innerHTML = content;
     },
 
-    updateProgressMessage: function (message) {
-        const messageEl = document.getElementById('br-loading-message');
-        if (messageEl) {
-            messageEl.innerText = message;
+    initOrtSession: async function () {
+        this.setStatus('loading', 'Initializing AI model (42 MB). This may take a moment...');
+        try {
+            // Point to the CDN for the WASM files
+            ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/';
+            this.ortSession = await ort.InferenceSession.create(this.modelPath);
+            this.setStatus('clear');
+            const warningDiv = document.getElementById('tool-warning');
+            if (warningDiv) { warningDiv.style.display = 'none'; }
+            console.log("ONNX session initialized successfully.");
+        } catch (error) {
+            console.error("Failed to initialize ONNX session:", error);
+            this.setStatus('error', 'Failed to load the AI model. Please refresh and try again.');
         }
     },
 
     handleFileSelect: function (event) {
         if (this.isProcessing) return;
         const file = event.target.files[0];
-        if (!file) return;
+        if (!file || !file.type.startsWith('image/')) {
+            if (file) this.setStatus('error', 'Please select a valid image file.');
+            return;
+        }
 
-        this.currentFile = file;
+        this.currentImageFile = file;
         const reader = new FileReader();
 
         reader.onload = (e) => {
-            this.previewImg.src = e.target.result;
-            this.previewImg.onload = () => {
+            this.originalImage = new Image();
+            this.originalImage.onload = () => {
+                this.previewImg.src = e.target.result;
                 this.workspace.classList.add('has-image');
                 this.imageContainer.style.display = 'block';
                 this.outputCanvas.style.display = 'none';
                 this.actionsContainer.style.display = 'flex';
-                this.actionsContainer.style.justifyContent = '';
                 this.downloadBtn.style.display = 'none';
                 this.processBtn.style.display = 'inline-flex';
                 this.clearBtn.style.display = 'inline-flex';
-                this.qualitySelector.style.display = 'flex';
                 this.processBtn.disabled = false;
-                this.updateQualitySelection('isnet_fp16'); // Set default to 'Quality'
                 this.setStatus('clear');
             };
+            this.originalImage.onerror = () => {
+                this.setStatus('error', 'Could not load the selected image.');
+            };
+            this.originalImage.src = e.target.result;
+        };
+        reader.onerror = () => {
+            this.setStatus('error', 'Failed to read the selected file.');
         };
         reader.readAsDataURL(file);
     },
 
     clearImage: function () {
-        this.currentFile = null;
+        this.currentImageFile = null;
+        this.originalImage = null;
         this.imageInput.value = '';
         this.workspace.classList.remove('has-image');
         this.imageContainer.style.display = 'none';
@@ -133,83 +114,109 @@ const br = {
         this.setStatus('clear');
     },
 
+    preprocess: function (image) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = this.modelInputSize;
+        canvas.height = this.modelInputSize;
+        ctx.drawImage(image, 0, 0, this.modelInputSize, this.modelInputSize);
+        const imageData = ctx.getImageData(0, 0, this.modelInputSize, this.modelInputSize);
+        const { data } = imageData;
+
+        const float32Data = new Float32Array(3 * this.modelInputSize * this.modelInputSize);
+        const mean = [0.485, 0.456, 0.406];
+        const std = [0.229, 0.224, 0.225];
+
+        for (let i = 0; i < this.modelInputSize * this.modelInputSize; i++) {
+            float32Data[i] = (data[i * 4] / 255 - mean[0]) / std[0];
+            float32Data[i + this.modelInputSize * this.modelInputSize] = (data[i * 4 + 1] / 255 - mean[1]) / std[1];
+            float32Data[i + 2 * this.modelInputSize * this.modelInputSize] = (data[i * 4 + 2] / 255 - mean[2]) / std[2];
+        }
+
+        return new ort.Tensor('float32', float32Data, [1, 3, this.modelInputSize, this.modelInputSize]);
+    },
+
+    normPRED: function (d) {
+        let ma = -Infinity, mi = Infinity;
+        for (let i = 0; i < d.length; i++) {
+            if (ma < d[i]) ma = d[i];
+            if (mi > d[i]) mi = d[i];
+        }
+        const range = ma - mi;
+        if (range === 0) return d.map(() => 0);
+        return d.map(i => (i - mi) / range);
+    },
+
+    postprocess: function (tensor, originalWidth, originalHeight) {
+        const pred = this.normPRED(tensor.data);
+        const size = this.modelInputSize * this.modelInputSize;
+
+        const maskCanvas = document.createElement('canvas');
+        maskCanvas.width = this.modelInputSize;
+        maskCanvas.height = this.modelInputSize;
+        const maskCtx = maskCanvas.getContext('2d');
+        const maskImageData = maskCtx.createImageData(this.modelInputSize, this.modelInputSize);
+
+        for (let i = 0; i < size; i++) {
+            maskImageData.data[i * 4 + 3] = pred[i] * 255;
+        }
+        maskCtx.putImageData(maskImageData, 0, 0);
+
+        this.outputCanvas.width = originalWidth;
+        this.outputCanvas.height = originalHeight;
+        const ctx = this.outputCanvas.getContext('2d');
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+
+        ctx.drawImage(this.originalImage, 0, 0, originalWidth, originalHeight);
+
+        ctx.globalCompositeOperation = 'destination-in';
+        ctx.drawImage(maskCanvas, 0, 0, originalWidth, originalHeight);
+
+        ctx.globalCompositeOperation = 'source-over';
+    },
+
     processImage: async function () {
-        if (!this.currentFile || this.isProcessing) return;
+        if (!this.originalImage || this.isProcessing || !this.ortSession) {
+            if (!this.ortSession) this.setStatus('error', 'Model not ready. Please wait or refresh.');
+            return;
+        }
 
         this.isProcessing = true;
         this.processBtn.disabled = true;
-        this.setStatus('loading', 'Warming up the AI...');
-
-        let computingStarted = false; // Flag to start funny messages only once
+        this.setStatus('loading', 'Analyzing image...');
 
         try {
-            let modelName;
-            switch (this.selectedQuality) {
-                case 'isnet_quint8': modelName = 'Fast'; break;
-                case 'isnet_fp16': modelName = 'Quality'; break;
-                case 'isnet': modelName = 'Ultra'; break;
-                default: modelName = 'Model';
-            }
+            const inputTensor = this.preprocess(this.originalImage);
+            const feeds = { 'input.1': inputTensor };
+            const results = await this.ortSession.run(feeds);
+            const outputTensor = results['1959'];
 
-            const config = {
-                publicPath: 'https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/',
-                debug: true,
-                model: this.selectedQuality,
-                output: {
-                    format: 'image/png',
-                    quality: 1,
-                    type: 'foreground',
-                },
-                progress: (key, current, total) => {
-                    if (key.startsWith('download')) {
-                        const percent = Math.round((current / total) * 100);
-                        this.updateProgressMessage(`Downloading ${modelName} model... ${percent}%`);
-                    } else if (key.startsWith('compute') && !computingStarted) {
-                        computingStarted = true;
-                        // Now that the model is ready, start the funny messages
-                        this.setStatus('loading');
-                    }
-                }
-            };
+            this.setStatus('loading', 'Applying mask...');
+            this.postprocess(outputTensor, this.originalImage.naturalWidth, this.originalImage.naturalHeight);
 
-            const finalBlob = await removeBackground(this.currentFile, config);
-
-            const url = URL.createObjectURL(finalBlob);
-            this.displayResult(url);
-
-            this.downloadBtn.href = url;
-            // Set a more descriptive download filename
-            const originalFilename = this.currentFile.name.replace(/\.[^/.]+$/, "");
-            this.downloadBtn.download = `${originalFilename}-bg-removed.png`;
-
+            this.imageContainer.style.display = 'none';
+            this.outputCanvas.style.display = 'block';
             this.processBtn.style.display = 'none';
-            this.qualitySelector.style.display = 'none';
             this.downloadBtn.style.display = 'inline-flex';
-            this.actionsContainer.style.justifyContent = 'center';
-            this.clearBtn.style.display = 'inline-flex';
             this.setStatus('clear');
 
         } catch (error) {
             console.error('Background removal failed:', error);
-            this.setStatus('error', `Oof, that didn't work. Try another image?`);
+            this.setStatus('error', `Processing failed. The model may not be suitable for this image.`);
         } finally {
             this.isProcessing = false;
             this.processBtn.disabled = false;
         }
     },
 
-    displayResult: function (imageUrl) {
-        const img = new Image();
-        img.onload = () => {
-            this.outputCanvas.width = img.naturalWidth;
-            this.outputCanvas.height = img.naturalHeight;
-            const ctx = this.outputCanvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-
-            this.imageContainer.style.display = 'none';
-            this.outputCanvas.style.display = 'block';
-        };
-        img.src = imageUrl;
+    setupDownload: function () {
+        this.outputCanvas.toBlob((blob) => {
+            const url = URL.createObjectURL(blob);
+            this.downloadBtn.href = url;
+            const originalFilename = this.currentImageFile.name.replace(/\.[^/.]+$/, "");
+            this.downloadBtn.download = `${originalFilename}-bg-removed.png`;
+        }, 'image/png', 1);
     },
 
     initDragAndDrop: function () {
@@ -233,17 +240,26 @@ const br = {
     },
 
     init: function () {
-        this.fetchElements();
-        if (!this.imageInput || !this.processBtn) return;
-
-        this.imageInput.addEventListener('change', (e) => this.handleFileSelect(e));
-        this.processBtn.addEventListener('click', () => this.processImage());
-        this.clearBtn.addEventListener('click', () => this.clearImage());
-        this.qualityFastBtn.addEventListener('click', () => this.updateQualitySelection('isnet_quint8'));
-        this.qualityQualityBtn.addEventListener('click', () => this.updateQualitySelection('isnet_fp16'));
-        this.qualityUltraBtn.addEventListener('click', () => this.updateQualitySelection('isnet'));
-        this.initDragAndDrop();
-        console.log("Background Remover Initialized.");
+        try {
+            this.fetchElements();
+            if (!this.imageInput || !this.processBtn) {
+                console.error('Required DOM elements not found.');
+                return;
+            }
+            this.initOrtSession();
+            this.imageInput.addEventListener('change', (e) => this.handleFileSelect(e));
+            this.processBtn.addEventListener('click', () => this.processImage());
+            this.clearBtn.addEventListener('click', () => this.clearImage());
+            this.downloadBtn.addEventListener('click', () => this.setupDownload());
+            this.initDragAndDrop();
+            console.log("Background Remover Initialized.");
+        } catch (error) {
+            console.error("Initialization failed:", error);
+            const warningDiv = document.getElementById('tool-warning');
+            if (warningDiv) {
+                warningDiv.innerHTML = 'Error: Tool initialization failed. Check the console for details.';
+            }
+        }
     }
 };
 
@@ -253,4 +269,6 @@ function initializeTool() {
     }
 }
 
+// Expose the initialization function to the global scope
+// so it can be called by other scripts like main.js
 window.initializeTool = initializeTool;

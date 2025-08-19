@@ -19,21 +19,14 @@
       if (window.crossOriginIsolated) {
         return; // All good, the page is already isolated.
       }
-
-      // If a service worker is already running, it might be an old version
-      // or not the COI one. A reload will force the browser to re-evaluate.
       if (navigator.serviceWorker.controller) {
         window.location.reload();
         return;
       }
-
-      // Register the service worker.
       const registration = await navigator.serviceWorker.register('/coi-serviceworker.js');
-
-      // Wait for the new service worker to be installed and activated.
       await new Promise(resolve => {
         const worker = registration.installing;
-        if (!worker) { // If no worker is installing, it might be waiting.
+        if (!worker) {
           resolve();
           return;
         }
@@ -43,9 +36,6 @@
           }
         });
       });
-
-      // Once the service worker is active, reload the page. The reloaded page
-      // will be served with the correct headers.
       window.location.reload();
     })();
   </script>
@@ -125,7 +115,7 @@
             {
               "@type": "HowToStep",
               "name": "Process the Image",
-              "text": "Select your desired output quality ('Fast', 'Quality', or 'Ultra') and click the 'Remove Background' button to start the process."
+              "text": "Click the 'Remove Background' button to start the process."
             },
             {
               "@type": "HowToStep",
@@ -150,23 +140,7 @@
               "name": "What's the catch? Why is it free?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "There isn't one. The 'catch,' if you can call it that, is that the first time you use the tool, your browser needs to download the AI model (a few megabytes). This might take a moment on slower connections. The site is a personal project, not a corporate venture."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Which quality setting should I use?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "It's a trade-off. 'Fast' is quickest but less detailed. 'Quality' is the default and offers a great balance. 'Ultra' is the most precise, especially for hair and fur, but requires the largest download and is the slowest to process."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Why does the output look weird?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Images with a clear subject and a distinct background work best. A portrait of a person against a blurry landscape is ideal. A photo of a white cat in a snowstorm might be... challenging, even for the 'Ultra' model."
+                "text": "There isn't one. The 'catch,' if you can call it that, is that the first time you use the tool, your browser needs to download the AI model (about 42MB). This might take a moment on slower connections. The site is a personal project, not a corporate venture."
               }
             }
           ]
@@ -197,15 +171,12 @@
       <section id="backgroundRemover" class="tool-content active">
         <h1>Background Remover</h1>
         <p style="text-align: center; max-width: 65ch; margin: 0 auto var(--spacing-xl);">
-          Select an image, choose your quality, and the background will be magically whisked away.
+          Select an image, and the background will be magically whisked away.
         </p>
 
         <div class="br-main-interface">
-          <!-- The combined workspace for upload, preview, and result -->
           <div id="br-workspace" class="br-workspace">
             <input type="file" id="br-image-input" accept="image/png, image/jpeg, image/webp" class="sr-only">
-
-            <!-- Initial State: Upload Prompt -->
             <label for="br-image-input" id="br-upload-label" class="br-upload-label">
               <svg class="br-upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path
@@ -214,41 +185,22 @@
               <span class="br-upload-text">Click to Upload or Drop Image</span>
               <span class="br-upload-hint">PNG, JPG, or WEBP</span>
             </label>
-
-            <!-- Container for Image Preview -->
             <div id="br-image-container" class="br-image-container" style="display: none;">
               <img id="br-preview-img" src="#" alt="Image preview" class="br-image-display">
             </div>
-
             <canvas id="br-output-canvas" class="br-image-display" style="display: none;"></canvas>
-
-            <!-- Status Overlay (for loading/errors) -->
-            <div id="br-status-overlay" class="br-status-overlay" aria-live="polite" style="display: none;">
-            </div>
-
-            <!-- Workspace Buttons -->
+            <div id="br-status-overlay" class="br-status-overlay" aria-live="polite" style="display: none;"></div>
             <button id="br-clear-btn" class="button btn-secondary" style="display: none;" title="Clear Image">X</button>
           </div>
-
-          <!-- Action buttons are now outside the workspace -->
           <div id="br-actions-container" class="br-actions" style="display: none;">
-            <fieldset id="br-quality-selector" class="br-quality-selector quality-options-group">
-              <legend class="sr-only">Output Quality</legend>
-              <button type="button" id="br-quality-fast" class="btn-secondary" data-quality="isnet_quint8"
-                title="Fastest processing, smallest download. Good for simple images.">Fast</button>
-              <button type="button" id="br-quality-quality" class="btn-secondary" data-quality="isnet_fp16"
-                title="Great balance of speed and quality. Recommended for most images.">Quality</button>
-              <button type="button" id="br-quality-ultra" class="btn-secondary" data-quality="isnet"
-                title="Highest precision for complex edges like hair. Largest download and slowest processing.">Ultra</button>
-            </fieldset>
             <button id="br-process-btn" class="button btn-secondary">Remove Background</button>
             <a id="br-download-btn" href="#" class="button btn-secondary" download="bg-removed.png" role="button"
               style="display: none;">Download Image</a>
           </div>
         </div>
 
-        <div class="tool-warning">
-          ⚠️ <strong>Please Note:</strong> This tool is currently not working as expected and may produce imperfect results. I am aware of the issue and gave up on trying to fix it. You can still try it, and sometimes processing the image a second time helps.
+        <div class="tool-warning" id="tool-warning">
+          ⚠️ <strong>Please Note:</strong> This tool downloads a 42MB model on first use. Please be patient.
         </div>
       </section>
 
@@ -274,8 +226,8 @@
                 },
                 {
                     "icon": "2️⃣",
-                    "title": "Select Quality & Process",
-                    "description": "Choose between 'Fast', 'Quality', or 'Ultra', then hit the 'Remove Background' button to let the AI do its work. 'Quality' is recommended for most uses."
+                    "title": "Process the Image",
+                    "description": "Hit the 'Remove Background' button to let the AI do its work. The first time you do this, it will need to download the model, which can take a moment."
                 },
                 {
                     "icon": "3️⃣",
@@ -296,19 +248,14 @@
                     "description": "Your images are processed directly in your browser. They are never uploaded to a server, viewed by anyone, or stored anywhere. What happens on your computer stays on your computer."
                 },
                 {
-                    "icon": "⚙️",
-                    "title": "Three Quality Tiers",
-                    "description": "Choose your weapon: 'Fast' for speed, 'Quality' for a perfect balance, or 'Ultra' for maximum precision on the most detailed images."
-                },
-                {
                     "icon": "💸",
                     "title": "Completely Free, No Shenanigans",
                     "description": "This is a free tool. There's no login required, no trial period, no watermarks, and no up-sell. Just a utility that does what it says on the tin."
                 },
                 {
                     "icon": "🚀",
-                    "title": "AI-Powered Auto-Refinement",
-                    "description": "The tool automatically runs a second pass to refine the edges, giving you a cleaner, more professional result without any extra clicks."
+                    "title": "High-Quality AI Model",
+                    "description": "The tool uses the powerful U2-Net model to accurately identify the foreground and create a clean, precise cutout of your subject."
                 }
             ]
         },
@@ -317,7 +264,7 @@
             "title": "The Magic Happens in Your Browser",
             "icon": "🧙‍♂️",
             "content": [
-                "You might wonder how this works without uploading your image. The first time you click 'Remove Background', your browser downloads a specialized AI model based on your quality selection. This model is the 'engine' that performs the background removal. Once downloaded, it runs entirely on your device.",
+                "You might wonder how this works without uploading your image. The first time you click 'Remove Background', your browser downloads a specialized AI model (about 42MB). This model is the 'engine' that performs the background removal. Once downloaded, it runs entirely on your device.",
                 "This client-side approach is the key to ensuring your privacy. Since your file never leaves your machine, you maintain complete control. It's a bit like having a powerful image editing studio right in your browser tab, without the installation hassle or privacy concerns of traditional software or online services."
             ]
         },
@@ -334,17 +281,12 @@
                 {
                     "icon": "🤔",
                     "question": "What's the catch? Why is it free?",
-                    "answer": "There isn't one. The 'catch,' if you can call it that, is that the first time you use the tool, your browser needs to download the AI model (a few megabytes). This might take a moment on slower connections. The site is a personal project, not a corporate venture."
-                },
-                {
-                    "icon": "⚖️",
-                    "question": "Which quality setting should I use?",
-                    "answer": "It's a trade-off. 'Fast' is quickest but less detailed. 'Quality' is the default and offers a great balance. 'Ultra' is the most precise, especially for hair and fur, but requires the largest download and is the slowest to process."
+                    "answer": "There isn't one. The 'catch,' if you can call it that, is that the first time you use the tool, your browser needs to download the AI model (about 42MB). This might take a moment on slower connections. The site is a personal project, not a corporate venture."
                 },
                 {
                     "icon": "💥",
                     "question": "Why does the output look weird?",
-                    "answer": "Images with a clear subject and a distinct background work best. A portrait of a person against a blurry landscape is ideal. A photo of a white cat in a snowstorm might be... challenging, even for the 'Ultra' model."
+                    "answer": "Images with a clear subject and a distinct background work best. A portrait of a person against a blurry landscape is ideal. A photo of a white cat in a snowstorm might be... challenging for the AI."
                 }
             ]
         }
@@ -352,7 +294,8 @@
 }</script>
 
   <!-- Scripts (paths relative to root) -->
-  <script type="module" src="/tools/images/bg-remover/bgRemover.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+  <script src="/tools/images/bg-remover/bgRemover.js"></script>
   <script src="/main.js"></script>
 </body>
 
