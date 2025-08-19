@@ -177,9 +177,16 @@ const br = {
     },
 
     processImage: async function () {
-        if (!this.originalImage || this.isProcessing || !this.ortSession) {
-            if (!this.ortSession) this.setStatus('error', 'Model not ready. Please wait or refresh.');
+        if (!this.originalImage || this.isProcessing) {
             return;
+        }
+
+        if (!this.ortSession) {
+            await this.initOrtSession();
+            if (!this.ortSession) { // Check again after attempting initialization
+                this.setStatus('error', 'Model could not be loaded. Please try again.');
+                return;
+            }
         }
 
         this.isProcessing = true;
@@ -246,7 +253,6 @@ const br = {
                 console.error('Required DOM elements not found.');
                 return;
             }
-            this.initOrtSession();
             this.imageInput.addEventListener('change', (e) => this.handleFileSelect(e));
             this.processBtn.addEventListener('click', () => this.processImage());
             this.clearBtn.addEventListener('click', () => this.clearImage());
