@@ -27,29 +27,19 @@
     padding: 0 var(--spacing-md);
 }
 
-.cp-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: var(--spacing-lg);
-    background-color: var(--bg-deep-dark);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-color);
-}
+/* REMOVED: .cp-controls as it's no longer needed */
 
 .cp-action-buttons {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
     gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+    /* Added margin for spacing */
 }
 
 .cp-upload-label {
     gap: var(--spacing-sm);
-    min-width: 220px;
 }
-
-
 
 .cp-upload-label:active {
     transform: translate(0, 0);
@@ -59,7 +49,10 @@
 
 #cp-eyedropper-btn {
     gap: var(--spacing-sm);
-    min-width: 220px;
+    width: 100%;
+    /* MODIFIED: Make button full width */
+    justify-content: center;
+    /* Center content within the button */
 }
 
 #cp-eyedropper-btn.active,
@@ -431,10 +424,6 @@
 }
 
 @media (max-width: 768px) {
-    .cp-controls {
-        padding: var(--spacing-md);
-    }
-
     .cp-results-wrapper {
         flex-direction: column;
         align-items: center;

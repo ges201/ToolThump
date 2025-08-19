@@ -188,6 +188,7 @@ function initializeTool() {
         if (isEyedropperActive) {
             deactivateEyedropper();
             resetPreviews();
+            clearColorValues(); 
         } else {
             activateEyedropper();
         }

@@ -58,21 +58,8 @@
                     <h1>Image Color Picker</h1>
                 </div>
                 <div class="cp-container">
-                    <p class="cp-instructions">Click to upload or drag & drop an image, activate the eyedropper, then move the cursor on the
-                        image and click the
-                        mouse to select the color, you can also use arrow keys for pixel-perfect selection.</p>
-                    <div class="cp-controls">
-                        <div class="cp-action-buttons">
-                            <button id="cp-eyedropper-btn" class="btn-secondary" disabled>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-eyedropper" viewBox="0 0 16 16">
-                                    <path
-                                        d="M13.354.646a1.207 1.207 0 0 0-1.708 0L8.5 3.793l-.646-.647a.5.5 0 1 0-.708.708L8.293 5l-7.147 7.146A.5.5 0 0 0 1 12.5v1.793l-.854.853a.5.5 0 1 0 .708.707L1.707 15H3.5a.5.5 0 0 0 .354-.146L11 7.707l1.146 1.147a.5.5 0 0 0 .708-.708l-.647-.646 2.147-2.147a1.207 1.207 0 0 0 0-1.708l-2-2zM2 13.293l6.5-6.5 1.414 1.414-6.5 6.5H2v-1.414z" />
-                                </svg>
-                                <span>Activate Eyedropper</span>
-                            </button>
-                        </div>
-                    </div>
+                    <p class="cp-instructions">Click to upload or drag & drop an image, then use the eyedropper to
+                        select a color. You can also use the arrow keys for pixel-perfect selection.</p>
 
                     <div class="cp-main-area">
                         <div class="cp-canvas-container">
@@ -157,6 +144,17 @@
                                         <button class="copy-btn btn-secondary"
                                             data-clipboard-target="#cp-hsl-value">Copy</button>
                                     </div>
+                                </div>
+                                <!-- MOVED BUTTON CONTAINER HERE -->
+                                <div class="cp-action-buttons">
+                                    <button id="cp-eyedropper-btn" class="btn-secondary" disabled>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-eyedropper" viewBox="0 0 16 16">
+                                            <path
+                                                d="M13.354.646a1.207 1.207 0 0 0-1.708 0L8.5 3.793l-.646-.647a.5.5 0 1 0-.708.708L8.293 5l-7.147 7.146A.5.5 0 0 0 1 12.5v1.793l-.854.853a.5.5 0 1 0 .708.707L1.707 15H3.5a.5.5 0 0 0 .354-.146L11 7.707l1.146 1.147a.5.5 0 0 0 .708-.708l-.647-.646 2.147-2.147a1.207 1.207 0 0 0 0-1.708l-2-2zM2 13.293l6.5-6.5 1.414 1.414-6.5 6.5H2v-1.414z" />
+                                        </svg>
+                                        <span>Activate Eyedropper</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
