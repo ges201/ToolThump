@@ -17,6 +17,10 @@ const br = {
     currentImageFile: null,
     originalImage: null,
     processedImage: null, // Will hold the image with transparent background
+    maskCanvas: null, // Holds the alpha mask for editing
+    isDrawing: false, // For brush editing
+    lastX: 0,
+    lastY: 0,
 
     fetchElements: function () {
         this.imageInput = document.getElementById('br-image-input');
@@ -277,6 +281,15 @@ const br = {
         }
         maskCtx.putImageData(maskImageData, 0, 0);
 
+        // Create a full-resolution canvas for the mask to allow editing
+        this.maskCanvas = document.createElement('canvas');
+        this.maskCanvas.width = originalWidth;
+        this.maskCanvas.height = originalHeight;
+        const storedMaskCtx = this.maskCanvas.getContext('2d');
+        storedMaskCtx.imageSmoothingEnabled = true;
+        storedMaskCtx.imageSmoothingQuality = 'high';
+        storedMaskCtx.drawImage(maskCanvas, 0, 0, originalWidth, originalHeight);
+
         const resultCanvas = document.createElement('canvas');
         resultCanvas.width = originalWidth;
         resultCanvas.height = originalHeight;
@@ -287,13 +300,71 @@ const br = {
         ctx.drawImage(this.originalImage, 0, 0, originalWidth, originalHeight);
 
         ctx.globalCompositeOperation = 'destination-in';
-        ctx.drawImage(maskCanvas, 0, 0, originalWidth, originalHeight);
+        // Use the full-resolution mask for the initial composition
+        ctx.drawImage(this.maskCanvas, 0, 0, originalWidth, originalHeight);
 
         ctx.globalCompositeOperation = 'source-over';
         return resultCanvas;
     },
 
-    
+    startDrawing: function(e) {
+        if (!brFeatures.isBrushActive) return;
+        this.isDrawing = true;
+        const canvas = this.outputCanvas;
+        const rect = canvas.getBoundingClientRect();
+        this.lastX = e.offsetX * (canvas.width / rect.width);
+        this.lastY = e.offsetY * (canvas.height / rect.height);
+    },
+
+    stopDrawing: function() {
+        if (!this.isDrawing) return;
+        this.isDrawing = false;
+    },
+
+    draw: function(e) {
+        if (!this.isDrawing || !brFeatures.isBrushActive) return;
+
+        const canvas = this.outputCanvas;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.offsetX * (canvas.width / rect.width);
+        const y = e.offsetY * (canvas.height / rect.height);
+
+        const maskCtx = this.maskCanvas.getContext('2d');
+        maskCtx.beginPath();
+        maskCtx.moveTo(this.lastX, this.lastY);
+        maskCtx.lineTo(x, y);
+        maskCtx.lineWidth = brFeatures.brushSize;
+        maskCtx.lineCap = 'round';
+        maskCtx.lineJoin = 'round';
+
+        if (brFeatures.brushMode === 'delete') {
+            maskCtx.globalCompositeOperation = 'destination-out';
+            maskCtx.strokeStyle = 'rgba(0,0,0,1)';
+        } else { // restore
+            maskCtx.globalCompositeOperation = 'source-over';
+            maskCtx.strokeStyle = 'rgba(0,0,0,1)';
+        }
+        maskCtx.stroke();
+
+        [this.lastX, this.lastY] = [x, y];
+
+        this.updateProcessedImage();
+        brFeatures.applyBackgroundColor();
+    },
+
+    updateProcessedImage: function() {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = this.originalImage.naturalWidth;
+        tempCanvas.height = this.originalImage.naturalHeight;
+        const tempCtx = tempCanvas.getContext('2d');
+
+        tempCtx.drawImage(this.originalImage, 0, 0);
+        tempCtx.globalCompositeOperation = 'destination-in';
+        tempCtx.drawImage(this.maskCanvas, 0, 0);
+        tempCtx.globalCompositeOperation = 'source-over';
+
+        this.processedImage = tempCanvas;
+    },
 
     initDragAndDrop: function () {
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -327,6 +398,8 @@ const br = {
             this.clearBtn.addEventListener('click', () => this.clearImage());
             this.downloadBtn.addEventListener('click', (e) => {
                 e.preventDefault();
+                this.updateProcessedImage();
+                brFeatures.applyBackgroundColor();
                 this.outputCanvas.toBlob((blob) => {
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
@@ -340,6 +413,13 @@ const br = {
                 }, 'image/png', 1);
             });
             this.initDragAndDrop();
+
+            // Brush event listeners
+            this.outputCanvas.addEventListener('mousedown', (e) => this.startDrawing(e));
+            this.outputCanvas.addEventListener('mouseup', () => this.stopDrawing());
+            this.outputCanvas.addEventListener('mousemove', (e) => this.draw(e));
+            this.outputCanvas.addEventListener('mouseleave', () => this.stopDrawing());
+
             if (typeof brFeatures !== 'undefined' && brFeatures.init) {
                 brFeatures.init();
             }

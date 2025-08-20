@@ -310,3 +310,45 @@
     border-radius: var(--border-radius-md);
     background-color: var(--surface-bg-color);
 }
+
+.br-feature-group {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+}
+
+.button-group {
+    display: flex;
+}
+
+.button-group .btn-secondary {
+    border-radius: 0;
+    position: relative; /* For z-index to work on hover */
+}
+
+.button-group .btn-secondary:not(.active):hover {
+    z-index: 1; /* Bring button to front on hover */
+}
+
+.button-group .btn-secondary:first-child {
+    border-top-left-radius: var(--border-radius-md);
+    border-bottom-left-radius: var(--border-radius-md);
+}
+
+.button-group .btn-secondary:last-child {
+    border-top-right-radius: var(--border-radius-md);
+    border-bottom-right-radius: var(--border-radius-md);
+    margin-left: -1px; /* Overlap borders */
+}
+
+.button-group .btn-secondary.active {
+    background-color: var(--accent-color-bg-hover);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    z-index: 2; /* Keep active button on top */
+}
+
+.br-slider {
+    flex-grow: 1;
+    margin: 0 var(--spacing-sm);
+}

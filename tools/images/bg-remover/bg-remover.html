@@ -189,6 +189,24 @@
                         <button class="swatch" data-color="#007AFF" style="background-color: #007AFF;"></button>
                     </div>
                 </div>
+                <div id="br-brush-controls" class="br-feature-group">
+                    <div class="br-feature">
+                        <label>Manual Edit:</label>
+                        <button id="br-brush-activate-btn" class="btn-secondary">Activate Brush</button>
+                    </div>
+                    <div class="br-feature">
+                        <label>Brush Mode:</label>
+                        <div class="button-group">
+                            <button id="br-brush-delete-btn" class="btn-secondary active">Delete</button>
+                            <button id="br-brush-restore-btn" class="btn-secondary">Restore</button>
+                        </div>
+                    </div>
+                    <div class="br-feature">
+                        <label for="br-brush-size-slider">Brush Size:</label>
+                        <input type="range" id="br-brush-size-slider" min="2" max="100" value="30" class="br-slider">
+                        <span id="br-brush-size-value">30</span>
+                    </div>
+                </div>
             </div>
           </div>
           <div class="br-right-panel">
