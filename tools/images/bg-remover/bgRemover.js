@@ -307,27 +307,51 @@ const br = {
         return resultCanvas;
     },
 
-    startDrawing: function(e) {
-        if (!brFeatures.isBrushActive) return;
-        this.isDrawing = true;
+    getCanvasCoordinates: function (e) {
         const canvas = this.outputCanvas;
         const rect = canvas.getBoundingClientRect();
-        this.lastX = e.offsetX * (canvas.width / rect.width);
-        this.lastY = e.offsetY * (canvas.height / rect.height);
+
+        const canvasRatio = canvas.width / canvas.height;
+        const containerRatio = rect.width / rect.height;
+
+        let scale, offsetX, offsetY;
+
+        if (canvasRatio > containerRatio) {
+            // Image is wider than the container, letterboxed top/bottom
+            scale = rect.width / canvas.width;
+            offsetX = 0;
+            offsetY = (rect.height - (canvas.height * scale)) / 2;
+        } else {
+            // Image is taller than the container, letterboxed left/right
+            scale = rect.height / canvas.height;
+            offsetX = (rect.width - (canvas.width * scale)) / 2;
+            offsetY = 0;
+        }
+
+        // Calculate coordinates relative to the scaled image, then scale up to canvas resolution
+        const x = (e.offsetX - offsetX) / scale;
+        const y = (e.offsetY - offsetY) / scale;
+
+        return { x, y };
     },
 
-    stopDrawing: function() {
+    startDrawing: function (e) {
+        if (!brFeatures.isBrushActive) return;
+        this.isDrawing = true;
+        const { x, y } = this.getCanvasCoordinates(e);
+        this.lastX = x;
+        this.lastY = y;
+    },
+
+    stopDrawing: function () {
         if (!this.isDrawing) return;
         this.isDrawing = false;
     },
 
-    draw: function(e) {
+    draw: function (e) {
         if (!this.isDrawing || !brFeatures.isBrushActive) return;
 
-        const canvas = this.outputCanvas;
-        const rect = canvas.getBoundingClientRect();
-        const x = e.offsetX * (canvas.width / rect.width);
-        const y = e.offsetY * (canvas.height / rect.height);
+        const { x, y } = this.getCanvasCoordinates(e);
 
         const maskCtx = this.maskCanvas.getContext('2d');
         maskCtx.beginPath();
@@ -352,7 +376,7 @@ const br = {
         brFeatures.applyBackgroundColor();
     },
 
-    updateProcessedImage: function() {
+    updateProcessedImage: function () {
         const tempCanvas = document.createElement('canvas');
         tempCanvas.width = this.originalImage.naturalWidth;
         tempCanvas.height = this.originalImage.naturalHeight;

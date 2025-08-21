@@ -13,7 +13,8 @@
 
 .tool-warning strong {
     /* The color is inherited from .tool-warning */
-    font-weight: 600; /* Make it bolder than the surrounding text */
+    font-weight: 600;
+    /* Make it bolder than the surrounding text */
 }
 
 /* === Background Remover Specific Styles === */
@@ -29,13 +30,17 @@
 }
 
 .br-left-panel {
-    width: 250px; /* Fixed width for the left panel */
-    flex-shrink: 0; /* Prevent shrinking */
+    width: 250px;
+    /* Fixed width for the left panel */
+    flex-shrink: 0;
+    /* Prevent shrinking */
 }
 
 .br-right-panel {
-    flex-grow: 1; /* Take up remaining space */
-    max-width: 700px; /* Limit the width of the image preview area */
+    flex-grow: 1;
+    /* Take up remaining space */
+    max-width: 700px;
+    /* Limit the width of the image preview area */
     display: flex;
     flex-direction: column;
     gap: var(--spacing-lg);
@@ -264,7 +269,8 @@
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
     background-color: var(--surface-bg-color);
-    width: 100%; /* Fill the parent's width */
+    width: 100%;
+    /* Fill the parent's width */
 }
 
 .br-feature {
@@ -323,11 +329,13 @@
 
 .button-group .btn-secondary {
     border-radius: 0;
-    position: relative; /* For z-index to work on hover */
+    position: relative;
+    /* For z-index to work on hover */
 }
 
 .button-group .btn-secondary:not(.active):hover {
-    z-index: 1; /* Bring button to front on hover */
+    z-index: 1;
+    /* Bring button to front on hover */
 }
 
 .button-group .btn-secondary:first-child {
@@ -338,17 +346,37 @@
 .button-group .btn-secondary:last-child {
     border-top-right-radius: var(--border-radius-md);
     border-bottom-right-radius: var(--border-radius-md);
-    margin-left: -1px; /* Overlap borders */
+    margin-left: -1px;
+    /* Overlap borders */
 }
 
 .button-group .btn-secondary.active {
     background-color: var(--accent-color-bg-hover);
     color: var(--accent-color);
     border-color: var(--accent-color);
-    z-index: 2; /* Keep active button on top */
+    z-index: 2;
+    /* Keep active button on top */
 }
 
 .br-slider {
     flex-grow: 1;
     margin: 0 var(--spacing-sm);
+}
+
+.br-brush-cursor {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.9);
+    pointer-events: none;
+    /* So it doesn't interfere with mouse events on the canvas */
+    display: none;
+    /* Hidden by default */
+    transform: translate(-50%, -50%);
+    /* Center it on the cursor position */
+    z-index: 100;
+    /* Make sure it's on top */
+    transition: width 0.05s ease-out, height 0.05s ease-out;
+    /* Smooth size change */
 }
