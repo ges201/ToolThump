@@ -12,9 +12,7 @@
 }
 
 .tool-warning strong {
-    /* The color is inherited from .tool-warning */
     font-weight: 600;
-    /* Make it bolder than the surrounding text */
 }
 
 /* === Background Remover Specific Styles === */
@@ -22,25 +20,24 @@
 .br-main-interface {
     display: flex;
     flex-direction: row;
-    gap: var(--spacing-lg);
+    gap: 32px;
+    /* UPDATED: Final gap reduction */
     justify-content: center;
     align-items: flex-start;
 }
 
+.br-left-panel {
+    flex-shrink: 0;
 }
 
-.br-left-panel {
-    width: 250px;
-    /* Fixed width for the left panel */
-    flex-shrink: 0;
-    /* Prevent shrinking */
+/* Hide the left panel when its content is hidden, allowing the right panel to center. */
+.br-left-panel:has(#br-features-container[style*="display: none"]) {
+    display: none;
 }
 
 .br-right-panel {
     flex-grow: 1;
-    /* Take up remaining space */
     max-width: 700px;
-    /* Limit the width of the image preview area */
     display: flex;
     flex-direction: column;
     gap: var(--spacing-lg);
@@ -60,7 +57,6 @@
     background-color: var(--surface-bg-color);
     transition: border-color 0.2s ease, background-color 0.2s ease;
     overflow: hidden;
-    /* Checkerboard background to show transparency */
     background-image:
         linear-gradient(45deg, var(--bg-deep-dark) 25%, transparent 25%),
         linear-gradient(-45deg, var(--bg-deep-dark) 25%, transparent 25%),
@@ -91,7 +87,6 @@
     color: var(--text-secondary-color);
     z-index: 10;
     background-color: var(--surface-bg-color);
-    /* Hides checkerboard initially */
     transition: opacity 0.3s ease;
 }
 
@@ -222,7 +217,6 @@
     box-shadow: none;
 }
 
-/* Add hover/focus/active effects to download link to match other buttons */
 #br-download-btn.button:hover,
 #br-download-btn.button:focus {
     transform: translate(-2px, -2px);
@@ -265,18 +259,23 @@
 
 /* === Features Container === */
 .br-features-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
     padding: var(--spacing-md);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
     background-color: var(--surface-bg-color);
-    width: 100%;
-    /* Fill the parent's width */
+    width: 550px;
+    /* UPDATED: Final width increase */
+    box-sizing: border-box;
 }
 
 .br-feature {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
+    flex-wrap: wrap;
 }
 
 .br-feature label {
@@ -330,12 +329,10 @@
 .button-group .btn-secondary {
     border-radius: 0;
     position: relative;
-    /* For z-index to work on hover */
 }
 
 .button-group .btn-secondary:not(.active):hover {
     z-index: 1;
-    /* Bring button to front on hover */
 }
 
 .button-group .btn-secondary:first-child {
@@ -347,7 +344,6 @@
     border-top-right-radius: var(--border-radius-md);
     border-bottom-right-radius: var(--border-radius-md);
     margin-left: -1px;
-    /* Overlap borders */
 }
 
 .button-group .btn-secondary.active {
@@ -355,7 +351,6 @@
     color: var(--accent-color);
     border-color: var(--accent-color);
     z-index: 2;
-    /* Keep active button on top */
 }
 
 .br-slider {
@@ -370,13 +365,8 @@
     background-color: rgba(0, 0, 0, 0.2);
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.9);
     pointer-events: none;
-    /* So it doesn't interfere with mouse events on the canvas */
     display: none;
-    /* Hidden by default */
     transform: translate(-50%, -50%);
-    /* Center it on the cursor position */
     z-index: 100;
-    /* Make sure it's on top */
     transition: width 0.05s ease-out, height 0.05s ease-out;
-    /* Smooth size change */
 }
