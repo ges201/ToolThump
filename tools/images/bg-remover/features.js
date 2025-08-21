@@ -10,6 +10,8 @@ const brFeatures = {
     brushRestoreBtn: null,
     brushSizeSlider: null,
     brushSizeValue: null,
+    brushFeatherSlider: null,
+    brushFeatherValue: null,
     brushCursor: null, // Custom cursor element
 
     // State
@@ -17,6 +19,7 @@ const brFeatures = {
     isBrushActive: false,
     brushMode: 'delete', // 'delete' or 'restore'
     brushSize: 30,
+    brushFeather: 0,
 
     fetchElements: function () {
         this.featuresContainer = document.getElementById('br-features-container');
@@ -29,6 +32,8 @@ const brFeatures = {
         this.brushRestoreBtn = document.getElementById('br-brush-restore-btn');
         this.brushSizeSlider = document.getElementById('br-brush-size-slider');
         this.brushSizeValue = document.getElementById('br-brush-size-value');
+        this.brushFeatherSlider = document.getElementById('br-brush-feather-slider');
+        this.brushFeatherValue = document.getElementById('br-brush-feather-value');
     },
 
     init: function () {
@@ -58,6 +63,7 @@ const brFeatures = {
             this.brushDeleteBtn.addEventListener('click', () => this.setBrushMode('delete'));
             this.brushRestoreBtn.addEventListener('click', () => this.setBrushMode('restore'));
             this.brushSizeSlider.addEventListener('input', (e) => this.setBrushSize(e.target.value));
+            this.brushFeatherSlider.addEventListener('input', (e) => this.setBrushFeather(e.target.value));
             this.createBrushCursor();
             this.addCanvasCursorListeners();
         }
@@ -134,6 +140,11 @@ const brFeatures = {
         this.brushSize = parseInt(size, 10);
         this.brushSizeValue.textContent = size;
         this.setBrushCursorSize();
+    },
+
+    setBrushFeather: function (value) {
+        this.brushFeather = parseInt(value, 10);
+        this.brushFeatherValue.textContent = value;
     },
 
     setBrushCursorSize: function () {

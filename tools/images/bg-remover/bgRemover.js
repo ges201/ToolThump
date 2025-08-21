@@ -341,6 +341,18 @@ const br = {
         const { x, y } = this.getCanvasCoordinates(e);
         this.lastX = x;
         this.lastY = y;
+
+        // Draw a single point on mousedown for click actions
+        const maskCtx = this.maskCanvas.getContext('2d');
+        this.drawFeatheredCircle(
+            maskCtx, x, y,
+            brFeatures.brushSize,
+            brFeatures.brushFeather,
+            brFeatures.brushMode
+        );
+
+        this.updateProcessedImage();
+        brFeatures.applyBackgroundColor();
     },
 
     stopDrawing: function () {
@@ -352,28 +364,52 @@ const br = {
         if (!this.isDrawing || !brFeatures.isBrushActive) return;
 
         const { x, y } = this.getCanvasCoordinates(e);
-
         const maskCtx = this.maskCanvas.getContext('2d');
-        maskCtx.beginPath();
-        maskCtx.moveTo(this.lastX, this.lastY);
-        maskCtx.lineTo(x, y);
-        maskCtx.lineWidth = brFeatures.brushSize;
-        maskCtx.lineCap = 'round';
-        maskCtx.lineJoin = 'round';
 
-        if (brFeatures.brushMode === 'delete') {
-            maskCtx.globalCompositeOperation = 'destination-out';
-            maskCtx.strokeStyle = 'rgba(0,0,0,1)';
-        } else { // restore
-            maskCtx.globalCompositeOperation = 'source-over';
-            maskCtx.strokeStyle = 'rgba(0,0,0,1)';
+        const brushSize = brFeatures.brushSize;
+        const feather = brFeatures.brushFeather;
+        const mode = brFeatures.brushMode;
+
+        const dist = Math.hypot(x - this.lastX, y - this.lastY);
+        const angle = Math.atan2(y - this.lastY, x - this.lastX);
+
+        if (dist > 0) {
+            // Step by 1 pixel for a smooth line
+            for (let i = 0; i < dist; i += 1) {
+                const currentX = this.lastX + Math.cos(angle) * i;
+                const currentY = this.lastY + Math.sin(angle) * i;
+                this.drawFeatheredCircle(maskCtx, currentX, currentY, brushSize, feather, mode);
+            }
         }
-        maskCtx.stroke();
 
         [this.lastX, this.lastY] = [x, y];
 
         this.updateProcessedImage();
         brFeatures.applyBackgroundColor();
+    },
+
+    drawFeatheredCircle: function(ctx, x, y, size, feather, mode) {
+        const radius = size / 2;
+        if (radius <= 0) return;
+
+        const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+        
+        const innerStop = Math.max(0, 1 - (feather / 100));
+
+        gradient.addColorStop(0, 'rgba(0,0,0,1)');
+        gradient.addColorStop(innerStop, 'rgba(0,0,0,1)');
+        gradient.addColorStop(1, 'rgba(0,0,0,0)');
+
+        if (mode === 'delete') {
+            ctx.globalCompositeOperation = 'destination-out';
+        } else { // restore
+            ctx.globalCompositeOperation = 'source-over';
+        }
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
     },
 
     updateProcessedImage: function () {
