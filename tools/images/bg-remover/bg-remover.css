@@ -131,6 +131,7 @@
     height: 100%;
     object-fit: contain;
     z-index: 1;
+    will-change: transform;
 }
 
 /* --- Status Overlay --- */
@@ -369,4 +370,89 @@
     transform: translate(-50%, -50%);
     z-index: 100;
     transition: width 0.05s ease-out, height 0.05s ease-out;
+}
+
+#br-output-canvas.brush-active {
+    touch-action: none;
+}
+
+/* === Responsive Design === */
+
+/* For smaller desktops and large tablets where side-by-side layout is too wide */
+@media (max-width: 1300px) {
+    .br-main-interface {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-xl);
+        /* Increase gap for stacked layout */
+    }
+
+    .br-features-container {
+        width: 100%;
+        max-width: 700px;
+        /* Match the right panel's max-width for consistency */
+    }
+
+    .br-right-panel {
+        width: 100%;
+        /* The max-width is already set, which is good */
+    }
+}
+
+/* For standard tablets and mobile phones */
+@media (max-width: 768px) {
+    .br-actions {
+        flex-direction: column;
+        align-items: stretch;
+        /* Make buttons full-width */
+    }
+
+    .br-actions .button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .br-feature {
+        flex-direction: column;
+        align-items: flex-start;
+        /* Align labels to the start */
+        gap: var(--spacing-sm);
+    }
+
+    .br-slider {
+        width: 100%;
+        /* Make sliders take full width */
+        margin: 0;
+    }
+}
+
+/* For small mobile phones */
+@media (max-width: 480px) {
+    .br-upload-text {
+        font-size: 1rem;
+    }
+
+    .br-upload-hint {
+        font-size: 0.8rem;
+    }
+
+    .br-upload-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .br-color-swatches {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .button-group {
+        width: 100%;
+        display: flex;
+    }
+
+    .button-group .btn-secondary {
+        flex-grow: 1;
+        /* Make buttons in the group share width */
+    }
 }

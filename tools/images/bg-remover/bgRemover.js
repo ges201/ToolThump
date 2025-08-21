@@ -224,8 +224,13 @@ const br = {
         this.clearBtn.style.display = 'none';
         this.setStatus('clear');
 
-        if (typeof brFeatures !== 'undefined' && brFeatures.hide) {
-            brFeatures.hide();
+        if (typeof brFeatures !== 'undefined') {
+            if (brFeatures.hide) {
+                brFeatures.hide();
+            }
+            if (brFeatures.resetTransform) {
+                brFeatures.resetTransform();
+            }
         }
     },
 
