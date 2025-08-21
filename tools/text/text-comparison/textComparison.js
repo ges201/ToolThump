@@ -6,6 +6,8 @@ const tc = {
     clearBtn: null, // Added clear button element
     diffOutput: null,
     diffPlaceholder: null,
+    resultSummary: null,
+    diffPercentage: null,
 
     fetchElements: function () {
         this.text1Input = document.getElementById('tc-text1');
@@ -13,6 +15,8 @@ const tc = {
         this.compareBtn = document.getElementById('tc-compare-btn');
         this.clearBtn = document.getElementById('tc-clear-btn'); // Get clear button
         this.diffOutput = document.getElementById('tc-diff-output');
+        this.resultSummary = document.getElementById('tc-result-summary');
+        this.diffPercentage = document.getElementById('tc-diff-percentage');
         if (this.diffOutput) {
             this.diffPlaceholder = this.diffOutput.querySelector('.tc-results-placeholder');
         }
@@ -39,6 +43,9 @@ const tc = {
             this.diffPlaceholder.classList.remove('tc-error');
             this.diffPlaceholder.textContent = "Results will appear here after comparison.";
             this.diffOutput.appendChild(this.diffPlaceholder); // Add placeholder back
+        }
+        if (this.resultSummary) {
+            this.resultSummary.style.display = 'none';
         }
 
         // Optionally focus the first input for better UX
@@ -76,6 +83,28 @@ const tc = {
         this.diffOutput.innerHTML = ''; // Clear previous results
 
         const rawDiff = JsDiff.diffWordsWithSpace(oldText, newText);
+        
+        let addedChars = 0;
+        let removedChars = 0;
+        rawDiff.forEach(part => {
+            if (part.added) {
+                addedChars += part.value.length;
+            } else if (part.removed) {
+                removedChars += part.value.length;
+            }
+        });
+
+        const totalLength = oldText.length + newText.length;
+        let changePercentage = 0;
+        if (totalLength > 0) {
+            changePercentage = ((addedChars + removedChars) / totalLength) * 100;
+        }
+
+        if (this.resultSummary && this.diffPercentage) {
+            this.diffPercentage.textContent = `${changePercentage.toFixed(1)}%`;
+            this.resultSummary.style.display = 'block';
+        }
+
         let processedDiff = [];
         let i = 0;
         while (i < rawDiff.length) {

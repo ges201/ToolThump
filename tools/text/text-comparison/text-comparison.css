@@ -72,6 +72,11 @@
     border-bottom: 1px solid var(--border-color);
 }
 
+.tc-result-summary {
+    text-align: right;
+    margin-bottom: var(--spacing-sm);
+}
+
 .tc-diff-output-box {
     padding: var(--spacing-md);
     border: 1px solid var(--border-color);
