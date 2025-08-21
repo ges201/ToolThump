@@ -354,6 +354,13 @@
     z-index: 2;
 }
 
+/* Style for the active brush button to make it look pressed */
+#br-brush-activate-btn.active {
+    background-color: var(--accent-color-bg-hover);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
 .br-slider {
     flex-grow: 1;
     margin: 0 var(--spacing-sm);

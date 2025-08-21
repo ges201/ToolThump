@@ -14,6 +14,7 @@ const br = {
     currentImageFile: null,
     originalImage: null,
     maskCanvas: null,
+    processedImage: null,
 
     fetchElements: function () {
         this.elements.forEach(el => {
@@ -93,11 +94,11 @@ const br = {
                 const inputTensor = this.preprocess(this.originalImage);
                 const results = await this.ortSession.run({ 'input.1': inputTensor });
                 const outputTensor = results['1959'];
-                const processedCanvas = this.postprocess(outputTensor, this.originalImage.naturalWidth, this.originalImage.naturalHeight);
+                this.processedImage = this.postprocess(outputTensor, this.originalImage.naturalWidth, this.originalImage.naturalHeight);
 
                 this.outputCanvas.width = this.originalImage.naturalWidth;
                 this.outputCanvas.height = this.originalImage.naturalHeight;
-                this.outputCanvas.getContext('2d').drawImage(processedCanvas, 0, 0);
+                this.outputCanvas.getContext('2d').drawImage(this.processedImage, 0, 0);
 
                 this.imageContainer.style.display = 'none';
                 this.outputCanvas.style.display = 'block';
@@ -153,7 +154,7 @@ const br = {
     },
 
     clearImage: function () {
-        Object.assign(this, { currentImageFile: null, originalImage: null, maskCanvas: null });
+        Object.assign(this, { currentImageFile: null, originalImage: null, maskCanvas: null, processedImage: null });
         this.imageInput.value = '';
         this.workspace.classList.remove('has-image');
         [this.imageContainer, this.outputCanvas, this.actionsContainer, this.clearBtn].forEach(el => el.style.display = 'none');
