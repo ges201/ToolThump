@@ -17,10 +17,7 @@ const br = {
     currentImageFile: null,
     originalImage: null,
     processedImage: null, // Will hold the image with transparent background
-    maskCanvas: null, // Holds the alpha mask for editing
-    isDrawing: false, // For brush editing
-    lastX: 0,
-    lastY: 0,
+    maskCanvas: null, // Holds the alpha mask for editing by features.js
 
     fetchElements: function () {
         this.imageInput = document.getElementById('br-image-input');
@@ -150,7 +147,6 @@ const br = {
 
                 this.processedImage = this.postprocess(outputTensor, this.originalImage.naturalWidth, this.originalImage.naturalHeight);
 
-                // Set the output canvas dimensions to match the original image
                 this.outputCanvas.width = this.originalImage.naturalWidth;
                 this.outputCanvas.height = this.originalImage.naturalHeight;
 
@@ -164,7 +160,6 @@ const br = {
                 this.downloadBtn.style.display = 'inline-flex';
                 this.setStatus('clear');
 
-                // Show features and apply default background
                 if (typeof brFeatures !== 'undefined' && brFeatures.show) {
                     brFeatures.show();
                     brFeatures.applyBackgroundColor();
@@ -220,6 +215,7 @@ const br = {
         this.currentImageFile = null;
         this.originalImage = null;
         this.processedImage = null;
+        this.maskCanvas = null;
         this.imageInput.value = '';
         this.workspace.classList.remove('has-image');
         this.imageContainer.style.display = 'none';
@@ -281,7 +277,6 @@ const br = {
         }
         maskCtx.putImageData(maskImageData, 0, 0);
 
-        // Create a full-resolution canvas for the mask to allow editing
         this.maskCanvas = document.createElement('canvas');
         this.maskCanvas.width = originalWidth;
         this.maskCanvas.height = originalHeight;
@@ -298,132 +293,11 @@ const br = {
         ctx.imageSmoothingQuality = 'high';
 
         ctx.drawImage(this.originalImage, 0, 0, originalWidth, originalHeight);
-
         ctx.globalCompositeOperation = 'destination-in';
-        // Use the full-resolution mask for the initial composition
         ctx.drawImage(this.maskCanvas, 0, 0, originalWidth, originalHeight);
-
         ctx.globalCompositeOperation = 'source-over';
+
         return resultCanvas;
-    },
-
-    getCanvasCoordinates: function (e) {
-        const canvas = this.outputCanvas;
-        const rect = canvas.getBoundingClientRect();
-
-        const canvasRatio = canvas.width / canvas.height;
-        const containerRatio = rect.width / rect.height;
-
-        let scale, offsetX, offsetY;
-
-        if (canvasRatio > containerRatio) {
-            // Image is wider than the container, letterboxed top/bottom
-            scale = rect.width / canvas.width;
-            offsetX = 0;
-            offsetY = (rect.height - (canvas.height * scale)) / 2;
-        } else {
-            // Image is taller than the container, letterboxed left/right
-            scale = rect.height / canvas.height;
-            offsetX = (rect.width - (canvas.width * scale)) / 2;
-            offsetY = 0;
-        }
-
-        // Calculate coordinates relative to the scaled image, then scale up to canvas resolution
-        const x = (e.offsetX - offsetX) / scale;
-        const y = (e.offsetY - offsetY) / scale;
-
-        return { x, y };
-    },
-
-    startDrawing: function (e) {
-        if (!brFeatures.isBrushActive) return;
-        this.isDrawing = true;
-        const { x, y } = this.getCanvasCoordinates(e);
-        this.lastX = x;
-        this.lastY = y;
-
-        // Draw a single point on mousedown for click actions
-        const maskCtx = this.maskCanvas.getContext('2d');
-        this.drawFeatheredCircle(
-            maskCtx, x, y,
-            brFeatures.brushSize,
-            brFeatures.brushFeather,
-            brFeatures.brushMode
-        );
-
-        this.updateProcessedImage();
-        brFeatures.applyBackgroundColor();
-    },
-
-    stopDrawing: function () {
-        if (!this.isDrawing) return;
-        this.isDrawing = false;
-    },
-
-    draw: function (e) {
-        if (!this.isDrawing || !brFeatures.isBrushActive) return;
-
-        const { x, y } = this.getCanvasCoordinates(e);
-        const maskCtx = this.maskCanvas.getContext('2d');
-
-        const brushSize = brFeatures.brushSize;
-        const feather = brFeatures.brushFeather;
-        const mode = brFeatures.brushMode;
-
-        const dist = Math.hypot(x - this.lastX, y - this.lastY);
-        const angle = Math.atan2(y - this.lastY, x - this.lastX);
-
-        if (dist > 0) {
-            // Step by 1 pixel for a smooth line
-            for (let i = 0; i < dist; i += 1) {
-                const currentX = this.lastX + Math.cos(angle) * i;
-                const currentY = this.lastY + Math.sin(angle) * i;
-                this.drawFeatheredCircle(maskCtx, currentX, currentY, brushSize, feather, mode);
-            }
-        }
-
-        [this.lastX, this.lastY] = [x, y];
-
-        this.updateProcessedImage();
-        brFeatures.applyBackgroundColor();
-    },
-
-    drawFeatheredCircle: function(ctx, x, y, size, feather, mode) {
-        const radius = size / 2;
-        if (radius <= 0) return;
-
-        const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
-        
-        const innerStop = Math.max(0, 1 - (feather / 100));
-
-        gradient.addColorStop(0, 'rgba(0,0,0,1)');
-        gradient.addColorStop(innerStop, 'rgba(0,0,0,1)');
-        gradient.addColorStop(1, 'rgba(0,0,0,0)');
-
-        if (mode === 'delete') {
-            ctx.globalCompositeOperation = 'destination-out';
-        } else { // restore
-            ctx.globalCompositeOperation = 'source-over';
-        }
-
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fill();
-    },
-
-    updateProcessedImage: function () {
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = this.originalImage.naturalWidth;
-        tempCanvas.height = this.originalImage.naturalHeight;
-        const tempCtx = tempCanvas.getContext('2d');
-
-        tempCtx.drawImage(this.originalImage, 0, 0);
-        tempCtx.globalCompositeOperation = 'destination-in';
-        tempCtx.drawImage(this.maskCanvas, 0, 0);
-        tempCtx.globalCompositeOperation = 'source-over';
-
-        this.processedImage = tempCanvas;
     },
 
     initDragAndDrop: function () {
@@ -458,8 +332,11 @@ const br = {
             this.clearBtn.addEventListener('click', () => this.clearImage());
             this.downloadBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                this.updateProcessedImage();
-                brFeatures.applyBackgroundColor();
+                // Ensure the latest edits are applied before downloading
+                if (typeof brFeatures !== 'undefined' && brFeatures.updateProcessedImage) {
+                    brFeatures.updateProcessedImage();
+                    brFeatures.applyBackgroundColor();
+                }
                 this.outputCanvas.toBlob((blob) => {
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
@@ -473,12 +350,6 @@ const br = {
                 }, 'image/png', 1);
             });
             this.initDragAndDrop();
-
-            // Brush event listeners
-            this.outputCanvas.addEventListener('mousedown', (e) => this.startDrawing(e));
-            this.outputCanvas.addEventListener('mouseup', () => this.stopDrawing());
-            this.outputCanvas.addEventListener('mousemove', (e) => this.draw(e));
-            this.outputCanvas.addEventListener('mouseleave', () => this.stopDrawing());
 
             if (typeof brFeatures !== 'undefined' && brFeatures.init) {
                 brFeatures.init();
@@ -500,6 +371,4 @@ function initializeTool() {
     }
 }
 
-// Expose the initialization function to the global scope
-// so it can be called by other scripts like main.js
 window.initializeTool = initializeTool;
