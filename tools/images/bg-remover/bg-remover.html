@@ -181,22 +181,19 @@
                     <label for="br-bg-color-picker">Background Color:</label>
                     <input type="color" id="br-bg-color-picker" value="#FFFFFF">
                     <div id="br-bg-color-swatches" class="br-color-swatches">
-                        <button class="swatch swatch-transparent" data-color="transparent" title="Transparent Background"></button>
-                        <button class="swatch" data-color="#FFFFFF" style="background-color: #FFFFFF; border: 1px solid #ccc;"></button>
-                        <button class="swatch" data-color="#000000" style="background-color: #000000;"></button>
-                        <button class="swatch" data-color="#FF3B30" style="background-color: #FF3B30;"></button>
-                        <button class="swatch" data-color="#4CD964" style="background-color: #4CD964;"></button>
-                        <button class="swatch" data-color="#007AFF" style="background-color: #007AFF;"></button>
+                        <button class="swatch swatch-transparent btn-secondary" data-color="transparent" title="Transparent Background"></button>
+                        <button class="swatch btn-secondary" data-color="#FFFFFF" style="background-color: #FFFFFF; border: 1px solid #ccc;"></button>
+                        <button class="swatch btn-secondary" data-color="#000000" style="background-color: #000000;"></button>
+                        <button class="swatch btn-secondary" data-color="#FF3B30" style="background-color: #FF3B30;"></button>
+                        <button class="swatch btn-secondary" data-color="#4CD964" style="background-color: #4CD964;"></button>
+                        <button class="swatch btn-secondary" data-color="#007AFF" style="background-color: #007AFF;"></button>
                     </div>
                 </div>
                 <div id="br-brush-controls" class="br-feature-group">
                     <div class="br-feature">
                         <label>Manual Edit:</label>
-                        <button id="br-brush-activate-btn" class="btn-secondary">Activate Brush</button>
-                    </div>
-                    <div class="br-feature">
-                        <label>Brush Mode:</label>
                         <div class="button-group">
+                            <button id="br-brush-activate-btn" class="btn-secondary">Activate Brush</button>
                             <button id="br-brush-delete-btn" class="btn-secondary active">Delete</button>
                             <button id="br-brush-restore-btn" class="btn-secondary">Restore</button>
                         </div>
@@ -235,6 +232,7 @@
                   <div id="br-progress-bar" class="br-progress-bar"></div>
                 </div>
               </div>
+              <button id="br-reset-btn" class="button btn-secondary" style="display: none;" title="Reset Changes">&#x21BA;</button>
               <button id="br-clear-btn" class="button btn-secondary" style="display: none;" title="Clear Image">X</button>
             </div>
             <div id="br-actions-container" class="br-actions" style="display: none;">

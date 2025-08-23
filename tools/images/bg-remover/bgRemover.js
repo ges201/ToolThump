@@ -2,7 +2,7 @@
 
 const br = {
     // DOM Elements
-    elements: ['imageInput', 'workspace', 'uploadLabel', 'statusOverlay', 'previewImg', 'outputCanvas', 'actionsContainer', 'processBtn', 'downloadBtn', 'clearBtn', 'imageContainer', 'progressBar', 'progressBarContainer', 'statusText'],
+    elements: ['imageInput', 'workspace', 'uploadLabel', 'statusOverlay', 'previewImg', 'outputCanvas', 'actionsContainer', 'processBtn', 'downloadBtn', 'clearBtn', 'resetBtn', 'imageContainer', 'progressBar', 'progressBarContainer', 'statusText'],
 
     // ONNX & Model State
     ortSession: null,
@@ -107,6 +107,7 @@ const br = {
                 this.setStatus('clear');
 
                 if (typeof brFeatures?.show === 'function') {
+                    brFeatures.storeOriginalMask(this.maskCanvas);
                     brFeatures.show();
                     brFeatures.applyBackgroundColor();
                 }

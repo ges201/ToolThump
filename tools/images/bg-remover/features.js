@@ -15,6 +15,8 @@ const brFeatures = {
     isDrawing: false,
     lastX: 0,
     lastY: 0,
+    originalMask: null,
+    isDirty: false,
 
     // State for panning and zooming
     isPanning: false,
@@ -43,6 +45,7 @@ const brFeatures = {
         this.bgColorPicker.addEventListener('input', (e) => {
             this.selectedColor = e.target.value;
             this.applyBackgroundColor();
+            this.setDirty();
         });
 
         this.bgColorSwatches.addEventListener('click', (e) => {
@@ -53,8 +56,13 @@ const brFeatures = {
                     this.bgColorPicker.value = this.selectedColor;
                 }
                 this.applyBackgroundColor();
+                this.setDirty();
             }
         });
+
+        if (br.resetBtn) {
+            br.resetBtn.addEventListener('click', () => this.resetChanges());
+        }
 
         if (this.brushControls) {
             this.brushActivateBtn.addEventListener('click', () => this.toggleBrushActive());
@@ -77,6 +85,38 @@ const brFeatures = {
             br.outputCanvas.addEventListener('touchend', (e) => this.handleTouchEnd(e));
             br.outputCanvas.addEventListener('touchcancel', (e) => this.handleTouchEnd(e));
         }
+    },
+
+    storeOriginalMask: function(maskCanvas) {
+        this.originalMask = document.createElement('canvas');
+        this.originalMask.width = maskCanvas.width;
+        this.originalMask.height = maskCanvas.height;
+        this.originalMask.getContext('2d').drawImage(maskCanvas, 0, 0);
+    },
+
+    setDirty: function() {
+        if (!this.isDirty) {
+            this.isDirty = true;
+        }
+    },
+
+    resetChanges: function() {
+        if (!this.originalMask || !br.maskCanvas) return;
+
+        // Restore the mask
+        const currentMaskCtx = br.maskCanvas.getContext('2d');
+        currentMaskCtx.clearRect(0, 0, br.maskCanvas.width, br.maskCanvas.height);
+        currentMaskCtx.drawImage(this.originalMask, 0, 0);
+
+        // Reset background color to transparent
+        this.selectedColor = 'transparent';
+        this.bgColorPicker.value = '#FFFFFF'; // Reset picker to a default
+
+        // Re-apply the image with the restored mask and new bg color
+        this.updateProcessedImage();
+        this.applyBackgroundColor();
+
+        this.isDirty = false;
     },
 
     createBrushCursor: function () {
@@ -205,6 +245,7 @@ const brFeatures = {
         this.applyBrushStroke(this.lastX, this.lastY, x, y);
         this.updateProcessedImage();
         this.applyBackgroundColor();
+        this.setDirty();
     },
 
     stopDrawing: function () {
@@ -274,6 +315,9 @@ const brFeatures = {
         if (this.featuresContainer) {
             this.featuresContainer.style.display = 'block';
             this.setBrushCursorSize();
+            if (br.resetBtn) {
+                br.resetBtn.style.display = 'inline-flex';
+            }
         }
     },
 
@@ -281,6 +325,10 @@ const brFeatures = {
         if (this.featuresContainer) {
             this.featuresContainer.style.display = 'none';
             if (this.isBrushActive) this.toggleBrushActive();
+            if (br.resetBtn) {
+                br.resetBtn.style.display = 'none';
+            }
+            this.isDirty = false;
         }
     },
 
