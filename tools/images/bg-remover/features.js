@@ -201,8 +201,8 @@ const brFeatures = {
         const { x, y } = this.getCanvasCoordinates(e);
         this.lastX = x;
         this.lastY = y;
-        const maskCtx = br.maskCanvas.getContext('2d');
-        this.drawFeatheredCircle(maskCtx, x, y, this.brushSize, this.brushFeather, this.brushMode);
+        // For a single click, draw a line of zero length. lineCap='round' turns it into a circle.
+        this.applyBrushStroke(this.lastX, this.lastY, x, y);
         this.updateProcessedImage();
         this.applyBackgroundColor();
     },
@@ -215,34 +215,46 @@ const brFeatures = {
     draw: function (e) {
         if (!this.isDrawing || !this.isBrushActive) return;
         const { x, y } = this.getCanvasCoordinates(e);
-        const maskCtx = br.maskCanvas.getContext('2d');
-        const dist = Math.hypot(x - this.lastX, y - this.lastY);
-        const angle = Math.atan2(y - this.lastY, x - this.lastX);
-        if (dist > 0) {
-            for (let i = 0; i < dist; i += 1) {
-                const currentX = this.lastX + Math.cos(angle) * i;
-                const currentY = this.lastY + Math.sin(angle) * i;
-                this.drawFeatheredCircle(maskCtx, currentX, currentY, this.brushSize, this.brushFeather, this.brushMode);
-            }
-        }
+        this.applyBrushStroke(this.lastX, this.lastY, x, y);
         [this.lastX, this.lastY] = [x, y];
         this.updateProcessedImage();
         this.applyBackgroundColor();
     },
 
-    drawFeatheredCircle: function (ctx, x, y, size, feather, mode) {
-        const radius = size / 2;
-        if (radius <= 0) return;
-        const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
-        const innerStop = Math.max(0, 1 - (feather / 100));
-        gradient.addColorStop(0, 'rgba(0,0,0,1)');
-        gradient.addColorStop(innerStop, 'rgba(0,0,0,1)');
-        gradient.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.globalCompositeOperation = (mode === 'delete') ? 'destination-out' : 'source-over';
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fill();
+    applyBrushStroke: function (x1, y1, x2, y2) {
+        const ctx = br.maskCanvas.getContext('2d');
+        ctx.globalCompositeOperation = (this.brushMode === 'delete') ? 'destination-out' : 'source-over';
+        ctx.lineWidth = this.brushSize;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        if (this.brushFeather > 0) {
+            const blurAmount = (this.brushFeather / 100) * (this.brushSize / 2.5);
+            ctx.shadowBlur = Math.max(1, blurAmount);
+            ctx.shadowColor = 'rgba(0,0,0,1)';
+
+            // Draw the stroke off-screen, so only its shadow is rendered in the visible area.
+            // This effectively lets us draw with a blurred shape.
+            const offset = br.maskCanvas.width * 2;
+            ctx.shadowOffsetX = offset;
+
+            ctx.beginPath();
+            ctx.moveTo(x1 - offset, y1);
+            ctx.lineTo(x2 - offset, y2);
+            ctx.strokeStyle = 'rgba(0,0,0,1)';
+            ctx.stroke();
+
+            // Reset shadow properties to avoid affecting other canvas operations.
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+        } else {
+            // For a solid brush, just draw a simple line.
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.strokeStyle = 'rgba(0,0,0,1)';
+            ctx.stroke();
+        }
     },
 
     updateProcessedImage: function () {
@@ -285,7 +297,7 @@ const brFeatures = {
     },
 
     // Panning methods
-    handleTouchStart: function(e) {
+    handleTouchStart: function (e) {
         if (!this.isBrushActive) return;
         if (e.touches.length >= 2) {
             e.preventDefault();
@@ -297,7 +309,7 @@ const brFeatures = {
         }
     },
 
-    handleTouchMove: function(e) {
+    handleTouchMove: function (e) {
         if (!this.isBrushActive) return;
         e.preventDefault();
         if (e.touches.length >= 2 && this.isPanning) {
@@ -307,7 +319,7 @@ const brFeatures = {
         }
     },
 
-    handleTouchEnd: function(e) {
+    handleTouchEnd: function (e) {
         if (this.isPanning && e.touches.length < 2) {
             this.isPanning = false;
             this.lastPanMidpoint = null;
@@ -317,12 +329,12 @@ const brFeatures = {
         }
     },
 
-    startPanning: function(e) {
+    startPanning: function (e) {
         this.isPanning = true;
         this.lastPanMidpoint = this.getMidpoint(e.touches);
     },
 
-    pan: function(e) {
+    pan: function (e) {
         if (!this.lastPanMidpoint) return;
         const currentMidpoint = this.getMidpoint(e.touches);
         const deltaX = currentMidpoint.x - this.lastPanMidpoint.x;
@@ -335,7 +347,7 @@ const brFeatures = {
         this.lastPanMidpoint = currentMidpoint;
     },
 
-    getMidpoint: function(touches) {
+    getMidpoint: function (touches) {
         const t1 = touches[0];
         const t2 = touches[1];
         return {
@@ -344,12 +356,12 @@ const brFeatures = {
         };
     },
 
-    applyTransform: function() {
+    applyTransform: function () {
         const transform = `translate(${this.viewTransform.x}px, ${this.viewTransform.y}px) scale(${this.viewTransform.scale})`;
         br.outputCanvas.style.transform = transform;
     },
 
-    resetTransform: function() {
+    resetTransform: function () {
         this.viewTransform = { x: 0, y: 0, scale: 1 };
         this.applyTransform();
     }
