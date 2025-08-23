@@ -59,7 +59,7 @@ const toolsData = [
         name: "Duplicate Words Finder",
         category: "Text Tools",
         description: "Find and highlight duplicate words in a text.",
-        icon: "/icons/text-tool-icon.png", // Placeholder, create a specific icon later
+        icon: "/icons/duplicate-words-finder-icon.png",
         htmlPath: "/tools/text/duplicate-words-finder/duplicate-words-finder.html",
         cssPaths: ["/tools/text/duplicate-words-finder/duplicate-words-finder.css"],
         jsPath: "/tools/text/duplicate-words-finder/duplicateWordsFinder.js",
@@ -125,7 +125,7 @@ const toolsData = [
         name: "Image Metadata Viewer",
         category: "Data Tools",
         description: "View metadata of an image file.",
-        icon: "/icons/duplicate-words-finder-icon.png",
+        icon: "/icons/image-metadata-viewer-icon.png",
         htmlPath: "/tools/data/image-metadata-viewer/image-metadata-viewer.html",
         cssPaths: ["/tools/data/image-metadata-viewer/image-metadata-viewer.css"],
         jsPath: "/tools/data/image-metadata-viewer/imageMetadataViewer.js",
@@ -141,5 +141,16 @@ const toolsData = [
         cssPaths: ["/tools/data/file-comparison/file-comparison.css"],
         jsPath: "/tools/data/file-comparison/fileComparison.js",
         keywords: ["file", "comparison", "compare", "diff", "difference", "tool"]
+    },
+    {
+        id: "markdown-editor",
+        name: "Markdown Editor",
+        category: "Text Tools",
+        description: "Create and preview Markdown documents with a simple and intuitive editor.",
+        icon: "/icons/markdown-editor-icon.png",
+        htmlPath: "/tools/text/markdown-editor/markdown-editor.html",
+        cssPaths: ["/tools/text/markdown-editor/markdown-editor.css"],
+        jsPath: "/tools/text/markdown-editor/markdownEditor.js",
+        keywords: ["markdown", "editor", "text", "formatting", "live preview", "markup"]
     }
 ];
