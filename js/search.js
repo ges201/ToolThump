@@ -18,9 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const results = performSearch(query);
             renderResults(results, query);
             resultsContainer.style.display = 'block'; // Show dropdown
+            setTimeout(() => resultsContainer.classList.add('show'), 10);
         } else {
-            resultsContainer.style.display = 'none'; // Hide dropdown
-            resultsContainer.innerHTML = '';
+            resultsContainer.classList.remove('show');
+            setTimeout(() => {
+                if (!resultsContainer.classList.contains('show')) { // Check if it should still be hidden
+                    resultsContainer.style.display = 'none';
+                    resultsContainer.innerHTML = '';
+                }
+            }, 150); // Corresponds to transition duration
         }
     });
 
@@ -53,13 +59,19 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('focus', () => {
         if (searchInput.value.trim().length > 0) {
             resultsContainer.style.display = 'block';
+            setTimeout(() => resultsContainer.classList.add('show'), 10);
         }
     });
 
     // Hide results when clicking outside the search wrapper
     document.addEventListener('click', (event) => {
         if (!searchWrapper.contains(event.target)) {
-            resultsContainer.style.display = 'none';
+            resultsContainer.classList.remove('show');
+            setTimeout(() => {
+                if (!resultsContainer.classList.contains('show')) {
+                    resultsContainer.style.display = 'none';
+                }
+            }, 150);
         }
     });
 

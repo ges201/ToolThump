@@ -120,6 +120,14 @@
     max-height: 350px;
     overflow-y: auto;
     padding-top: var(--spacing-sm);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+}
+
+#search-results-container.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .search-results-list {
