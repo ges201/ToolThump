@@ -232,6 +232,9 @@
     object-fit: contain;
     color: var(--accent-color);
     margin-bottom: var(--spacing-lg);
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
 }
 
 .most-used-card h3 {
