@@ -68,87 +68,6 @@
   <!-- Tool-Specific Stylesheet (path relative to root) -->
   <link rel="stylesheet" href="/tools/images/bg-remover/bg-remover.css">
 
-  <!-- SEO: Added comprehensive Schema.org for rich results -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "url": "https://toolthump.com/tools/images/bg-remover/bg-remover.html",
-      "name": "Free Online Background Remover - Instant & Private | ToolThump",
-      "description": "Instantly remove backgrounds from images online for free. Our client-side tool ensures 100% privacy – no uploads, no data sent to servers. Perfect for transparent PNGs, product photos, and more.",
-      "isPartOf": {
-        "@type": "WebSite",
-        "@id": "https://toolthump.com/#website",
-        "name": "ToolThump",
-        "url": "https://toolthump.com/"
-      },
-      "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [{
-          "@type": "ListItem",
-          "position": 1,
-          "name": "ToolThump",
-          "item": "https://toolthump.com/"
-        },{
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Image Tools",
-          "item": "https://toolthump.com/#image-tools" 
-        },{
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Background Remover"
-        }]
-      },
-      "mainEntity": [
-        {
-          "@type": "HowTo",
-          "name": "How to Remove a Background from an Image",
-          "description": "Remove the background from your images in three simple steps with our free online tool.",
-          "step": [
-            {
-              "@type": "HowToStep",
-              "name": "Upload Your Image",
-              "text": "Click or drag your image file (PNG, JPG, or WEBP) into the tool. A preview will appear instantly.",
-              "url": "https://toolthump.com/tools/images/bg-remover/bg-remover.html#backgroundRemover"
-            },
-            {
-              "@type": "HowToStep",
-              "name": "Process the Image",
-              "text": "Click the 'Remove Background' button to start the process."
-            },
-            {
-              "@type": "HowToStep",
-              "name": "Download the Result",
-              "text": "Once processed, click the 'Download Image' button to save your new image with a transparent background as a high-quality PNG."
-            }
-          ]
-        },
-        {
-          "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "Are my images safe and private?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes, absolutely. The entire background removal process happens on your computer using JavaScript in your browser. Your files are never sent to or stored on any server."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "What's the catch? Why is it free?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "There isn't one. The 'catch,' if you can call it that, is that the first time you use the tool, your browser needs to download the AI model (about 42MB). This might take a moment on slower connections. The site is a personal project, not a corporate venture."
-              }
-            }
-          ]
-        }
-      ]
-    }
-    </script>
-
   <!-- AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7245857649397014"
     crossorigin="anonymous"></script>
@@ -269,9 +188,9 @@
     "sections": [
         {
             "type": "how-to",
-            "title": "How to Vanish a Background",
+            "title": "How to Banish a Background",
             "icon": "💡",
-            "intro": "Making your image's background disappear is a simple, three-step magic trick.",
+            "intro": "Making your image's background disappear is a simple, four-step magic trick.",
             "steps": [
                 {
                     "icon": "1️⃣",
@@ -280,21 +199,26 @@
                 },
                 {
                     "icon": "2️⃣",
-                    "title": "Process the Image",
-                    "description": "Hit the 'Remove Background' button to let the AI do its work. The first time you do this, it will need to download the model, which can take a moment."
+                    "title": "Remove the Background",
+                    "description": "Hit the 'Remove Background' button. The AI will analyze the image and remove the background. The first time you do this, it will need to download the model, which can take a moment."
                 },
                 {
                     "icon": "3️⃣",
+                    "title": "Refine Your Cutout",
+                    "description": "Once processed, an editing panel appears. Here you can add a new background color or activate the manual brushes to erase stray pixels or restore parts of the original image. You're in control."
+                },
+                {
+                    "icon": "4️⃣",
                     "title": "Download the Result",
-                    "description": "Once complete, a 'Download Image' button will appear. Click it to save your new image with a transparent background as a high-quality PNG file."
+                    "description": "Click 'Download Image' to save your work as a high-quality PNG. Leave 'Auto-crop' checked to automatically trim away empty space for a perfectly snug result."
                 }
             ]
         },
         {
             "type": "features",
-            "title": "Key Features & Guarantees",
+            "title": "Features & Philosophy",
             "icon": "✨",
-            "intro": "This tool was built with a few core principles in mind: privacy, speed, and simplicity.",
+            "intro": "This tool was built with a few core principles in mind: privacy, power, and simplicity.",
             "features": [
                 {
                     "icon": "🔒",
@@ -307,9 +231,14 @@
                     "description": "This is a free tool. There's no login required, no trial period, no watermarks, and no up-sell. Just a utility that does what it says on the tin."
                 },
                 {
-                    "icon": "🚀",
-                    "title": "High-Quality AI Model",
-                    "description": "The tool uses the powerful U2-Net model to accurately identify the foreground and create a clean, precise cutout of your subject."
+                    "icon": "🎨",
+                    "title": "Powerful Editing Toolkit",
+                    "description": "The AI does the heavy lifting, but you have the final say. Add a custom background color, or activate the manual brush tools to delete artifacts or restore details. The reset button reverts all edits back to the original AI cutout in a click."
+                },
+                {
+                    "icon": "✂️",
+                    "title": "Smart Auto-Cropping",
+                    "description": "The auto-crop feature is enabled by default to trim your final image to the content's edge, removing unnecessary transparent space. This saves you a step in your workflow."
                 }
             ]
         },
@@ -339,13 +268,24 @@
                 },
                 {
                     "icon": "💥",
-                    "question": "Why does the output look weird?",
-                    "answer": "Images with a clear subject and a distinct background work best. A portrait of a person against a blurry landscape is ideal. A photo of a white cat in a snowstorm might be... challenging for the AI."
+                    "question": "Why does the AI output look weird?",
+                    "answer": "Images with a clear subject and a distinct background work best. A portrait of a person against a blurry landscape is ideal. A photo of a white cat in a snowstorm might be... challenging for the AI. If you spot any small imperfections, just activate the brush tool to clean them up manually."
+                },
+                {
+                    "icon": "🖌️",
+                    "question": "How do the manual edit brushes work?",
+                    "answer": "Simple! 'Delete' acts as an eraser, making parts of the image transparent. 'Restore' does the opposite, bringing back parts of the original image that were removed. Adjust the size and feathering to get the perfect edit."
+                },
+                {
+                    "icon": "🔄",
+                    "question": "What does the reset button do?",
+                    "answer": "The reset button (the circular arrow) undoes all your manual brush edits and background color changes, instantly reverting the image to the initial result provided by the AI. It doesn't affect your original uploaded image."
                 }
             ]
         }
     ]
-}</script>
+}
+</script>
 
   <!-- Scripts (paths relative to root) -->
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
