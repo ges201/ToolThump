@@ -194,6 +194,42 @@
     align-items: center;
 }
 
+.br-download-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.br-crop-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background-color: var(--surface-bg-color);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.2s ease;
+}
+
+.br-crop-option:hover {
+    border-color: var(--text-secondary-color);
+}
+
+.br-crop-option label {
+    cursor: pointer;
+    color: var(--text-secondary-color);
+}
+
+.br-crop-option input[type="checkbox"] {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+
 /* --- Quality Selector --- */
 .br-quality-selector {
     display: flex;
@@ -430,6 +466,10 @@
     .br-actions .button {
         width: 100%;
         text-align: center;
+    }
+
+    .br-download-group {
+        justify-content: space-between;
     }
 
     .br-feature {

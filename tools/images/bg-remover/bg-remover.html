@@ -177,38 +177,40 @@
         <div class="br-main-interface">
           <div class="br-left-panel">
             <div id="br-features-container" style="display: none;" class="br-features-container">
-                <div id="br-bg-color-container" class="br-feature">
-                    <label for="br-bg-color-picker">Background Color:</label>
-                    <input type="color" id="br-bg-color-picker" value="#FFFFFF">
-                    <div id="br-bg-color-swatches" class="br-color-swatches">
-                        <button class="swatch swatch-transparent btn-secondary" data-color="transparent" title="Transparent Background"></button>
-                        <button class="swatch btn-secondary" data-color="#FFFFFF" style="background-color: #FFFFFF; border: 1px solid #ccc;"></button>
-                        <button class="swatch btn-secondary" data-color="#000000" style="background-color: #000000;"></button>
-                        <button class="swatch btn-secondary" data-color="#FF3B30" style="background-color: #FF3B30;"></button>
-                        <button class="swatch btn-secondary" data-color="#4CD964" style="background-color: #4CD964;"></button>
-                        <button class="swatch btn-secondary" data-color="#007AFF" style="background-color: #007AFF;"></button>
-                    </div>
+              <div id="br-bg-color-container" class="br-feature">
+                <label for="br-bg-color-picker">Background Color:</label>
+                <input type="color" id="br-bg-color-picker" value="#FFFFFF">
+                <div id="br-bg-color-swatches" class="br-color-swatches">
+                  <button class="swatch swatch-transparent btn-secondary" data-color="transparent"
+                    title="Transparent Background"></button>
+                  <button class="swatch btn-secondary" data-color="#FFFFFF"
+                    style="background-color: #FFFFFF; border: 1px solid #ccc;"></button>
+                  <button class="swatch btn-secondary" data-color="#000000" style="background-color: #000000;"></button>
+                  <button class="swatch btn-secondary" data-color="#FF3B30" style="background-color: #FF3B30;"></button>
+                  <button class="swatch btn-secondary" data-color="#4CD964" style="background-color: #4CD964;"></button>
+                  <button class="swatch btn-secondary" data-color="#007AFF" style="background-color: #007AFF;"></button>
                 </div>
-                <div id="br-brush-controls" class="br-feature-group">
-                    <div class="br-feature">
-                        <label>Manual Edit:</label>
-                        <div class="button-group">
-                            <button id="br-brush-activate-btn" class="btn-secondary">Activate Brush</button>
-                            <button id="br-brush-delete-btn" class="btn-secondary active">Delete</button>
-                            <button id="br-brush-restore-btn" class="btn-secondary">Restore</button>
-                        </div>
-                    </div>
-                    <div class="br-feature">
-                        <label for="br-brush-size-slider">Brush Size:</label>
-                        <input type="range" id="br-brush-size-slider" min="2" max="100" value="30" class="br-slider">
-                        <span id="br-brush-size-value">30</span>
-                    </div>
-                    <div class="br-feature">
-                        <label for="br-brush-feather-slider">Brush Feather:</label>
-                        <input type="range" id="br-brush-feather-slider" min="0" max="100" value="0" class="br-slider">
-                        <span id="br-brush-feather-value">0</span>
-                    </div>
+              </div>
+              <div id="br-brush-controls" class="br-feature-group">
+                <div class="br-feature">
+                  <label>Manual Edit:</label>
+                  <div class="button-group">
+                    <button id="br-brush-activate-btn" class="btn-secondary">Activate Brush</button>
+                    <button id="br-brush-delete-btn" class="btn-secondary active">Delete</button>
+                    <button id="br-brush-restore-btn" class="btn-secondary">Restore</button>
+                  </div>
                 </div>
+                <div class="br-feature">
+                  <label for="br-brush-size-slider">Brush Size:</label>
+                  <input type="range" id="br-brush-size-slider" min="2" max="100" value="30" class="br-slider">
+                  <span id="br-brush-size-value">30</span>
+                </div>
+                <div class="br-feature">
+                  <label for="br-brush-feather-slider">Brush Feather:</label>
+                  <input type="range" id="br-brush-feather-slider" min="0" max="100" value="0" class="br-slider">
+                  <span id="br-brush-feather-value">0</span>
+                </div>
+              </div>
             </div>
           </div>
           <div class="br-right-panel">
@@ -232,13 +234,21 @@
                   <div id="br-progress-bar" class="br-progress-bar"></div>
                 </div>
               </div>
-              <button id="br-reset-btn" class="button btn-secondary" style="display: none;" title="Reset Changes">&#x21BA;</button>
-              <button id="br-clear-btn" class="button btn-secondary" style="display: none;" title="Clear Image">X</button>
+              <button id="br-reset-btn" class="button btn-secondary" style="display: none;"
+                title="Reset Changes">&#x21BA;</button>
+              <button id="br-clear-btn" class="button btn-secondary" style="display: none;"
+                title="Clear Image">X</button>
             </div>
             <div id="br-actions-container" class="br-actions" style="display: none;">
               <button id="br-process-btn" class="button btn-secondary">Remove Background</button>
-              <a id="br-download-btn" href="#" class="button btn-secondary" download="bg-removed.png" role="button"
-                style="display: none;">Download Image</a>
+              <div id="br-download-group" class="br-download-group" style="display: none;">
+                <a id="br-download-btn" href="#" class="button btn-secondary" download="bg-removed.png"
+                  role="button">Download Image</a>
+                <div class="br-crop-option">
+                  <input type="checkbox" id="br-crop-checkbox" name="crop-to-content" checked>
+                  <label for="br-crop-checkbox">Auto-crop</label>
+                </div>
+              </div>
             </div>
           </div>
         </div>

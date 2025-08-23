@@ -2,7 +2,7 @@
 
 const br = {
     // DOM Elements
-    elements: ['imageInput', 'workspace', 'uploadLabel', 'statusOverlay', 'previewImg', 'outputCanvas', 'actionsContainer', 'processBtn', 'downloadBtn', 'clearBtn', 'resetBtn', 'imageContainer', 'progressBar', 'progressBarContainer', 'statusText'],
+    elements: ['imageInput', 'workspace', 'uploadLabel', 'statusOverlay', 'previewImg', 'outputCanvas', 'actionsContainer', 'processBtn', 'downloadBtn', 'clearBtn', 'resetBtn', 'imageContainer', 'progressBar', 'progressBarContainer', 'statusText', 'downloadGroup', 'cropCheckbox'],
 
     // ONNX & Model State
     ortSession: null,
@@ -103,7 +103,7 @@ const br = {
                 this.imageContainer.style.display = 'none';
                 this.outputCanvas.style.display = 'block';
                 this.processBtn.style.display = 'none';
-                this.downloadBtn.style.display = 'inline-flex';
+                this.downloadGroup.style.display = 'flex';
                 this.setStatus('clear');
 
                 if (typeof brFeatures?.show === 'function') {
@@ -140,7 +140,7 @@ const br = {
                     this.imageContainer.style.display = 'block';
                     this.outputCanvas.style.display = 'none';
                     this.actionsContainer.style.display = 'flex';
-                    this.downloadBtn.style.display = 'none';
+                    this.downloadGroup.style.display = 'none';
                     this.processBtn.style.display = 'inline-flex';
                     this.clearBtn.style.display = 'inline-flex';
                     this.processBtn.disabled = false;
@@ -158,7 +158,9 @@ const br = {
         Object.assign(this, { currentImageFile: null, originalImage: null, maskCanvas: null, processedImage: null });
         this.imageInput.value = '';
         this.workspace.classList.remove('has-image');
-        [this.imageContainer, this.outputCanvas, this.actionsContainer, this.clearBtn].forEach(el => el.style.display = 'none');
+        [this.imageContainer, this.outputCanvas, this.actionsContainer, this.clearBtn, this.downloadGroup].forEach(el => {
+            if (el) el.style.display = 'none';
+        });
         this.setStatus('clear');
 
         if (typeof brFeatures?.hide === 'function') {
@@ -241,13 +243,49 @@ const br = {
         });
     },
 
+    cropCanvas: function (canvas) {
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        const { width, height } = canvas;
+        const imageData = ctx.getImageData(0, 0, width, height);
+        const data = imageData.data;
+        let minX = width, minY = height, maxX = -1, maxY = -1;
+
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                if (data[(y * width + x) * 4 + 3] > 0) {
+                    if (x < minX) minX = x;
+                    if (x > maxX) maxX = x;
+                    if (y < minY) minY = y;
+                    if (y > maxY) maxY = y;
+                }
+            }
+        }
+
+        if (maxX === -1) return null;
+
+        const cropWidth = maxX - minX + 1;
+        const cropHeight = maxY - minY + 1;
+        const newCanvas = document.createElement('canvas');
+        newCanvas.width = cropWidth;
+        newCanvas.height = cropHeight;
+        newCanvas.getContext('2d').drawImage(canvas, minX, minY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+        return newCanvas;
+    },
+
     downloadImage: function (e) {
         e.preventDefault();
         if (typeof brFeatures?.updateProcessedImage === 'function') {
             brFeatures.updateProcessedImage();
             brFeatures.applyBackgroundColor();
         }
-        this.outputCanvas.toBlob(blob => {
+
+        let sourceCanvas = this.outputCanvas;
+        if (this.cropCheckbox.checked) {
+            const cropped = this.cropCanvas(this.outputCanvas);
+            if (cropped) sourceCanvas = cropped;
+        }
+
+        sourceCanvas.toBlob(blob => {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             const originalFilename = this.currentImageFile.name.replace(/\.[^/.]+$/, "");
