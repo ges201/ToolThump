@@ -4,6 +4,7 @@ const brFeatures = {
     bgColorSwatches: null, brushControls: null, brushActivateBtn: null,
     brushDeleteBtn: null, brushRestoreBtn: null, brushSizeSlider: null,
     brushSizeValue: null, brushFeatherSlider: null, brushFeatherValue: null,
+    featherEdgesSlider: null, featherEdgesValue: null,
     brushCursor: null,
 
     // State
@@ -12,6 +13,7 @@ const brFeatures = {
     brushMode: 'delete',
     brushSize: 30,
     brushFeather: 0,
+    featherEdges: 0,
     isDrawing: false,
     lastX: 0,
     lastY: 0,
@@ -36,6 +38,8 @@ const brFeatures = {
         this.brushSizeValue = document.getElementById('br-brush-size-value');
         this.brushFeatherSlider = document.getElementById('br-brush-feather-slider');
         this.brushFeatherValue = document.getElementById('br-brush-feather-value');
+        this.featherEdgesSlider = document.getElementById('br-feather-edges-slider');
+        this.featherEdgesValue = document.getElementById('br-feather-edges-value');
     },
 
     init: function () {
@@ -70,6 +74,7 @@ const brFeatures = {
             this.brushRestoreBtn.addEventListener('click', () => this.setBrushMode('restore'));
             this.brushSizeSlider.addEventListener('input', (e) => this.setBrushSize(e.target.value));
             this.brushFeatherSlider.addEventListener('input', (e) => this.setBrushFeather(e.target.value));
+            this.featherEdgesSlider.addEventListener('input', (e) => this.setFeatherEdges(e.target.value));
             this.createBrushCursor();
             this.addCanvasCursorListeners();
 
@@ -87,30 +92,37 @@ const brFeatures = {
         }
     },
 
-    storeOriginalMask: function(maskCanvas) {
+    storeOriginalMask: function (maskCanvas) {
         this.originalMask = document.createElement('canvas');
         this.originalMask.width = maskCanvas.width;
         this.originalMask.height = maskCanvas.height;
         this.originalMask.getContext('2d').drawImage(maskCanvas, 0, 0);
     },
 
-    setDirty: function() {
+    setDirty: function () {
         if (!this.isDirty) {
             this.isDirty = true;
         }
     },
 
-    resetChanges: function() {
+    resetChanges: function () {
         if (!this.originalMask || !br.maskCanvas) return;
 
         // Restore the mask
         const currentMaskCtx = br.maskCanvas.getContext('2d');
+        // FIX: Reset the composite operation before drawing.
+        currentMaskCtx.globalCompositeOperation = 'source-over';
         currentMaskCtx.clearRect(0, 0, br.maskCanvas.width, br.maskCanvas.height);
         currentMaskCtx.drawImage(this.originalMask, 0, 0);
 
         // Reset background color to transparent
         this.selectedColor = 'transparent';
         this.bgColorPicker.value = '#FFFFFF'; // Reset picker to a default
+
+        // Reset feathering
+        this.featherEdges = 0;
+        this.featherEdgesSlider.value = 0;
+        this.featherEdgesValue.textContent = 0;
 
         // Re-apply the image with the restored mask and new bg color
         this.updateProcessedImage();
@@ -201,6 +213,14 @@ const brFeatures = {
     setBrushFeather: function (value) {
         this.brushFeather = parseInt(value, 10);
         this.brushFeatherValue.textContent = value;
+    },
+
+    setFeatherEdges: function (value) {
+        this.featherEdges = parseInt(value, 10);
+        this.featherEdgesValue.textContent = value;
+        this.updateProcessedImage();
+        this.applyBackgroundColor();
+        this.setDirty();
     },
 
     setBrushCursorSize: function () {
@@ -300,13 +320,26 @@ const brFeatures = {
 
     updateProcessedImage: function () {
         if (!br.originalImage || !br.maskCanvas) return;
+
+        const finalMask = document.createElement('canvas');
+        finalMask.width = br.maskCanvas.width;
+        finalMask.height = br.maskCanvas.height;
+        const finalMaskCtx = finalMask.getContext('2d');
+
+        // Apply feathering to the mask
+        if (this.featherEdges > 0) {
+            finalMaskCtx.filter = `blur(${this.featherEdges}px)`;
+        }
+        finalMaskCtx.drawImage(br.maskCanvas, 0, 0);
+        finalMaskCtx.filter = 'none'; // Reset filter
+
         const tempCanvas = document.createElement('canvas');
         tempCanvas.width = br.originalImage.naturalWidth;
         tempCanvas.height = br.originalImage.naturalHeight;
         const tempCtx = tempCanvas.getContext('2d');
         tempCtx.drawImage(br.originalImage, 0, 0);
         tempCtx.globalCompositeOperation = 'destination-in';
-        tempCtx.drawImage(br.maskCanvas, 0, 0);
+        tempCtx.drawImage(finalMask, 0, 0);
         tempCtx.globalCompositeOperation = 'source-over';
         br.processedImage = tempCanvas;
     },
