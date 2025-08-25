@@ -87,40 +87,51 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function processDirectory(entry) {
-        return new Promise((resolve) => {
-            const directoryReader = entry.createReader();
-            let allEntries = [];
+        let files = [];
+        const directoryReader = entry.createReader();
 
-            const readEntries = () => {
+        const readEntries = () => {
+            return new Promise((resolve, reject) => {
                 directoryReader.readEntries(async (entries) => {
-                    if (entries.length > 0) {
-                        allEntries = allEntries.concat(Array.from(entries));
-                        readEntries();
-                    } else {
-                        let files = [];
-                        for (const anEntry of allEntries) {
-                            if (anEntry.isFile) {
-                                const file = await new Promise(res => anEntry.file(res));
+                    if (entries.length === 0) {
+                        resolve();
+                        return;
+                    }
+
+                    for (const anEntry of entries) {
+                        if (anEntry.isFile) {
+                            try {
+                                const file = await new Promise((res, rej) => anEntry.file(res, rej));
                                 if (isValidImageType(file.type)) {
                                     files.push({
                                         file,
                                         relativePath: anEntry.fullPath.startsWith('/') ? anEntry.fullPath.substring(1) : anEntry.fullPath
                                     });
                                 }
-                            } else if (anEntry.isDirectory) {
+                            } catch (error) {
+                                console.error("Error getting file from entry:", error);
+                            }
+                        } else if (anEntry.isDirectory) {
+                            try {
                                 const subFiles = await processDirectory(anEntry);
                                 files = files.concat(subFiles);
+                            } catch (error) {
+                                console.error("Error processing subdirectory:", error);
                             }
                         }
-                        resolve(files);
                     }
+                    // Recursively read more entries
+                    await readEntries();
+                    resolve();
+
                 }, (error) => {
-                    console.error("Error reading directory entries:", error);
-                    resolve([]);
+                    reject(error);
                 });
-            };
-            readEntries();
-        });
+            });
+        };
+
+        await readEntries();
+        return files;
     }
 
     function handleInputChange(fileList) {
@@ -148,8 +159,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (entry?.isDirectory) {
             currentSelectionMode = 'folder';
             showStatus("Scanning folder, please wait...", "info");
-            selectedFiles = await processDirectory(entry);
-            finalizeFolderSelection();
+            try {
+                selectedFiles = await processDirectory(entry);
+                finalizeFolderSelection();
+            } catch (error) {
+                console.error("Error processing directory:", error);
+                showStatus("Error reading folder. Please try again.", "error");
+                resetSelections();
+            }
         } else {
             const files = [];
             for (const item of itemList) {
