@@ -1,13 +1,6 @@
-// https://github.com/jerrychan7/U2netInBrowser
-
 const br = {
     // DOM Elements
     elements: ['imageInput', 'workspace', 'uploadLabel', 'statusOverlay', 'previewImg', 'outputCanvas', 'actionsContainer', 'processBtn', 'downloadBtn', 'clearBtn', 'resetBtn', 'imageContainer', 'progressBar', 'progressBarContainer', 'statusText', 'downloadGroup', 'cropCheckbox'],
-
-    // ONNX & Model State
-    ortSession: null,
-    modelPath: '/tools/images/bg-remover/u2net.quant.onnx',
-    modelInputSize: 320,
 
     // App State
     isProcessing: false,
@@ -21,7 +14,9 @@ const br = {
             const id = 'br-' + el.replace(/([A-Z])/g, '-$1').toLowerCase();
             this[el] = document.getElementById(id);
         });
-        this.progressBarContainer = this.workspace.querySelector('.br-progress-bar-container');
+        if (this.workspace) {
+            this.progressBarContainer = this.workspace.querySelector('.br-progress-bar-container');
+        }
     },
 
     updateProgress: function (percentage) {
@@ -37,7 +32,9 @@ const br = {
         }
 
         this.statusOverlay.style.display = 'flex';
-        this.progressBarContainer.style.display = showProgressBar ? 'block' : 'none';
+        if (this.progressBarContainer) {
+            this.progressBarContainer.style.display = showProgressBar ? 'block' : 'none';
+        }
 
         if (type === 'loading') {
             this.statusText.innerHTML = `<div class="br-loader"></div><span>${message}</span>`;
@@ -48,42 +45,12 @@ const br = {
         }
     },
 
-    initOrtSession: async function () {
-        this.setStatus('loading', 'Downloading AI model (42 MB)...', true);
-        try {
-            ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/';
-            const response = await fetch(this.modelPath);
-            if (!response.ok) throw new Error(`Failed to fetch model: ${response.statusText}`);
-
-            const reader = response.body.getReader();
-            const contentLength = +response.headers.get('content-length');
-            const chunks = [];
-            let loadedSize = 0;
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                chunks.push(value);
-                loadedSize += value.length;
-                if (contentLength) this.updateProgress(Math.round((loadedSize / contentLength) * 100));
-            }
-
-            const modelBuffer = new Blob(chunks).arrayBuffer();
-            this.setStatus('loading', 'Initializing AI model...');
-            this.ortSession = await ort.InferenceSession.create(await modelBuffer);
-            this.setStatus('clear');
-            document.getElementById('tool-warning')?.remove();
-            console.log("ONNX session initialized successfully.");
-        } catch (error) {
-            console.error("Failed to initialize ONNX session:", error);
-            this.setStatus('error', 'Failed to load the AI model. Please refresh and try again.');
-        }
-    },
-
     processImage: async function () {
         if (!this.originalImage || this.isProcessing) return;
-        if (!this.ortSession) await this.initOrtSession();
-        if (!this.ortSession) return this.setStatus('error', 'Model not loaded. Cannot process.');
+        if (!onnxModel.isInitialized) {
+            const success = await onnxModel.init(this.setStatus.bind(this), this.updateProgress.bind(this));
+            if (!success) return;
+        }
 
         this.isProcessing = true;
         this.processBtn.disabled = true;
@@ -91,10 +58,11 @@ const br = {
 
         setTimeout(async () => {
             try {
-                const inputTensor = this.preprocess(this.originalImage);
-                const results = await this.ortSession.run({ 'input.1': inputTensor });
-                const outputTensor = results['1959'];
-                this.processedImage = this.postprocess(outputTensor, this.originalImage.naturalWidth, this.originalImage.naturalHeight);
+                const result = await onnxModel.run(this.originalImage);
+                if (!result) throw new Error("Model processing returned null.");
+
+                this.processedImage = result.processedImage;
+                this.maskCanvas = result.maskCanvas;
 
                 this.outputCanvas.width = this.originalImage.naturalWidth;
                 this.outputCanvas.height = this.originalImage.naturalHeight;
@@ -165,70 +133,7 @@ const br = {
 
         if (typeof brFeatures?.hide === 'function') {
             brFeatures.hide();
-            brFeatures.resetTransform();
         }
-    },
-
-    preprocess: function (image) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const size = this.modelInputSize;
-        canvas.width = size;
-        canvas.height = size;
-        ctx.drawImage(image, 0, 0, size, size);
-        const { data } = ctx.getImageData(0, 0, size, size);
-
-        const float32Data = new Float32Array(3 * size * size);
-        const mean = [0.485, 0.456, 0.406];
-        const std = [0.229, 0.224, 0.225];
-
-        for (let i = 0; i < size * size; i++) {
-            for (let j = 0; j < 3; j++) {
-                float32Data[i + j * size * size] = (data[i * 4 + j] / 255 - mean[j]) / std[j];
-            }
-        }
-        return new ort.Tensor('float32', float32Data, [1, 3, size, size]);
-    },
-
-    normPRED: function (d) {
-        const mi = Math.min(...d);
-        const ma = Math.max(...d);
-        const range = ma - mi;
-        return range === 0 ? d.map(() => 0) : d.map(i => (i - mi) / range);
-    },
-
-    postprocess: function (tensor, originalWidth, originalHeight) {
-        const pred = this.normPRED(tensor.data);
-        const size = this.modelInputSize;
-
-        const tempMaskCanvas = document.createElement('canvas');
-        tempMaskCanvas.width = size;
-        tempMaskCanvas.height = size;
-        const tempMaskCtx = tempMaskCanvas.getContext('2d');
-        const maskImageData = tempMaskCtx.createImageData(size, size);
-
-        for (let i = 0; i < size * size; i++) {
-            maskImageData.data[i * 4 + 3] = pred[i] * 255;
-        }
-        tempMaskCtx.putImageData(maskImageData, 0, 0);
-
-        this.maskCanvas = document.createElement('canvas');
-        this.maskCanvas.width = originalWidth;
-        this.maskCanvas.height = originalHeight;
-        const storedMaskCtx = this.maskCanvas.getContext('2d');
-        storedMaskCtx.imageSmoothingEnabled = true;
-        storedMaskCtx.imageSmoothingQuality = 'high';
-        storedMaskCtx.drawImage(tempMaskCanvas, 0, 0, originalWidth, originalHeight);
-
-        const resultCanvas = document.createElement('canvas');
-        resultCanvas.width = originalWidth;
-        resultCanvas.height = originalHeight;
-        const ctx = resultCanvas.getContext('2d');
-        ctx.drawImage(this.originalImage, 0, 0, originalWidth, originalHeight);
-        ctx.globalCompositeOperation = 'destination-in';
-        ctx.drawImage(this.maskCanvas, 0, 0, originalWidth, originalHeight);
-
-        return resultCanvas;
     },
 
     initDragAndDrop: function () {
