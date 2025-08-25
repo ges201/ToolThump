@@ -21,11 +21,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const imagePreview = document.getElementById("imagePreview");
     const previewFileName = document.getElementById("previewFileName");
 
+    const qualitySliderContainer = document.getElementById("qualitySliderContainer");
+    const qualitySlider = document.getElementById("qualitySlider");
+    const qualityValue = document.getElementById("qualityValue");
+    const qualityWarning = document.getElementById("qualityWarning");
+
+
     // --- Functions ---
 
     function showStatus(message, type = "info") {
         statusArea.textContent = message;
         statusArea.className = `ic-status-area ic-status-${type}`;
+    }
+
+    function checkQualityWarning() {
+        const quality = parseInt(qualitySlider.value, 10);
+        if (quality > 92) {
+            qualityWarning.style.display = 'block';
+        } else {
+            qualityWarning.style.display = 'none';
+        }
+    }
+
+    function updateQualitySliderVisibility() {
+        const selectedFormat = outputFormatSelect.value.toUpperCase();
+        if (selectedFormat === 'JPEG' || selectedFormat === 'WEBP') {
+            qualitySliderContainer.style.display = 'block';
+        } else {
+            qualitySliderContainer.style.display = 'none';
+        }
     }
 
     function updateUIState() {
@@ -249,7 +273,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     ctx.drawImage(img, 0, 0);
-                    const quality = 0.92;
+                    let quality;
+                    if (outputMimeType === "image/jpeg" || outputMimeType === "image/webp") {
+                        quality = parseInt(qualitySlider.value, 10) / 100;
+                    }
                     canvas.toBlob(blob => resolve(blob), outputMimeType, quality);
                 };
                 img.onerror = () => {
@@ -325,6 +352,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    outputFormatSelect.addEventListener('change', updateQualitySliderVisibility);
+
+    qualitySlider.addEventListener('input', () => {
+        qualityValue.textContent = qualitySlider.value;
+        checkQualityWarning();
+    });
+
     convertBtn.addEventListener("click", async () => {
         if (selectedFiles.length === 0) {
             showStatus("No files selected for conversion.", "error");
@@ -396,4 +430,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initial UI State ---
     resetSelections();
+    updateQualitySliderVisibility();
+    checkQualityWarning();
 });

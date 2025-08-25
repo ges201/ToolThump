@@ -238,3 +238,34 @@
     color: var(--error-color);
 }
 
+/* --- Quality Slider --- */
+.ic-quality-label-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.ic-quality-value {
+    font-weight: 600;
+    font-size: 1em;
+    background-color: var(--accent-color-bg-hover);
+    padding: 4px 10px;
+    border-radius: var(--border-radius-md);
+    color: var(--accent-color);
+}
+
+.ic-slider {
+    width: 100%;
+}
+
+.ic-quality-warning {
+    font-size: 0.85em;
+    color: var(--warning-color);
+    background-color: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    border-radius: var(--border-radius-sm);
+    padding: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    text-align: left;
+}

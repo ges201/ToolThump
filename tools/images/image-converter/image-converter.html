@@ -155,6 +155,16 @@
                             <option value="GIF">GIF</option>
                         </select>
                     </div>
+                    <div id="qualitySliderContainer" class="ic-option-group" style="display: none;">
+                        <div class="ic-quality-label-container">
+                            <label for="qualitySlider" class="ic-label">Quality</label>
+                            <span id="qualityValue" class="ic-quality-value">92</span>
+                        </div>
+                        <input type="range" id="qualitySlider" class="ic-slider" min="0" max="100" value="92">
+                        <p id="qualityWarning" class="ic-quality-warning" style="display: none;">
+                            Note: Values above 92 may increase file size without a noticeable increase in quality.
+                        </p>
+                    </div>
                 </div>
 
                 <div class="ic-result-area">
