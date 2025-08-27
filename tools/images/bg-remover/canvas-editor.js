@@ -146,14 +146,15 @@ const canvasEditor = {
         this.lastX = x;
         this.lastY = y;
         this.applyBrushStroke(this.lastX, this.lastY, x, y);
-        brFeatures.updateProcessedImage();
-        brFeatures.applyBackgroundColor();
+        brFeatures.redrawOutputCanvas();
         brFeatures.setDirty();
     },
 
     stopDrawing: function () {
         if (!this.isDrawing) return;
         this.isDrawing = false;
+        brFeatures.updateProcessedImage();
+        brFeatures.applyBackgroundColor();
     },
 
     draw: function (e) {
@@ -161,8 +162,7 @@ const canvasEditor = {
         const { x, y } = this.getCanvasCoordinates(e);
         this.applyBrushStroke(this.lastX, this.lastY, x, y);
         [this.lastX, this.lastY] = [x, y];
-        brFeatures.updateProcessedImage();
-        brFeatures.applyBackgroundColor();
+        brFeatures.redrawOutputCanvas();
     },
 
     applyBrushStroke: function (x1, y1, x2, y2) {
