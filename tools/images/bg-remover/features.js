@@ -168,7 +168,7 @@ const brFeatures = {
         adjustedMask.height = br.maskCanvas.height;
         const adjustedMaskCtx = adjustedMask.getContext('2d');
 
-        const baseRadius = Math.round(Math.abs(this.maskAdjust) / 100 * 15);
+        const baseRadius = Math.round(Math.abs(this.maskAdjust) / 100 * 30);
 
         if (baseRadius > 0) {
             // Performance Optimization: Process a downscaled version
