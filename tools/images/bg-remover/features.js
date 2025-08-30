@@ -6,11 +6,18 @@ const brFeatures = {
     brushSizeValue: null, brushFeatherSlider: null, brushFeatherValue: null,
     featherEdgesSlider: null, featherEdgesValue: null,
     maskAdjustSlider: null, maskAdjustValue: null,
+    outlineColorPicker: null, outlineColorSwatches: null, outlineThicknessSlider: null, outlineThicknessValue: null,
+    outlineFeatherSlider: null, outlineFeatherValue: null,
+    alphaThresholdCheckbox: null,
 
     // State
     selectedColor: 'transparent',
     featherEdges: 0,
     maskAdjust: 0,
+    outlineColor: '#000000',
+    outlineThickness: 0,
+    outlineFeather: 0,
+    useAlphaThreshold: false,
     originalMask: null,
     isDirty: false,
 
@@ -31,6 +38,13 @@ const brFeatures = {
         this.featherEdgesValue = document.getElementById('br-feather-edges-value');
         this.maskAdjustSlider = document.getElementById('br-mask-adjust-slider');
         this.maskAdjustValue = document.getElementById('br-mask-adjust-value');
+        this.outlineColorPicker = document.getElementById('br-outline-color-picker');
+        this.outlineColorSwatches = document.getElementById('br-outline-color-swatches');
+        this.outlineThicknessSlider = document.getElementById('br-outline-thickness-slider');
+        this.outlineThicknessValue = document.getElementById('br-outline-thickness-value');
+        this.outlineFeatherSlider = document.getElementById('br-outline-feather-slider');
+        this.outlineFeatherValue = document.getElementById('br-outline-feather-value');
+        this.alphaThresholdCheckbox = document.getElementById('br-alpha-threshold-checkbox');
     },
 
     init: function () {
@@ -71,6 +85,34 @@ const brFeatures = {
             if (this.maskAdjustSlider) {
                 this.maskAdjustSlider.addEventListener('input', (e) => this.setMaskAdjust(e.target.value));
             }
+            if (this.outlineThicknessSlider) {
+                this.outlineColorPicker.addEventListener('input', (e) => {
+                    this.outlineColor = e.target.value;
+                    this.updateProcessedImage();
+                    this.applyBackgroundColor();
+                    this.setDirty();
+                });
+                this.outlineColorSwatches.addEventListener('click', (e) => {
+                    const color = e.target.dataset.color;
+                    if (color) {
+                        this.outlineColor = color;
+                        this.outlineColorPicker.value = color;
+                        this.updateProcessedImage();
+                        this.applyBackgroundColor();
+                        this.setDirty();
+                    }
+                });
+                this.outlineThicknessSlider.addEventListener('input', (e) => this.setOutlineThickness(e.target.value));
+                this.outlineFeatherSlider.addEventListener('input', (e) => this.setOutlineFeather(e.target.value));
+            }
+            if (this.alphaThresholdCheckbox) {
+                this.alphaThresholdCheckbox.addEventListener('change', (e) => {
+                    this.useAlphaThreshold = e.target.checked;
+                    this.updateProcessedImage();
+                    this.applyBackgroundColor();
+                    this.setDirty();
+                });
+            }
         }
     },
 
@@ -106,6 +148,22 @@ const brFeatures = {
             this.maskAdjust = 0;
             this.maskAdjustSlider.value = 0;
             this.maskAdjustValue.textContent = 0;
+        }
+
+        if (this.outlineThicknessSlider) {
+            this.outlineThickness = 0;
+            this.outlineThicknessSlider.value = 0;
+            this.outlineThicknessValue.textContent = 0;
+            this.outlineColor = '#000000';
+            this.outlineColorPicker.value = '#000000';
+            this.outlineFeather = 0;
+            this.outlineFeatherSlider.value = 0;
+            this.outlineFeatherValue.textContent = 0;
+        }
+
+        if (this.alphaThresholdCheckbox) {
+            this.useAlphaThreshold = false;
+            this.alphaThresholdCheckbox.checked = false;
         }
 
         this.updateProcessedImage();
@@ -157,6 +215,89 @@ const brFeatures = {
         this.updateProcessedImage();
         this.applyBackgroundColor();
         this.setDirty();
+    },
+
+    setOutlineThickness: function (value) {
+        this.outlineThickness = parseInt(value, 10);
+        this.outlineThicknessValue.textContent = value;
+        this.updateProcessedImage();
+        this.applyBackgroundColor();
+        this.setDirty();
+    },
+
+    setOutlineFeather: function (value) {
+        this.outlineFeather = parseInt(value, 10);
+        this.outlineFeatherValue.textContent = value;
+        this.updateProcessedImage();
+        this.applyBackgroundColor();
+        this.setDirty();
+    },
+
+    createDilatedMask: function (inputCanvas, radius) {
+        const dilatedCanvas = document.createElement('canvas');
+        dilatedCanvas.width = inputCanvas.width;
+        dilatedCanvas.height = inputCanvas.height;
+        const dilatedCtx = dilatedCanvas.getContext('2d');
+
+        if (radius <= 0) {
+            dilatedCtx.drawImage(inputCanvas, 0, 0);
+            return dilatedCanvas;
+        }
+
+        const MAX_DIM = 480;
+        const srcWidth = inputCanvas.width;
+        const srcHeight = inputCanvas.height;
+        let scale = 1.0;
+        let procWidth = srcWidth;
+        let procHeight = srcHeight;
+
+        if (procWidth > MAX_DIM || procHeight > MAX_DIM) {
+            scale = (procWidth > procHeight) ? (MAX_DIM / procWidth) : (MAX_DIM / procHeight);
+            procWidth = Math.round(srcWidth * scale);
+            procHeight = Math.round(srcHeight * scale);
+        }
+
+        const scaledRadius = Math.max(1, Math.round(radius * scale));
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = procWidth;
+        tempCanvas.height = procHeight;
+        const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+
+        tempCtx.drawImage(inputCanvas, 0, 0, procWidth, procHeight);
+        const srcData = tempCtx.getImageData(0, 0, procWidth, procHeight);
+        const tempAlpha = new Uint8ClampedArray(procWidth * procHeight);
+        const destData = new ImageData(procWidth, procHeight);
+
+        for (let y = 0; y < procHeight; y++) {
+            for (let x = 0; x < procWidth; x++) {
+                let bestAlpha = 0;
+                for (let i = -scaledRadius; i <= scaledRadius; i++) {
+                    const nx = Math.max(0, Math.min(procWidth - 1, x + i));
+                    const alpha = srcData.data[(y * procWidth + nx) * 4 + 3];
+                    bestAlpha = Math.max(bestAlpha, alpha);
+                }
+                tempAlpha[y * procWidth + x] = bestAlpha;
+            }
+        }
+
+        for (let y = 0; y < procHeight; y++) {
+            for (let x = 0; x < procWidth; x++) {
+                let bestAlpha = 0;
+                for (let j = -scaledRadius; j <= scaledRadius; j++) {
+                    const ny = Math.max(0, Math.min(procHeight - 1, y + j));
+                    const alpha = tempAlpha[ny * procWidth + x];
+                    bestAlpha = Math.max(bestAlpha, alpha);
+                }
+                destData.data[(y * procWidth + x) * 4 + 3] = bestAlpha;
+            }
+        }
+        tempCtx.putImageData(destData, 0, 0);
+
+        dilatedCtx.imageSmoothingEnabled = true;
+        dilatedCtx.imageSmoothingQuality = 'high';
+        dilatedCtx.drawImage(tempCanvas, 0, 0, srcWidth, srcHeight);
+
+        return dilatedCanvas;
     },
 
     updateProcessedImage: function () {
@@ -236,7 +377,7 @@ const brFeatures = {
             adjustedMaskCtx.drawImage(br.maskCanvas, 0, 0);
         }
 
-        // --- Stage 2: Apply Feather Edges using the result from Stage 1 ---
+        // --- Stage 2: Apply Feather Edges to Subject Mask ---
         const finalMask = document.createElement('canvas');
         finalMask.width = br.maskCanvas.width;
         finalMask.height = br.maskCanvas.height;
@@ -244,24 +385,63 @@ const brFeatures = {
 
         if (this.featherEdges > 0) {
             finalMaskCtx.filter = `blur(${this.featherEdges}px)`;
-            // Draw the adjusted mask (input) to the final mask (output) to apply the filter
             finalMaskCtx.drawImage(adjustedMask, 0, 0);
             finalMaskCtx.filter = 'none';
         } else {
-            // No feather, just copy the adjusted mask
             finalMaskCtx.drawImage(adjustedMask, 0, 0);
         }
 
-        // --- Final Clipping ---
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = br.originalImage.naturalWidth;
-        tempCanvas.height = br.originalImage.naturalHeight;
-        const tempCtx = tempCanvas.getContext('2d');
-        tempCtx.drawImage(br.originalImage, 0, 0);
-        tempCtx.globalCompositeOperation = 'destination-in';
-        tempCtx.drawImage(finalMask, 0, 0);
-        tempCtx.globalCompositeOperation = 'source-over';
-        br.processedImage = tempCanvas;
+        // --- Stage 2.5: Alpha Threshold (on subject mask) ---
+        if (this.useAlphaThreshold) {
+            const ctx = finalMask.getContext('2d', { willReadFrequently: true });
+            const imageData = ctx.getImageData(0, 0, finalMask.width, finalMask.height);
+            const data = imageData.data;
+            const threshold = 128;
+            for (let i = 0; i < data.length; i += 4) {
+                data[i + 3] = data[i + 3] > threshold ? 255 : 0;
+            }
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        // --- Stage 3: Final Clipping of Subject ---
+        const subjectCanvas = document.createElement('canvas');
+        subjectCanvas.width = br.originalImage.naturalWidth;
+        subjectCanvas.height = br.originalImage.naturalHeight;
+        const subjectCtx = subjectCanvas.getContext('2d');
+        subjectCtx.drawImage(br.originalImage, 0, 0);
+        subjectCtx.globalCompositeOperation = 'destination-in';
+        subjectCtx.drawImage(finalMask, 0, 0);
+        subjectCtx.globalCompositeOperation = 'source-over';
+
+        // --- Stage 4: Apply Outline ---
+        if (this.outlineThickness > 0) {
+            const outlinedCanvas = document.createElement('canvas');
+            outlinedCanvas.width = subjectCanvas.width;
+            outlinedCanvas.height = subjectCanvas.height;
+            const outlinedCtx = outlinedCanvas.getContext('2d');
+
+            // Generate outline from the sharp, adjusted mask
+            const outlineShapeCanvas = this.createDilatedMask(adjustedMask, this.outlineThickness);
+
+            // Feather and color the outline
+            if (this.outlineFeather > 0) {
+                outlinedCtx.filter = `blur(${this.outlineFeather}px)`;
+            }
+            outlinedCtx.drawImage(outlineShapeCanvas, 0, 0);
+            outlinedCtx.filter = 'none';
+
+            outlinedCtx.globalCompositeOperation = 'source-in';
+            outlinedCtx.fillStyle = this.outlineColor;
+            outlinedCtx.fillRect(0, 0, outlinedCanvas.width, outlinedCanvas.height);
+            outlinedCtx.globalCompositeOperation = 'source-over';
+
+            // Draw the subject on top
+            outlinedCtx.drawImage(subjectCanvas, 0, 0);
+
+            br.processedImage = outlinedCanvas;
+        } else {
+            br.processedImage = subjectCanvas;
+        }
     },
 
     show: function () {
@@ -312,7 +492,7 @@ const brFeatures = {
         
         // Now draw this clipped image onto the main canvas with the background color
         const outCtx = br.outputCanvas.getContext('2d');
-        outCtx.clearRect(0, 0, br.outputCanvas.width, br.outputCanvas.height);
+        outCtx.clearRect(0, 0, outCtx.canvas.width, outCtx.canvas.height);
         if (this.selectedColor !== 'transparent') {
             outCtx.fillStyle = this.selectedColor;
             outCtx.fillRect(0, 0, outCtx.canvas.width, outCtx.canvas.height);
