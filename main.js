@@ -230,4 +230,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initializeTheme();
     initializeToolTextSections();
     window.initializeTool?.();
+
+    // Fade in the body to prevent FOUC
+    document.body.style.opacity = '1';
 });
