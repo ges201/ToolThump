@@ -47,8 +47,15 @@ const pg = {
         this.copyFeedback = document.getElementById('pg-copy-feedback');
     },
 
+    getSecureRandom: function(max) {
+        const randomValues = new Uint32Array(1);
+        window.crypto.getRandomValues(randomValues);
+        // Return a number between 0 (inclusive) and max (exclusive)
+        return Math.floor((randomValues[0] / (0xFFFFFFFF + 1)) * max);
+    },
+
     getRandomChar: function (charSet) {
-        return charSet[Math.floor(Math.random() * charSet.length)];
+        return charSet[this.getSecureRandom(charSet.length)];
     },
 
     updateValidationState: function () {
