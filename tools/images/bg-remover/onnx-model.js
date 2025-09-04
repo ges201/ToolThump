@@ -1,3 +1,67 @@
+const modelCache = {
+    dbName: 'toolthump-model-cache',
+    storeName: 'onnx-models',
+    db: null,
+    version: 1,
+
+    openDB: function() {
+        return new Promise((resolve, reject) => {
+            if (this.db) return resolve(this.db);
+
+            const request = indexedDB.open(this.dbName, this.version);
+
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains(this.storeName)) {
+                    db.createObjectStore(this.storeName);
+                }
+            };
+
+            request.onsuccess = (event) => {
+                this.db = event.target.result;
+                resolve(this.db);
+            };
+
+            request.onerror = (event) => {
+                console.error("IndexedDB error:", event.target.error);
+                reject(event.target.error);
+            };
+        });
+    },
+
+    get: async function(key) {
+        try {
+            const db = await this.openDB();
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([this.storeName], 'readonly');
+                const store = transaction.objectStore(this.storeName);
+                const request = store.get(key);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = (event) => reject(event.target.error);
+            });
+        } catch (error) {
+            console.error("Failed to get model from cache:", error);
+            return null; // Fallback if DB can't be opened
+        }
+    },
+
+    set: async function(key, value) {
+        try {
+            const db = await this.openDB();
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([this.storeName], 'readwrite');
+                const store = transaction.objectStore(this.storeName);
+                const request = store.put(value, key);
+                request.onsuccess = () => resolve();
+                request.onerror = (event) => reject(event.target.error);
+            });
+        } catch (error) {
+            console.error("Failed to set model in cache:", error);
+            // Don't reject, as this is a non-critical enhancement
+        }
+    }
+};
+
 const onnxModel = {
     ortSession: null,
     modelPath: '/tools/images/bg-remover/u2net.quant.onnx',
@@ -7,43 +71,58 @@ const onnxModel = {
     init: async function (statusCallback, progressCallback) {
         if (this.isInitialized) return true;
 
-        statusCallback('loading', 'Downloading AI model (42 MB)...', true);
         try {
             ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/';
-            const response = await fetch(this.modelPath);
-            if (!response.ok) throw new Error(`Failed to fetch model: ${response.statusText}`);
+            
+            let modelBuffer = await modelCache.get(this.modelPath);
 
-            const reader = response.body.getReader();
-            const contentLength = +response.headers.get('content-length');
-            const chunks = [];
-            let loadedSize = 0;
+            if (modelBuffer) {
+                statusCallback('loading', 'Loading model from cache...');
+            } else {
+                statusCallback('loading', 'Downloading AI model (42 MB)...', true);
+                const response = await fetch(this.modelPath);
+                if (!response.ok) throw new Error(`Failed to fetch model: ${response.statusText}`);
 
-            while (true) {
-                const {
-                    done,
-                    value
-                } = await reader.read();
-                if (done) break;
-                chunks.push(value);
-                loadedSize += value.length;
-                if (contentLength && progressCallback) {
-                    const progress = Math.round((loadedSize / contentLength) * 100);
-                    progressCallback(progress);
+                const reader = response.body.getReader();
+                const contentLength = +response.headers.get('content-length');
+                const chunks = [];
+                let loadedSize = 0;
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    chunks.push(value);
+                    loadedSize += value.length;
+                    if (contentLength && progressCallback) {
+                        const progress = Math.round((loadedSize / contentLength) * 100);
+                        progressCallback(progress);
+                    }
                 }
+                
+                const blob = new Blob(chunks);
+                modelBuffer = await blob.arrayBuffer();
+                
+                // Don't block on this, let it happen in the background
+                modelCache.set(this.modelPath, modelBuffer.slice(0));
             }
 
-            const modelBuffer = new Blob(chunks).arrayBuffer();
             statusCallback('loading', 'Initializing AI model...');
-            this.ortSession = await ort.InferenceSession.create(await modelBuffer);
+            this.ortSession = await ort.InferenceSession.create(modelBuffer);
+            
             statusCallback('clear');
-            document.getElementById('tool-warning')?.remove();
+            const warningEl = document.getElementById('tool-warning');
+            if (warningEl) warningEl.style.display = 'none';
+
             console.log("ONNX session initialized successfully.");
             this.isInitialized = true;
             return true;
+
         } catch (error) {
             console.error("Failed to initialize ONNX session:", error);
             statusCallback('error', 'Failed to load the AI model. Please refresh and try again.');
             this.isInitialized = false;
+            // Clear corrupted cache entry if something went wrong during creation
+            modelCache.set(this.modelPath, undefined);
             return false;
         }
     },
