@@ -57,17 +57,14 @@
     background-color: var(--surface-bg-color);
     transition: border-color 0.2s ease, background-color 0.2s ease;
     overflow: hidden;
-    background-image:
-        linear-gradient(45deg, var(--bg-deep-dark) 25%, transparent 25%),
-        linear-gradient(-45deg, var(--bg-deep-dark) 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, var(--bg-deep-dark) 75%),
-        linear-gradient(-45deg, transparent 75%, var(--bg-deep-dark) 75%);
-    background-size: 20px 20px;
-    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
 }
 
 .br-workspace.dragover {
     border-color: var(--accent-color);
+    background-color: var(--accent-color-bg-hover);
+}
+
+.br-workspace.dragover .br-upload-label {
     background-color: var(--accent-color-bg-hover);
 }
 
@@ -87,7 +84,7 @@
     color: var(--text-secondary-color);
     z-index: 10;
     background-color: var(--surface-bg-color);
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, background-color 0.2s ease;
 }
 
 .br-workspace.has-image .br-upload-label {

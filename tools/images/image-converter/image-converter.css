@@ -20,7 +20,7 @@
 
 .ic-upload-area.drag-over {
     border-color: var(--accent-color);
-    background-color: var(--accent-color-bg-hover);
+    background-color: rgba(var(--accent-color-rgb), 0.2);
 }
 
 /* Hide upload content when preview is active */
@@ -48,13 +48,23 @@
 
 
 
-.ic-upload-text {
-    margin: 0 0 var(--spacing-xs);
-    color: var(--text-heading-color);
+.ic-upload-icon {
+    width: 60px;
+    height: 60px;
+    color: var(--accent-color);
+    margin-bottom: var(--spacing-md);
 }
 
-.ic-upload-text-secondary {
-    margin: var(--spacing-sm) 0;
+.ic-upload-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary-color);
+    margin: 0; /* Reset margin */
+}
+
+.ic-upload-hint {
+    font-size: 0.9rem;
+    margin-top: var(--spacing-xs);
     color: var(--text-secondary-color);
 }
 
@@ -62,7 +72,7 @@
     display: flex;
     justify-content: center;
     gap: var(--spacing-md);
-    margin-top: var(--spacing-md);
+    margin-top: var(--spacing-lg); /* Increased margin-top for more space */
 }
 
 
