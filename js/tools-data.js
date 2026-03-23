@@ -142,7 +142,7 @@ const toolsData = [
         jsPath: "/tools/data/file-comparison/fileComparison.js",
         keywords: ["file", "comparison", "compare", "diff", "difference", "tool"]
     },
-    {
+        {
         id: "markdown-editor",
         name: "Markdown Editor",
         category: "Text Tools",
@@ -152,5 +152,16 @@ const toolsData = [
         cssPaths: ["/tools/text/markdown-editor/markdown-editor.css"],
         jsPath: "/tools/text/markdown-editor/markdownEditor.js",
         keywords: ["markdown", "editor", "text", "formatting", "live preview", "markup"]
+    },
+    {
+        id: "video-subtitles-generator",
+        name: "Video Subtitles Generator",
+        category: "Data Tools",
+        description: "Generate SRT subtitle files from any video format with automatic speech recognition.",
+        icon: "/icons/video-subtitles-icon.png",
+        htmlPath: "/tools/data/video-subtitles-generator/video-subtitles-generator.html",
+        cssPaths: ["/tools/data/video-subtitles-generator/video-subtitles-generator.css"],
+        jsPath: "/tools/data/video-subtitles-generator/videoSubtitlesGenerator.js",
+        keywords: ["video", "subtitles", "srt", "speech", "recognition", "caption", "audio", "transcription"]
     }
 ];

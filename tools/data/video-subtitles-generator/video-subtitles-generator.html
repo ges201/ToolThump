@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Subtitles Generator - ToolThump</title>
+    <meta name="description"
+        content="Generate SRT subtitle files from any video format. Upload your video and get automatic subtitle generation with timestamp synchronization.">
+    <link rel="canonical" href="https://toolthump.com/tools/data/video-subtitles-generator/video-subtitles-generator.html">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://toolthump.com/tools/data/video-subtitles-generator/video-subtitles-generator.html">
+    <meta property="og:title" content="Video Subtitles Generator - ToolThump">
+    <meta property="og:description"
+        content="Generate SRT subtitle files from any video format. Upload your video and get automatic subtitle generation with timestamp synchronization.">
+    <meta property="og:image" content="https://toolthump.com/icons/video-subtitles-icon.png">
+    <meta property="og:site_name" content="ToolThump" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://toolthump.com/tools/data/video-subtitles-generator/video-subtitles-generator.html">
+    <meta property="twitter:title" content="Video Subtitles Generator - ToolThump">
+    <meta property="twitter:description"
+        content="Generate SRT subtitle files from any video format. Upload your video and get automatic subtitle generation with timestamp synchronization.">
+    <meta property="twitter:image" content="https://toolthump.com/icons/video-subtitles-icon.png">
+
+    <!-- Common Stylesheets -->
+    <link rel="stylesheet" href="/global_css/theme.css">
+    <link rel="stylesheet" href="/global_css/base.css">
+    <link rel="stylesheet" href="/global_css/layout.css">
+    <link rel="stylesheet" href="/global_css/components.css">
+    <link rel="stylesheet" href="/global_css/responsive.css">
+    <link rel="stylesheet" href="/_includes/tool-text-section.css">
+
+    <!-- Tool-specific CSS -->
+    <link rel="stylesheet" href="video-subtitles-generator.css">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": "https://toolthump.com/tools/data/video-subtitles-generator/video-subtitles-generator.html#webpage",
+      "url": "https://toolthump.com/tools/data/video-subtitles-generator/video-subtitles-generator.html",
+      "name": "Video Subtitles Generator",
+      "description": "Generate SRT subtitle files from any video format. Upload your video and get automatic subtitle generation.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://toolthump.com/#website"
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ToolThump",
+          "item": "https://toolthump.com/"
+        },{
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Data Tools",
+          "item": "https://toolthump.com/#data-tools" 
+        },{
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Video Subtitles Generator"
+        }]
+      }
+    }
+    </script>
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- COOP/COEP Enabler via Service Worker -->
+    <script>
+        // This script registers a service worker to enable the Cross-Origin-Isolated state.
+        // This is a workaround for GitHub Pages not allowing custom headers, and is
+        // necessary for the high-performance features used in this tool (FFmpeg multi-threading).
+        (async function () {
+            if (window.crossOriginIsolated) {
+                return; // All good, the page is already isolated.
+            }
+            if (navigator.serviceWorker.controller) {
+                window.location.reload();
+                return;
+            }
+            try {
+                const registration = await navigator.serviceWorker.register('/coi-serviceworker.js');
+                await new Promise(resolve => {
+                    const worker = registration.installing;
+                    if (!worker) {
+                        resolve();
+                        return;
+                    }
+                    worker.addEventListener('statechange', () => {
+                        if (worker.state === 'activated') {
+                            resolve();
+                        }
+                    });
+                });
+                window.location.reload();
+            } catch (e) {
+                console.error("Service worker registration failed:", e);
+            }
+        })();
+    </script>
+
+</head>
+
+<body>
+    <header data-include="header"></header>
+
+    <div class="content-wrapper">
+        <main id="tool-container">
+            <section id="video-subtitles-generator" class="tool-content active">
+                <div class="tool-header">
+                    <img src="/icons/video-subtitles-icon.png" alt="Video Subtitles Icon" class="tool-icon">
+                    <h1>Video Subtitles Generator</h1>
+                </div>
+                <p style="text-align: center; max-width: 65ch; margin: 0 auto var(--spacing-xl);">
+                    Upload any video file and generate SRT subtitle files with automatic speech recognition.
+                </p>
+
+                <div class="vsg-container">
+                    <!-- Video Upload Area -->
+                    <div class="vsg-upload-area">
+                    <div class="file-drop-zone" id="video-drop-zone">
+                        <div class="file-info" id="video-info">
+                            <p class="placeholder-text">Drop Video File or Click to Select</p>
+                        </div>
+                        <div class="video-preview-container">
+                            <video id="video-preview" class="video-preview" controls style="display: none;"></video>
+                        </div>
+                        <input type="file" id="video-input" class="file-input" accept="video/*" aria-label="Select video file">
+                    </div>
+                    </div>
+
+                    <!-- Uploaded Video Name (moved outside and below drop zone) -->
+                    <div class="vsg-uploaded-video-name-container" id="uploaded-video-name-container" style="display: none; text-align: center;">
+                        <span class="file-details-wrapper-centered">
+                            <span class="file-name-size-centered">
+                                <span class="file-name centered-file-name" id="uploaded-video-name"></span>
+                            </span>
+                        </span>
+                    </div>
+
+                    <!-- Processing Options -->
+                    <div class="vsg-options" id="processing-options" style="display: none;">
+                        <h3>Processing Options</h3>
+                        <div class="vsg-option-group">
+                            <label for="language-select">Audio Language</label>
+                            <select id="language-select">
+                                <option value="auto" selected>Auto-detect Language</option>
+                                <option value="en">English</option>
+                                <option value="es">Spanish</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
+                                <option value="it">Italian</option>
+                                <option value="pt">Portuguese</option>
+                                <option value="ru">Russian</option>
+                                <option value="ja">Japanese</option>
+                                <option value="ko">Korean</option>
+                                <option value="zh">Chinese</option>
+                                <option value="nl">Dutch</option>
+                                <option value="tr">Turkish</option>
+                                <option value="pl">Polish</option>
+                                <option value="sv">Swedish</option>
+                                <option value="vi">Vietnamese</option>
+                                <option value="uk">Ukrainian</option>
+                                <option value="ar">Arabic</option>
+                                <option value="hi">Hindi</option>
+                            </select>
+                        </div>
+                        
+                        <div class="vsg-option-group">
+                            <label for="model-select">Model Quality</label>
+                            <select id="model-select">
+                                <option value="tiny">Tiny (Fastest, ~40MB) - Good for clear audio</option>
+                                <option value="base" selected>Base (Balanced, ~75MB) - Recommended</option>
+                                <option value="small">Small (Better Accuracy, ~240MB) - Slower</option>
+                            </select>
+                            <p class="help-text" style="font-size: 0.85rem; color: var(--text-secondary-color); margin-top: 5px;">
+                                Larger models are more accurate but require more memory and time to download/process.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Generate Button -->
+                    <div class="vsg-button-container">
+                        <button id="vsg-generate-btn" class="btn-secondary" disabled>Generate Subtitles</button>
+                    </div>
+
+                    <!-- Progress Area -->
+                    <div class="vsg-progress-area" id="progress-area" style="display: none;">
+                        <div class="vsg-progress-content">
+                            <div class="vsg-progress-spinner"></div>
+                            <h3 id="progress-title">Processing Video...</h3>
+                            <p id="progress-message">Analyzing audio and generating subtitles</p>
+                            <div class="vsg-progress-bar">
+                                <div class="vsg-progress-bar-inner" id="progress-bar"></div>
+                            </div>
+                            <p id="progress-status" class="vsg-progress-status"></p>
+                        </div>
+                    </div>
+
+                    <!-- Results Area -->
+                    <div class="vsg-results-area" id="results-area" style="display: none;">
+                        <h3>Generated Subtitles</h3>
+                        <div class="vsg-subtitle-preview">
+                            <pre id="subtitle-preview" class="vsg-subtitle-text"></pre>
+                        </div>
+                        <div class="vsg-download-section">
+                            <button id="vsg-download-btn" class="btn-secondary">Download SRT File</button>
+                            <button id="vsg-mkv-export-btn" class="btn-secondary">Export Video (.mkv)</button>
+                            <button id="vsg-render-btn" class="btn-secondary">Render Video with Subtitles</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div data-include="tool-text-section"></div>
+        </main>
+    </div>
+
+    <footer data-include="footer"></footer>
+
+    <!-- Data Island for the text sections -->
+    <script type="application/json" id="tool-text-data">{
+    "sections": [
+        {
+            "type": "how-to",
+            "title": "Generate Subtitles in 3 Easy Steps",
+            "icon": "💡",
+            "intro": "Transform any video into subtitle files with automatic speech recognition technology.",
+            "steps": [
+                {
+                    "icon": "1️⃣",
+                    "title": "Upload Your Video",
+                    "description": "Drag and drop your video file into the upload area or click to select. Supports all common video formats including MP4, AVI, MOV, MKV, and more."
+                },
+                {
+                    "icon": "2️⃣",
+                    "title": "Configure Settings",
+                    "description": "Select the language of your video's audio and choose the processing model quality. Higher quality models are more accurate but take longer to process."
+                },
+                {
+                    "icon": "3️⃣",
+                    "title": "Generate and Download",
+                    "description": "Click 'Generate Subtitles' and wait for the processing to complete. Once done, preview your subtitles and download the SRT file."
+                }
+            ]
+        },
+        {
+            "type": "features",
+            "title": "Key Features",
+            "icon": "✨",
+            "features": [
+                {
+                    "icon": "🔒",
+                    "title": "100% Private Processing",
+                    "description": "All processing happens directly in your browser. Your videos are never uploaded to any server, ensuring complete privacy and security."
+                },
+                {
+                    "icon": "🌐",
+                    "title": "Multi-Language Support",
+                    "description": "Support for 10+ languages including English, Spanish, French, German, Italian, Portuguese, Russian, Japanese, Korean, and Chinese."
+                },
+                {
+                    "icon": "⚙️",
+                    "title": "Adjustable Quality",
+                    "description": "Choose from different processing models ranging from fast and lightweight to highly accurate for professional results."
+                },
+                {
+                    "icon": "📥",
+                    "title": "Standard SRT Format",
+                    "description": "Output files are in industry-standard SRT format, compatible with all major video players and editing software."
+                }
+            ]
+        },
+        {
+            "type": "faq",
+            "title": "Frequently Asked Questions (FAQ)",
+            "icon": "❓",
+            "faqs": [
+                {
+                    "icon": "🛡️",
+                    "question": "Is my video really private?",
+                    "answer": "Yes, absolutely. All processing occurs locally in your browser using WebAssembly technology. Your video file never leaves your computer."
+                },
+                {
+                    "icon": "⏱️",
+                    "question": "How long does processing take?",
+                    "answer": "Processing time depends on video length and quality settings. As a rough estimate: 1 minute of video takes 1-3 minutes to process with the base model."
+                },
+                {
+                    "icon": "🎧",
+                    "question": "What if my video has no audio?",
+                    "answer": "The tool will detect this and generate a single subtitle entry covering the entire video duration with placeholder text like '[No speech detected]'."
+                },
+                {
+                    "icon": "🔧",
+                    "question": "Can I edit the generated subtitles?",
+                    "answer": "The tool generates basic subtitles. For advanced editing, download the SRT file and use dedicated subtitle editing software like Aegisub or Subtitle Edit."
+                }
+            ]
+        }
+    ]}</script>
+
+    <!-- Main site script -->
+    <script src="/main.js"></script>
+    <!-- Tool-specific script -->
+    <script type="module" src="videoSubtitlesGenerator.js"></script>
+</body>
+
+</html>

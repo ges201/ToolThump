@@ -1,0 +1,462 @@
+/* Video Subtitles Generator Styles */
+
+.vsg-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Upload Area */
+.vsg-upload-area {
+    margin-bottom: var(--spacing-xl);
+}
+
+.file-drop-zone {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--spacing-xl);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius-lg);
+    background-color: var(--input-bg-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    min-height: 300px;
+    height: 300px;
+}
+
+.file-drop-zone .file-info {
+    width: 100%;
+    max-width: 400px;
+}
+
+.file-drop-zone.dragover {
+    border-color: var(--accent-color);
+    background-color: var(--accent-color-bg-hover);
+}
+
+.file-drop-zone.file-loaded {
+    border-style: solid;
+    border-color: var(--accent-color);
+    cursor: default;
+}
+
+/* Video Preview */
+.video-preview-container {
+    width: 100%;
+    min-height: 300px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: var(--border-radius-md);
+    padding: 20px;
+}
+
+.video-preview {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+    border-radius: var(--border-radius-md);
+}
+
+/* Hide video preview container when no file is loaded */
+.file-drop-zone:not(.file-loaded) .video-preview-container {
+    display: none;
+}
+
+.video-preview-container:empty {
+    display: none;
+}
+
+.file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-drop-zone.file-loaded .file-input {
+    display: none;
+}
+
+.file-info .file-placeholder-icon {
+    font-size: 3rem;
+    color: var(--text-secondary-color);
+    margin-bottom: var(--spacing-sm);
+    display: block;
+}
+
+/* Uploaded Video Name Container (moved outside drop zone) */
+.vsg-uploaded-video-name-container {
+    margin-top: var(--spacing-md);
+    text-align: center;
+}
+
+.file-details-wrapper-centered {
+    display: inline-block;
+    background-color: var(--surface-bg-color);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.file-name-size-centered {
+    text-align: center;
+}
+
+.centered-file-name {
+    font-weight: 600;
+    color: var(--text-primary-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 400px;
+    display: inline-block;
+}
+
+/* File Info - Container for placeholder text and icon */
+.file-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.file-info .placeholder-text {
+    color: var(--text-secondary-color);
+    font-weight: 600;
+}
+
+/* When file is loaded, hide the placeholder and show video preview */
+.file-drop-zone.file-loaded .file-info {
+    display: none;
+}
+
+/* File Details Wrapper */
+.file-details-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 500px;
+    background-color: var(--surface-bg-color);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    gap: var(--spacing-md);
+}
+
+.file-details {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    text-align: left;
+    flex: 1;
+    min-width: 0; /* Enable text truncation */
+}
+
+.file-icon {
+    font-size: 2rem;
+}
+
+.file-name-size {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.file-name {
+    font-weight: 600;
+    color: var(--text-primary-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-size {
+    font-size: 0.85rem;
+    color: var(--text-secondary-color);
+}
+
+.remove-file-button {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    line-height: 1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    transition: background-color 0.2s, color 0.2s;
+    min-width: unset; /* Override default button min-width if any */
+}
+
+.remove-file-button:hover {
+    background-color: var(--hover-bg-color);
+    color: var(--error-color, #e74c3c);
+}
+
+/* Processing Options */
+.vsg-options {
+    background-color: var(--surface-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.vsg-options h3 {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    color: var(--text-primary-color);
+}
+
+.vsg-option-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.vsg-option-group:last-child {
+    margin-bottom: 0;
+}
+
+.vsg-option-group label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-weight: 600;
+    color: var(--text-primary-color);
+}
+
+.vsg-option-group select {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--input-bg-color);
+    color: var(--text-primary-color);
+    font-size: 1rem;
+}
+
+/* Buttons */
+.vsg-button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+#vsg-generate-btn {
+    font-size: 1.1rem;
+    padding: var(--spacing-md) var(--spacing-xl);
+    width: 240px;
+    justify-content: center;
+}
+
+/* Progress Area */
+.vsg-progress-area {
+    text-align: center;
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-md);
+    background-color: var(--surface-bg-color);
+    border: 1px solid var(--border-color);
+    margin-bottom: var(--spacing-xl);
+}
+
+.vsg-progress-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.vsg-progress-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-color);
+    border-top: 4px solid var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--spacing-md);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.vsg-progress-bar {
+    width: 100%;
+    max-width: 400px;
+    height: 8px;
+    background-color: var(--border-color);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    margin: var(--spacing-md) 0;
+}
+
+.vsg-progress-bar-inner {
+    height: 100%;
+    width: 0;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+/* Indeterminate Animation */
+.vsg-progress-bar-inner.indeterminate {
+    width: 100% !important;
+    background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.15) 75%,
+        transparent 75%,
+        transparent
+    );
+    background-size: 40px 40px;
+    animation: indeterminate-stripe 1.5s linear infinite;
+}
+
+@keyframes indeterminate-stripe {
+    0% { background-position: 40px 0; }
+    100% { background-position: 0 0; }
+}
+
+.vsg-progress-status {
+    font-size: 0.9rem;
+    color: var(--text-secondary-color);
+    margin: 0;
+}
+
+/* Results Area */
+.vsg-results-area {
+    background-color: var(--surface-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.vsg-results-area h3 {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    color: var(--text-primary-color);
+}
+
+.vsg-subtitle-preview {
+    background-color: var(--input-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.vsg-subtitle-text {
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--text-primary-color);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.vsg-download-section {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.vsg-download-section .btn-secondary {
+    min-width: 200px;
+}
+
+/* Primary button styling for render button */
+.vsg-download-section .btn-primary {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.vsg-download-section .btn-primary:hover {
+    background-color: var(--accent-color-hover);
+    border-color: var(--accent-color-hover);
+}
+
+/* MKV Export - Green border and text always */
+.vsg-download-section #vsg-mkv-export-btn {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+/* Primary button styling for render button */
+.vsg-download-section .btn-primary {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.vsg-download-section .btn-primary:hover {
+    background-color: var(--accent-color-hover);
+    border-color: var(--accent-color-hover);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .vsg-container {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .file-drop-zone {
+        padding: var(--spacing-lg);
+        min-height: 200px;
+        height: 200px;
+    }
+    
+    .file-info .file-placeholder-icon {
+        font-size: 2rem;
+    }
+    
+    .vsg-download-section {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .vsg-download-section .btn-secondary {
+        width: 100%;
+        max-width: 240px;
+    }
+    
+    .vsg-option-group select {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .vsg-progress-area {
+        padding: var(--spacing-md);
+    }
+    
+    .vsg-subtitle-preview {
+        max-height: 200px;
+    }
+    
+    .vsg-option-group {
+        margin-bottom: var(--spacing-sm);
+    }
+}
