@@ -46,7 +46,7 @@ export class Transcriber {
             // FIX: Removed stride_length_s to prevent end-of-video hallucination loops.
             const options = {
                 return_timestamps: 'word',
-                chunk_length_s: 15,
+                chunk_length_s: 29,
                 stride_length_s: 5
             };
 
