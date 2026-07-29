@@ -55,12 +55,12 @@
 
 /* Specific styling for the "Choose Image" label to include transform and shadow on hover */
 .ir-upload-section label[for="irImageUpload"].btn-secondary {
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    transition: none;
 }
 
 .ir-upload-section label[for="irImageUpload"].btn-secondary:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: var(--shadow-hard);
+    background-color: var(--accent-color-bg-hover);
+    border-color: var(--accent-color);
 }
 
 .ir-upload-section .btn-secondary .icon,
@@ -127,12 +127,7 @@
     border: 1px solid var(--border-color);
     background-color: var(--surface-bg-color);
     /* Transitions for hover pop-out/in and color changes when becoming checked */
-    transition: background-color 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease,
-        transform 0.15s ease-out,
-        /* Animates the pop-out on hover */
-        box-shadow 0.15s ease-out;
+    transition: none;
     /* Animates the pop-out on hover */
     cursor: pointer;
     text-align: center;
@@ -172,9 +167,6 @@
     background-color: var(--accent-color-bg-hover);
     color: var(--accent-color);
     border-color: var(--accent-color);
-    transform: translate(-2px, -2px);
-    /* Apply 3D pop-out effect */
-    box-shadow: var(--shadow-hard);
 }
 
 /* Hover effect for CHECKED radio labels - maintains "pressed" look with accent colors */
@@ -235,7 +227,7 @@
     border: 2px dashed var(--border-color);
     padding: var(--spacing-xl);
     position: relative;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    transition: none;
     cursor: pointer;
 }
 
@@ -319,5 +311,5 @@
 }
 
 #irResizeButton.btn-secondary {
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    transition: none;
 }

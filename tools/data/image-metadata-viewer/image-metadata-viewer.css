@@ -20,7 +20,7 @@
     border-radius: var(--border-radius-lg);
     border: 2px dashed var(--border-color);
     background-color: var(--surface-bg-color);
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    transition: none;
     overflow: hidden;
 }
 
@@ -45,7 +45,7 @@
     color: var(--text-secondary-color);
     z-index: 10;
     background-color: var(--surface-bg-color);
-    transition: opacity 0.3s ease;
+    transition: none;
 }
 
 .edv-workspace.has-image .edv-upload-label {
@@ -78,7 +78,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-lg);
-    animation: fadeInPageContent 0.3s ease-out;
+    animation: fadeInUp 0.25s ease-out;
     overflow-y: auto;
 }
 
@@ -175,7 +175,7 @@
     max-height: 150px;
     overflow: hidden;
     position: relative;
-    transition: max-height 0.3s ease-in-out;
+    transition: none;
 }
 
 .edv-value-container.expanded {
@@ -242,7 +242,7 @@
     width: 80%; 
     max-width: 800px;
     position: relative;
-    animation: fadeInPageContent 0.3s;
+    animation: fadeInUp 0.2s ease-out;
 }
 
 .edv-modal-close {

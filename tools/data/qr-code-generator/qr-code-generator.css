@@ -95,7 +95,7 @@
     font-size: 1.5rem;
     /* Make emoji larger */
     color: var(--text-secondary-color);
-    transition: color 0.2s ease-in-out;
+    transition: none;
     display: flex;
     align-items: center;
     justify-content: center;

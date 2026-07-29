@@ -88,7 +88,7 @@
     line-height: 1.6;
     color: var(--text-primary-color);
     overflow-x: auto;
-    transition: height 0.2s ease-in-out;
+    transition: none;
 }
 
 .tc-diff-output-box pre {

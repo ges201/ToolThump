@@ -45,7 +45,7 @@
     /* Collapse when empty */
     opacity: 0;
     /* Hide when empty */
-    transition: height 0.2s ease-out, opacity 0.2s ease-out;
+    transition: none;
 }
 
 .ed-format-warning.show {
@@ -156,7 +156,7 @@
     font-size: 0.85rem;
     font-weight: 600;
     opacity: 0;
-    transition: opacity 0.2s ease-in-out;
+    transition: none;
     pointer-events: none;
 }
 

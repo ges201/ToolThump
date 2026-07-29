@@ -4,141 +4,35 @@
 @import url("/global_css/components.css");
 @import url("/global_css/responsive.css");
 
-/* Specific styles for a cleaner Privacy Policy page */
-.page-header {
-    text-align: center;
-    margin-bottom: var(--spacing-xxl);
-    padding-bottom: var(--spacing-xl);
-}
+.page-header { text-align: left; margin-bottom: var(--spacing-xl); padding-bottom: var(--spacing-md); border-bottom: 1px solid var(--border-color); }
+.page-header h1 { font-size: 1.5rem; margin-bottom: var(--spacing-sm); }
+.page-header h1::before { display: none; }
+.page-header .subtitle { font-size: 0.9rem; color: var(--fg-dim); max-width: 60ch; font-family: var(--font); }
 
-.page-header h1 {
-    font-family: var(--font-family-heading);
-    font-size: 2.5rem;
-    margin-bottom: var(--spacing-md);
-}
-
-.page-header .subtitle {
-    font-size: 1.2rem;
-    color: var(--text-secondary-color);
-    max-width: 70ch;
-    margin: 0 auto;
-}
-
-.privacy-container {
-    margin: 0 auto;
-}
-
-/* MODIFIED: Increased margin-bottom significantly for more separation */
-.privacy-section {
-    margin-bottom: 5rem; /* A large, explicit value for clear separation */
-}
-
-/* NEW: Ensures there's no extra space at the very bottom of the page */
-.privacy-section:last-of-type {
-    margin-bottom: 0;
-}
-
-/* MODIFIED: Increased margin-bottom to create more space between a heading and its text */
+.privacy-container { margin: 0 auto; max-width: 70ch; font-family: var(--font); }
+.privacy-section { margin-bottom: var(--spacing-xl); }
+.privacy-section:last-of-type { margin-bottom: 0; }
 .privacy-section h2 {
-    font-size: 1.6rem;
-    color: var(--text-heading-color);
-    margin-bottom: var(--spacing-lg); /* Was var(--spacing-md) */
-    display: flex;
-    align-items: flex-start;
-    gap: var(--spacing-md);
+    font-size: 1.1rem; color: var(--fg-bright); margin-bottom: var(--spacing-md);
+    display: flex; align-items: center; gap: var(--spacing-sm);
 }
-
 .privacy-section h2 .icon {
-    color: var(--accent-color);
-    font-size: 1.4rem;
-    flex-shrink: 0;
-    margin-top: 5px;
+    color: var(--cyan); font-size: 0.9em; flex-shrink: 0;
+    width: 28px; height: 28px; display: inline-flex; align-items: center;
+    justify-content: center; background-color: var(--bg);
+    border: 1px solid var(--border-color); border-radius: 0;
+    font-family: var(--font); font-weight: 700;
 }
+.privacy-section:nth-child(odd) h2 .icon { color: var(--cyan); }
+.privacy-section:nth-child(even) h2 .icon { color: var(--green); }
 
-.privacy-section p {
-    line-height: 1.8;
-    font-size: 1.1rem;
-    color: var(--text-secondary-color);
-    margin: 0;
-}
+.privacy-section p { line-height: 1.6; font-size: 0.9rem; color: var(--fg-dim); margin: 0; }
 
-.highlight {
-    background-color: rgba(var(--accent-color-rgb), 0.1);
-    color: var(--accent-color);
-    padding: 2px 6px;
-    border-radius: var(--border-radius-sm);
-    font-weight: 600;
-}
+.highlight { background-color: var(--bg-hl); color: var(--yellow); padding: 1px 6px; border-radius: 0; font-weight: 700; }
 
-.privacy-section a {
-    color: var(--accent-color);
-    text-decoration: none;
-    font-weight: 600;
-    border-bottom: 2px solid transparent;
-    transition: border-bottom 0.3s ease;
-}
+.privacy-section a { color: var(--cyan); text-decoration: underline; font-weight: 700; }
+.privacy-section a:hover { background: var(--cyan); color: var(--bg); text-decoration: none; }
 
-.privacy-section a:hover {
-    border-bottom: 2px solid var(--accent-color);
-}
-
-.contact-info {
-    background-color: var(--bg-deep-dark);
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-color);
-    margin-top: var(--spacing-lg);
-}
-
-.contact-info p {
-    margin: 0;
-}
-
-.contact-info a {
-    color: var(--accent-color);
-    font-weight: 600;
-}
-
-.static-page-content {
-    max-width: 80ch;
-    margin: 0 auto;
-    padding: var(--spacing-xl);
-    background-color: var(--surface-bg-color);
-    border-radius: var(--border-radius-lg);
-    border: 1px solid var(--border-color);
-}
-
-.static-page-content h1 {
-    font-family: var(--font-family-sans);
-    font-size: 2.2rem;
-    text-transform: none;
-    letter-spacing: 0;
-    color: var(--accent-color);
-    text-align: left;
-    margin-bottom: var(--spacing-lg);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: var(--spacing-md);
-}
-
-.static-page-content h2 {
-    font-size: 1.5rem;
-    margin-top: var(--spacing-xl);
-    margin-bottom: var(--spacing-md);
-    color: var(--text-heading-color);
-}
-
-.static-page-content p,
-.static-page-content ul {
-    margin-bottom: var(--spacing-md);
-    line-height: 1.7;
-    color: var(--text-secondary-color);
-}
-
-.static-page-content ul {
-    list-style-type: disc;
-    padding-left: var(--spacing-lg);
-}
-
-.static-page-content a {
-    font-weight: 600;
-}
+.contact-info { background-color: var(--bg-alt); padding: var(--spacing-md); border-radius: 0; border: 1px solid var(--border-color); margin-top: var(--spacing-lg); }
+.contact-info p { margin: 0; }
+.contact-info a { color: var(--cyan); font-weight: 700; }

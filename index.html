@@ -4,30 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToolThump - Free, Private, No login, Tools & Utilities Hub</title>
+    <title>toolthump — free, private, client-side tools</title>
     <meta name="description"
-        content="ToolThump: Your 100% free, privacy-focused, no registration, online utilities hub. Client-side tools for text, images, security & more. Fast, secure and easy to use.">
+        content="ToolThump: 100% free, privacy-focused, no registration, online utilities. All tools run client-side in your browser.">
     <link rel="canonical" href="https://toolthump.com/">
-    <meta name="robots" content="index, follow">
 
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://toolthump.com/">
-    <meta property="og:title" content="ToolThump - Free, Private, No login, Tools & Utilities Hub">
+    <meta property="og:title" content="toolthump — free, private, client-side tools">
     <meta property="og:description"
-        content="ToolThump: Your 100% free, privacy-focused, no registration, online utilities hub. Client-side tools for text, images, security & more. Fast, secure and easy to use.">
+        content="ToolThump: 100% free, privacy-focused, no registration, online utilities. All tools run client-side in your browser.">
     <meta property="og:image" content="https://toolthump.com/ToolThump.png">
-    <meta property="og:site_name" content="ToolThump" />
+    <meta property="og:site_name" content="ToolThump">
 
-    <!-- Twitter (Optional, but good practice) -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://toolthump.com/">
-    <meta property="twitter:title" content="ToolThump - Free, Private, No login, Tools & Utilities Hub">
+    <meta property="twitter:title" content="toolthump — free, private, client-side tools">
     <meta property="twitter:description"
-        content="ToolThump: Your 100% free, privacy-focused, no registration, online utilities hub. Client-side tools for text, images, security & more. Fast, secure and easy to use.">
+        content="ToolThump: 100% free, privacy-focused, no registration, online utilities. All tools run client-side in your browser.">
     <meta property="twitter:image" content="https://toolthump.com/ToolThump.png">
 
-    <!-- Common Stylesheets (paths relative to root) -->
     <link rel="stylesheet" href="/global_css/theme.css">
     <link rel="stylesheet" href="/global_css/base.css">
     <link rel="stylesheet" href="/global_css/layout.css">
@@ -35,15 +31,14 @@
     <link rel="stylesheet" href="/global_css/responsive.css">
     <link rel="stylesheet" href="/index.css">
 
-    <!-- Schema.org for homepage -->
     <script type="application/ld+json">
     {
       "@context" : "https://schema.org",
       "@type" : "WebSite",
       "@id": "https://toolthump.com/#website",
       "url" : "https://toolthump.com/",
-      "name" : "ToolThump",
-      "description": "ToolThump offers a collection of 100% free, client-side online utilities. No login, fast performance and privacy-focused. Tools for text, images, security, and more.",
+      "name" : "toolthump",
+      "description": "ToolThump offers a collection of 100% free, client-side online utilities. No login, fast performance and privacy-focused.",
        "logo": "https://toolthump.com/ToolThump.png",
        "potentialAction": {
         "@type": "SearchAction",
@@ -53,14 +48,13 @@
     }
     </script>
 
-    <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
     <link rel="shortcut icon" href="/favicon.ico">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="msapplication-TileColor" content="#000000">
+    <meta name="theme-color" content="#000000">
 </head>
 
 <body>
@@ -68,99 +62,75 @@
     <div class="content-wrapper">
         <main id="tool-container">
             <section id="home" class="tool-content active">
-                <!-- Hero Section -->
                 <div class="home-hero">
-                    <h1 class="hero-description" style="font-family: var(--font-family-sans); text-transform: none; letter-spacing: normal; line-height: 1.6;">
-                        Your hub for free, private, and powerful online tools. All utilities run in your browser, your
-                        data stays with you.
-                    </h1>
-                    <div class="search-wrapper">
-                        <div class="search-bar-container">
-                            <input type="search" id="home-search-input"
-                                placeholder="Search for a tool (e.g., Image Converter)" aria-label="Search for a tool"
-                                autocomplete="off">
-                            <button type="button" id="home-search-button" aria-label="Search" onclick="return false;">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                    width="24" height="24">
-                                    <path
-                                        d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 0 0 5.34-1.48l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <!-- Search Results Container (Initially Hidden) -->
-                        <div id="search-results-container"></div>
-                    </div>
+                    <pre class="ascii-logo" data-ascii-logo></pre>
+                    <p class="hero-subtitle">$ cat README.md</p>
+                    <p class="hero-description">
+                        Your hub for free, private, and powerful online tools. All utilities run entirely in your browser
+                        &mdash; your data never leaves your device.
+                    </p>
                 </div>
 
-                <!-- Wrapper for static homepage content -->
+                <div class="search-wrapper">
+                    <div class="search-bar-container">
+                        <input type="search" id="home-search-input"
+                            placeholder="search tools..." aria-label="Search for a tool"
+                            autocomplete="off">
+                        <button type="button" id="home-search-button" aria-label="Search" onclick="return false;">
+                            [enter]
+                        </button>
+                    </div>
+                    <div id="search-results-container"></div>
+                </div>
+
                 <div id="static-home-content">
-                    <!-- Most Used Tools Section -->
                     <div class="home-section">
                         <h2>Most Used Tools</h2>
                         <div class="most-used-grid">
-                            <a href="/tools/images/bg-remover/bg-remover.html" class="most-used-card"
-                                data-tool-id="bg-remover">
-                                <img src="/icons/bg-remover-icon.png" alt="Background Remover Icon"
-                                    class="most-used-icon">
-                                <h3>Background Remover</h3>
-                                <p>Effortlessly <strong>remove backgrounds</strong> from your images with this powerful tool. Get <strong>clean, professional cutouts</strong> for product photos, social media, or creative projects, all done <strong>instantly in your browser</strong>.</p>
+                            <a href="/tools/images/bg-remover/bg-remover.html" class="most-used-card" data-tool-id="bg-remover">
+                                <img src="https://api.iconify.design/pixelarticons/sparkles.svg" alt="" class="most-used-icon">
+                                <h3>bg-remover</h3>
+                                <p>Effortlessly <strong>remove backgrounds</strong> from images. Get <strong>clean cutouts</strong> for product photos or creative projects, done <strong>instantly in your browser</strong>.</p>
                             </a>
-                            <a href="/tools/security/password-strength-checker/password-strength-checker.html"
-                                class="most-used-card" data-tool-id="password-strength-checker">
-                                <img src="/icons/password-strength-checker-icon.png"
-                                    alt="Password Strength Checker Icon" class="most-used-icon">
-                                <h3>Password Strength Checker</h3>
-                                <p>Evaluate your password against common patterns and vulnerabilities to receive an
-                                    <strong>instant strength score</strong> and <strong>actionable feedback</strong>.
-                                </p>
+                            <a href="/tools/security/password-strength-checker/password-strength-checker.html" class="most-used-card" data-tool-id="password-strength-checker">
+                                <img src="https://api.iconify.design/pixelarticons/shield.svg" alt="" class="most-used-icon">
+                                <h3>password-checker</h3>
+                                <p>Evaluate your password against common patterns and vulnerabilities to receive an <strong>instant strength score</strong> and <strong>actionable feedback</strong>.</p>
                             </a>
-                            <a href="/tools/images/image-converter/image-converter.html" class="most-used-card"
-                                data-tool-id="image-converter">
-                                <img src="/icons/image-converter-icon.png" alt="Image Converter Icon"
-                                    class="most-used-icon">
-                                <h3>Image Converter</h3>
-                                <p>Convert your images to formats like <strong>PNG, JPG, GIF, or WEBP</strong> directly
-                                    in your browser.
-                                    This tool also supports <strong>batch conversion</strong>, allowing you to convert
-                                    all images within
-                                    a selected folder (and sub-folders) automatically.</p>
+                            <a href="/tools/images/image-converter/image-converter.html" class="most-used-card" data-tool-id="image-converter">
+                                <img src="https://api.iconify.design/pixelarticons/image.svg" alt="" class="most-used-icon">
+                                <h3>image-converter</h3>
+                                <p>Convert images to <strong>PNG, JPG, GIF, or WEBP</strong> directly in your browser. Supports <strong>batch conversion</strong> across entire folders and sub-folders automatically.</p>
                             </a>
                         </div>
                     </div>
 
-                    <!-- Features Section -->
                     <div class="home-section">
-                        <h2>Why Choose ToolThump?</h2>
+                        <h2>Features</h2>
                         <div class="features-grid">
                             <div class="feature-card">
-                                <div class="feature-icon">🛡️</div>
+                                <div class="feature-icon">[*] privacy</div>
                                 <h3>Absolutely Private & Secure</h3>
-                                <p>Your data is never sent to any servers. Every tool operates entirely within your
-                                    browser. No tracking, no PII collection—just pure utility.</p>
+                                <p>Your data is never sent to any servers. Every tool operates entirely within your browser. No tracking, no PII collection.</p>
                             </div>
                             <div class="feature-card">
-                                <div class="feature-icon">🆓</div>
-                                <h3>100% Free, No Login or registration required</h3>
-                                <p>Enjoy full access to all tools without any cost, ads, or registration
-                                    requirements. Just the tools you need, instantly.</p>
+                                <div class="feature-icon">[~] free</div>
+                                <h3>100% Free, No Registration</h3>
+                                <p>Enjoy full access to all tools without any cost, ads, or registration requirements. Just the tools you need, instantly.</p>
                             </div>
                             <div class="feature-card">
-                                <div class="feature-icon">💻</div>
-                                <h3>Developer-Friendly & Open Source</h3>
-                                <p>Built with clean, modern code. An open-source project on GitHub, designed to be a
-                                    useful and
-                                    reliable resource for developers and creators.</p>
+                                <div class="feature-icon">[&lt;&gt;] dev</div>
+                                <h3>Open Source & Developer-Friendly</h3>
+                                <p>Built with clean, modern code. An open-source project on GitHub for developers and creators.</p>
                             </div>
                             <div class="feature-card">
-                                <div class="feature-icon">🚀</div>
+                                <div class="feature-icon">[+] growing</div>
                                 <h3>Constantly Growing</h3>
-                                <p>We are always adding new and useful utilities. Check back often to see the latest
-                                    tools added to our collection. Your suggestions are welcome!</p>
+                                <p>We are always adding new and useful utilities. Check back often to see the latest tools. Suggestions welcome!</p>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </section>
         </main>
     </div>
@@ -172,4 +142,4 @@
     <script src="/js/search.js"></script>
 </body>
 
-</html> 
+</html>

@@ -44,7 +44,7 @@
     border-radius: var(--border-radius-lg);
     background-color: var(--input-bg-color);
     cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    transition: none;
     min-height: 200px;
 
     /* === THE ACTUAL FIX - PART 1 === */
@@ -129,7 +129,7 @@
     padding: var(--spacing-lg);
     border-radius: var(--border-radius-md);
     display: none;
-    animation: fadeInPageContent 0.3s ease-out;
+    animation: fadeInUp 0.25s ease-out;
     border: 1px solid transparent;
 }
 
@@ -167,7 +167,7 @@
     height: 100%;
     width: 0;
     background-color: var(--accent-color);
-    transition: width 0.1s linear;
+    transition: none;
 }
 
 /* Result states */
@@ -257,7 +257,7 @@
     background-color: transparent;
     border: 1px solid var(--border-color);
     color: var(--text-secondary-color);
-    transition: color 0.2s ease;
+    transition: none;
     transform: none;
     box-shadow: none;
 }

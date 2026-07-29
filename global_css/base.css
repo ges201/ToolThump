@@ -1,161 +1,99 @@
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+@keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }
 
+*,
+*::before,
+*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 html {
-    font-size: 16px;
-    scroll-behavior: smooth;
-    overflow-y: scroll;
+    font-size: 15px; scroll-behavior: auto;
+    overflow: hidden; background: #000; height: 100%;
 }
 
 body {
-    font-family: var(--font-family-sans);
-    line-height: 1.6;
-    background-color: var(--body-bg-color);
-    color: var(--text-primary-color);
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    opacity: 0; /* Hide by default to prevent FOUC */
-    transition: opacity 0.4s ease-in-out;
+    font-family: var(--font); line-height: 1.45;
+    background: #000; color: var(--fg);
+    display: flex; flex-direction: column;
+    height: 100vh; overflow: hidden;
+    opacity: 1; padding: 10px;
 }
 
-ul,
-ol {
-    list-style: none;
+.terminal-window {
+    display: flex; flex-direction: column; flex: 1;
+    border: 1px solid var(--border-color); overflow: hidden;
+    background: var(--bg);
 }
 
-/* === Typography & Links === */
-/* Pixelated font for main tool titles */
+.terminal-titlebar {
+    display: flex; align-items: center;
+    padding: 0 var(--spacing-md); height: 28px;
+    background: #141418; color: var(--fg-dim);
+    font-size: 0.8rem; font-weight: 700;
+    letter-spacing: 0.5px; gap: var(--spacing-md);
+    flex-shrink: 0; font-family: var(--font); user-select: none;
+}
+
+.terminal-dots { display: flex; gap: 6px; flex-shrink: 0; }
+.terminal-dots span { width: 10px; height: 10px; border-radius: 50%; display: block; }
+.terminal-dots .dot-close { background: var(--red); }
+.terminal-dots .dot-min { background: var(--yellow); }
+.terminal-dots .dot-max { background: var(--green); }
+
+.terminal-title { flex: 1; text-align: center; opacity: 0.7; }
+
+.terminal-body { flex: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; }
+
+h1, h2, h3, h4, h5, h6 { font-family: var(--font); }
 h1 {
-    font-family: var(--font-family-pixel);
-    font-size: 1.6rem;
-    /* MODIFIED: Reduced font size */
-    line-height: 1.3;
-    color: var(--text-heading-color);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: var(--spacing-lg);
-    text-align: center;
-    /* ADDED: Centered tool titles */
+    font-size: 1.5rem; font-weight: 700; color: var(--fg-bright);
+    margin-bottom: var(--spacing-lg); text-align: left; text-transform: uppercase;
 }
-
-/* Unified font for body, subheadings, and other elements */
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: var(--font-family-sans);
-    /* Changed from --font-family-heading */
-    font-weight: 600;
-    /* Kept for appropriate emphasis */
-    line-height: 1.3;
-    color: var(--text-heading-color);
-    margin-bottom: var(--spacing-md);
-}
-
-h2 {
-    font-size: 1.6rem;
-}
-
-h3 {
-    font-size: 1.3rem;
-}
+h1::before { content: '# '; color: var(--magenta); }
+h2 { font-size: 1.2rem; font-weight: 700; color: var(--fg-bright); margin-bottom: var(--spacing-md); }
+h3 { font-size: 1rem; font-weight: 700; color: var(--fg); margin-bottom: var(--spacing-sm); }
+h4, h5, h6 { font-weight: 600; color: var(--fg); margin-bottom: var(--spacing-sm); }
+h2::before { content: '## '; color: var(--cyan); font-weight: 400; }
 
 a {
-    text-decoration: none;
-    color: var(--accent-color);
-    transition: all 0.2s ease-out;
+    text-decoration: underline; text-underline-offset: 2px;
+    color: var(--cyan);
 }
+a:hover { background: var(--cyan); color: var(--bg); text-decoration: none; }
 
-a:hover {
-    color: var(--accent-color-dark);
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-}
+img, svg { display: block; max-width: 100%; }
 
-img,
-svg {
-    display: block;
-    max-width: 100%;
-}
-
-/* === Forms & Buttons - "Soft-Bit" Style === */
-input,
-button,
-textarea,
-select {
-    font: inherit;
-    /* Inherits the body font: --font-family-sans */
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--border-color);
-    background-color: var(--input-bg-color);
-    color: var(--text-primary-color);
+input, button, textarea, select {
+    font: inherit; font-family: var(--font);
+    border-radius: 0; border: 1px solid var(--border-color);
+    background-color: var(--bg); color: var(--fg);
     padding: var(--spacing-sm) var(--spacing-md);
-    transition: all 0.15s ease-out;
 }
-
-/* MODIFIED: Replaced outline with a softer box-shadow for a cleaner focus state */
-input:focus,
-textarea:focus,
-select:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px var(--focus-outline-color);
+input:focus, textarea:focus, select:focus {
+    outline: none; border-color: var(--cyan); box-shadow: none; caret-color: var(--fg);
 }
+input::placeholder, textarea::placeholder { color: var(--fg-dim); }
 
 button {
-    cursor: pointer;
-    font-weight: 700;
-    /* Bolder for emphasis */
-    border-width: 2px;
+    cursor: pointer; font-weight: 400; border-width: 1px;
+    background: var(--bg); color: var(--fg); border-color: var(--border-color);
+    border-radius: 0; padding: var(--spacing-sm) var(--spacing-md); font-family: var(--font);
+}
+button:hover:not(:disabled) { background: var(--green); color: var(--bg); border-color: var(--green); }
+button:active:not(:disabled) { transform: none; }
+button:disabled, button:disabled:hover {
+    background: var(--bg); color: var(--fg-dim); border-color: #222;
+    cursor: not-allowed; opacity: 0.4; transform: none; outline: none;
 }
 
-button:hover,
-button:focus {
-    transform: translate(-2px, -2px);
-    box-shadow: var(--shadow-hard);
-    color: var(--accent-color);
-    border-color: var(--accent-color);
-    outline: none;
-}
+ul, ol { list-style: none; }
+.tool-icon, .most-used-icon, .result-icon { filter: var(--icon-filter); }
 
-button:active {
-    transform: translate(0, 0);
-    box-shadow: var(--shadow-hard-inset);
-}
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
 
-/* MODIFIED: Added general rule for disabled buttons to override hover/focus effects */
-button:disabled,
-button:disabled:hover,
-button:disabled:focus {
-    background-color: var(--disabled-bg-color);
-    color: var(--text-secondary-color);
-    border-color: var(--border-color);
-    cursor: not-allowed;
-    transform: none;
-    /* Override hover transform */
-    box-shadow: none;
-    /* Override hover shadow */
-    opacity: 0.6;
-    outline: none;
-}
-
-
-/* === Visually Hidden - Screen Reader Only === */
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-color); }
+::-webkit-scrollbar-thumb:hover { background: var(--fg-dim); }
+::selection { background: var(--cyan); color: var(--bg); }

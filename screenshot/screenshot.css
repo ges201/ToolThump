@@ -41,9 +41,12 @@ body.screenshot-body {
     margin: 0;
 }
 
-.screenshot-logo {
-    max-width: 280px;
-    height: auto;
+.screenshot-body .text-logo {
+    font-family: var(--font-family-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text-heading-color);
     margin-top: 40px;
     margin-bottom: 20px;
 }
@@ -106,10 +109,10 @@ body.screenshot-body {
 }
 
 .tool-card:hover {
-    background-color: #203E45;
+    background-color: var(--accent-color-bg-hover);
     border-color: var(--accent-color);
-    box-shadow: 4px 4px 0 var(--accent-color-dark);
-    transform: translate(-4px, -4px);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
 }
 
 .tool-card:hover h3 {
@@ -121,9 +124,6 @@ body.screenshot-body {
     height: 64px;
     object-fit: contain;
     /* margin-bottom is removed */
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
     flex-shrink: 0;
     /* Prevents icon from shrinking */
 }
@@ -145,10 +145,10 @@ body.screenshot-body {
 
 /* Highlighted tool card for animation */
 .tool-card.highlighted-tool {
-    background-color: #203E45;
+    background-color: var(--accent-color-bg-hover);
     border-color: var(--accent-color);
-    box-shadow: 4px 4px 0 var(--accent-color-dark);
-    transform: translate(-4px, -4px);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
 }
 
 .tool-card.highlighted-tool h3 {

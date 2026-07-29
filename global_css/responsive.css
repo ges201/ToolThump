@@ -1,30 +1,15 @@
-/* === Responsive Adjustments === */
 @media (max-width: 768px) {
-    html {
-        font-size: 15px;
-    }
-
-    
-
-    main#tool-container {
-        padding: var(--spacing-lg);
-    }
-
-    .tool-content {
-        padding: var(--spacing-lg);
-    }
-
-    h1 {
-        font-size: 1.5rem;
-    }
-
-    .tool-content h2 {
-        font-size: 1.4rem;
-    }
-
-    
-
-    footer {
-        padding: var(--spacing-md) 0;
-    }
+    html { font-size: 14px; }
+    main#tool-container { padding: var(--spacing-sm); }
+    .tool-content { padding: var(--spacing-md); }
+    h1 { font-size: 1.3rem; }
+    .tool-content h2 { font-size: 1.1rem; }
+    footer { padding: var(--spacing-sm) 0; }
+    body { padding: 4px; margin: 4px; }
+}
+@media (max-width: 480px) {
+    html { font-size: 13px; }
+    main#tool-container { padding: var(--spacing-xs); }
+    .tool-content { padding: var(--spacing-sm); }
+    body { padding: 2px; margin: 2px; }
 }

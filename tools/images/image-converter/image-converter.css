@@ -8,7 +8,7 @@
     padding: var(--spacing-xl);
     text-align: center;
     background-color: var(--surface-bg-color);
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    transition: none;
     cursor: pointer;
     margin-bottom: var(--spacing-lg);
     overflow: hidden; /* Hide overflowing parts of the preview image */
@@ -92,7 +92,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: none;
 }
 
 .ic-label {
@@ -200,7 +200,7 @@
     z-index: 10;
     font-size: 1.5rem;
     line-height: 1;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    transition: none;
 }
 
 .ic-remove-image-btn:hover {

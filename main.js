@@ -18,6 +18,42 @@ async function fetchContent(url) {
 }
 
 // =================================================================
+// TERMINAL WINDOW CHROME
+// =================================================================
+
+function buildTerminalChrome() {
+    const body = document.body;
+    const children = [...body.children];
+
+    const win = document.createElement('div');
+    win.className = 'terminal-window';
+
+    const titlebar = document.createElement('div');
+    titlebar.className = 'terminal-titlebar';
+    titlebar.innerHTML = `
+        <span class="terminal-dots">
+            <span class="dot-close"></span>
+            <span class="dot-min"></span>
+            <span class="dot-max"></span>
+        </span>
+        <span class="terminal-title">toolthump — bash — 80×24</span>
+        <span></span>
+    `;
+
+    const tbody = document.createElement('div');
+    tbody.className = 'terminal-body';
+
+    win.appendChild(titlebar);
+    win.appendChild(tbody);
+    body.appendChild(win);
+
+    children.forEach(child => {
+        if (child.tagName === 'SCRIPT' || child.classList.contains('terminal-window')) return;
+        tbody.appendChild(child);
+    });
+}
+
+// =================================================================
 // DYNAMIC CONTENT LOADING
 // =================================================================
 
@@ -32,10 +68,13 @@ async function loadIncludes() {
                 link.rel = 'stylesheet';
                 link.href = '/_includes/header.css';
                 document.head.appendChild(link);
+                el.innerHTML = content;
+                el.className = 'terminal-header';
+            } else {
+                el.innerHTML = content;
             }
-            el.innerHTML = content;
         } else {
-            el.innerHTML = `<p style='color:red;text-align:center;padding:1em'>Error loading '${name}'</p>`;
+            el.innerHTML = `<p style='color:var(--red);text-align:center;padding:1em'>Error loading '${name}'</p>`;
         }
     });
     await Promise.all(promises);
@@ -46,7 +85,7 @@ async function loadIncludes() {
 // =================================================================
 
 function setupHeader() {
-    const header = $('header');
+    const header = $('.terminal-header');
     if (!header) return;
 
     const closeDropdowns = (except) => {
@@ -81,8 +120,28 @@ function setupHeader() {
 }
 
 // =================================================================
+// BLINKING CURSOR ON INPUTS
+// =================================================================
+
+function addBlinkingCursor() {
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes cursor-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+        input:focus, textarea:focus { caret-color: var(--fg); }
+        input[type="search"]:focus::placeholder, input:focus::placeholder { animation: cursor-blink 1s step-end infinite; }
+    `;
+    document.head.appendChild(style);
+}
+
+// =================================================================
 // TOOL TEXT SECTIONS
 // =================================================================
+
+function decodeEntities(str) {
+    const el = document.createElement('span');
+    el.innerHTML = str;
+    return el.textContent;
+}
 
 function initializeToolTextSections() {
     const data = $('#tool-text-data');
@@ -105,7 +164,7 @@ function initializeToolTextSections() {
             const h2 = $('h2', clone);
             const content = $('.section-content', clone);
 
-            $('.section-icon', h2).textContent = section.icon;
+            $('.section-icon', h2).textContent = decodeEntities(section.icon);
             h2.append(section.title);
 
             section.intro && content.appendChild(Object.assign(document.createElement('p'), { textContent: section.intro }));
@@ -115,7 +174,7 @@ function initializeToolTextSections() {
                 const list = Object.assign(document.createElement('ul'), { className: 'features-list' });
                 items.forEach(item => {
                     const itemClone = templates.feature.content.cloneNode(true);
-                    $('.feature-icon', itemClone).textContent = item.icon;
+                    $('.feature-icon', itemClone).textContent = decodeEntities(item.icon);
                     $('strong', itemClone).textContent = item.title;
                     $('p', itemClone).textContent = item.description;
                     list.appendChild(itemClone);
@@ -131,7 +190,7 @@ function initializeToolTextSections() {
                 const accordion = Object.assign(document.createElement('div'), { className: 'accordion-container' });
                 section.faqs.forEach(faq => {
                     const faqClone = templates.faq.content.cloneNode(true);
-                    $('.accordion-icon', faqClone).textContent = faq.icon;
+                    $('.accordion-icon', faqClone).textContent = decodeEntities(faq.icon);
                     $('strong', faqClone).textContent = faq.question;
                     $('.accordion-content p', faqClone).innerHTML = faq.answer;
                     accordion.appendChild(faqClone);
@@ -141,7 +200,6 @@ function initializeToolTextSections() {
             container.appendChild(clone);
         });
 
-        // Setup accordion
         $$('.accordion-header').forEach(h => {
             h.addEventListener('click', () => {
                 const content = h.nextElementSibling;
@@ -172,7 +230,6 @@ async function inlineSvgImages() {
             const content = await fetchContent(img.src);
             if (content) svgCache[img.src] = content;
         }
-
         if (svgCache[img.src]) {
             const div = document.createElement('div');
             div.innerHTML = svgCache[img.src];
@@ -200,7 +257,12 @@ function applyTheme(theme) {
     const sun = $('#theme-icon-sun');
     const moon = $('#theme-icon-moon');
 
-    toggle && attr(toggle, 'aria-label', `Switch to ${isDark ? 'light' : 'dark'} theme`);
+    const themeName = isDark ? 'green' : 'amber';
+    toggle && attr(toggle, 'aria-label', `Switch to ${isDark ? 'amber' : 'green'} theme`);
+
+    const titleEl = $('.terminal-title');
+    if (titleEl) titleEl.textContent = `toolthump — ${themeName} — 80×24`;
+
     sun?.classList.toggle('hidden', isDark);
     moon?.classList.toggle('hidden', !isDark);
 }
@@ -217,9 +279,21 @@ function initializeTheme() {
 }
 
 // =================================================================
+// ASCII LOGO
+// =================================================================
+
+async function loadAsciiLogo() {
+    const el = $('[data-ascii-logo]');
+    if (!el) return;
+    const logo = await fetchContent('/ASCII_logo.txt');
+    if (logo) el.textContent = logo.trimEnd();
+}
+
+// =================================================================
 // INITIALIZATION
 // =================================================================
 
+buildTerminalChrome();
 initializeTheme();
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -229,8 +303,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('#current-year') && ($('#current-year').textContent = new Date().getFullYear());
     initializeTheme();
     initializeToolTextSections();
+    addBlinkingCursor();
+    loadAsciiLogo();
     window.initializeTool?.();
-
-    // Fade in the body to prevent FOUC
     document.body.style.opacity = '1';
 });

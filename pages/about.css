@@ -4,195 +4,51 @@
 @import url("/global_css/components.css");
 @import url("/global_css/responsive.css");
 
-/* Specific styles for a cleaner About page */
-.page-header {
-    text-align: center;
-    margin-bottom: var(--spacing-xxl);
-    padding-bottom: var(--spacing-xl);
-}
+.page-header { text-align: left; margin-bottom: var(--spacing-xl); padding-bottom: var(--spacing-md); border-bottom: 1px solid var(--border-color); }
+.page-header h1 { font-size: 1.5rem; margin-bottom: var(--spacing-sm); }
+.page-header h1::before { display: none; }
+.page-header .subtitle { font-size: 0.9rem; color: var(--fg-dim); max-width: 60ch; font-family: var(--font); }
 
-.page-header h1 {
-    font-family: var(--font-family-heading);
-    font-size: 2.5rem;
-    margin-bottom: var(--spacing-md);
-}
+.about-container { margin: 0 auto; max-width: 70ch; font-family: var(--font); }
+.about-section { margin-bottom: var(--spacing-xl); }
+.about-section:last-of-type { margin-bottom: 0; }
+.about-section h2 { font-size: 1.1rem; margin-bottom: var(--spacing-md); color: var(--fg-bright); }
+.about-me p { font-size: 0.9rem; line-height: 1.6; color: var(--fg-dim); margin-bottom: var(--spacing-md); }
 
-.page-header .subtitle {
-    font-size: 1.2rem;
-    color: var(--text-secondary-color);
-    max-width: 70ch;
-    margin: 0 auto;
-}
-
-.about-container {
-    margin: 0 auto;
-}
-
-/* MODIFIED: Removed max-width and centering margins */
-.about-section {
-    margin-bottom: 5rem;
-    /* Large margin for clear separation */
-}
-
-/* Remove margin from the last section */
-.about-section:last-of-type {
-    margin-bottom: 0;
-}
-
-.about-section h2 {
-    font-size: 1.6rem;
-    margin-bottom: var(--spacing-lg);
-    color: var(--text-heading-color);
-}
-
-.about-me p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--text-secondary-color);
-    margin-bottom: var(--spacing-lg);
-}
-
-.principles-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-lg);
-}
-
+.principles-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1px; }
 .principles-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--spacing-lg);
-    background-color: var(--bg-deep-dark);
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-color);
+    display: flex; align-items: flex-start; gap: var(--spacing-md);
+    background-color: var(--bg-alt); padding: var(--spacing-md);
+    border-radius: 0; border: 1px solid var(--border-color);
 }
+.principles-list li:nth-child(1):hover { border-color: var(--green); }
+.principles-list li:nth-child(2):hover { border-color: var(--yellow); }
+.principles-list li:nth-child(3):hover { border-color: var(--cyan); }
 
-.principles-list i {
-    font-size: 1.5rem;
-    color: var(--accent-color);
-    height: 45px;
-    width: 45px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--border-radius-sm);
-    background-color: var(--bg-dark);
-    flex-shrink: 0;
-    margin-top: 5px;
+.principle-icon {
+    font-size: 1em; width: 32px; height: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 0; background-color: var(--bg); border: 1px solid var(--border-color);
+    flex-shrink: 0; font-family: var(--font); font-weight: 700;
 }
+.principles-list li:nth-child(1) .principle-icon { color: var(--green); }
+.principles-list li:nth-child(2) .principle-icon { color: var(--yellow); }
+.principles-list li:nth-child(3) .principle-icon { color: var(--cyan); }
 
-.principles-list li div {
-    display: flex;
-    flex-direction: column;
-}
+.principles-list li div { display: flex; flex-direction: column; }
+.principles-list li strong { font-size: 0.95rem; color: var(--fg-bright); margin-bottom: 2px; }
+.principles-list li span { font-size: 0.85rem; color: var(--fg-dim); line-height: 1.5; }
 
-.principles-list li strong {
-    font-size: 1.1rem;
-    color: var(--text-heading-color);
-    margin-bottom: var(--spacing-xs);
-}
+.highlight { font-weight: 700; color: var(--yellow); }
 
-.principles-list li span {
-    font-size: 1rem;
-    color: var(--text-secondary-color);
-}
-
-.highlight {
-    font-weight: 600;
-    color: var(--accent-color);
-}
-
-.github-cta {
-    text-align: center;
-    background-color: var(--bg-deep-dark);
-    padding: var(--spacing-xl);
-    border-radius: var(--border-radius-lg);
-    border: 1px solid var(--border-color);
-}
-
-.github-cta h2 {
-    font-size: 1.6rem;
-    margin-top: 0;
-    margin-bottom: var(--spacing-sm);
-}
-
-.github-cta p {
-    color: var(--text-secondary-color);
-    font-size: 1.1rem;
-    margin-bottom: var(--spacing-lg);
-}
-
-/* MODIFIED: The .github-button leverages .btn-secondary (from HTML) for its base style.
-   These rules override sizing and add a more pronounced hover effect consistent with other site buttons. */
+.github-cta { text-align: left; background-color: var(--bg); padding: var(--spacing-lg); border-radius: 0; border: 1px solid var(--border-color); }
+.github-cta h2 { font-size: 1.1rem; margin-top: 0; margin-bottom: var(--spacing-sm); }
+.github-cta p { color: var(--fg-dim); font-size: 0.9rem; margin-bottom: var(--spacing-lg); }
 .github-button {
-    padding: var(--spacing-md) var(--spacing-xl);
-    font-size: 1.1rem;
-    border-radius: var(--border-radius-md);
-    /* Combine transitions for smooth effect on all properties */
-    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    padding: var(--spacing-sm) var(--spacing-md); font-size: 0.9rem; border-radius: 0;
+    font-family: var(--font);
 }
+.github-button:hover { background-color: var(--magenta); color: var(--bg); border-color: var(--magenta); text-decoration: none; }
+.github-button:active { transform: none; }
 
-.github-button:hover {
-    text-decoration: none;
-    /* Apply the "hard shadow" hover effect from base.css */
-    transform: translate(-2px, -2px);
-    box-shadow: var(--shadow-hard);
-}
-
-.github-button:active {
-    transform: translate(0, 0);
-    box-shadow: var(--shadow-hard-inset);
-}
-
-.github-button i {
-    font-size: 1.2rem;
-    margin-right: var(--spacing-md);
-}
-
-.static-page-content {
-    max-width: 80ch;
-    margin: 0 auto;
-    padding: var(--spacing-xl);
-    background-color: var(--surface-bg-color);
-    border-radius: var(--border-radius-lg);
-    border: 1px solid var(--border-color);
-}
-
-.static-page-content h1 {
-    font-family: var(--font-family-sans);
-    font-size: 2.2rem;
-    text-transform: none;
-    letter-spacing: 0;
-    color: var(--accent-color);
-    text-align: left;
-    margin-bottom: var(--spacing-lg);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: var(--spacing-md);
-}
-
-.static-page-content h2 {
-    font-size: 1.5rem;
-    margin-top: var(--spacing-xl);
-    margin-bottom: var(--spacing-md);
-    color: var(--text-heading-color);
-}
-
-.static-page-content p,
-.static-page-content ul {
-    margin-bottom: var(--spacing-md);
-    line-height: 1.7;
-    color: var(--text-secondary-color);
-}
-
-.static-page-content ul {
-    list-style-type: disc;
-    padding-left: var(--spacing-lg);
-}
-
-.static-page-content a {
-    font-weight: 600;
-}
+.static-page-content { font-family: var(--font); }

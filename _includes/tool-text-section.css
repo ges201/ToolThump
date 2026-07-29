@@ -1,204 +1,89 @@
-/* === Generic Tool Text Section Styles === */
+/* === Terminal Tool Text Sections === */
 .tool-text-section {
-    background-color: var(--surface-bg-color);
-    padding: var(--spacing-xl);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-soft-md);
+    background-color: var(--bg); padding: var(--spacing-lg);
+    border-radius: 0; box-shadow: none;
     border: 1px solid var(--border-color);
-    margin-bottom: var(--spacing-xl);
-    animation: fadeInPageContent 0.3s ease-out;
+    margin-bottom: var(--spacing-lg); font-family: var(--font);
 }
 
 .tool-text-section h2 {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    color: var(--accent-color);
-    margin-bottom: var(--spacing-lg);
-    padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid var(--border-color);
+    display: flex; align-items: center; gap: var(--spacing-sm);
+    color: var(--fg-bright); margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-color);
+    font-size: 1.1rem;
 }
+.tool-text-section h2 .section-icon { color: var(--cyan); }
+.tool-text-section:nth-of-type(2) h2 .section-icon { color: var(--green); }
+.tool-text-section:nth-of-type(3) h2 .section-icon { color: var(--magenta); }
+.tool-text-section:nth-of-type(4) h2 .section-icon { color: var(--yellow); }
 
-.tool-text-section h2 .section-icon {
-    font-size: 1.2em;
-}
-
-/*
-  MODIFICATION:
-  This rule now specifically targets the main introductory paragraphs of a section
-  and increases their bottom margin to create more space. This is more robust
-  than the previous general 'p' selector.
-*/
 .tool-text-section .section-content>p {
-    line-height: 1.7;
-    margin-bottom: var(--spacing-xl);
-    /* Increased space for main text */
-    color: var(--text-secondary-color);
+    line-height: 1.5; margin-bottom: var(--spacing-lg); color: var(--fg-dim);
 }
 
-/* === Features List Styles === */
-.features-list {
-    list-style: none;
-    padding-left: 0;
-}
-
+.features-list { list-style: none; padding-left: 0; }
 .feature-item {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: var(--spacing-lg);
-    background-color: var(--bg-deep-dark);
-    padding: var(--spacing-md);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-color);
+    display: flex; align-items: flex-start;
+    margin-bottom: var(--spacing-sm); background-color: var(--bg-alt);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: 0; border: 1px solid var(--border-color);
+    font-family: var(--font);
 }
-
-.feature-item:last-child {
-    margin-bottom: 0;
-}
+.feature-item:hover { border-color: var(--fg-dim); }
+.feature-item:nth-child(odd) .feature-icon { color: var(--cyan); }
+.feature-item:nth-child(even) .feature-icon { color: var(--green); }
 
 .feature-icon {
-    width: 40px;
-    flex-shrink: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.6em;
-    margin-right: var(--spacing-md);
-    color: var(--accent-color);
+    width: 32px; flex-shrink: 0; display: flex;
+    justify-content: center; align-items: center;
+    font-size: 1em; margin-right: var(--spacing-md);
+    font-weight: 700; font-family: var(--font);
 }
 
-.feature-text {
-    flex-grow: 1;
-    min-width: 0;
-}
-
+.feature-text { flex-grow: 1; min-width: 0; }
 .feature-text strong {
-    display: block;
-    font-size: 1.1em;
-    margin-bottom: var(--spacing-xs);
-    color: var(--text-heading-color);
+    display: block; font-size: 1em; margin-bottom: var(--spacing-xs);
+    color: var(--fg-bright); font-weight: 700;
 }
+.feature-text p { margin-bottom: 0; line-height: 1.5; color: var(--fg-dim); }
 
-/*
-  MODIFICATION:
-  Ensures paragraphs within a feature description do not have a large margin,
-  as the .feature-item container already handles the spacing.
-*/
-.feature-text p {
-    margin-bottom: 0;
-    line-height: 1.6;
-    color: var(--text-secondary-color);
-}
-
-
-/* === Accordion Styles for FAQ === */
-.accordion-container {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-}
+/* === Accordion === */
+.accordion-container { display: flex; flex-direction: column; gap: 1px; }
 
 .accordion-item {
-    background-color: var(--bg-dark);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-md);
-    overflow: hidden;
+    background-color: var(--bg); border: 1px solid var(--border-color);
+    border-radius: 0; overflow: hidden;
 }
+.accordion-item:hover { border-color: var(--fg-dim); }
 
 .accordion-header {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: var(--spacing-md) var(--spacing-lg);
-    background-color: var(--bg-deep-dark);
-    color: var(--text-primary-color);
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    font-size: 1.1em;
-    font-weight: 600;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex; align-items: center; width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: transparent; color: var(--fg);
+    border: none; border-bottom: 1px solid transparent;
+    text-align: left; cursor: pointer; font-size: 0.9em;
+    font-weight: 700; font-family: var(--font);
 }
+.accordion-header:hover { background-color: var(--bg-hl); color: var(--cyan); }
+.accordion-header.active { background-color: var(--cyan); color: var(--bg); border-bottom-color: var(--border-color); }
 
-.accordion-header:hover {
-    background-color: var(--accent-color-bg-hover);
-    color: var(--accent-color);
-}
-
-.accordion-header.active {
-    background-color: var(--accent-color);
-    color: var(--text-on-accent-bg);
-}
-
-.accordion-icon {
-    font-size: 1.4em;
-    margin-right: var(--spacing-md);
-    flex-shrink: 0;
-}
-
-.accordion-header.active .accordion-icon {
-    color: var(--text-on-accent-bg);
-}
-
-.accordion-header strong {
-    flex-grow: 1;
-}
+.accordion-icon { font-size: 1em; margin-right: var(--spacing-md); flex-shrink: 0; color: var(--yellow); }
+.accordion-header.active .accordion-icon { color: var(--bg); }
+.accordion-header strong { flex-grow: 1; }
 
 .arrow-icon {
-    width: 16px;
-    height: 16px;
-    margin-left: var(--spacing-md);
-    transition: transform 0.3s ease;
-    position: relative;
-    flex-shrink: 0;
+    width: 14px; height: 14px; margin-left: var(--spacing-md);
+    position: relative; flex-shrink: 0;
 }
-
-.arrow-icon::before,
-.arrow-icon::after {
-    content: '';
-    position: absolute;
-    background-color: currentColor;
+.arrow-icon::before, .arrow-icon::after {
+    content: ''; position: absolute; background-color: currentColor;
 }
+.arrow-icon::before { top: 50%; left: 0; width: 100%; height: 2px; transform: translateY(-50%); }
+.arrow-icon::after { top: 0; left: 50%; width: 2px; height: 100%; transform: translateX(-50%); }
+.accordion-header.active .arrow-icon::after { transform: translateX(-50%) rotate(90deg); }
 
-.arrow-icon::before {
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    transform: translateY(-50%);
-}
-
-.arrow-icon::after {
-    top: 0;
-    left: 50%;
-    width: 2px;
-    height: 100%;
-    transform: translateX(-50%);
-    transition: transform 0.3s ease;
-}
-
-.accordion-header.active .arrow-icon::after {
-    transform: translateX(-50%) rotate(90deg);
-}
-
-/* --- FIX: Simplified and corrected accordion content styles --- */
 .accordion-content {
-    background-color: var(--surface-bg-color);
-    padding: 0 var(--spacing-lg);
-    /* Set horizontal padding, vertical padding is handled by margins of content */
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-    /* Only transition max-height */
+    background-color: var(--bg); padding: 0 var(--spacing-md);
+    max-height: 0; overflow: hidden;
 }
-
-.accordion-content p {
-    padding-top: var(--spacing-sm);
-    /* Use padding for spacing inside */
-    padding-bottom: var(--spacing-md);
-    margin: 0;
-    /* Reset margin to avoid double spacing */
-    color: var(--text-secondary-color);
-}
-
-/* --- End of FIX --- */
+.accordion-content p { padding-top: var(--spacing-sm); padding-bottom: var(--spacing-md); margin: 0; color: var(--fg-dim); line-height: 1.5; }

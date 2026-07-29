@@ -1,91 +1,117 @@
-/* === CSS Custom Properties (Theme Variables) === */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+/* === ANSI Terminal Theme === */
 
 :root {
-    /* --- DARK THEME (DEFAULT) --- */
-    --accent-color: #00ff9c;
-    --accent-color-dark: #00d181;
-    --accent-color-rgb: 0, 255, 156;
-    --accent-color-bg-hover: rgba(var(--accent-color-rgb), 0.1);
+    /* --- MIDNIGHT TERMINAL (DEFAULT) --- */
+    --bg: #0a0a0c;
+    --bg-alt: #0d0d10;
+    --bg-hl: #111118;
 
-    --bg-deep-dark: #1a1c2c;
-    --bg-dark: #24283b;
-    --bg-medium: #4a5073;
+    --fg: #cccccc;
+    --fg-bright: #ffffff;
+    --fg-dim: #666666;
 
-    --text-primary-color: #eef2f7;
-    --text-secondary-color: #a0a4c0;
-    --text-heading-color: #ffffff;
-    --text-on-accent-bg: #1a1c2c;
+    --green: #33ff33;
+    --red: #ff4444;
+    --yellow: #ffcc00;
+    --cyan: #00cccc;
+    --magenta: #cc44cc;
+    --blue: #4488ff;
 
-    --success-color: #28a745;
-    --error-color: #e54b4b;
-    --warning-color: #ffc107;
-    --info-color: #17a2b8;
+    --accent: var(--green);
+    --accent-hover: #66ff66;
 
-    --body-bg-color: var(--bg-deep-dark);
-    --surface-bg-color: var(--bg-dark);
-    --input-bg-color: var(--bg-dark);
-    --disabled-bg-color: #3f4254;
+    --font: 'Courier New', 'Liberation Mono', 'Consolas', 'DejaVu Sans Mono', monospace;
+    --shadow: none;
+    --radius: 0px;
 
-    --border-color: var(--bg-medium);
-    --focus-outline-color: rgba(var(--accent-color-rgb), 0.75);
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
 
-    --shadow-soft-md: 0 4px 10px rgba(0, 0, 0, 0.2);
-    --shadow-hard: 2px 2px 0 var(--accent-color-dark);
-    --shadow-hard-inset: inset 2px 2px 0 rgba(0, 0, 0, 0.2);
+    /* icon filter for green SVG icons */
+    --icon-filter: brightness(0) saturate(100%) invert(73%) sepia(100%) saturate(1786%) hue-rotate(77deg) brightness(106%) contrast(107%);
 
-    --spacing-xs: 0.25rem;
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-
-    --border-radius-sm: 0;
-    --border-radius-md: 0;
-    --border-radius-lg: 0;
-
-    --font-family-pixel: 'Press Start 2P', cursive;
-    --font-family-heading: monospace;
-    --font-family-sans: monospace;
-    --font-family-monospace: monospace;
+    /* legacy aliases */
+    --accent-color: var(--accent);
+    --accent-color-dark: #22cc22;
+    --accent-color-rgb: 51, 255, 51;
+    --accent-color-bg-hover: rgba(51, 255, 51, 0.1);
+    --text-primary-color: var(--fg);
+    --text-secondary-color: var(--fg-dim);
+    --text-heading-color: var(--fg-bright);
+    --text-on-accent-bg: var(--bg);
+    --body-bg-color: var(--bg);
+    --surface-bg-color: var(--bg-alt);
+    --input-bg-color: var(--bg);
+    --disabled-bg-color: #1a1a1a;
+    --border-color: #222226;
+    --bg-deep-dark: var(--bg);
+    --bg-dark: var(--bg-alt);
+    --bg-medium: #15151a;
+    --success-color: var(--green);
+    --error-color: var(--red);
+    --warning-color: var(--yellow);
+    --info-color: var(--cyan);
+    --focus-outline-color: rgba(51,255,51,0.3);
+    --shadow-sm: none; --shadow-md: none; --shadow-lg: none;
+    --shadow-hard: none; --shadow-hard-inset: none;
+    --font-family-sans: var(--font);
+    --font-family-heading: var(--font);
+    --font-family-monospace: var(--font);
+    --border-radius-sm: var(--radius);
+    --border-radius-md: var(--radius);
+    --border-radius-lg: var(--radius);
+    --border-color-light: #333338;
+    --text-muted: var(--fg-dim);
+    --button-border: #333338;
 }
 
 [data-theme="light"] {
-    /* --- LIGHT THEME (High-Contrast, Less Bright) --- */
-    --accent-color: #2563eb;
-    /* A strong, accessible blue */
-    --accent-color-dark: #1d4ed8;
-    /* A darker shade for interaction */
-    --accent-color-rgb: 37, 99, 235;
-    --accent-color-bg-hover: rgba(var(--accent-color-rgb), 0.1);
+    /* --- PAPER TERMINAL --- */
+    --bg: #fdf6e3;
+    --bg-alt: #f5eed8;
+    --bg-hl: #eee8d5;
 
-    --bg-deep-dark: #f3f4f6;
-    /* A soft, cool gray for the main background */
-    --bg-dark: #ffffff;
-    /* Pure white for surfaces like cards and inputs */
-    --bg-medium: #e5e7eb;
-    /* A slightly darker gray for subtle divisions */
+    --fg: #586e75;
+    --fg-bright: #073642;
+    --fg-dim: #93a1a1;
 
-    --text-primary-color: #111827;
-    /* A very dark gray, almost black, for high contrast */
-    --text-secondary-color: #6b7280;
-    /* A mid-gray that passes AA contrast */
-    --text-heading-color: #111827;
-    /* Same as primary for consistency */
-    --text-on-accent-bg: #ffffff;
-    /* White text on the accent color */
+    --green: #859900;
+    --red: #dc322f;
+    --yellow: #b58900;
+    --cyan: #2aa198;
+    --magenta: #d33682;
+    --blue: #268bd2;
 
-    /* Re-map semantic variables for the light theme */
-    --body-bg-color: var(--bg-deep-dark);
-    --surface-bg-color: var(--bg-dark);
-    --input-bg-color: var(--bg-dark);
-    --disabled-bg-color: #e5e7eb;
+    --accent: var(--cyan);
+    --accent-hover: #2aa198;
 
-    --border-color: #d1d5db;
-    /* A clear but not distracting border color */
-    --focus-outline-color: rgba(var(--accent-color-rgb), 0.5);
+    --icon-filter: brightness(0) saturate(100%) invert(56%) sepia(38%) saturate(471%) hue-rotate(134deg) brightness(92%) contrast(87%);
 
-    --shadow-soft-md: 0 4px 10px rgba(0, 0, 0, 0.08);
-    --shadow-hard: 2px 2px 0 var(--accent-color-dark);
-    --shadow-hard-inset: inset 2px 2px 0 rgba(0, 0, 0, 0.1);
+    --accent-color: var(--accent);
+    --accent-color-dark: #1d8a80;
+    --accent-color-rgb: 42, 161, 152;
+    --accent-color-bg-hover: rgba(42, 161, 152, 0.1);
+    --text-primary-color: var(--fg);
+    --text-secondary-color: var(--fg-dim);
+    --text-heading-color: var(--fg-bright);
+    --text-on-accent-bg: #fdf6e3;
+    --body-bg-color: var(--bg);
+    --surface-bg-color: var(--bg-alt);
+    --input-bg-color: #eee8d5;
+    --disabled-bg-color: #e0dbc8;
+    --border-color: #d3cdb6;
+    --bg-deep-dark: var(--bg);
+    --bg-dark: var(--bg-alt);
+    --bg-medium: #e0dbc8;
+    --success-color: var(--green);
+    --error-color: var(--red);
+    --warning-color: var(--yellow);
+    --info-color: var(--cyan);
+    --focus-outline-color: rgba(42,161,152,0.3);
+    --border-color-light: #c5bfa8;
+    --text-muted: var(--fg-dim);
+    --button-border: #c5bfa8;
 }
