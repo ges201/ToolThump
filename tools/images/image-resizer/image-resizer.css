@@ -7,7 +7,6 @@
 }
 
 .ir-section-fullwidth-preview {
-    grid-column: 1 / -1;
     height: clamp(400px, 75vh, 850px);
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-lg);
@@ -19,16 +18,15 @@
 }
 
 .ir-controls-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: var(--spacing-lg);
-    align-items: start;
+    align-items: stretch;
 }
 
 .ir-section {
     background-color: var(--surface-bg-color);
     padding: var(--spacing-lg);
-    border-radius: var(--border-radius-lg);
     border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
@@ -36,10 +34,8 @@
 }
 
 .ir-section-title {
-    font-family: var(--font-family-heading);
-    color: var(--accent-color);
-    font-size: 1.3rem;
-    margin-bottom: var(--spacing-sm);
+    color: var(--fg-bright);
+    margin-bottom: var(--spacing-lg);
     padding-bottom: var(--spacing-sm);
     border-bottom: 1px solid var(--border-color);
     display: flex;
@@ -297,16 +293,8 @@
         height: clamp(300px, 60vh, 600px);
     }
 
-    .ir-controls-grid {
-        grid-template-columns: 1fr;
-    }
-
     h1 {
         font-size: 1.4rem;
-    }
-
-    .ir-section-title {
-        font-size: 1.15rem;
     }
 }
 
