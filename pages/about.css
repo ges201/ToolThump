@@ -48,7 +48,5 @@
     padding: var(--spacing-sm) var(--spacing-md); font-size: 0.9rem; border-radius: 0;
     font-family: var(--font);
 }
-.github-button:hover { background-color: var(--magenta); color: var(--bg); border-color: var(--magenta); text-decoration: none; }
-.github-button:active { transform: none; }
 
 .static-page-content { font-family: var(--font); }

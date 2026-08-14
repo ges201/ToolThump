@@ -64,8 +64,8 @@
     text-align: left; cursor: pointer; font-size: 0.9em;
     font-weight: 700; font-family: var(--font);
 }
-.accordion-header:hover { background-color: var(--bg-hl); color: var(--cyan); }
 .accordion-header.active { background-color: var(--cyan); color: var(--bg); border-bottom-color: var(--border-color); }
+.accordion-header.active:hover { transform: none; box-shadow: none; }
 
 .accordion-icon { font-size: 1em; margin-right: var(--spacing-md); flex-shrink: 0; color: var(--yellow); }
 .accordion-header.active .accordion-icon { color: var(--bg); }

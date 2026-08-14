@@ -1,14 +1,5 @@
 .btn-secondary {
-    font-weight: 400; color: var(--fg);
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: 0; border: 1px solid var(--border-color);
-    background-color: var(--bg); cursor: pointer;
-    text-decoration: none; display: inline-flex;
-    align-items: center; justify-content: center;
-    gap: var(--spacing-xs); font-size: 0.85rem; font-family: var(--font);
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: var(--spacing-xs); font-size: 0.85rem;
+    text-decoration: none;
 }
-.btn-secondary:hover:not(:disabled),
-.btn-secondary:focus-visible:not(:disabled) {
-    background-color: var(--green); color: var(--bg); border-color: var(--green); outline: none;
-}
-.btn-secondary:active:not(:disabled) { transform: none; }

@@ -8,6 +8,30 @@
     font-family: var(--font);
 }
 
+.home-hero-area {
+    position: relative;
+}
+
+#ascii-space {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    font-family: var(--font);
+    font-size: 0.5rem;
+    line-height: 1.05;
+    color: var(--cyan);
+    margin: 0;
+    white-space: pre;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+    opacity: 1;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.1) 10%, rgba(0, 0, 0, 0.3) 25%, rgba(0, 0, 0, 0.6) 40%, black 50%, black 100%);
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.1) 10%, rgba(0, 0, 0, 0.3) 25%, rgba(0, 0, 0, 0.6) 40%, black 50%, black 100%);
+}
+
+.home-hero-area > *:not(#ascii-space) { position: relative; z-index: 1; }
+
 .ascii-logo {
     font-family: var(--font);
     font-size: 0.55rem;
@@ -78,7 +102,6 @@
     display: flex; align-items: center; justify-content: center;
     border-radius: 0; font-family: var(--font); font-size: 0.8rem;
 }
-#home-search-button:hover { background-color: var(--cyan); color: var(--bg); }
 
 /* === Results dropdown === */
 #search-results-container {
@@ -118,9 +141,7 @@
     border-radius: 0; padding: var(--spacing-lg);
     text-decoration: none; font-family: var(--font);
 }
-.most-used-card:nth-child(1):hover, .most-used-card:nth-child(1):focus { border-color: var(--magenta); }
-.most-used-card:nth-child(2):hover, .most-used-card:nth-child(2):focus { border-color: var(--yellow); }
-.most-used-card:nth-child(3):hover, .most-used-card:nth-child(3):focus { border-color: var(--green); }
+.most-used-card:hover, .most-used-card:focus { border-color: var(--green); background-color: var(--bg); color: var(--fg-bright); }
 
 .most-used-icon { width: 32px; height: 32px; object-fit: contain; margin-bottom: var(--spacing-md); }
 .most-used-card h3 {
@@ -174,4 +195,5 @@
     .hero-description { font-size: 0.85rem; }
     .features-grid { gap: var(--spacing-md); }
     .home-section h2 { font-size: 1.1rem; }
+    #ascii-space { font-size: 0.35rem; }
 }

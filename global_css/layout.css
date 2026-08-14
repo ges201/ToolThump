@@ -27,7 +27,5 @@ footer {
     text-align: center; padding: var(--spacing-sm) 0;
     font-size: 0.8rem; border-top: 1px solid var(--border-color); flex-shrink: 0;
 }
-footer::before { content: '[ '; }
-footer::after { content: ' ]'; }
 footer a { color: var(--yellow); }
 footer a:hover { background: var(--yellow); color: var(--bg); }

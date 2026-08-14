@@ -75,14 +75,19 @@ input:focus, textarea:focus, select:focus {
 }
 input::placeholder, textarea::placeholder { color: var(--fg-dim); }
 
-button {
+button, .btn, .btn-secondary {
     cursor: pointer; font-weight: 400; border-width: 1px;
     background: var(--bg); color: var(--fg); border-color: var(--border-color);
     border-radius: 0; padding: var(--spacing-sm) var(--spacing-md); font-family: var(--font);
 }
-button:hover:not(:disabled) { background: var(--green); color: var(--bg); border-color: var(--green); }
-button:active:not(:disabled) { transform: none; }
-button:disabled, button:disabled:hover {
+button:hover:not(:disabled), .btn:hover:not(:disabled), .btn-secondary:hover:not(:disabled),
+button:focus:not(:disabled), .btn:focus:not(:disabled), .btn-secondary:focus:not(:disabled) {
+    background: rgba(51, 255, 51, 0.08); color: var(--green); border-color: var(--green);
+    transform: translate(-3px, -3px); box-shadow: var(--shadow-hard); outline: none;
+}
+button:active:not(:disabled), .btn:active:not(:disabled), .btn-secondary:active:not(:disabled) { transform: translate(0, 0); box-shadow: var(--shadow-hard-inset); }
+button:disabled, .btn:disabled, .btn-secondary:disabled,
+button:disabled:hover, .btn:disabled:hover, .btn-secondary:disabled:hover {
     background: var(--bg); color: var(--fg-dim); border-color: #222;
     cursor: not-allowed; opacity: 0.4; transform: none; outline: none;
 }

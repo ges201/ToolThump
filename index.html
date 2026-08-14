@@ -62,25 +62,28 @@
     <div class="content-wrapper">
         <main id="tool-container">
             <section id="home" class="tool-content active">
-                <div class="home-hero">
-                    <pre class="ascii-logo" data-ascii-logo></pre>
-                    <p class="hero-subtitle">cat README.md</p>
-                    <p class="hero-description">
-                        Your hub for free, private, and powerful online tools. All utilities run entirely in your browser
-                        &mdash; your data never leaves your device.
-                    </p>
-                </div>
-
-                <div class="search-wrapper">
-                    <div class="search-bar-container">
-                        <input type="search" id="home-search-input"
-                            placeholder="search tools..." aria-label="Search for a tool"
-                            autocomplete="off">
-                        <button type="button" id="home-search-button" aria-label="Search" onclick="return false;">
-                            [enter]
-                        </button>
+                <div class="home-hero-area">
+                    <pre id="ascii-space" aria-hidden="true"></pre>
+                    <div class="home-hero">
+                        <pre class="ascii-logo" data-ascii-logo></pre>
+                        <p class="hero-subtitle">cat README.md</p>
+                        <p class="hero-description">
+                            Your hub for free, private, and powerful online tools. All utilities run entirely in your browser
+                            &mdash; your data never leaves your device.
+                        </p>
                     </div>
-                    <div id="search-results-container"></div>
+
+                    <div class="search-wrapper">
+                        <div class="search-bar-container">
+                            <input type="search" id="home-search-input"
+                                placeholder="search tools..." aria-label="Search for a tool"
+                                autocomplete="off">
+                            <button type="button" id="home-search-button" aria-label="Search" onclick="return false;">
+                                [enter]
+                            </button>
+                        </div>
+                        <div id="search-results-container"></div>
+                    </div>
                 </div>
 
                 <div id="static-home-content">
@@ -140,6 +143,7 @@
     <script src="/main.js"></script>
     <script src="/js/tools-data.js"></script>
     <script src="/js/search.js"></script>
+    <script src="/js/ascii-space.js"></script>
 </body>
 
 </html>

@@ -56,7 +56,7 @@
     --info-color: var(--cyan);
     --focus-outline-color: rgba(51,255,51,0.3);
     --shadow-sm: none; --shadow-md: none; --shadow-lg: none;
-    --shadow-hard: none; --shadow-hard-inset: none;
+    --shadow-hard: 3px 3px 0 rgba(51, 255, 51, 0.5); --shadow-hard-inset: inset 2px 2px 0 rgba(0, 0, 0, 0.25);
     --font-family-sans: var(--font);
     --font-family-heading: var(--font);
     --font-family-monospace: var(--font);
@@ -114,4 +114,5 @@
     --border-color-light: #c5bfa8;
     --text-muted: var(--fg-dim);
     --button-border: #c5bfa8;
+    --shadow-hard: 2px 2px 0 rgba(42, 161, 152, 0.4); --shadow-hard-inset: inset 2px 2px 0 rgba(0, 0, 0, 0.12);
 }
