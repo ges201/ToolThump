@@ -64,11 +64,11 @@
     text-align: left; cursor: pointer; font-size: 0.9em;
     font-weight: 700; font-family: var(--font);
 }
-.accordion-header.active { background-color: var(--cyan); color: var(--bg); border-bottom-color: var(--border-color); }
+.accordion-header.active { background-color: var(--cyan); color: var(--text-on-accent-bg); border-bottom-color: var(--border-color); }
 .accordion-header.active:hover { transform: none; box-shadow: none; }
 
 .accordion-icon { font-size: 1em; margin-right: var(--spacing-md); flex-shrink: 0; color: var(--yellow); }
-.accordion-header.active .accordion-icon { color: var(--bg); }
+.accordion-header.active .accordion-icon { color: var(--text-on-accent-bg); }
 .accordion-header strong { flex-grow: 1; }
 
 .arrow-icon {

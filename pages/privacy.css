@@ -31,7 +31,7 @@
 .highlight { background-color: var(--bg-hl); color: var(--yellow); padding: 1px 6px; border-radius: 0; font-weight: 700; }
 
 .privacy-section a { color: var(--cyan); text-decoration: underline; font-weight: 700; }
-.privacy-section a:hover { background: var(--cyan); color: var(--bg); text-decoration: none; }
+.privacy-section a:hover { background: var(--cyan); color: var(--text-on-accent-bg); text-decoration: none; }
 
 .contact-info { background-color: var(--bg-alt); padding: var(--spacing-md); border-radius: 0; border: 1px solid var(--border-color); margin-top: var(--spacing-lg); }
 .contact-info p { margin: 0; }

@@ -269,6 +269,9 @@ function applyTheme(theme) {
     attr(document.documentElement, 'data-theme', theme);
     localStorage.setItem(THEME_KEY, theme);
 
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) metaTheme.setAttribute('content', isDark ? '#000000' : '#ececec');
+
     const toggle = $('#theme-toggle');
     const sun = $('#theme-icon-sun');
     const moon = $('#theme-icon-moon');

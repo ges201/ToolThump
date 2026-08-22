@@ -37,7 +37,7 @@ footer {
     font-size: 0.8rem; flex-shrink: 0;
 }
 footer a { color: var(--yellow); }
-footer a:hover { background: var(--yellow); color: var(--bg); }
+footer a:hover { background: var(--yellow); color: var(--text-on-accent-bg); }
 
 /* === Footer tool directory (inlined by build.js) === */
 .footer-tools {

@@ -9,12 +9,12 @@
 
 html {
     font-size: 15px; scroll-behavior: auto;
-    background: #000;
+    background: var(--bg);
 }
 
 body {
     font-family: var(--font); line-height: 1.45;
-    background: #000; color: var(--fg);
+    background: var(--bg); color: var(--fg);
     display: flex; flex-direction: column;
     min-height: 100vh;
     opacity: 1; padding: 10px;
@@ -29,7 +29,7 @@ body {
 .terminal-titlebar {
     display: flex; align-items: center;
     padding: 0 var(--spacing-md); height: 28px;
-    background: #141418; color: var(--fg-dim);
+    background: var(--titlebar-bg); color: var(--fg-dim);
     font-size: 0.8rem; font-weight: 700;
     letter-spacing: 0.5px; gap: var(--spacing-md);
     flex-shrink: 0; font-family: var(--font); user-select: none;
@@ -60,7 +60,7 @@ a {
     text-decoration: underline; text-underline-offset: 2px;
     color: var(--cyan);
 }
-a:hover { background: var(--cyan); color: var(--bg); text-decoration: none; }
+a:hover { background: var(--cyan); color: var(--text-on-accent-bg); text-decoration: none; }
 
 img, svg { display: block; max-width: 100%; }
 
@@ -82,13 +82,13 @@ button, .btn, .btn-secondary {
 }
 button:hover:not(:disabled), .btn:hover:not(:disabled), .btn-secondary:hover:not(:disabled),
 button:focus:not(:disabled), .btn:focus:not(:disabled), .btn-secondary:focus:not(:disabled) {
-    background: rgba(51, 255, 51, 0.08); color: var(--green); border-color: var(--green);
+    background: var(--accent-color-bg-hover); color: var(--green); border-color: var(--green);
     transform: translate(-3px, -3px); box-shadow: var(--shadow-hard); outline: none;
 }
 button:active:not(:disabled), .btn:active:not(:disabled), .btn-secondary:active:not(:disabled) { transform: translate(0, 0); box-shadow: var(--shadow-hard-inset); }
 button:disabled, .btn:disabled, .btn-secondary:disabled,
 button:disabled:hover, .btn:disabled:hover, .btn-secondary:disabled:hover {
-    background: var(--bg); color: var(--fg-dim); border-color: #222;
+    background: var(--bg); color: var(--fg-dim); border-color: var(--button-border);
     cursor: not-allowed; opacity: 0.4; transform: none; outline: none;
 }
 
@@ -101,4 +101,4 @@ ul, ol { list-style: none; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border-color); }
 ::-webkit-scrollbar-thumb:hover { background: var(--fg-dim); }
-::selection { background: var(--cyan); color: var(--bg); }
+::selection { background: var(--cyan); color: var(--text-on-accent-bg); }
