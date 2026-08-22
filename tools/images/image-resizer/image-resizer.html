@@ -16,7 +16,7 @@
     <meta property="og:title" content="Image Resizer & Cropper - ToolThump">
     <meta property="og:description"
         content="Resize and crop images with various options. All processing is done in your browser.">
-    <meta property="og:image" content="https://toolthump.com/ToolThump.png">
+    <meta property="og:image" content="https://toolthump.com/icons/image-resizer.png">
     <meta property="og:site_name" content="ToolThump" />
 
     <!-- Twitter -->
@@ -25,7 +25,7 @@
     <meta property="twitter:title" content="Image Resizer & Cropper - ToolThump">
     <meta property="twitter:description"
         content="Resize and crop images with various options. All processing is done in your browser.">
-    <meta property="twitter:image" content="https://toolthump.com/ToolThump.png">
+    <meta property="twitter:image" content="https://toolthump.com/icons/image-resizer.png">
 
     <!-- Common Stylesheets -->
     <link rel="stylesheet" href="/global_css/theme.css">
@@ -46,33 +46,61 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebPage",
-      "@id": "https://toolthump.com/tools/images/image-resizer/image-resizer.html#webpage",
-      "url": "https://toolthump.com/tools/images/image-resizer/image-resizer.html",
-      "name": "Image Resizer & Cropper",
-      "description": "Resize and crop images online with options for aspect ratio and dimensions.",
-      "isPartOf": {
-        "@type": "WebSite",
-        "@id": "https://toolthump.com/#website"
-      },
-      "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [{
-          "@type": "ListItem",
-          "position": 1,
-          "name": "ToolThump",
-          "item": "https://toolthump.com/"
-        },{
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Image Tools",
-          "item": "https://toolthump.com/#image-tools" 
-        },{
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Image Resizer & Cropper"
-        }]
-      }
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://toolthump.com/tools/images/image-resizer/image-resizer.html#webapp",
+          "name": "Image Resizer",
+          "url": "https://toolthump.com/tools/images/image-resizer/image-resizer.html",
+          "description": "Easily resize and crop your images online. Adjust dimensions, aspect ratios, and download your processed images instantly. Client-side processing for privacy.",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Any",
+          "browserRequirements": "Requires JavaScript. All processing runs client-side in your browser.",
+          "isAccessibleForFree": true,
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "resize",
+            "image",
+            "picture",
+            "photo",
+            "scale",
+            "dimensions",
+            "aspect ratio",
+            "resizer",
+            "shrinker",
+            "enlarger"
+          ],
+          "screenshot": "https://toolthump.com/icons/image-resizer.png",
+          "publisher": {
+            "@type": "Organization",
+            "name": "ToolThump",
+            "url": "https://toolthump.com/"
+          },
+          "datePublished": "2025-06-14",
+          "dateModified": "2026-07-29"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://toolthump.com/tools/images/image-resizer/image-resizer.html#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "ToolThump",
+              "item": "https://toolthump.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Image Resizer"
+            }
+          ]
+        }
+      ]
     }
     </script>
 

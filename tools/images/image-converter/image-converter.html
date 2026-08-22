@@ -17,7 +17,7 @@
     <meta property="og:title" content="Online Image Converter (JPG, PNG, WEBP, GIF) - ToolThump">
     <meta property="og:description"
         content="Free online image converter to easily change image formats (JPG, PNG, WEBP, GIF). Fast, client-side processing for single images or entire folders, ensuring privacy. No uploads required.">
-    <meta property="og:image" content="https://toolthump.com/assets/images/social/image-converter-social-preview.png">
+    <meta property="og:image" content="https://toolthump.com/icons/image-converter.png">
     <meta property="og:site_name" content="ToolThump">
 
     <!-- Twitter -->
@@ -27,7 +27,7 @@
     <meta property="twitter:description"
         content="Free online image converter to easily change image formats (JPG, PNG, WEBP, GIF). Fast, client-side processing for single images or entire folders, ensuring privacy. No uploads required.">
     <meta property="twitter:image"
-        content="https://toolthump.com/assets/images/social/image-converter-social-preview.png">
+        content="https://toolthump.com/icons/image-converter.png">
 
     <!-- Common Stylesheets -->
     <link rel="stylesheet" href="/global_css/theme.css">
@@ -53,38 +53,99 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Image Converter - ToolThump",
-      "description": "Free online image converter to easily change image formats like JPG, PNG, WEBP, and GIF. Features fast, client-side processing for both single images and entire folders, ensuring user privacy as no files are uploaded to a server.",
-      "applicationCategory": "MultimediaApplication",
-      "operatingSystem": "Browser-based",
-      "url": "https://toolthump.com/tools/images/image-converter/image-converter.html",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "keywords": "image converter, jpg to png, png to jpg, webp converter, gif converter, image format, online image tool, client-side image converter, free tool",
-      "browserRequirements": "Requires a modern web browser with JavaScript enabled.",
-      "mainEntityOfPage": {
-         "@type": "WebPage",
-         "@id": "https://toolthump.com/tools/images/image-converter/image-converter.html"
-      },
-      "image": "https://toolthump.com/assets/images/social/image-converter-social-preview.png",
-      "potentialAction": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://toolthump.com/tools/images/image-converter/image-converter.html",
-        "actionPlatform": [
-          "http://schema.org/DesktopWebPlatform",
-          "http://schema.org/IOSPlatform",
-          "http://schema.org/AndroidPlatform"
-        ]
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "ToolThump",
-        "url": "https://toolthump.com/"
-      }
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://toolthump.com/tools/images/image-converter/image-converter.html#webapp",
+          "name": "Image Converter",
+          "url": "https://toolthump.com/tools/images/image-converter/image-converter.html",
+          "description": "Free online image converter to easily change image formats (JPG, PNG, WEBP, GIF). Fast, client-side processing for single images or entire folders, ensuring privacy. No uploads required.",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Any",
+          "browserRequirements": "Requires JavaScript. All processing runs client-side in your browser.",
+          "isAccessibleForFree": true,
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "image",
+            "converter",
+            "picture",
+            "photo",
+            "jpg",
+            "png",
+            "webp",
+            "gif",
+            "convert",
+            "transform"
+          ],
+          "screenshot": "https://toolthump.com/icons/image-converter.png",
+          "publisher": {
+            "@type": "Organization",
+            "name": "ToolThump",
+            "url": "https://toolthump.com/"
+          },
+          "datePublished": "2025-06-08",
+          "dateModified": "2026-08-14"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://toolthump.com/tools/images/image-converter/image-converter.html#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "ToolThump",
+              "item": "https://toolthump.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Image Converter"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://toolthump.com/tools/images/image-converter/image-converter.html#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Are my images uploaded to a server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. Every part of the conversion process happens on your computer, in your browser. Your files are never sent over the internet, making this tool completely private."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What happens when I convert a folder?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The tool scans the selected folder and all its subfolders for valid image files (JPG, PNG, WEBP, GIF). It then converts them to your chosen format and bundles them into a single ZIP file for easy download."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What does 'Retain folder structure' do?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "If you check this box before converting a folder, the final ZIP file will recreate the original subfolder hierarchy. For example, if you had images in 'Folder/Subfolder/image.png', the ZIP will also contain that 'Subfolder' with the converted image inside."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why did my transparent image get a white background?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Image formats like JPEG do not support transparency. When you convert a transparent image (e.g., a PNG) to JPEG, the tool automatically fills the transparent areas with a solid white color to ensure a clean, predictable result."
+              }
+            }
+          ]
+        }
+      ]
     }
     </script>
 

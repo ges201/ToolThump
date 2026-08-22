@@ -16,7 +16,7 @@
     <meta property="og:title" content="QR Code Generator - ToolThump">
     <meta property="og:description"
         content="Generate free QR codes for text, URLs, and Wi-Fi networks. A simple, fast, and client-side tool for all your QR code needs.">
-    <meta property="og:image" content="https://toolthump.com/icons/qr-code-icon.png">
+    <meta property="og:image" content="https://toolthump.com/icons/qr-code-generator.png">
     <meta property="og:site_name" content="ToolThump" />
 
     <!-- Twitter -->
@@ -25,7 +25,7 @@
     <meta property="twitter:title" content="QR Code Generator - ToolThump">
     <meta property="twitter:description"
         content="Generate free QR codes for text, URLs, and Wi-Fi networks. A simple, fast, and client-side tool for all your QR code needs.">
-    <meta property="twitter:image" content="https://toolthump.com/icons/qr-code-icon.png">
+    <meta property="twitter:image" content="https://toolthump.com/icons/qr-code-generator.png">
 
     <!-- Common Stylesheets -->
     <link rel="stylesheet" href="/global_css/theme.css">
@@ -42,33 +42,96 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebPage",
-      "@id": "https://toolthump.com/tools/data/qr-code-generator/qr-code-generator.html#webpage",
-      "url": "https://toolthump.com/tools/data/qr-code-generator/qr-code-generator.html",
-      "name": "QR Code Generator",
-      "description": "Generate free QR codes for text, URLs, and Wi-Fi networks. A simple, fast, and client-side tool.",
-      "isPartOf": {
-        "@type": "WebSite",
-        "@id": "https://toolthump.com/#website"
-      },
-      "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [{
-          "@type": "ListItem",
-          "position": 1,
-          "name": "ToolThump",
-          "item": "https://toolthump.com/"
-        },{
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Data Tools",
-          "item": "https://toolthump.com/#data-tools" 
-        },{
-          "@type": "ListItem",
-          "position": 3,
-          "name": "QR Code Generator"
-        }]
-      }
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://toolthump.com/tools/data/qr-code-generator/qr-code-generator.html#webapp",
+          "name": "QR Code Generator",
+          "url": "https://toolthump.com/tools/data/qr-code-generator/qr-code-generator.html",
+          "description": "Generate free QR codes for text, URLs, and Wi-Fi networks. A simple, fast, and client-side tool for all your QR code needs.",
+          "applicationCategory": "UtilityApplication",
+          "operatingSystem": "Any",
+          "browserRequirements": "Requires JavaScript. All processing runs client-side in your browser.",
+          "isAccessibleForFree": true,
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "qr",
+            "code",
+            "generator",
+            "data",
+            "link",
+            "url",
+            "barcode"
+          ],
+          "screenshot": "https://toolthump.com/icons/qr-code-generator.png",
+          "publisher": {
+            "@type": "Organization",
+            "name": "ToolThump",
+            "url": "https://toolthump.com/"
+          },
+          "datePublished": "2025-06-11",
+          "dateModified": "2026-08-14"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://toolthump.com/tools/data/qr-code-generator/qr-code-generator.html#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "ToolThump",
+              "item": "https://toolthump.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "QR Code Generator"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://toolthump.com/tools/data/qr-code-generator/qr-code-generator.html#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is my data safe?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Absolutely. The tool is 100% client-side, meaning the information you enter to create the QR code is never sent to any server. It stays in your browser."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What can I use these QR codes for?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Whatever you need! Common uses include sharing a link to a website or portfolio, giving guests Wi-Fi access at home, or adding a scannable link to a business card or event poster."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How can I check for typos in the password?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Click the 'eye' icon next to the password field. This will temporarily show the password, allowing you to check for mistakes. Click the icon again to hide it."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does the QR code ever expire?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The QR code is just a visual representation of the data you entered. It doesn't rely on any service to function and will work forever, as long as the underlying data (like the URL) is still valid."
+              }
+            }
+          ]
+        }
+      ]
     }
     </script>
 

@@ -15,7 +15,7 @@
     <meta property="og:title" content="Encoder, Decoder & Hasher (Base64, URL, SHA256) - Free Online Tool | ToolThump">
     <meta property="og:description"
         content="A simple, free tool to encode, decode, and hash text into various formats. Fast, secure, and client-side.">
-    <meta property="og:image" content="https://toolthump.com/icons/encoder-decoder-icon.png">
+    <meta property="og:image" content="https://toolthump.com/icons/encoder-decoder.png">
     <meta property="og:site_name" content="ToolThump" />
 
     <meta property="twitter:card" content="summary_large_image">
@@ -24,7 +24,7 @@
         content="Encoder, Decoder & Hasher (Base64, URL, SHA256) - Free Online Tool | ToolThump">
     <meta property="twitter:description"
         content="A simple, free tool to encode, decode, and hash text into various formats. Fast, secure, and client-side.">
-    <meta property="twitter:image" content="https://toolthump.com/icons/encoder-decoder-icon.png">
+    <meta property="twitter:image" content="https://toolthump.com/icons/encoder-decoder.png">
 
     <link rel="stylesheet" href="/global_css/theme.css">
     <link rel="stylesheet" href="/global_css/base.css">
@@ -37,33 +37,99 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebPage",
-      "@id": "https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html#webpage",
-      "url": "https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html",
-      "name": "Encoder, Decoder & Hasher",
-      "description": "A free online tool to encode, decode, and hash text in various formats like Base64, URL, and SHA256, performed securely in your browser.",
-      "isPartOf": {
-        "@type": "WebSite",
-        "@id": "https://toolthump.com/#website"
-      },
-      "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [{
-          "@type": "ListItem",
-          "position": 1,
-          "name": "ToolThump",
-          "item": "https://toolthump.com/"
-        },{
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Security Tools",
-          "item": "https://toolthump.com/#security-tools"
-        },{
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Encoder & Decoder"
-        }]
-      }
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html#webapp",
+          "name": "Encoder / Decoder",
+          "url": "https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html",
+          "description": "Easily encode, decode, and hash text with ToolThump's free online tool. Supports Base64, URL encoding, SHA256, and more. All operations are done in your browser for privacy.",
+          "applicationCategory": "SecurityApplication",
+          "operatingSystem": "Any",
+          "browserRequirements": "Requires JavaScript. All processing runs client-side in your browser.",
+          "isAccessibleForFree": true,
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "encode",
+            "decode",
+            "base64",
+            "url",
+            "string",
+            "data",
+            "security",
+            "converter",
+            "encoder",
+            "decoder"
+          ],
+          "screenshot": "https://toolthump.com/icons/encoder-decoder.png",
+          "publisher": {
+            "@type": "Organization",
+            "name": "ToolThump",
+            "url": "https://toolthump.com/"
+          },
+          "datePublished": "2025-07-09",
+          "dateModified": "2026-08-14"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "ToolThump",
+              "item": "https://toolthump.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Encoder / Decoder"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://toolthump.com/tools/security/encoder-decoder/encoder-decoder.html#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is it safe to put sensitive data in this tool?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. The tool operates entirely on your device (client-side). No data is transmitted to any server, so it's as safe as an offline application on your computer."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What's the difference between Encoding and Hashing?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Encoding is a reversible process used to represent data in a different format (e.g., Base64, URL). Hashing is a one-way process that creates a unique, fixed-size fingerprint of the data (e.g., SHA256). You can decode encoded data, but you cannot 'un-hash' a hash."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is the 'Decode' button sometimes disabled?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Some formats, like SHA256, are one-way hashing algorithms. They are designed to be irreversible, so there is no 'decode' process. The tool disables the button for these formats automatically."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why did I get a 'Failed to decode' error?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "This usually means the input text is not valid for the selected format. For example, trying to decode 'hello world' as Base64 will fail because it's not a valid Base64 sequence. Check that your input is correctly formatted."
+              }
+            }
+          ]
+        }
+      ]
     }
     </script>
 

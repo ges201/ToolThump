@@ -15,7 +15,7 @@
     <meta property="og:title" content="Image Metadata Viewer - View & Remove Metadata | ToolThump">
     <meta property="og:description"
         content="Instantly inspect and strip hidden data (GPS, camera settings) from your photos right in your browser. Supports JPEG, HEIC, and RAW files.">
-    <meta property="og:image" content="https://toolthump.com/icons/image-metadata-viewer-icon.png">
+    <meta property="og:image" content="https://toolthump.com/icons/image-metadata-viewer.png">
     <meta property="og:site_name" content="ToolThump" />
 
     <meta property="twitter:card" content="summary_large_image">
@@ -24,7 +24,7 @@
     <meta property="twitter:title" content="Image Metadata Viewer - View & Remove Metadata | ToolThump">
     <meta property="twitter:description"
         content="Instantly inspect and strip hidden data (GPS, camera settings) from your photos right in your browser. Supports JPEG, HEIC, and RAW files.">
-    <meta property="twitter:image" content="https://toolthump.com/icons/image-metadata-viewer-icon.png">
+    <meta property="twitter:image" content="https://toolthump.com/icons/image-metadata-viewer.png">
 
     <!-- Common Stylesheets (paths relative to root) -->
     <link rel="stylesheet" href="/global_css/theme.css">
@@ -40,33 +40,127 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebPage",
-      "@id": "https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html#webpage",
-      "url": "https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html",
-      "name": "Image Metadata Viewer & Remover",
-      "description": "View, analyze, and remove metadata from images, including RAW files, directly in your browser. 100% client-side and privacy-focused.",
-      "isPartOf": {
-        "@type": "WebSite",
-        "@id": "https://toolthump.com/#website"
-      },
-      "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [{
-          "@type": "ListItem",
-          "position": 1,
-          "name": "ToolThump",
-          "item": "https://toolthump.com/"
-        },{
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Data Tools",
-          "item": "https://toolthump.com/#data-tools"
-        },{
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Image Metadata Viewer"
-        }]
-      }
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html#webapp",
+          "name": "Image Metadata Viewer",
+          "url": "https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html",
+          "description": "View, analyze, and remove image metadata from your images (JPEG, RAW). A free, client-side tool that respects your privacy. No uploads required.",
+          "applicationCategory": "UtilityApplication",
+          "operatingSystem": "Any",
+          "browserRequirements": "Requires JavaScript. All processing runs client-side in your browser.",
+          "isAccessibleForFree": true,
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "image",
+            "metadata",
+            "viewer",
+            "exif",
+            "data",
+            "info"
+          ],
+          "screenshot": "https://toolthump.com/icons/image-metadata-viewer.png",
+          "publisher": {
+            "@type": "Organization",
+            "name": "ToolThump",
+            "url": "https://toolthump.com/"
+          },
+          "datePublished": "2025-07-31",
+          "dateModified": "2026-08-14"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "ToolThump",
+              "item": "https://toolthump.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Image Metadata Viewer"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://toolthump.com/tools/data/image-metadata-viewer/image-metadata-viewer.html#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is it truly safe to use my personal photos here?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Absolutely. The tool operates entirely on your computer. Once the page is loaded, you could disconnect from the internet and it would still work perfectly. Your files are never uploaded, so your privacy is guaranteed."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why should I even care about image metadata?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Primarily for privacy. Sharing a photo online with GPS data can reveal sensitive locations. But it's also a goldmine for photographers wanting to review camera settings (Aperture, ISO, Shutter Speed). It can even help verify details about a photo's origin."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What image formats does this tool support?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It handles the usual suspects like JPEG, PNG, HEIC, and WEBP. More importantly, it's built to parse many RAW camera formats, including .CR2 (Canon), .NEF (Nikon), .ARW (Sony), .DNG (Adobe), and others. If your camera shoots it, there's a good chance this tool can read it."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can this tool remove metadata from my image?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, but only for JPEG images. For JPEGs, a 'Remove Metadata' button will appear, allowing you to download a clean version. For all other formats (PNG, RAW, etc.), this tool is a 'viewer' only and cannot alter the file."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Will removing metadata reduce my image quality?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The removal process for jpgs is completely 'lossless'. It works by identifying and discarding the data blocks containing metadata, then stitching the file back together with only the essential image data. The picture itself is not re-compressed or altered in any way."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "I uploaded an image and it said 'No EXIF metadata found'. Why?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "This usually means the metadata was never there or was scrubbed. Many social media sites automatically remove metadata when you upload photos. Also, simple images created with basic graphics editors often don't contain any camera-related metadata to begin with."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "My RAW file's metadata showed up, but the image preview is blank. Is it broken?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Not at all. Some RAW formats are like a camera's digital negative and can't be displayed directly by web browsers. The tool can still read the metadata perfectly, which is the main event. For a visual, you'd need specialized software, but for data-checking, you're in the right place."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What's the 'Export as JSON' button for?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "For the data hoarders and developers. This button lets you download all the extracted metadata as a clean, structured JSON file. You can keep it for your records, use it in a script, or analyze it further in other applications. It's your data, so you should be able to take it with you."
+              }
+            }
+          ]
+        }
+      ]
     }
     </script>
 

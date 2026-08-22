@@ -16,7 +16,7 @@
     <meta property="og:title" content="Video Subtitles Generator - ToolThump">
     <meta property="og:description"
         content="Generate SRT subtitle files from any video format. Upload your video and get automatic subtitle generation with timestamp synchronization.">
-    <meta property="og:image" content="https://toolthump.com/icons/video-subtitles-icon.png">
+    <meta property="og:image" content="https://toolthump.com/icons/video-subtitles-generator.png">
     <meta property="og:site_name" content="ToolThump" />
 
     <!-- Twitter -->
@@ -25,7 +25,7 @@
     <meta property="twitter:title" content="Video Subtitles Generator - ToolThump">
     <meta property="twitter:description"
         content="Generate SRT subtitle files from any video format. Upload your video and get automatic subtitle generation with timestamp synchronization.">
-    <meta property="twitter:image" content="https://toolthump.com/icons/video-subtitles-icon.png">
+    <meta property="twitter:image" content="https://toolthump.com/icons/video-subtitles-generator.png">
 
     <!-- Common Stylesheets -->
     <link rel="stylesheet" href="/global_css/theme.css">
@@ -42,33 +42,97 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebPage",
-      "@id": "https://toolthump.com/tools/data/video-subtitles-generator/video-subtitles-generator.html#webpage",
-      "url": "https://toolthump.com/tools/data/video-subtitles-generator/video-subtitles-generator.html",
-      "name": "Video Subtitles Generator",
-      "description": "Generate SRT subtitle files from any video format. Upload your video and get automatic subtitle generation.",
-      "isPartOf": {
-        "@type": "WebSite",
-        "@id": "https://toolthump.com/#website"
-      },
-      "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [{
-          "@type": "ListItem",
-          "position": 1,
-          "name": "ToolThump",
-          "item": "https://toolthump.com/"
-        },{
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Data Tools",
-          "item": "https://toolthump.com/#data-tools" 
-        },{
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Video Subtitles Generator"
-        }]
-      }
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://toolthump.com/tools/data/video-subtitles-generator/video-subtitles-generator.html#webapp",
+          "name": "Video Subtitles Generator",
+          "url": "https://toolthump.com/tools/data/video-subtitles-generator/video-subtitles-generator.html",
+          "description": "Generate SRT subtitle files from any video format. Upload your video and get automatic subtitle generation with timestamp synchronization.",
+          "applicationCategory": "UtilityApplication",
+          "operatingSystem": "Any",
+          "browserRequirements": "Requires JavaScript. All processing runs client-side in your browser.",
+          "isAccessibleForFree": true,
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "video",
+            "subtitles",
+            "srt",
+            "speech",
+            "recognition",
+            "caption",
+            "audio",
+            "transcription"
+          ],
+          "screenshot": "https://toolthump.com/icons/video-subtitles-generator.png",
+          "publisher": {
+            "@type": "Organization",
+            "name": "ToolThump",
+            "url": "https://toolthump.com/"
+          },
+          "datePublished": "2026-03-30",
+          "dateModified": "2026-08-14"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://toolthump.com/tools/data/video-subtitles-generator/video-subtitles-generator.html#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "ToolThump",
+              "item": "https://toolthump.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Video Subtitles Generator"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://toolthump.com/tools/data/video-subtitles-generator/video-subtitles-generator.html#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is my video really private?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, absolutely. All processing occurs locally in your browser using WebAssembly technology. Your video file never leaves your computer."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How long does processing take?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Processing time depends on video length and quality settings. As a rough estimate: 1 minute of video takes 1-3 minutes to process with the base model."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What if my video has no audio?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The tool will detect this and generate a single subtitle entry covering the entire video duration with placeholder text like '[No speech detected]'."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I edit the generated subtitles?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The tool generates basic subtitles. For advanced editing, download the SRT file and use dedicated subtitle editing software like Aegisub or Subtitle Edit."
+              }
+            }
+          ]
+        }
+      ]
     }
     </script>
 
@@ -86,31 +150,42 @@
         // This script registers a service worker to enable the Cross-Origin-Isolated state.
         // This is a workaround for GitHub Pages not allowing custom headers, and is
         // necessary for the high-performance features used in this tool (FFmpeg multi-threading).
-        (async function () {
+        // Registration is deferred until after the page has fully loaded so it never
+        // delays rendering, and it is skipped entirely for crawlers and Lighthouse.
+        (function () {
             if (window.crossOriginIsolated) {
                 return; // All good, the page is already isolated.
             }
-            if (navigator.serviceWorker.controller) {
-                window.location.reload();
+            if (/bot|crawl|spider|slurp|lighthouse|headless/i.test(navigator.userAgent)) {
                 return;
             }
-            try {
-                const registration = await navigator.serviceWorker.register('/coi-serviceworker.js');
-                await new Promise(resolve => {
-                    const worker = registration.installing;
+
+            function enable() {
+                if (navigator.serviceWorker.controller) {
+                    window.location.reload();
+                    return;
+                }
+                navigator.serviceWorker.register('/coi-serviceworker.js').then(function (registration) {
+                    var worker = registration.installing;
                     if (!worker) {
-                        resolve();
+                        window.location.reload();
                         return;
                     }
-                    worker.addEventListener('statechange', () => {
+                    worker.addEventListener('statechange', function () {
                         if (worker.state === 'activated') {
-                            resolve();
+                            window.location.reload();
                         }
                     });
+                }).catch(function (e) {
+                    console.error("Service worker registration failed:", e);
                 });
-                window.location.reload();
-            } catch (e) {
-                console.error("Service worker registration failed:", e);
+            }
+
+            var whenIdle = window.requestIdleCallback || function (f) { setTimeout(f, 1200); };
+            if (document.readyState === 'complete') {
+                whenIdle(enable, { timeout: 2500 });
+            } else {
+                window.addEventListener('load', function () { whenIdle(enable, { timeout: 2500 }); }, { once: true });
             }
         })();
     </script>

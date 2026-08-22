@@ -7,23 +7,23 @@
     <title>Bit-by-Bit File Comparator - Check if Files are Identical | ToolThump</title>
     <meta name="description"
         content="Securely compare two files to see if they are identical. The tool performs a bit-by-bit comparison entirely in your browser. No files are uploaded.">
-    <link rel="canonical" href="https://toolthump.com/tools/file/file-comparison/file-comparison.html">
+    <link rel="canonical" href="https://toolthump.com/tools/data/file-comparison/file-comparison.html">
     <meta name="robots" content="index, follow">
 
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://toolthump.com/tools/file/file-comparison/file-comparison.html">
+    <meta property="og:url" content="https://toolthump.com/tools/data/file-comparison/file-comparison.html">
     <meta property="og:title" content="Bit-by-Bit File Comparator | ToolThump">
     <meta property="og:description"
         content="Securely compare two files to see if they are identical. The tool performs a bit-by-bit comparison entirely in your browser. No files are uploaded.">
-    <meta property="og:image" content="https://toolthump.com/icons/file-comparison-icon.png">
+    <meta property="og:image" content="https://toolthump.com/icons/file-comparison.png">
     <meta property="og:site_name" content="ToolThump" />
 
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://toolthump.com/tools/file/file-comparison/file-comparison.html">
+    <meta property="twitter:url" content="https://toolthump.com/tools/data/file-comparison/file-comparison.html">
     <meta property="twitter:title" content="Bit-by-Bit File Comparator | ToolThump">
     <meta property="twitter:description"
         content="Securely compare two files to see if they are identical. The tool performs a bit-by-bit comparison entirely in your browser. No files are uploaded.">
-    <meta property="twitter:image" content="https://toolthump.com/icons/file-comparison-icon.png">
+    <meta property="twitter:image" content="https://toolthump.com/icons/file-comparison.png">
 
     <!-- Common Stylesheets (paths relative to root) -->
     <link rel="stylesheet" href="/global_css/theme.css">
@@ -39,14 +39,95 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebPage",
-      "url": "https://toolthump.com/tools/file/file-comparison/file-comparison.html",
-      "name": "File Comparator",
-      "description": "Compare two files bit-by-bit to verify if they are identical. All processing is done client-side for privacy.",
-      "isPartOf": {
-        "@type": "WebSite",
-        "@id": "https://toolthump.com/#website"
-      }
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://toolthump.com/tools/data/file-comparison/file-comparison.html#webapp",
+          "name": "File Comparison",
+          "url": "https://toolthump.com/tools/data/file-comparison/file-comparison.html",
+          "description": "Securely compare two files to see if they are identical. The tool performs a bit-by-bit comparison entirely in your browser. No files are uploaded.",
+          "applicationCategory": "UtilityApplication",
+          "operatingSystem": "Any",
+          "browserRequirements": "Requires JavaScript. All processing runs client-side in your browser.",
+          "isAccessibleForFree": true,
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "file",
+            "comparison",
+            "compare",
+            "diff",
+            "difference",
+            "tool"
+          ],
+          "screenshot": "https://toolthump.com/icons/file-comparison.png",
+          "publisher": {
+            "@type": "Organization",
+            "name": "ToolThump",
+            "url": "https://toolthump.com/"
+          },
+          "datePublished": "2025-08-09",
+          "dateModified": "2026-08-14"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://toolthump.com/tools/data/file-comparison/file-comparison.html#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "ToolThump",
+              "item": "https://toolthump.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "File Comparison"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://toolthump.com/tools/data/file-comparison/file-comparison.html#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Are my files *really* kept private?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. The comparison happens entirely within your browser. Your files are not uploaded to any server. The code uses standard browser APIs to read file content into memory for comparison. After you close the page, it's gone. You can even disconnect from the internet after the page loads and the tool will still work."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What exactly gets compared? Just the content?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Only the binary content of the files is compared. File names, creation dates, modification dates, and other metadata are completely ignored. If two files have different names but identical content, this tool will report them as 'Identical'."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is a practical use for this?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It's useful for verifying file integrity. For example: confirming that a file you downloaded is not corrupt by comparing it to a trusted copy, ensuring a file was copied correctly to a USB drive, or checking that a backup file is an exact duplicate of the original."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What does 'bit-by-bit' comparison actually mean?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It means the tool reads both files and checks if the first byte of File A is the same as the first byte of File B, then the second byte, and so on, all the way to the end. This is the most thorough way to confirm two files are exact copies, unlike just checking file sizes."
+              }
+            }
+          ]
+        }
+      ]
     }
     </script>
 
