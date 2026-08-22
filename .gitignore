@@ -63,3 +63,6 @@ Thumbs.db
 *~
 .DS_Store
 ehthumbs.db
+
+# Local working docs (never commit)
+*.md
