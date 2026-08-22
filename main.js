@@ -270,7 +270,7 @@ function applyTheme(theme) {
     localStorage.setItem(THEME_KEY, theme);
 
     const metaTheme = document.querySelector('meta[name="theme-color"]');
-    if (metaTheme) metaTheme.setAttribute('content', isDark ? '#000000' : '#ececec');
+    if (metaTheme) metaTheme.setAttribute('content', isDark ? '#000000' : '#e0e0e0');
 
     const toggle = $('#theme-toggle');
     const sun = $('#theme-icon-sun');
@@ -290,11 +290,6 @@ function initializeTheme() {
     const saved = localStorage.getItem(THEME_KEY);
     const theme = saved || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
     applyTheme(theme);
-
-    const toggle = $('#theme-toggle');
-    toggle?.addEventListener('click', () => {
-        applyTheme(attr(document.documentElement, 'data-theme') === 'dark' ? 'light' : 'dark');
-    });
 }
 
 // =================================================================
@@ -315,12 +310,17 @@ async function loadAsciiLogo() {
 buildTerminalChrome();
 initializeTheme();
 
+// Bind the toggle exactly once - the script runs at the end of <body>,
+// so the header button already exists in the DOM.
+$('#theme-toggle')?.addEventListener('click', () => {
+    applyTheme(attr(document.documentElement, 'data-theme') === 'dark' ? 'light' : 'dark');
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
     await loadIncludes();
     await inlineSvgImages();
     setupHeader();
     $('#current-year') && ($('#current-year').textContent = new Date().getFullYear());
-    initializeTheme();
     initializeToolTextSections();
     addBlinkingCursor();
     loadAsciiLogo();

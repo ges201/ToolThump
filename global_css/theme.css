@@ -71,52 +71,52 @@
 }
 
 [data-theme="light"] {
-    /* --- PAPER GREY TERMINAL --- */
-    --bg: #ececec;
-    --bg-alt: #e4e4e4;
-    --bg-hl: #dcdcdc;
+    /* --- SLATE PAPER TERMINAL --- */
+    --bg: #e0e0e0;
+    --bg-alt: #d5d5d5;
+    --bg-hl: #c8c8c8;
 
-    --fg: #1f1f1f;
+    --fg: #1a1a1a;
     --fg-bright: #000000;
-    --fg-dim: #555555;
+    --fg-dim: #444444;
 
-    --green: #1a7a1a;
-    --red: #c62f2f;
-    --yellow: #876300;
-    --cyan: #007274;
-    --magenta: #ad2d74;
-    --blue: #1f5fbf;
+    --green: #166e18;
+    --red: #b52b2b;
+    --yellow: #7c5c00;
+    --cyan: #006668;
+    --magenta: #982463;
+    --blue: #1b53a8;
 
     --accent: var(--cyan);
-    --accent-hover: #005450;
+    --accent-hover: #004a4c;
 
-    --titlebar-bg: #dcdcdc;
+    --titlebar-bg: #c4c4c4;
 
-    --icon-filter: brightness(0) saturate(100%) invert(29%) sepia(89%) saturate(1354%) hue-rotate(78deg) brightness(93%) contrast(88%);
+    --icon-filter: brightness(0) saturate(100%) invert(24%) sepia(91%) saturate(1600%) hue-rotate(80deg) brightness(90%) contrast(92%);
 
     --accent-color: var(--accent);
-    --accent-color-dark: #005450;
-    --accent-color-rgb: 0, 114, 116;
-    --accent-color-bg-hover: rgba(0, 114, 116, 0.10);
+    --accent-color-dark: #004a4c;
+    --accent-color-rgb: 0, 102, 104;
+    --accent-color-bg-hover: rgba(0, 102, 104, 0.12);
     --text-primary-color: var(--fg);
     --text-secondary-color: var(--fg-dim);
     --text-heading-color: var(--fg-bright);
     --text-on-accent-bg: #ffffff;
     --body-bg-color: var(--bg);
     --surface-bg-color: var(--bg-alt);
-    --input-bg-color: #e0e0e0;
-    --disabled-bg-color: #d6d6d6;
-    --border-color: #b8b8b8;
+    --input-bg-color: #eaeaea;
+    --disabled-bg-color: #cfcfcf;
+    --border-color: #999999;
     --bg-deep-dark: var(--bg);
     --bg-dark: var(--bg-alt);
-    --bg-medium: #d6d6d6;
+    --bg-medium: #cccccc;
     --success-color: var(--green);
     --error-color: var(--red);
     --warning-color: var(--yellow);
     --info-color: var(--cyan);
-    --focus-outline-color: rgba(0,126,128,0.35);
-    --border-color-light: #a3a3a3;
+    --focus-outline-color: rgba(0,102,104,0.4);
+    --border-color-light: #888888;
     --text-muted: var(--fg-dim);
-    --button-border: #a3a3a3;
-    --shadow-hard: 2px 2px 0 rgba(31, 31, 31, 0.35); --shadow-hard-inset: inset 2px 2px 0 rgba(0, 0, 0, 0.08);
+    --button-border: #808080;
+    --shadow-hard: 2px 2px 0 rgba(20, 20, 20, 0.45); --shadow-hard-inset: inset 2px 2px 0 rgba(0, 0, 0, 0.10);
 }
