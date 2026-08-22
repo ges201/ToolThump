@@ -9,7 +9,7 @@
 .page-header h1::before { display: none; }
 .page-header .subtitle { font-size: 0.9rem; color: var(--fg-dim); max-width: 60ch; font-family: var(--font); }
 
-.about-container { margin: 0 auto; max-width: 70ch; font-family: var(--font); }
+.about-container { width: 100%; font-family: var(--font); }
 .about-section { margin-bottom: var(--spacing-xl); }
 .about-section:last-of-type { margin-bottom: 0; }
 .about-section h2 { font-size: 1.1rem; margin-bottom: var(--spacing-md); color: var(--fg-bright); }

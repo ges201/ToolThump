@@ -197,3 +197,16 @@
     .home-section h2 { font-size: 1.1rem; }
     #ascii-space { font-size: 0.35rem; }
 }
+
+/* === Browse by Category (hub links) === */
+.category-links {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-wrap: wrap; gap: var(--spacing-sm) var(--spacing-lg);
+}
+.category-links a { color: var(--fg-dim); font-weight: 700; }
+.category-links a:hover { background: transparent; }
+.category-links li:nth-child(1) a { color: var(--fg-bright); }
+.category-links li:nth-child(2) a { color: var(--green); }
+.category-links li:nth-child(3) a { color: var(--yellow); }
+.category-links li:nth-child(4) a { color: var(--cyan); }
+.category-links li:nth-child(5) a { color: var(--magenta); }

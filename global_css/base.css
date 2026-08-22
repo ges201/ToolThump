@@ -9,14 +9,14 @@
 
 html {
     font-size: 15px; scroll-behavior: auto;
-    overflow: hidden; background: #000; height: 100%;
+    background: #000;
 }
 
 body {
     font-family: var(--font); line-height: 1.45;
     background: #000; color: var(--fg);
     display: flex; flex-direction: column;
-    height: 100vh; overflow: hidden;
+    min-height: 100vh;
     opacity: 1; padding: 10px;
 }
 

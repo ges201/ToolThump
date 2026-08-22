@@ -9,7 +9,12 @@
  *  - Repoints og:image / twitter:image at the generated cards in /icons/
  *  - Inlines header/footer/tool-text includes so crawlers see nav + FAQs,
  *    features and how-to sections in raw HTML (main.js keeps runtime fetch
- *    as a fallback for anything not yet built)
+ *    as a fallback for anything not yet built); previously inlined
+ *    header/footer blocks are refreshed on every run so _includes edits
+ *    propagate to all built pages
+ *  - Generates the hub architecture: /tools/index.html plus one index page
+ *    per category, with CollectionPage/ItemList schema and tool cards
+ *  - Adds a static "related tools" block to every tool page
  *
  * Usage: node build.js [--dry-run]
  */
@@ -141,7 +146,8 @@ function buildGraph(tool, meta) {
       '@id': url + '#breadcrumb',
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'ToolThump', item: SITE + '/' },
-        { '@type': 'ListItem', position: 2, name: tool.name }
+        { '@type': 'ListItem', position: 2, name: HUB_NAME[tool.category] || 'Tools', item: SITE + (HUB_SLUG[tool.category] ? hubPath(tool.category) : '/tools/index.html') },
+        { '@type': 'ListItem', position: 3, name: tool.name }
       ]
     }
   ];
@@ -265,6 +271,234 @@ function renderToolTextSections(data, baseIndent = 12) {
 
 const CATEGORY_LABEL = { Security: 'security', 'Text Tools': 'text', 'Image Tools': 'image', 'Data Tools': 'data' };
 
+/* --------------------------------------------------------------- hub pages */
+
+const HUB_SLUG = { Security: 'security', 'Text Tools': 'text', 'Image Tools': 'images', 'Data Tools': 'data' };
+const HUB_NAME = { Security: 'Security Tools', 'Text Tools': 'Text Tools', 'Image Tools': 'Image Tools', 'Data Tools': 'Data Tools' };
+const HUB_ACCENT = { Security: 'green', 'Text Tools': 'yellow', 'Image Tools': 'cyan', 'Data Tools': 'magenta' };
+
+function hubPath(category) { return `/tools/${HUB_SLUG[category]}/index.html`; }
+
+const HUB_COPY = {
+  all: {
+    path: '/tools/index.html',
+    title: 'All Free Online Tools - Private, No Signup | ToolThump',
+    description: 'Browse every free ToolThump utility: security, text, image and data tools that run entirely in your browser. No signup, no uploads, no tracking.',
+    h1: 'All Tools',
+    intro: [
+      'ToolThump is a collection of free online utilities organized into four categories: security, text, image and data. Every tool runs entirely in your browser - the files you open, the passwords you generate and the text you paste are never uploaded to a server.',
+      'There is no account to create and nothing to install: open a tool, use it, close the tab. Browse the full list below or jump straight to a category.'
+    ]
+  },
+  Security: {
+    title: 'Free Online Security Tools - Passwords & Encoding | ToolThump',
+    description: 'Free browser-based security tools: generate strong passwords, test password strength and encode or decode Base64 and URLs. Everything runs locally on your device.',
+    h1: 'Security Tools',
+    intro: [
+      'Good security hygiene does not require trusting someone else\'s web server. These browser-based tools handle passwords and encoding entirely on your own device - nothing you type or paste ever leaves your browser.',
+      'Generate a strong random password with custom length and character sets, check how resistant an existing password is to common cracking attacks, or encode and decode data in formats like Base64 and URL percent-encoding.'
+    ]
+  },
+  'Text Tools': {
+    title: 'Free Text Tools - Compare, Convert & Clean Text | ToolThump',
+    description: 'Compare texts side by side, convert letter case, find duplicate words and write Markdown - free text tools that run entirely in your browser.',
+    h1: 'Text Tools',
+    intro: [
+      'Writing and editing goes faster with the right utilities, and these text tools run completely in your browser so drafts, logs and notes stay private on your machine.',
+      'Spot every difference between two versions of a document, convert letter case between uppercase, lowercase and title case, hunt down repeated words before publishing, or draft formatted documents in a distraction-free Markdown editor with live preview.'
+    ]
+  },
+  'Image Tools': {
+    title: 'Free Image Tools - Convert, Resize & Edit in Browser | ToolThump',
+    description: 'Convert images between PNG, JPG, GIF and WebP, resize photos in batches, pick colors and remove backgrounds - free image tools that never upload your files.',
+    h1: 'Image Tools',
+    intro: [
+      'Most online image converters ask you to upload personal photos to a stranger\'s server first. These image tools process files directly in your browser using canvas technology, so pictures of your family, your products and your documents never leave your device.',
+      'Convert between PNG, JPG, GIF and WebP with batch support across whole folders, resize images to exact pixel dimensions, sample colors from any point of a design, or erase photo backgrounds instantly for clean cutouts.'
+    ]
+  },
+  'Data Tools': {
+    title: 'Free Data Tools - QR Codes, File Diff & Subtitles | ToolThump',
+    description: 'Generate QR codes, inspect image EXIF metadata, compare binary files byte by byte and auto-generate video subtitles - free data tools running fully client-side.',
+    h1: 'Data Tools',
+    intro: [
+      'From QR codes to subtitle tracks, these data tools handle files and formats that most websites insist on uploading first. Everything here parses and processes locally in JavaScript - even large binaries are compared byte by byte on your own machine.',
+      'Create custom QR codes for links, Wi-Fi and contact cards, read the EXIF metadata hidden inside photos, diff two binary or text files to see exactly where they differ, or turn any video into timed SRT subtitles automatically.'
+    ]
+  }
+};
+
+function buildHubGraph(url, copy, crumbs, group) {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'CollectionPage',
+        '@id': url + '#collection',
+        name: copy.h1,
+        url,
+        description: copy.description,
+        publisher: PUBLISHER
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': url + '#breadcrumb',
+        itemListElement: crumbs
+      },
+      {
+        '@type': 'ItemList',
+        '@id': url + '#list',
+        numberOfItems: group.length,
+        itemListElement: group.map((t, i) => ({
+          '@type': 'ListItem', position: i + 1, name: t.name, url: SITE + t.htmlPath
+        }))
+      }
+    ]
+  };
+}
+
+const FAVICON_BLOCK = `    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="#000000">
+    <meta name="theme-color" content="#000000">`;
+
+function generateHubPage(hubKey, tools) {
+  const copy = HUB_COPY[hubKey];
+  const isCategory = hubKey !== 'all';
+  const url = SITE + (isCategory ? hubPath(hubKey) : copy.path);
+  const group = isCategory ? tools.filter(t => t.category === hubKey) : tools;
+
+  const crumbs = [
+    { '@type': 'ListItem', position: 1, name: 'ToolThump', item: SITE + '/' },
+    ...(isCategory
+      ? [{ '@type': 'ListItem', position: 2, name: 'Tools', item: SITE + '/tools/index.html' },
+         { '@type': 'ListItem', position: 3, name: HUB_NAME[hubKey] }]
+      : [{ '@type': 'ListItem', position: 2, name: 'Tools' }])
+  ];
+
+  const cards = group.map(t =>
+    `            <li data-accent="${HUB_ACCENT[t.category] || 'cyan'}">
+                <a class="hub-card" href="${t.htmlPath}">
+                    <span class="hub-card-name"><img src="${t.icon}" alt="" loading="lazy">${escapeHtml(t.name)}</span>
+                    <span class="hub-card-desc">${escapeHtml(t.description)}</span>
+                </a>
+            </li>`).join('\n');
+
+  const crumbBits = ['<a href="/">home</a>', '<a href="/tools/index.html">tools</a>'];
+  if (isCategory) crumbBits.push(HUB_SLUG[hubKey]);
+
+  let crosslinks;
+  if (isCategory) {
+    const others = Object.keys(CATEGORY_LABEL)
+      .filter(c => c !== hubKey)
+      .map(c => `<a href="${hubPath(c)}">${CATEGORY_LABEL[c]}</a>`)
+      .join(' &middot; ');
+    crosslinks = `        <div class="hub-crosslinks">
+            <p><a href="/tools/index.html">&larr; all tools</a> &middot; other categories: ${others}</p>
+        </div>`;
+  } else {
+    const cats = Object.keys(CATEGORY_LABEL)
+      .map(c => `<a href="${hubPath(c)}">${CATEGORY_LABEL[c]}</a>`)
+      .join(' &middot; ');
+    crosslinks = `        <div class="hub-crosslinks">
+            <p>browse by category: ${cats}</p>
+        </div>`;
+  }
+
+  const headerBlock =
+    `<header data-include="header" data-static="header" class="terminal-header">\n${indentBlock(read('_includes/header.html'), 4)}\n    </header>`;
+  const footerContent = read('_includes/footer.html')
+    .replace('<!--TOOLLINKS-->', () => indentBlock(buildFooterToolsNav(tools), 0));
+  const footerBlock =
+    `<footer data-include="footer" data-static="footer">\n${indentBlock(footerContent, 4)}\n    </footer>`;
+  const schemaTag =
+    '<script type="application/ld+json">\n    '
+    + JSON.stringify(buildHubGraph(url, copy, crumbs, group), null, 2).replace(/\n/g, '\n    ')
+    + '\n    </script>';
+
+  return `<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${copy.title}</title>
+    <meta name="description" content="${copy.description}">
+    <link rel="canonical" href="${url}">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="${url}">
+    <meta property="og:title" content="${copy.title}">
+    <meta property="og:description" content="${copy.description}">
+    <meta property="og:image" content="${SITE}/ToolThump.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="ToolThump">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="${url}">
+    <meta property="twitter:title" content="${copy.title}">
+    <meta property="twitter:description" content="${copy.description}">
+    <meta property="twitter:image" content="${SITE}/ToolThump.png">
+
+    <link rel="stylesheet" href="/global_css/theme.css">
+    <link rel="stylesheet" href="/global_css/base.css">
+    <link rel="stylesheet" href="/global_css/layout.css">
+    <link rel="stylesheet" href="/global_css/components.css">
+    <link rel="stylesheet" href="/global_css/responsive.css">
+
+${schemaTag}
+
+${FAVICON_BLOCK}
+    <link rel="stylesheet" href="/_includes/header.css">
+
+</head>
+
+<body${isCategory ? ` data-accent="${HUB_ACCENT[hubKey]}"` : ''}>
+    ${headerBlock}
+    <div class="content-wrapper">
+        <main class="hub-page">
+            <nav class="hub-breadcrumb" aria-label="Breadcrumb">
+                <p>${crumbBits.join(' &rsaquo; ')}</p>
+            </nav>
+            <h1>${copy.h1}</h1>
+            <div class="hub-intro">
+${copy.intro.map(p => `                <p>${p}</p>`).join('\n')}
+            </div>
+            <ul class="hub-cards">
+${cards}
+            </ul>
+${crosslinks}
+        </main>
+    </div>
+
+    ${footerBlock}
+
+    <script src="/main.js"></script>
+</body>
+
+</html>
+`;
+}
+
+function generateHubs(tools) {
+  const keys = ['all', ...Object.keys(CATEGORY_LABEL)];
+  let n = 0;
+  for (const key of keys) {
+    const rel = (key === 'all' ? HUB_COPY.all.path : hubPath(key)).replace(/^\//, '');
+    const dir = path.dirname(path.join(ROOT, rel));
+    if (!DRY && !fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    write(rel, generateHubPage(key, tools));
+    console.log(`${rel} ... ok (${tools.filter(t => key === 'all' || t.category === key).length} tool cards)`);
+    n++;
+  }
+  return n;
+}
+
 function buildFooterToolsNav(tools) {
   const cols = [];
   for (const category of Object.keys(CATEGORY_LABEL)) {
@@ -273,7 +507,7 @@ function buildFooterToolsNav(tools) {
     const links = group.map(t =>
       `            <li><a href="${t.htmlPath}">${escapeHtml(t.name)}</a></li>`).join('\n');
     cols.push(`    <div class="footer-tools-col">
-        <h3>${CATEGORY_LABEL[category]}</h3>
+        <h3><a href="${hubPath(category)}">${CATEGORY_LABEL[category]}</a></h3>
         <ul>
 ${links}
         </ul>
@@ -290,11 +524,12 @@ ${links}
 function inlineIncludes(html, tool, tools) {
   let inlined = 0;
 
-  /* header */
-  if (/<header[^>]*data-include=["']header["'][^>]*>\s*<\/header>/i.test(html)) {
+  /* header: fill an empty placeholder or refresh a previously inlined block
+     so edits to _includes/header.html always reach every built page */
+  if (/<header[^>]*data-(?:include|static)=["']header["'][^>]*>/i.test(html)) {
     const content = read('_includes/header.html');
     html = html.replace(
-      /<header[^>]*data-include=["']header["'][^>]*>\s*<\/header>/i,
+      /<header[^>]*data-(?:include|static)=["']header["'][^>]*>[\s\S]*?<\/header>/i,
       () => `<header data-include="header" data-static="header" class="terminal-header">\n${indentBlock(content, 4)}\n    </header>`
     );
     if (!html.includes('/_includes/header.css')) {
@@ -304,7 +539,10 @@ function inlineIncludes(html, tool, tools) {
     inlined++;
   }
 
-  /* footer (+ crawlable tool directory) */
+  /* footer (+ crawlable tool directory): empty placeholders are filled
+     directly; an already-inlined footer wraps a nested copyright <footer>,
+     so splice from its opening tag to the last </footer> in the document,
+     verifying the expected 2-close nesting before touching anything */
   if (/<footer[^>]*data-include=["']footer["'][^>]*>\s*<\/footer>/i.test(html)) {
     const content = read('_includes/footer.html')
       .replace('<!--TOOLLINKS-->', () => indentBlock(buildFooterToolsNav(tools), 0));
@@ -313,6 +551,23 @@ function inlineIncludes(html, tool, tools) {
       () => `<footer data-include="footer" data-static="footer">\n${indentBlock(content, 4)}\n    </footer>`
     );
     inlined++;
+  } else {
+    const startM = /<footer[^>]*data-(?:include|static)=["']footer["'][^>]*>/i.exec(html);
+    if (startM) {
+      const CLOSE = '</footer>';
+      const closeIdx = html.lastIndexOf(CLOSE);
+      const closes = (html.slice(startM.index, closeIdx + CLOSE.length).match(/<\/footer>/g) || []).length;
+      if (closeIdx > startM.index && closes === 2) {
+        const content = read('_includes/footer.html')
+          .replace('<!--TOOLLINKS-->', () => indentBlock(buildFooterToolsNav(tools), 0));
+        html = html.slice(0, startM.index)
+          + `<footer data-include="footer" data-static="footer">\n${indentBlock(content, 4)}\n    </footer>`
+          + html.slice(closeIdx + CLOSE.length);
+        inlined++;
+      } else {
+        console.warn(`  ! unexpected footer nesting (${closes} closes) - leaving existing footer untouched`);
+      }
+    }
   }
 
   /* tool text sections: render the JSON island into the container */
@@ -334,11 +589,44 @@ function inlineIncludes(html, tool, tools) {
   return { html, inlined };
 }
 
+/* --------------------------------------------------------- related tools */
+
+function insertRelatedTools(html, tool, tools) {
+  if (html.includes('class="related-tools"')) return { html, inserted: false };
+  const re = /^([ \t]*)<\/main>/m;
+  if (!re.test(html)) {
+    console.warn('  ! no </main> found - related tools skipped');
+    return { html, inserted: false };
+  }
+  const label = CATEGORY_LABEL[tool.category] || 'tool';
+  const siblings = tools.filter(t => t.category === tool.category && t.id !== tool.id);
+  const items = siblings.map(t =>
+    `                <li><a href="${t.htmlPath}"><img src="${t.icon}" alt="" class="tool-icon">${escapeHtml(t.name)}</a></li>`).join('\n');
+  const block = [
+    '<!-- Related tools (generated by build.js - do not edit manually) -->',
+    '        <nav class="related-tools" aria-label="Related tools">',
+    `            <h2>related ${label} tools</h2>`,
+    '            <ul>',
+    items,
+    `                <li><a class="related-all" href="${hubPath(tool.category)}">all ${label} tools &rarr;</a></li>`,
+    '            </ul>',
+    '        </nav>'
+  ].join('\n');
+  return {
+    html: html.replace(re, (_m, ind) => indentBlock(block, ind.length) + '\n' + ind + '</main>'),
+    inserted: true
+  };
+}
+
 /* ---------------------------------------------------------------- sitemap */
 
 function generateSitemap(tools) {
   const pages = [
     { loc: '/', file: 'index.html', priority: '1.0', freq: 'weekly' },
+    { loc: '/tools/index.html', file: 'tools/index.html', priority: '0.6', freq: 'weekly' },
+    ...Object.keys(CATEGORY_LABEL).map(c => ({
+      loc: hubPath(c), file: hubPath(c).replace(/^\//, ''), priority: '0.6', freq: 'weekly'
+    })),
     ...tools.map(t => ({ loc: t.htmlPath, file: t.htmlPath.replace(/^\//, ''), priority: '0.8', freq: 'monthly' })),
     { loc: '/pages/about.html', file: 'pages/about.html', priority: '0.3', freq: 'yearly' },
     { loc: '/pages/privacy.html', file: 'pages/privacy.html', priority: '0.3', freq: 'yearly' }
@@ -408,6 +696,15 @@ try {
   const tools = loadTools();
   console.log(`Found ${tools.length} tools.\n`);
 
+  /* 0. hub pages (fully regenerated from tools-data.js on every run) */
+  try {
+    const hubs = generateHubs(tools);
+    console.log(`generated ${hubs} hub pages\n`);
+  } catch (e) {
+    console.log(`FAILED generating hubs: ${e.message}`);
+    exitCode = 1;
+  }
+
   /* 1. structured data + social images + static includes per tool page */
   for (const tool of tools) {
     const rel = tool.htmlPath.replace(/^\//, '');
@@ -423,9 +720,12 @@ try {
 
       html = injectSchema(html, tool);
 
+      const rel2 = insertRelatedTools(html, tool, tools);
+      html = rel2.html;
+
       write(rel, html);
       const hasFaq = extractFaqs(read(rel)) ? '+FAQ' : '';
-      console.log(`ok (${inc.inlined} includes, ${res.fixed} image metas, schema refreshed ${hasFaq})`);
+      console.log(`ok (${inc.inlined} includes, ${res.fixed} image metas, schema refreshed${hasFaq}${rel2.inserted ? ', +related' : ''})`);
     } catch (e) {
       console.log(`FAILED: ${e.message}`);
       exitCode = 1;

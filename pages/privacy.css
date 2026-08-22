@@ -9,7 +9,7 @@
 .page-header h1::before { display: none; }
 .page-header .subtitle { font-size: 0.9rem; color: var(--fg-dim); max-width: 60ch; font-family: var(--font); }
 
-.privacy-container { margin: 0 auto; max-width: 70ch; font-family: var(--font); }
+.privacy-container { width: 100%; font-family: var(--font); }
 .privacy-section { margin-bottom: var(--spacing-xl); }
 .privacy-section:last-of-type { margin-bottom: 0; }
 .privacy-section h2 {
