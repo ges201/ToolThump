@@ -59,6 +59,9 @@ function buildTerminalChrome() {
 
 async function loadIncludes() {
     const promises = [...$$('[data-include]')].map(async el => {
+        // Content already present (inlined by build.js at build time).
+        if (el.hasAttribute('data-static')) return;
+
         const name = el.dataset.include;
         const content = await fetchContent(`/_includes/${name}.html`);
 
@@ -144,9 +147,35 @@ function decodeEntities(str) {
 }
 
 function initializeToolTextSections() {
-    const data = $('#tool-text-data');
     const container = $('#tool-text-sections-container');
-    if (!data || !container) return;
+    if (!container) return;
+
+    const wireAccordions = () => {
+        $$('.accordion-header').forEach(h => {
+            h.addEventListener('click', () => {
+                const content = h.nextElementSibling;
+                const opening = !h.classList.contains('active');
+                $$('.accordion-header').forEach(other => {
+                    if (other !== h) {
+                        other.classList.remove('active');
+                        other.nextElementSibling.style.maxHeight = null;
+                    }
+                });
+                h.classList.toggle('active', opening);
+                content.style.maxHeight = opening ? content.scrollHeight + 'px' : null;
+            });
+        });
+    };
+
+    // Sections were rendered at build time (static HTML) - only the
+    // accordion behavior needs wiring.
+    if (container.children.length > 0) {
+        wireAccordions();
+        return;
+    }
+
+    const data = $('#tool-text-data');
+    if (!data) return;
 
     const templates = {
         section: $('#template-section'),
@@ -199,24 +228,11 @@ function initializeToolTextSections() {
             }
             container.appendChild(clone);
         });
-
-        $$('.accordion-header').forEach(h => {
-            h.addEventListener('click', () => {
-                const content = h.nextElementSibling;
-                const opening = !h.classList.contains('active');
-                $$('.accordion-header').forEach(other => {
-                    if (other !== h) {
-                        other.classList.remove('active');
-                        other.nextElementSibling.style.maxHeight = null;
-                    }
-                });
-                h.classList.toggle('active', opening);
-                content.style.maxHeight = opening ? content.scrollHeight + 'px' : null;
-            });
-        });
     } catch (e) {
         console.error("Error parsing tool text data:", e);
     }
+
+    wireAccordions();
 }
 
 // =================================================================

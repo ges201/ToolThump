@@ -48,7 +48,7 @@
             "url": "https://toolthump.com/"
           },
           "datePublished": "2025-06-18",
-          "dateModified": "2026-08-14"
+          "dateModified": "2026-08-22"
         },
         {
           "@type": "BreadcrumbList",
@@ -148,11 +148,70 @@
     <!-- Reusable Text Section Stylesheet -->
     <link rel="stylesheet" href="/_includes/tool-text-section.css">
 
+    <link rel="stylesheet" href="/_includes/header.css">
+
 </head>
 
 <body>
     <!-- FIX: Corrected data-include value to 'header' -->
-    <header data-include="header"></header>
+    <header data-include="header" data-static="header" class="terminal-header">
+    <div class="header-brand">
+        <a href="/" class="logo-link">
+            <span class="text-logo">toolthump</span>
+        </a>
+    </div>
+    <nav id="top-navigation">
+        <ul class="category-list">
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="security-tools">
+                    security
+                </button>
+                <ul class="dropdown-menu" id="security-tools" role="menu">
+                    <li role="none"><a href="/tools/security/password-generator/password-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/lock.svg" alt="" class="tool-icon">Password Generator</a></li>
+                    <li role="none"><a href="/tools/security/password-strength-checker/password-strength-checker.html" role="menuitem" class="tool-link"><img src="/assets/icons/shield.svg" alt="" class="tool-icon">Password Strength Checker</a></li>
+                    <li role="none"><a href="/tools/security/encoder-decoder/encoder-decoder.html" role="menuitem" class="tool-link"><img src="/assets/icons/code.svg" alt="" class="tool-icon">Encoder / Decoder</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="text-tools">
+                    text
+                </button>
+                <ul class="dropdown-menu" id="text-tools" role="menu">
+                    <li role="none"><a href="/tools/text/text-comparison/text-comparison.html" role="menuitem" class="tool-link"><img src="/assets/icons/file.svg" alt="" class="tool-icon">Text Comparison</a></li>
+                    <li role="none"><a href="/tools/text/text-converter/text-converter.html" role="menuitem" class="tool-link"><img src="/assets/icons/edit.svg" alt="" class="tool-icon">Text Case Converter</a></li>
+                    <li role="none"><a href="/tools/text/duplicate-words-finder/duplicate-words-finder.html" role="menuitem" class="tool-link"><img src="/assets/icons/search.svg" alt="" class="tool-icon">Duplicate Words Finder</a></li>
+                    <li role="none"><a href="/tools/text/markdown-editor/markdown-editor.html" role="menuitem" class="tool-link"><img src="/assets/icons/file-text.svg" alt="" class="tool-icon">Markdown Editor</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="image-tools">
+                    image
+                </button>
+                <ul class="dropdown-menu" id="image-tools" role="menu">
+                    <li role="none"><a href="/tools/images/image-converter/image-converter.html" role="menuitem" class="tool-link"><img src="/assets/icons/image.svg" alt="" class="tool-icon">Image Converter</a></li>
+                    <li role="none"><a href="/tools/images/image-resizer/image-resizer.html" role="menuitem" class="tool-link"><img src="/assets/icons/crop.svg" alt="" class="tool-icon">Image Resizer</a></li>
+                    <li role="none"><a href="/tools/images/color-picker/color-picker.html" role="menuitem" class="tool-link"><img src="/assets/icons/eye.svg" alt="" class="tool-icon">Color Picker</a></li>
+                    <li role="none"><a href="/tools/images/bg-remover/bg-remover.html" role="menuitem" class="tool-link"><img src="/assets/icons/sparkles.svg" alt="" class="tool-icon">Background Remover</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="data-tools">
+                    data
+                </button>
+                <ul class="dropdown-menu" id="data-tools" role="menu">
+                    <li role="none"><a href="/tools/data/qr-code-generator/qr-code-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/barcode.svg" alt="" class="tool-icon">QR Code Generator</a></li>
+                    <li role="none"><a href="/tools/data/image-metadata-viewer/image-metadata-viewer.html" role="menuitem" class="tool-link"><img src="/assets/icons/image-frame.svg" alt="" class="tool-icon">Image Metadata Viewer</a></li>
+                    <li role="none"><a href="/tools/data/file-comparison/file-comparison.html" role="menuitem" class="tool-link"><img src="/assets/icons/attachment.svg" alt="" class="tool-icon">File Comparison</a></li>
+                    <li role="none"><a href="/tools/data/video-subtitles-generator/video-subtitles-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/video.svg" alt="" class="tool-icon">Video Subtitles Generator</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <button id="theme-toggle" aria-label="Switch to amber theme">
+        <img id="theme-icon-sun" class="theme-icon theme-icon-svg" src="/assets/icons/sun.svg" alt="Sun toggle">
+        <img id="theme-icon-moon" class="theme-icon theme-icon-svg" src="/assets/icons/moon.svg" alt="Moon toggle">
+    </button>
+    </header>
 
     <div class="content-wrapper">
         <main id="tool-container">
@@ -266,13 +325,232 @@
             </div>
 
             <!-- This will now fetch the new include file -->
-            <div data-include="tool-text-section"></div>
+                    <!-- Main container where sections will be rendered -->
+        <div id="tool-text-sections-container" data-static="true">
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">▸</span>How to Use</h2>
+                    <div class="section-content">
+                        <p>Follow these simple steps to grab any color from your image. All processing is done securely in your browser.</p>
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <span class="feature-icon">❶</span>
+                                <div class="feature-text">
+                                    <strong>Select Your Image</strong>
+                                    <p>Click the &quot;Upload Image&quot; button to choose a file from your device. Your image will appear in the main canvas area.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">❷</span>
+                                <div class="feature-text">
+                                    <strong>Activate the Eyedropper</strong>
+                                    <p>Press the &quot;Activate Eyedropper&quot; button. This enables color selection mode and brings up the live magnifier.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">❸</span>
+                                <div class="feature-text">
+                                    <strong>Pick Your Color</strong>
+                                    <p>Move your mouse over the image to see the magnifier and color preview update in real-time. Use the zoom controls or arrow keys for fine-tuning. Click to select the final color and instantly see its HEX, RGB, and HSL codes.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">✦</span>Key Features</h2>
+                    <div class="section-content">
+                        <p>Our Image Color Picker is designed for accuracy, privacy, and ease of use. Here's what makes it stand out:</p>
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <span class="feature-icon">◆</span>
+                                <div class="feature-text">
+                                    <strong>Completely Private</strong>
+                                    <p>All color processing happens in your browser. Images are never uploaded to a server, ensuring 100% privacy and security.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">◈</span>
+                                <div class="feature-text">
+                                    <strong>Zoom &amp; Pan Controls</strong>
+                                    <p>Easily navigate high-resolution images. Zoom in for incredible detail and pan across the canvas to find the perfect area.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">→</span>
+                                <div class="feature-text">
+                                    <strong>Magnifying Glass</strong>
+                                    <p>A live, magnified preview of the area under your cursor allows you to select the exact pixel you need with confidence.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">⎯</span>
+                                <div class="feature-text">
+                                    <strong>Keyboard Navigation</strong>
+                                    <p>After activating the eyedropper, use your keyboard's arrow keys to nudge the selection one pixel at a time for ultimate precision.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">■</span>
+                                <div class="feature-text">
+                                    <strong>Multiple Color Formats</strong>
+                                    <p>Instantly get your selected color in HEX, RGB, and HSL formats. Each value is ready to be copied with a single click.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">⚡</span>
+                                <div class="feature-text">
+                                    <strong>Interactive Canvas</strong>
+                                    <p>The tool uses a powerful HTML5 canvas, providing a smooth and responsive experience even with large image files.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">✦</span>Why Our Color Picker is an Essential Tool</h2>
+                    <div class="section-content">
+                        <p>Getting the exact color from an image is crucial for designers, developers, and artists. A mismatched color can disrupt a brand's identity, throw off a design's harmony, or make a digital illustration look unprofessional. This tool bridges the gap between inspiration and implementation.</p>
+                        <p>Whether you are a web developer matching a client's logo color, a graphic designer creating a cohesive brand palette, or a digital artist sampling colors from a reference photo, our color picker provides the pixel-perfect accuracy you need. It eliminates guesswork, saves you time, and ensures your projects maintain a professional, consistent look and feel across any medium.</p>
+                    </div>
+                </section>
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">◈</span>Frequently Asked Questions (FAQ)</h2>
+                    <div class="section-content">
+                        <div class="accordion-container">
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">◆</span>
+                                    <strong>Is my data safe?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Absolutely. This tool is 100% client-side, meaning your images are never uploaded or sent to our servers. All processing happens securely within your own browser on your computer. Your privacy is guaranteed.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">■</span>
+                                    <strong>What image formats can I upload?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>You can upload most standard web image formats, including <code>.JPG</code>, <code>.JPEG</code>, <code>.PNG</code>, <code>.GIF</code>, <code>.WEBP</code>, and <code>.BMP</code>. For the best results, use uncompressed or high-quality images.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">■</span>
+                                    <strong>Is there a file size limit?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>While there's no hard limit enforced, performance may vary with extremely large image files (over 15MB). The tool is optimized for typical web and design images for a fast and smooth experience.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">→</span>
+                                    <strong>How do the Zoom and Pan features work?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>After uploading an image, use the zoom slider to magnify it. When zoomed in, you can click and drag the image to pan around. This is especially useful for high-resolution photos where you need to find a specific detail.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        
+        <!--
+          HTML TEMPLATES
+          These are inert blocks of HTML that our JavaScript will use to build the sections.
+          This keeps the structure of our content out of the JavaScript file.
+        -->
+        
+        <!-- Template for a single feature or how-to step item -->
+        <template id="template-feature-item">
+            <li class="feature-item">
+                <span class="feature-icon"></span>
+                <div class="feature-text">
+                    <strong></strong>
+                    <p></p>
+                </div>
+            </li>
+        </template>
+        
+        <!-- Template for a single FAQ accordion item -->
+        <template id="template-faq-item">
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <span class="accordion-icon"></span>
+                    <strong></strong>
+                    <span class="arrow-icon"></span>
+                </button>
+                <div class="accordion-content">
+                    <p></p>
+                </div>
+            </div>
+        </template>
+        
+        <!-- Template for a generic section wrapper -->
+        <template id="template-section">
+            <section class="tool-text-section">
+                <h2><span class="section-icon"></span></h2>
+                <div class="section-content">
+                    <!-- Content (intro, lists, paragraphs) will be injected here -->
+                </div>
+            </section>
+        </template>
 
         </main>
     </div>
 
     <!-- FIX: Corrected data-include value to 'footer' -->
-    <footer data-include="footer"></footer>
+    <footer data-include="footer" data-static="footer">
+    <!-- The TOOLLINKS comment is replaced with a crawlable tool directory by build.js -->
+    <nav class="footer-tools" aria-label="All ToolThump tools">
+        <div class="footer-tools-col">
+            <h3>security</h3>
+            <ul>
+                <li><a href="/tools/security/password-generator/password-generator.html">Password Generator</a></li>
+                <li><a href="/tools/security/password-strength-checker/password-strength-checker.html">Password Strength Checker</a></li>
+                <li><a href="/tools/security/encoder-decoder/encoder-decoder.html">Encoder / Decoder</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>text</h3>
+            <ul>
+                <li><a href="/tools/text/text-comparison/text-comparison.html">Text Comparison</a></li>
+                <li><a href="/tools/text/text-converter/text-converter.html">Text Case Converter</a></li>
+                <li><a href="/tools/text/duplicate-words-finder/duplicate-words-finder.html">Duplicate Words Finder</a></li>
+                <li><a href="/tools/text/markdown-editor/markdown-editor.html">Markdown Editor</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>image</h3>
+            <ul>
+                <li><a href="/tools/images/image-converter/image-converter.html">Image Converter</a></li>
+                <li><a href="/tools/images/image-resizer/image-resizer.html">Image Resizer</a></li>
+                <li><a href="/tools/images/color-picker/color-picker.html">Image Color Picker</a></li>
+                <li><a href="/tools/images/bg-remover/bg-remover.html">Background Remover</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>data</h3>
+            <ul>
+                <li><a href="/tools/data/qr-code-generator/qr-code-generator.html">QR Code Generator</a></li>
+                <li><a href="/tools/data/image-metadata-viewer/image-metadata-viewer.html">Image Metadata Viewer</a></li>
+                <li><a href="/tools/data/file-comparison/file-comparison.html">File Comparison</a></li>
+                <li><a href="/tools/data/video-subtitles-generator/video-subtitles-generator.html">Video Subtitles Generator</a></li>
+            </ul>
+        </div>
+    </nav>
+    <p class="footer-tagline">100% free &middot; no sign-up &middot; every tool runs entirely in your browser.</p>
+    <footer>
+        <p>© <span id="current-year"></span> ToolThump. All rights reserved. | <a href="/pages/about.html">About ToolThump</a> | <a href="/pages/privacy.html">Privacy Policy</a></p>
+    </footer>
+    </footer>
 
     <!-- Data Island for this specific tool's text content -->
     <script type="application/json" id="tool-text-data">

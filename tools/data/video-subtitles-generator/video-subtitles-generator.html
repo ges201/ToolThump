@@ -75,7 +75,7 @@
             "url": "https://toolthump.com/"
           },
           "datePublished": "2026-03-30",
-          "dateModified": "2026-08-14"
+          "dateModified": "2026-08-22"
         },
         {
           "@type": "BreadcrumbList",
@@ -190,10 +190,69 @@
         })();
     </script>
 
+    <link rel="stylesheet" href="/_includes/header.css">
+
 </head>
 
 <body>
-    <header data-include="header"></header>
+    <header data-include="header" data-static="header" class="terminal-header">
+    <div class="header-brand">
+        <a href="/" class="logo-link">
+            <span class="text-logo">toolthump</span>
+        </a>
+    </div>
+    <nav id="top-navigation">
+        <ul class="category-list">
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="security-tools">
+                    security
+                </button>
+                <ul class="dropdown-menu" id="security-tools" role="menu">
+                    <li role="none"><a href="/tools/security/password-generator/password-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/lock.svg" alt="" class="tool-icon">Password Generator</a></li>
+                    <li role="none"><a href="/tools/security/password-strength-checker/password-strength-checker.html" role="menuitem" class="tool-link"><img src="/assets/icons/shield.svg" alt="" class="tool-icon">Password Strength Checker</a></li>
+                    <li role="none"><a href="/tools/security/encoder-decoder/encoder-decoder.html" role="menuitem" class="tool-link"><img src="/assets/icons/code.svg" alt="" class="tool-icon">Encoder / Decoder</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="text-tools">
+                    text
+                </button>
+                <ul class="dropdown-menu" id="text-tools" role="menu">
+                    <li role="none"><a href="/tools/text/text-comparison/text-comparison.html" role="menuitem" class="tool-link"><img src="/assets/icons/file.svg" alt="" class="tool-icon">Text Comparison</a></li>
+                    <li role="none"><a href="/tools/text/text-converter/text-converter.html" role="menuitem" class="tool-link"><img src="/assets/icons/edit.svg" alt="" class="tool-icon">Text Case Converter</a></li>
+                    <li role="none"><a href="/tools/text/duplicate-words-finder/duplicate-words-finder.html" role="menuitem" class="tool-link"><img src="/assets/icons/search.svg" alt="" class="tool-icon">Duplicate Words Finder</a></li>
+                    <li role="none"><a href="/tools/text/markdown-editor/markdown-editor.html" role="menuitem" class="tool-link"><img src="/assets/icons/file-text.svg" alt="" class="tool-icon">Markdown Editor</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="image-tools">
+                    image
+                </button>
+                <ul class="dropdown-menu" id="image-tools" role="menu">
+                    <li role="none"><a href="/tools/images/image-converter/image-converter.html" role="menuitem" class="tool-link"><img src="/assets/icons/image.svg" alt="" class="tool-icon">Image Converter</a></li>
+                    <li role="none"><a href="/tools/images/image-resizer/image-resizer.html" role="menuitem" class="tool-link"><img src="/assets/icons/crop.svg" alt="" class="tool-icon">Image Resizer</a></li>
+                    <li role="none"><a href="/tools/images/color-picker/color-picker.html" role="menuitem" class="tool-link"><img src="/assets/icons/eye.svg" alt="" class="tool-icon">Color Picker</a></li>
+                    <li role="none"><a href="/tools/images/bg-remover/bg-remover.html" role="menuitem" class="tool-link"><img src="/assets/icons/sparkles.svg" alt="" class="tool-icon">Background Remover</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="data-tools">
+                    data
+                </button>
+                <ul class="dropdown-menu" id="data-tools" role="menu">
+                    <li role="none"><a href="/tools/data/qr-code-generator/qr-code-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/barcode.svg" alt="" class="tool-icon">QR Code Generator</a></li>
+                    <li role="none"><a href="/tools/data/image-metadata-viewer/image-metadata-viewer.html" role="menuitem" class="tool-link"><img src="/assets/icons/image-frame.svg" alt="" class="tool-icon">Image Metadata Viewer</a></li>
+                    <li role="none"><a href="/tools/data/file-comparison/file-comparison.html" role="menuitem" class="tool-link"><img src="/assets/icons/attachment.svg" alt="" class="tool-icon">File Comparison</a></li>
+                    <li role="none"><a href="/tools/data/video-subtitles-generator/video-subtitles-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/video.svg" alt="" class="tool-icon">Video Subtitles Generator</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <button id="theme-toggle" aria-label="Switch to amber theme">
+        <img id="theme-icon-sun" class="theme-icon theme-icon-svg" src="/assets/icons/sun.svg" alt="Sun toggle">
+        <img id="theme-icon-moon" class="theme-icon theme-icon-svg" src="/assets/icons/moon.svg" alt="Moon toggle">
+    </button>
+    </header>
 
     <div class="content-wrapper">
         <main id="tool-container">
@@ -302,11 +361,208 @@
                 </div>
             </section>
 
-            <div data-include="tool-text-section"></div>
+                    <!-- Main container where sections will be rendered -->
+        <div id="tool-text-sections-container" data-static="true">
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">▸</span>Generate Subtitles in 3 Easy Steps</h2>
+                    <div class="section-content">
+                        <p>Transform any video into subtitle files with automatic speech recognition technology.</p>
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <span class="feature-icon">❶</span>
+                                <div class="feature-text">
+                                    <strong>Upload Your Video</strong>
+                                    <p>Drag and drop your video file into the upload area or click to select. Supports all common video formats including MP4, AVI, MOV, MKV, and more.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">❷</span>
+                                <div class="feature-text">
+                                    <strong>Configure Settings</strong>
+                                    <p>Select the language of your video's audio and choose the processing model quality. Higher quality models are more accurate but take longer to process.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">❸</span>
+                                <div class="feature-text">
+                                    <strong>Generate and Download</strong>
+                                    <p>Click 'Generate Subtitles' and wait for the processing to complete. Once done, preview your subtitles and download the SRT file.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">✦</span>Key Features</h2>
+                    <div class="section-content">
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <span class="feature-icon">◆</span>
+                                <div class="feature-text">
+                                    <strong>100% Private Processing</strong>
+                                    <p>All processing happens directly in your browser. Your videos are never uploaded to any server, ensuring complete privacy and security.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">◎</span>
+                                <div class="feature-text">
+                                    <strong>Multi-Language Support</strong>
+                                    <p>Support for 10+ languages including English, Spanish, French, German, Italian, Portuguese, Russian, Japanese, Korean, and Chinese.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">◆</span>
+                                <div class="feature-text">
+                                    <strong>Adjustable Quality</strong>
+                                    <p>Choose from different processing models ranging from fast and lightweight to highly accurate for professional results.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">↓</span>
+                                <div class="feature-text">
+                                    <strong>Standard SRT Format</strong>
+                                    <p>Output files are in industry-standard SRT format, compatible with all major video players and editing software.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">◈</span>Frequently Asked Questions (FAQ)</h2>
+                    <div class="section-content">
+                        <div class="accordion-container">
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">◆</span>
+                                    <strong>Is my video really private?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Yes, absolutely. All processing occurs locally in your browser using WebAssembly technology. Your video file never leaves your computer.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">▨</span>
+                                    <strong>How long does processing take?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Processing time depends on video length and quality settings. As a rough estimate: 1 minute of video takes 1-3 minutes to process with the base model.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">◎</span>
+                                    <strong>What if my video has no audio?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>The tool will detect this and generate a single subtitle entry covering the entire video duration with placeholder text like '[No speech detected]'.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">◆</span>
+                                    <strong>Can I edit the generated subtitles?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>The tool generates basic subtitles. For advanced editing, download the SRT file and use dedicated subtitle editing software like Aegisub or Subtitle Edit.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        
+        <!--
+          HTML TEMPLATES
+          These are inert blocks of HTML that our JavaScript will use to build the sections.
+          This keeps the structure of our content out of the JavaScript file.
+        -->
+        
+        <!-- Template for a single feature or how-to step item -->
+        <template id="template-feature-item">
+            <li class="feature-item">
+                <span class="feature-icon"></span>
+                <div class="feature-text">
+                    <strong></strong>
+                    <p></p>
+                </div>
+            </li>
+        </template>
+        
+        <!-- Template for a single FAQ accordion item -->
+        <template id="template-faq-item">
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <span class="accordion-icon"></span>
+                    <strong></strong>
+                    <span class="arrow-icon"></span>
+                </button>
+                <div class="accordion-content">
+                    <p></p>
+                </div>
+            </div>
+        </template>
+        
+        <!-- Template for a generic section wrapper -->
+        <template id="template-section">
+            <section class="tool-text-section">
+                <h2><span class="section-icon"></span></h2>
+                <div class="section-content">
+                    <!-- Content (intro, lists, paragraphs) will be injected here -->
+                </div>
+            </section>
+        </template>
         </main>
     </div>
 
-    <footer data-include="footer"></footer>
+    <footer data-include="footer" data-static="footer">
+    <!-- The TOOLLINKS comment is replaced with a crawlable tool directory by build.js -->
+    <nav class="footer-tools" aria-label="All ToolThump tools">
+        <div class="footer-tools-col">
+            <h3>security</h3>
+            <ul>
+                <li><a href="/tools/security/password-generator/password-generator.html">Password Generator</a></li>
+                <li><a href="/tools/security/password-strength-checker/password-strength-checker.html">Password Strength Checker</a></li>
+                <li><a href="/tools/security/encoder-decoder/encoder-decoder.html">Encoder / Decoder</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>text</h3>
+            <ul>
+                <li><a href="/tools/text/text-comparison/text-comparison.html">Text Comparison</a></li>
+                <li><a href="/tools/text/text-converter/text-converter.html">Text Case Converter</a></li>
+                <li><a href="/tools/text/duplicate-words-finder/duplicate-words-finder.html">Duplicate Words Finder</a></li>
+                <li><a href="/tools/text/markdown-editor/markdown-editor.html">Markdown Editor</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>image</h3>
+            <ul>
+                <li><a href="/tools/images/image-converter/image-converter.html">Image Converter</a></li>
+                <li><a href="/tools/images/image-resizer/image-resizer.html">Image Resizer</a></li>
+                <li><a href="/tools/images/color-picker/color-picker.html">Image Color Picker</a></li>
+                <li><a href="/tools/images/bg-remover/bg-remover.html">Background Remover</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>data</h3>
+            <ul>
+                <li><a href="/tools/data/qr-code-generator/qr-code-generator.html">QR Code Generator</a></li>
+                <li><a href="/tools/data/image-metadata-viewer/image-metadata-viewer.html">Image Metadata Viewer</a></li>
+                <li><a href="/tools/data/file-comparison/file-comparison.html">File Comparison</a></li>
+                <li><a href="/tools/data/video-subtitles-generator/video-subtitles-generator.html">Video Subtitles Generator</a></li>
+            </ul>
+        </div>
+    </nav>
+    <p class="footer-tagline">100% free &middot; no sign-up &middot; every tool runs entirely in your browser.</p>
+    <footer>
+        <p>© <span id="current-year"></span> ToolThump. All rights reserved. | <a href="/pages/about.html">About ToolThump</a> | <a href="/pages/privacy.html">Privacy Policy</a></p>
+    </footer>
+    </footer>
 
     <!-- Data Island for the text sections -->
     <script type="application/json" id="tool-text-data">{

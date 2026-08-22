@@ -45,7 +45,7 @@
             "url": "https://toolthump.com/"
           },
           "datePublished": "2025-07-09",
-          "dateModified": "2026-08-14"
+          "dateModified": "2026-08-22"
         },
         {
           "@type": "BreadcrumbList",
@@ -197,10 +197,69 @@
   <meta name="msapplication-TileColor" content="#da532c">
   <meta name="theme-color" content="#ffffff">
 
+    <link rel="stylesheet" href="/_includes/header.css">
+
 </head>
 
 <body>
-  <header data-include="header"></header>
+  <header data-include="header" data-static="header" class="terminal-header">
+    <div class="header-brand">
+        <a href="/" class="logo-link">
+            <span class="text-logo">toolthump</span>
+        </a>
+    </div>
+    <nav id="top-navigation">
+        <ul class="category-list">
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="security-tools">
+                    security
+                </button>
+                <ul class="dropdown-menu" id="security-tools" role="menu">
+                    <li role="none"><a href="/tools/security/password-generator/password-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/lock.svg" alt="" class="tool-icon">Password Generator</a></li>
+                    <li role="none"><a href="/tools/security/password-strength-checker/password-strength-checker.html" role="menuitem" class="tool-link"><img src="/assets/icons/shield.svg" alt="" class="tool-icon">Password Strength Checker</a></li>
+                    <li role="none"><a href="/tools/security/encoder-decoder/encoder-decoder.html" role="menuitem" class="tool-link"><img src="/assets/icons/code.svg" alt="" class="tool-icon">Encoder / Decoder</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="text-tools">
+                    text
+                </button>
+                <ul class="dropdown-menu" id="text-tools" role="menu">
+                    <li role="none"><a href="/tools/text/text-comparison/text-comparison.html" role="menuitem" class="tool-link"><img src="/assets/icons/file.svg" alt="" class="tool-icon">Text Comparison</a></li>
+                    <li role="none"><a href="/tools/text/text-converter/text-converter.html" role="menuitem" class="tool-link"><img src="/assets/icons/edit.svg" alt="" class="tool-icon">Text Case Converter</a></li>
+                    <li role="none"><a href="/tools/text/duplicate-words-finder/duplicate-words-finder.html" role="menuitem" class="tool-link"><img src="/assets/icons/search.svg" alt="" class="tool-icon">Duplicate Words Finder</a></li>
+                    <li role="none"><a href="/tools/text/markdown-editor/markdown-editor.html" role="menuitem" class="tool-link"><img src="/assets/icons/file-text.svg" alt="" class="tool-icon">Markdown Editor</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="image-tools">
+                    image
+                </button>
+                <ul class="dropdown-menu" id="image-tools" role="menu">
+                    <li role="none"><a href="/tools/images/image-converter/image-converter.html" role="menuitem" class="tool-link"><img src="/assets/icons/image.svg" alt="" class="tool-icon">Image Converter</a></li>
+                    <li role="none"><a href="/tools/images/image-resizer/image-resizer.html" role="menuitem" class="tool-link"><img src="/assets/icons/crop.svg" alt="" class="tool-icon">Image Resizer</a></li>
+                    <li role="none"><a href="/tools/images/color-picker/color-picker.html" role="menuitem" class="tool-link"><img src="/assets/icons/eye.svg" alt="" class="tool-icon">Color Picker</a></li>
+                    <li role="none"><a href="/tools/images/bg-remover/bg-remover.html" role="menuitem" class="tool-link"><img src="/assets/icons/sparkles.svg" alt="" class="tool-icon">Background Remover</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="data-tools">
+                    data
+                </button>
+                <ul class="dropdown-menu" id="data-tools" role="menu">
+                    <li role="none"><a href="/tools/data/qr-code-generator/qr-code-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/barcode.svg" alt="" class="tool-icon">QR Code Generator</a></li>
+                    <li role="none"><a href="/tools/data/image-metadata-viewer/image-metadata-viewer.html" role="menuitem" class="tool-link"><img src="/assets/icons/image-frame.svg" alt="" class="tool-icon">Image Metadata Viewer</a></li>
+                    <li role="none"><a href="/tools/data/file-comparison/file-comparison.html" role="menuitem" class="tool-link"><img src="/assets/icons/attachment.svg" alt="" class="tool-icon">File Comparison</a></li>
+                    <li role="none"><a href="/tools/data/video-subtitles-generator/video-subtitles-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/video.svg" alt="" class="tool-icon">Video Subtitles Generator</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <button id="theme-toggle" aria-label="Switch to amber theme">
+        <img id="theme-icon-sun" class="theme-icon theme-icon-svg" src="/assets/icons/sun.svg" alt="Sun toggle">
+        <img id="theme-icon-moon" class="theme-icon theme-icon-svg" src="/assets/icons/moon.svg" alt="Moon toggle">
+    </button>
+    </header>
   <div class="content-wrapper">
     <main id="tool-container">
       <section id="backgroundRemover" class="tool-content active">
@@ -336,11 +395,233 @@
         </div>
       </section>
 
-      <div data-include="tool-text-section"></div>
+              <!-- Main container where sections will be rendered -->
+        <div id="tool-text-sections-container" data-static="true">
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">▸</span>How to Banish a Background</h2>
+                    <div class="section-content">
+                        <p>Making your image's background disappear is a simple, four-step magic trick.</p>
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <span class="feature-icon">❶</span>
+                                <div class="feature-text">
+                                    <strong>Upload Your Image</strong>
+                                    <p>Click the big box to select an image file (PNG, JPG, or WEBP) from your device, or just drag and drop it right into the workspace. You'll see a preview instantly.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">❷</span>
+                                <div class="feature-text">
+                                    <strong>Remove the Background</strong>
+                                    <p>Hit the 'Remove Background' button. The AI will analyze the image and remove the background. The first time you do this, it will need to download the model, which can take a moment.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">❸</span>
+                                <div class="feature-text">
+                                    <strong>Refine Your Cutout</strong>
+                                    <p>Once processed, an editing panel appears. Here you can add a new background color or activate the manual brushes to erase stray pixels or restore parts of the original image. You're in control.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">❹</span>
+                                <div class="feature-text">
+                                    <strong>Download the Result</strong>
+                                    <p>Click 'Download Image' to save your work as a high-quality PNG. Leave 'Auto-crop' checked to automatically trim away empty space for a perfectly snug result.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">✦</span>Features &amp; Philosophy</h2>
+                    <div class="section-content">
+                        <p>This tool was built with a few core principles in mind: privacy, power, and simplicity.</p>
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <span class="feature-icon">◆</span>
+                                <div class="feature-text">
+                                    <strong>100% Client-Side &amp; Private</strong>
+                                    <p>Your images are processed directly in your browser. They are never uploaded to a server, viewed by anyone, or stored anywhere. What happens on your computer stays on your computer.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">●</span>
+                                <div class="feature-text">
+                                    <strong>Completely Free, No Shenanigans</strong>
+                                    <p>This is a free tool. There's no login required, no trial period, no watermarks, and no up-sell. Just a utility that does what it says on the tin.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">■</span>
+                                <div class="feature-text">
+                                    <strong>Powerful Editing Toolkit</strong>
+                                    <p>The AI does the heavy lifting, but you have the final say. Add a custom background color, or activate the manual brush tools to delete artifacts or restore details. The reset button reverts all edits back to the original AI cutout in a click.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">✕</span>
+                                <div class="feature-text">
+                                    <strong>Smart Auto-Cropping</strong>
+                                    <p>The auto-crop feature is enabled by default to trim your final image to the content's edge, removing unnecessary transparent space. This saves you a step in your workflow.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">✦</span>The Magic Happens in Your Browser</h2>
+                    <div class="section-content">
+                        <p>You might wonder how this works without uploading your image. The first time you click 'Remove Background', your browser downloads a specialized AI model (about 42MB). This model is the 'engine' that performs the background removal. Once downloaded, it runs entirely on your device.</p>
+                        <p>This client-side approach is the key to ensuring your privacy. Since your file never leaves your machine, you maintain complete control. It's a bit like having a powerful image editing studio right in your browser tab, without the installation hassle or privacy concerns of traditional software or online services.</p>
+                    </div>
+                </section>
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">◈</span>Frequently Asked Questions (FAQ)</h2>
+                    <div class="section-content">
+                        <div class="accordion-container">
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">◆</span>
+                                    <strong>Are my images safe and private?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Yes, absolutely. The entire background removal process happens on your computer using JavaScript in your browser. Your files are never sent to or stored on any server.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">◈</span>
+                                    <strong>What's the catch? Why is it free?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>There isn't one. The 'catch,' if you can call it that, is that the first time you use the tool, your browser needs to download the AI model (about 42MB). This might take a moment on slower connections. The site is a personal project, not a corporate venture.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">⚡</span>
+                                    <strong>Why does the AI output look weird?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Images with a clear subject and a distinct background work best. A portrait of a person against a blurry landscape is ideal. A photo of a white cat in a snowstorm might be... challenging for the AI. If you spot any small imperfections, just activate the brush tool to clean them up manually.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">■</span>
+                                    <strong>How do the manual edit brushes work?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Simple! 'Delete' acts as an eraser, making parts of the image transparent. 'Restore' does the opposite, bringing back parts of the original image that were removed. Adjust the size and feathering to get the perfect edit.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">●</span>
+                                    <strong>What does the reset button do?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>The reset button (the circular arrow) undoes all your manual brush edits and background color changes, instantly reverting the image to the initial result provided by the AI. It doesn't affect your original uploaded image.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        
+        <!--
+          HTML TEMPLATES
+          These are inert blocks of HTML that our JavaScript will use to build the sections.
+          This keeps the structure of our content out of the JavaScript file.
+        -->
+        
+        <!-- Template for a single feature or how-to step item -->
+        <template id="template-feature-item">
+            <li class="feature-item">
+                <span class="feature-icon"></span>
+                <div class="feature-text">
+                    <strong></strong>
+                    <p></p>
+                </div>
+            </li>
+        </template>
+        
+        <!-- Template for a single FAQ accordion item -->
+        <template id="template-faq-item">
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <span class="accordion-icon"></span>
+                    <strong></strong>
+                    <span class="arrow-icon"></span>
+                </button>
+                <div class="accordion-content">
+                    <p></p>
+                </div>
+            </div>
+        </template>
+        
+        <!-- Template for a generic section wrapper -->
+        <template id="template-section">
+            <section class="tool-text-section">
+                <h2><span class="section-icon"></span></h2>
+                <div class="section-content">
+                    <!-- Content (intro, lists, paragraphs) will be injected here -->
+                </div>
+            </section>
+        </template>
     </main>
   </div>
 
-  <footer data-include="footer"></footer>
+  <footer data-include="footer" data-static="footer">
+    <!-- The TOOLLINKS comment is replaced with a crawlable tool directory by build.js -->
+    <nav class="footer-tools" aria-label="All ToolThump tools">
+        <div class="footer-tools-col">
+            <h3>security</h3>
+            <ul>
+                <li><a href="/tools/security/password-generator/password-generator.html">Password Generator</a></li>
+                <li><a href="/tools/security/password-strength-checker/password-strength-checker.html">Password Strength Checker</a></li>
+                <li><a href="/tools/security/encoder-decoder/encoder-decoder.html">Encoder / Decoder</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>text</h3>
+            <ul>
+                <li><a href="/tools/text/text-comparison/text-comparison.html">Text Comparison</a></li>
+                <li><a href="/tools/text/text-converter/text-converter.html">Text Case Converter</a></li>
+                <li><a href="/tools/text/duplicate-words-finder/duplicate-words-finder.html">Duplicate Words Finder</a></li>
+                <li><a href="/tools/text/markdown-editor/markdown-editor.html">Markdown Editor</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>image</h3>
+            <ul>
+                <li><a href="/tools/images/image-converter/image-converter.html">Image Converter</a></li>
+                <li><a href="/tools/images/image-resizer/image-resizer.html">Image Resizer</a></li>
+                <li><a href="/tools/images/color-picker/color-picker.html">Image Color Picker</a></li>
+                <li><a href="/tools/images/bg-remover/bg-remover.html">Background Remover</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>data</h3>
+            <ul>
+                <li><a href="/tools/data/qr-code-generator/qr-code-generator.html">QR Code Generator</a></li>
+                <li><a href="/tools/data/image-metadata-viewer/image-metadata-viewer.html">Image Metadata Viewer</a></li>
+                <li><a href="/tools/data/file-comparison/file-comparison.html">File Comparison</a></li>
+                <li><a href="/tools/data/video-subtitles-generator/video-subtitles-generator.html">Video Subtitles Generator</a></li>
+            </ul>
+        </div>
+    </nav>
+    <p class="footer-tagline">100% free &middot; no sign-up &middot; every tool runs entirely in your browser.</p>
+    <footer>
+        <p>© <span id="current-year"></span> ToolThump. All rights reserved. | <a href="/pages/about.html">About ToolThump</a> | <a href="/pages/privacy.html">Privacy Policy</a></p>
+    </footer>
+    </footer>
 
   <!-- Data Island (Updated with new FAQ) -->
   <script type="application/json" id="tool-text-data">{

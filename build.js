@@ -7,6 +7,9 @@
  *  - Injects/refreshes structured data on each tool page:
  *      WebApplication + BreadcrumbList + FAQPage (when the page has FAQs)
  *  - Repoints og:image / twitter:image at the generated cards in /icons/
+ *  - Inlines header/footer/tool-text includes so crawlers see nav + FAQs,
+ *    features and how-to sections in raw HTML (main.js keeps runtime fetch
+ *    as a fallback for anything not yet built)
  *
  * Usage: node build.js [--dry-run]
  */
@@ -76,6 +79,19 @@ function decodeEntities(s = '') {
 function extractMetaDescription(html) {
   const m = html.match(/<meta\s+name="description"\s+content="([^"]*)"/i);
   return m ? m[1] : '';
+}
+
+function extractTextData(html) {
+  const m = html.match(/<script[^>]*type="application\/json"[^>]*id="tool-text-data"[^>]*>([\s\S]*?)<\/script>/i)
+    || html.match(/<script[^>]*id="tool-text-data"[^>]*type="application\/json"[^>]*>([\s\S]*?)<\/script>/i);
+  if (!m) return null;
+  try { return JSON.parse(m[1]); } catch { return null; }
+}
+
+function escapeHtml(s = '') {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function extractFaqs(html) {
@@ -189,6 +205,135 @@ function fixSocialImage(html, iconUrl) {
   return { html, fixed };
 }
 
+/* ------------------------------------------------------- static includes */
+
+function indentBlock(html, spaces) {
+  const pad = ' '.repeat(spaces);
+  return html.trimEnd().split('\n').map(l => pad + l).join('\n');
+}
+
+// Mirrors initializeToolTextSections() in main.js: textContent fields are
+// escaped, while prose/answers are inserted as raw HTML exactly like the
+// runtime innerHTML assignment does.
+function renderToolTextSections(data, baseIndent = 12) {
+  const out = [];
+  for (const section of data.sections || []) {
+    out.push('<section class="tool-text-section">');
+    out.push(`    <h2><span class="section-icon">${escapeHtml(decodeEntities(section.icon))}</span>${escapeHtml(section.title)}</h2>`);
+    out.push('    <div class="section-content">');
+    if (section.intro) {
+      out.push(`        <p>${escapeHtml(section.intro)}</p>`);
+    }
+    const items = section.steps || section.features;
+    if (items && items.length) {
+      out.push('        <ul class="features-list">');
+      for (const item of items) {
+        out.push('            <li class="feature-item">');
+        out.push(`                <span class="feature-icon">${escapeHtml(decodeEntities(item.icon))}</span>`);
+        out.push('                <div class="feature-text">');
+        out.push(`                    <strong>${escapeHtml(item.title)}</strong>`);
+        out.push(`                    <p>${escapeHtml(item.description)}</p>`);
+        out.push('                </div>');
+        out.push('            </li>');
+      }
+      out.push('        </ul>');
+    }
+    if (Array.isArray(section.content)) {
+      for (const para of section.content) out.push(`        <p>${para}</p>`);
+    }
+    if (section.faqs && section.faqs.length) {
+      out.push('        <div class="accordion-container">');
+      for (const faq of section.faqs) {
+        out.push('            <div class="accordion-item">');
+        out.push('                <button class="accordion-header">');
+        out.push(`                    <span class="accordion-icon">${escapeHtml(decodeEntities(faq.icon))}</span>`);
+        out.push(`                    <strong>${escapeHtml(faq.question)}</strong>`);
+        out.push('                    <span class="arrow-icon"></span>');
+        out.push('                </button>');
+        out.push('                <div class="accordion-content">');
+        out.push(`                    <p>${faq.answer}</p>`);
+        out.push('                </div>');
+        out.push('            </div>');
+      }
+      out.push('        </div>');
+    }
+    out.push('    </div>');
+    out.push('</section>');
+  }
+  return indentBlock(out.join('\n'), baseIndent);
+}
+
+const CATEGORY_LABEL = { Security: 'security', 'Text Tools': 'text', 'Image Tools': 'image', 'Data Tools': 'data' };
+
+function buildFooterToolsNav(tools) {
+  const cols = [];
+  for (const category of Object.keys(CATEGORY_LABEL)) {
+    const group = tools.filter(t => t.category === category);
+    if (!group.length) continue;
+    const links = group.map(t =>
+      `            <li><a href="${t.htmlPath}">${escapeHtml(t.name)}</a></li>`).join('\n');
+    cols.push(`    <div class="footer-tools-col">
+        <h3>${CATEGORY_LABEL[category]}</h3>
+        <ul>
+${links}
+        </ul>
+    </div>`);
+  }
+  return [
+    '<nav class="footer-tools" aria-label="All ToolThump tools">',
+    ...cols,
+    '</nav>',
+    '<p class="footer-tagline">100% free &middot; no sign-up &middot; every tool runs entirely in your browser.</p>'
+  ].join('\n');
+}
+
+function inlineIncludes(html, tool, tools) {
+  let inlined = 0;
+
+  /* header */
+  if (/<header[^>]*data-include=["']header["'][^>]*>\s*<\/header>/i.test(html)) {
+    const content = read('_includes/header.html');
+    html = html.replace(
+      /<header[^>]*data-include=["']header["'][^>]*>\s*<\/header>/i,
+      () => `<header data-include="header" data-static="header" class="terminal-header">\n${indentBlock(content, 4)}\n    </header>`
+    );
+    if (!html.includes('/_includes/header.css')) {
+      html = html.replace(/<\/head>/i, () =>
+        '    <link rel="stylesheet" href="/_includes/header.css">\n\n</head>');
+    }
+    inlined++;
+  }
+
+  /* footer (+ crawlable tool directory) */
+  if (/<footer[^>]*data-include=["']footer["'][^>]*>\s*<\/footer>/i.test(html)) {
+    const content = read('_includes/footer.html')
+      .replace('<!--TOOLLINKS-->', () => indentBlock(buildFooterToolsNav(tools), 0));
+    html = html.replace(
+      /<footer[^>]*data-include=["']footer["'][^>]*>\s*<\/footer>/i,
+      () => `<footer data-include="footer" data-static="footer">\n${indentBlock(content, 4)}\n    </footer>`
+    );
+    inlined++;
+  }
+
+  /* tool text sections: render the JSON island into the container */
+  const ttRe = /<div[^>]*data-include=["']tool-text-section["'][^>]*>\s*<\/div>/i;
+  if (ttRe.test(html)) {
+    const data = extractTextData(html);
+    if (!data) {
+      console.warn('  ! data-include="tool-text-section" but no parsable #tool-text-data - leaving runtime fetch in place');
+    } else {
+      const include = read('_includes/tool-text-section.html').replace(
+        '<div id="tool-text-sections-container"></div>',
+        () => `<div id="tool-text-sections-container" data-static="true">\n${renderToolTextSections(data, 8)}\n    </div>`
+      );
+      html = html.replace(ttRe, () => indentBlock(include, 8));
+      inlined++;
+    }
+  }
+
+  return { html, inlined };
+}
+
 /* ---------------------------------------------------------------- sitemap */
 
 function generateSitemap(tools) {
@@ -263,12 +408,15 @@ try {
   const tools = loadTools();
   console.log(`Found ${tools.length} tools.\n`);
 
-  /* 1. structured data + social images per tool page */
+  /* 1. structured data + social images + static includes per tool page */
   for (const tool of tools) {
     const rel = tool.htmlPath.replace(/^\//, '');
     process.stdout.write(`${rel} ... `);
     try {
       let html = read(rel);
+
+      const inc = inlineIncludes(html, tool, tools);
+      html = inc.html;
 
       const res = fixSocialImage(html, `${SITE}/icons/${tool.id}.png`);
       html = res.html;
@@ -277,7 +425,22 @@ try {
 
       write(rel, html);
       const hasFaq = extractFaqs(read(rel)) ? '+FAQ' : '';
-      console.log(`ok (${res.fixed} image metas, schema refreshed ${hasFaq})`);
+      console.log(`ok (${inc.inlined} includes, ${res.fixed} image metas, schema refreshed ${hasFaq})`);
+    } catch (e) {
+      console.log(`FAILED: ${e.message}`);
+      exitCode = 1;
+    }
+  }
+
+  /* 1b. static includes for non-tool pages */
+  for (const rel of ['index.html', 'pages/about.html', 'pages/privacy.html']) {
+    if (!fs.existsSync(path.join(ROOT, rel))) continue;
+    process.stdout.write(`${rel} ... `);
+    try {
+      const before = read(rel);
+      const inc = inlineIncludes(before, null, tools);
+      write(rel, inc.html);
+      console.log(`ok (${inc.inlined} includes inlined)`);
     } catch (e) {
       console.log(`FAILED: ${e.message}`);
       exitCode = 1;

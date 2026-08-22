@@ -3,7 +3,9 @@
     display: flex; flex: 1; overflow: hidden;
 }
 
-main#tool-container {
+/* Every page's main lives directly inside .content-wrapper and must fill
+   the terminal window and own the scrolling (about/privacy use a bare <main>). */
+.content-wrapper > main {
     flex-grow: 1; padding: var(--spacing-lg);
     overflow-y: auto; overflow-x: hidden;
 }
@@ -34,3 +36,24 @@ footer {
 }
 footer a { color: var(--yellow); }
 footer a:hover { background: var(--yellow); color: var(--bg); }
+
+/* === Footer tool directory (inlined by build.js) === */
+.footer-tools {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: var(--spacing-lg) calc(var(--spacing-xl) * 2);
+    text-align: left;
+    padding: var(--spacing-md) var(--spacing-lg);
+    max-width: 900px; margin: 0 auto;
+}
+.footer-tools-col h3 {
+    color: var(--fg-bright); font-size: 0.8rem;
+    margin-bottom: var(--spacing-sm);
+}
+.footer-tools-col ul { list-style: none; padding: 0; margin: 0; }
+.footer-tools-col li { margin-bottom: var(--spacing-xs); }
+.footer-tools-col a { color: var(--fg-dim); }
+.footer-tagline {
+    color: var(--fg-dim); font-size: 0.75rem;
+    padding-bottom: var(--spacing-md); border-bottom: 1px solid var(--border-color);
+    max-width: 900px; margin: 0 auto var(--spacing-sm);
+}

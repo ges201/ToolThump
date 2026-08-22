@@ -81,7 +81,7 @@
             "url": "https://toolthump.com/"
           },
           "datePublished": "2025-06-14",
-          "dateModified": "2026-07-29"
+          "dateModified": "2026-08-22"
         },
         {
           "@type": "BreadcrumbList",
@@ -114,10 +114,69 @@
     <meta name="theme-color" content="#1a1c2c">
 
 
+    <link rel="stylesheet" href="/_includes/header.css">
+
 </head>
 
 <body>
-    <header data-include="header"></header>
+    <header data-include="header" data-static="header" class="terminal-header">
+    <div class="header-brand">
+        <a href="/" class="logo-link">
+            <span class="text-logo">toolthump</span>
+        </a>
+    </div>
+    <nav id="top-navigation">
+        <ul class="category-list">
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="security-tools">
+                    security
+                </button>
+                <ul class="dropdown-menu" id="security-tools" role="menu">
+                    <li role="none"><a href="/tools/security/password-generator/password-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/lock.svg" alt="" class="tool-icon">Password Generator</a></li>
+                    <li role="none"><a href="/tools/security/password-strength-checker/password-strength-checker.html" role="menuitem" class="tool-link"><img src="/assets/icons/shield.svg" alt="" class="tool-icon">Password Strength Checker</a></li>
+                    <li role="none"><a href="/tools/security/encoder-decoder/encoder-decoder.html" role="menuitem" class="tool-link"><img src="/assets/icons/code.svg" alt="" class="tool-icon">Encoder / Decoder</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="text-tools">
+                    text
+                </button>
+                <ul class="dropdown-menu" id="text-tools" role="menu">
+                    <li role="none"><a href="/tools/text/text-comparison/text-comparison.html" role="menuitem" class="tool-link"><img src="/assets/icons/file.svg" alt="" class="tool-icon">Text Comparison</a></li>
+                    <li role="none"><a href="/tools/text/text-converter/text-converter.html" role="menuitem" class="tool-link"><img src="/assets/icons/edit.svg" alt="" class="tool-icon">Text Case Converter</a></li>
+                    <li role="none"><a href="/tools/text/duplicate-words-finder/duplicate-words-finder.html" role="menuitem" class="tool-link"><img src="/assets/icons/search.svg" alt="" class="tool-icon">Duplicate Words Finder</a></li>
+                    <li role="none"><a href="/tools/text/markdown-editor/markdown-editor.html" role="menuitem" class="tool-link"><img src="/assets/icons/file-text.svg" alt="" class="tool-icon">Markdown Editor</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="image-tools">
+                    image
+                </button>
+                <ul class="dropdown-menu" id="image-tools" role="menu">
+                    <li role="none"><a href="/tools/images/image-converter/image-converter.html" role="menuitem" class="tool-link"><img src="/assets/icons/image.svg" alt="" class="tool-icon">Image Converter</a></li>
+                    <li role="none"><a href="/tools/images/image-resizer/image-resizer.html" role="menuitem" class="tool-link"><img src="/assets/icons/crop.svg" alt="" class="tool-icon">Image Resizer</a></li>
+                    <li role="none"><a href="/tools/images/color-picker/color-picker.html" role="menuitem" class="tool-link"><img src="/assets/icons/eye.svg" alt="" class="tool-icon">Color Picker</a></li>
+                    <li role="none"><a href="/tools/images/bg-remover/bg-remover.html" role="menuitem" class="tool-link"><img src="/assets/icons/sparkles.svg" alt="" class="tool-icon">Background Remover</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="data-tools">
+                    data
+                </button>
+                <ul class="dropdown-menu" id="data-tools" role="menu">
+                    <li role="none"><a href="/tools/data/qr-code-generator/qr-code-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/barcode.svg" alt="" class="tool-icon">QR Code Generator</a></li>
+                    <li role="none"><a href="/tools/data/image-metadata-viewer/image-metadata-viewer.html" role="menuitem" class="tool-link"><img src="/assets/icons/image-frame.svg" alt="" class="tool-icon">Image Metadata Viewer</a></li>
+                    <li role="none"><a href="/tools/data/file-comparison/file-comparison.html" role="menuitem" class="tool-link"><img src="/assets/icons/attachment.svg" alt="" class="tool-icon">File Comparison</a></li>
+                    <li role="none"><a href="/tools/data/video-subtitles-generator/video-subtitles-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/video.svg" alt="" class="tool-icon">Video Subtitles Generator</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <button id="theme-toggle" aria-label="Switch to amber theme">
+        <img id="theme-icon-sun" class="theme-icon theme-icon-svg" src="/assets/icons/sun.svg" alt="Sun toggle">
+        <img id="theme-icon-moon" class="theme-icon theme-icon-svg" src="/assets/icons/moon.svg" alt="Moon toggle">
+    </button>
+    </header>
 
     <div class="content-wrapper">
         <main id="tool-container">
@@ -260,12 +319,245 @@
             </section>
 
             <!-- Templated sections will be injected here by main.js -->
-            <div data-include="tool-text-section"></div>
+                    <!-- Main container where sections will be rendered -->
+        <div id="tool-text-sections-container" data-static="true">
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">▸</span>How to Use</h2>
+                    <div class="section-content">
+                        <p>Follow these simple steps to effectively crop and resize your images. All processing is done securely in your browser.</p>
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <span class="feature-icon">❶</span>
+                                <div class="feature-text">
+                                    <strong>Upload Your Image</strong>
+                                    <p>Click the &quot;Choose Image&quot; button or drag and drop your image onto the preview area. Your image will appear in the main canvas.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">❷</span>
+                                <div class="feature-text">
+                                    <strong>Adjust Crop &amp; Resize Options</strong>
+                                    <p>Choose between &quot;Free Crop&quot; to manually select any area, or &quot;Fixed Ratio&quot; for predefined aspect ratios (e.g., 1:1, 16:9). You can also input target dimensions.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">❸</span>
+                                <div class="feature-text">
+                                    <strong>Process &amp; Download</strong>
+                                    <p>Once satisfied with your selection, click &quot;Process &amp; Download Image&quot;. The tool will crop and resize your image, then automatically download it to your device.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">✦</span>Key Features</h2>
+                    <div class="section-content">
+                        <p>This Image Resizer &amp; Cropper is designed for efficiency, privacy, and ease of use. Here's what makes it stand out:</p>
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <span class="feature-icon">◆</span>
+                                <div class="feature-text">
+                                    <strong>Client-Side Processing</strong>
+                                    <p>All image manipulation happens directly in your browser. Your images are never uploaded to any servers, ensuring complete privacy and fast processing.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">✕</span>
+                                <div class="feature-text">
+                                    <strong>Flexible Cropping</strong>
+                                    <p>Use the intuitive cropping interface to select any portion of your image. Adjust the crop box freely or lock it to popular aspect ratios.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">▨</span>
+                                <div class="feature-text">
+                                    <strong>Precise Resizing</strong>
+                                    <p>Easily resize images to exact pixel dimensions. Maintain aspect ratio or set custom width and height for specific needs.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">■</span>
+                                <div class="feature-text">
+                                    <strong>Transparency Support</strong>
+                                    <p>Preserves transparency from PNG files. When you crop or resize a transparent PNG, the output will also be a transparent PNG, not a flattened image with a white background.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">⚡</span>
+                                <div class="feature-text">
+                                    <strong>Instant Download</strong>
+                                    <p>Once processed, your new image is immediately available for download. No waiting, no extra steps.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">■</span>
+                                <div class="feature-text">
+                                    <strong>Multiple Formats</strong>
+                                    <p>Supports common image formats like JPEG, PNG, and WebP, allowing you to work with a variety of image files.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">◈</span>Frequently Asked Questions</h2>
+                    <div class="section-content">
+                        <p>Have questions? Here are some common ones. If you don't find your answer here, well, that's unfortunate.</p>
+                        <div class="accordion-container">
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">◆</span>
+                                    <strong>Are my images uploaded to a server?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Absolutely not. All processing happens directly in your web browser. Your images never leave your computer, which makes this tool fast, free, and completely private.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">●</span>
+                                    <strong>Is this tool really free to use?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Yes, it's 100% free. There are no hidden fees, subscriptions, or watermarks.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">■</span>
+                                    <strong>What image formats can I upload?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>The tool works best with standard web formats like <strong>JPEG, PNG, WebP, GIF, and BMP</strong>. When you download, the image will be converted to PNG, JPEG, or WebP to ensure compatibility and quality.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">▨</span>
+                                    <strong>Will resizing or cropping reduce my image quality?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Cropping does not reduce quality; it simply removes parts of the image. Resizing, especially making an image smaller, involves creating new pixels and can result in a slight loss of quality. This tool uses high-quality algorithms to minimize this, and for JPEG/WebP formats, it saves at a high quality setting (92%) to keep your images looking sharp.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">■</span>
+                                    <strong>Does this tool handle transparent backgrounds?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Yes! If you upload a PNG with a transparent background, the transparency will be preserved in the final cropped/resized image when you download it as a PNG. If you download as a JPEG, the transparent areas will become white, as the JPEG format does not support transparency.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">▨</span>
+                                    <strong>Is there a maximum file size or dimension limit?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>While there's no strict file size limit imposed by the tool itself, your browser's performance is the main factor. Very large images (e.g., over 25MB or 10,000+ pixels) might cause your browser to slow down or become unresponsive. For best results, work with images of a reasonable size.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        
+        <!--
+          HTML TEMPLATES
+          These are inert blocks of HTML that our JavaScript will use to build the sections.
+          This keeps the structure of our content out of the JavaScript file.
+        -->
+        
+        <!-- Template for a single feature or how-to step item -->
+        <template id="template-feature-item">
+            <li class="feature-item">
+                <span class="feature-icon"></span>
+                <div class="feature-text">
+                    <strong></strong>
+                    <p></p>
+                </div>
+            </li>
+        </template>
+        
+        <!-- Template for a single FAQ accordion item -->
+        <template id="template-faq-item">
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <span class="accordion-icon"></span>
+                    <strong></strong>
+                    <span class="arrow-icon"></span>
+                </button>
+                <div class="accordion-content">
+                    <p></p>
+                </div>
+            </div>
+        </template>
+        
+        <!-- Template for a generic section wrapper -->
+        <template id="template-section">
+            <section class="tool-text-section">
+                <h2><span class="section-icon"></span></h2>
+                <div class="section-content">
+                    <!-- Content (intro, lists, paragraphs) will be injected here -->
+                </div>
+            </section>
+        </template>
 
         </main>
     </div>
 
-    <footer data-include="footer"></footer>
+    <footer data-include="footer" data-static="footer">
+    <!-- The TOOLLINKS comment is replaced with a crawlable tool directory by build.js -->
+    <nav class="footer-tools" aria-label="All ToolThump tools">
+        <div class="footer-tools-col">
+            <h3>security</h3>
+            <ul>
+                <li><a href="/tools/security/password-generator/password-generator.html">Password Generator</a></li>
+                <li><a href="/tools/security/password-strength-checker/password-strength-checker.html">Password Strength Checker</a></li>
+                <li><a href="/tools/security/encoder-decoder/encoder-decoder.html">Encoder / Decoder</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>text</h3>
+            <ul>
+                <li><a href="/tools/text/text-comparison/text-comparison.html">Text Comparison</a></li>
+                <li><a href="/tools/text/text-converter/text-converter.html">Text Case Converter</a></li>
+                <li><a href="/tools/text/duplicate-words-finder/duplicate-words-finder.html">Duplicate Words Finder</a></li>
+                <li><a href="/tools/text/markdown-editor/markdown-editor.html">Markdown Editor</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>image</h3>
+            <ul>
+                <li><a href="/tools/images/image-converter/image-converter.html">Image Converter</a></li>
+                <li><a href="/tools/images/image-resizer/image-resizer.html">Image Resizer</a></li>
+                <li><a href="/tools/images/color-picker/color-picker.html">Image Color Picker</a></li>
+                <li><a href="/tools/images/bg-remover/bg-remover.html">Background Remover</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>data</h3>
+            <ul>
+                <li><a href="/tools/data/qr-code-generator/qr-code-generator.html">QR Code Generator</a></li>
+                <li><a href="/tools/data/image-metadata-viewer/image-metadata-viewer.html">Image Metadata Viewer</a></li>
+                <li><a href="/tools/data/file-comparison/file-comparison.html">File Comparison</a></li>
+                <li><a href="/tools/data/video-subtitles-generator/video-subtitles-generator.html">Video Subtitles Generator</a></li>
+            </ul>
+        </div>
+    </nav>
+    <p class="footer-tagline">100% free &middot; no sign-up &middot; every tool runs entirely in your browser.</p>
+    <footer>
+        <p>© <span id="current-year"></span> ToolThump. All rights reserved. | <a href="/pages/about.html">About ToolThump</a> | <a href="/pages/privacy.html">Privacy Policy</a></p>
+    </footer>
+    </footer>
 
     <!-- Data for the templated text sections -->
     <script id="tool-text-data" type="application/json">

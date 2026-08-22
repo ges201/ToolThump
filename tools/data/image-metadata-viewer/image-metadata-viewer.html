@@ -71,7 +71,7 @@
             "url": "https://toolthump.com/"
           },
           "datePublished": "2025-07-31",
-          "dateModified": "2026-08-14"
+          "dateModified": "2026-08-22"
         },
         {
           "@type": "BreadcrumbList",
@@ -172,10 +172,69 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
 
+    <link rel="stylesheet" href="/_includes/header.css">
+
 </head>
 
 <body>
-    <header data-include="header"></header>
+    <header data-include="header" data-static="header" class="terminal-header">
+    <div class="header-brand">
+        <a href="/" class="logo-link">
+            <span class="text-logo">toolthump</span>
+        </a>
+    </div>
+    <nav id="top-navigation">
+        <ul class="category-list">
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="security-tools">
+                    security
+                </button>
+                <ul class="dropdown-menu" id="security-tools" role="menu">
+                    <li role="none"><a href="/tools/security/password-generator/password-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/lock.svg" alt="" class="tool-icon">Password Generator</a></li>
+                    <li role="none"><a href="/tools/security/password-strength-checker/password-strength-checker.html" role="menuitem" class="tool-link"><img src="/assets/icons/shield.svg" alt="" class="tool-icon">Password Strength Checker</a></li>
+                    <li role="none"><a href="/tools/security/encoder-decoder/encoder-decoder.html" role="menuitem" class="tool-link"><img src="/assets/icons/code.svg" alt="" class="tool-icon">Encoder / Decoder</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="text-tools">
+                    text
+                </button>
+                <ul class="dropdown-menu" id="text-tools" role="menu">
+                    <li role="none"><a href="/tools/text/text-comparison/text-comparison.html" role="menuitem" class="tool-link"><img src="/assets/icons/file.svg" alt="" class="tool-icon">Text Comparison</a></li>
+                    <li role="none"><a href="/tools/text/text-converter/text-converter.html" role="menuitem" class="tool-link"><img src="/assets/icons/edit.svg" alt="" class="tool-icon">Text Case Converter</a></li>
+                    <li role="none"><a href="/tools/text/duplicate-words-finder/duplicate-words-finder.html" role="menuitem" class="tool-link"><img src="/assets/icons/search.svg" alt="" class="tool-icon">Duplicate Words Finder</a></li>
+                    <li role="none"><a href="/tools/text/markdown-editor/markdown-editor.html" role="menuitem" class="tool-link"><img src="/assets/icons/file-text.svg" alt="" class="tool-icon">Markdown Editor</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="image-tools">
+                    image
+                </button>
+                <ul class="dropdown-menu" id="image-tools" role="menu">
+                    <li role="none"><a href="/tools/images/image-converter/image-converter.html" role="menuitem" class="tool-link"><img src="/assets/icons/image.svg" alt="" class="tool-icon">Image Converter</a></li>
+                    <li role="none"><a href="/tools/images/image-resizer/image-resizer.html" role="menuitem" class="tool-link"><img src="/assets/icons/crop.svg" alt="" class="tool-icon">Image Resizer</a></li>
+                    <li role="none"><a href="/tools/images/color-picker/color-picker.html" role="menuitem" class="tool-link"><img src="/assets/icons/eye.svg" alt="" class="tool-icon">Color Picker</a></li>
+                    <li role="none"><a href="/tools/images/bg-remover/bg-remover.html" role="menuitem" class="tool-link"><img src="/assets/icons/sparkles.svg" alt="" class="tool-icon">Background Remover</a></li>
+                </ul>
+            </li>
+            <li class="category-item">
+                <button class="category-button" aria-haspopup="true" aria-expanded="false" aria-controls="data-tools">
+                    data
+                </button>
+                <ul class="dropdown-menu" id="data-tools" role="menu">
+                    <li role="none"><a href="/tools/data/qr-code-generator/qr-code-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/barcode.svg" alt="" class="tool-icon">QR Code Generator</a></li>
+                    <li role="none"><a href="/tools/data/image-metadata-viewer/image-metadata-viewer.html" role="menuitem" class="tool-link"><img src="/assets/icons/image-frame.svg" alt="" class="tool-icon">Image Metadata Viewer</a></li>
+                    <li role="none"><a href="/tools/data/file-comparison/file-comparison.html" role="menuitem" class="tool-link"><img src="/assets/icons/attachment.svg" alt="" class="tool-icon">File Comparison</a></li>
+                    <li role="none"><a href="/tools/data/video-subtitles-generator/video-subtitles-generator.html" role="menuitem" class="tool-link"><img src="/assets/icons/video.svg" alt="" class="tool-icon">Video Subtitles Generator</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <button id="theme-toggle" aria-label="Switch to amber theme">
+        <img id="theme-icon-sun" class="theme-icon theme-icon-svg" src="/assets/icons/sun.svg" alt="Sun toggle">
+        <img id="theme-icon-moon" class="theme-icon theme-icon-svg" src="/assets/icons/moon.svg" alt="Moon toggle">
+    </button>
+    </header>
     <div class="content-wrapper">
         <main id="tool-container">
             <section id="imageMetadataViewer" class="tool-content active">
@@ -234,7 +293,200 @@
                 </div>
             </section>
 
-            <div data-include="tool-text-section"></div>
+                    <!-- Main container where sections will be rendered -->
+        <div id="tool-text-sections-container" data-static="true">
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">▸</span>How to View &amp; Remove Image Metadata</h2>
+                    <div class="section-content">
+                        <p>Uncovering or removing hidden data in your photos is a simple process.</p>
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <span class="feature-icon">❶</span>
+                                <div class="feature-text">
+                                    <strong>Upload Your Image</strong>
+                                    <p>Click the upload area to select an image file from your device, or simply drag and drop it onto the designated zone. The file is not uploaded to any server; it stays on your computer.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">❷</span>
+                                <div class="feature-text">
+                                    <strong>Analyze or Remove</strong>
+                                    <p>Instantly, the tool displays all found metadata. If you uploaded a JPEG, a 'Remove Metadata' button will appear. Clicking it downloads a clean, metadata-free copy of your image without affecting the original.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">✦</span>Key Features &amp; Guarantees</h2>
+                    <div class="section-content">
+                        <p>This tool is designed with privacy, speed, and clarity as its core principles.</p>
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <span class="feature-icon">◆</span>
+                                <div class="feature-text">
+                                    <strong>100% Client-Side &amp; Private</strong>
+                                    <p>Your images are never sent to a server. All processing happens within your browser, ensuring your photos and their metadata remain completely private.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">✕</span>
+                                <div class="feature-text">
+                                    <strong>Lossless Metadata Removal</strong>
+                                    <p>For JPEG images, you can strip all metadata without any loss of image quality. The tool surgically removes metadata segments, leaving the image data untouched.</p>
+                                </div>
+                            </li>
+                            <li class="feature-item">
+                                <span class="feature-icon">▨</span>
+                                <div class="feature-text">
+                                    <strong>Comprehensive Data Display</strong>
+                                    <p>Get a clearly organized view of all available EXIF tags, from basic camera information (model, shutter speed, aperture) to advanced data like GPS coordinates and image orientation.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">▸</span>What is Image Metadata, Anyway?</h2>
+                    <div class="section-content">
+                        <p>Think of an image file not as a single object, but as a container. Inside, right alongside the pixels that make up the photo, is a collection of hidden data that tells the story behind the image. This is its metadata.</p>
+                        <p>This data isn't just one thing; it's often a mix of different standards, each with a specific job. The most common types you'll encounter are:</p>
+                        <p>• <span class="highlight-green">EXIF (Exchangeable Image File Format):</span> This is your camera's automatic logbook. It records the technical details—camera model, lens, shutter speed, aperture, and often, the 'when' (timestamp) and 'where' (precise GPS location).</p>
+                        <p>• <span class="highlight-green">IPTC (International Press Telecommunications Council):</span> This is the standard for professional cataloging. It holds descriptive information added by a person, like captions, keywords, copyright notices, and creator details.</p>
+                        <p>• <span class="highlight-green">XMP (Extensible Metadata Platform):</span> A more modern and flexible standard created by Adobe. It can store a vast range of information, including data from EXIF and IPTC, plus things like edit history and star ratings.</p>
+                        <p>For a photographer, this combined data is a goldmine for reviewing settings and organizing archives. For everyone else, it can be a major privacy issue. That cute photo of your dog in the garden could be broadcasting your home address via GPS data. That picture of a product you're selling online could contain your name in the copyright field.</p>
+                        <p>Being aware of this hidden data isn't about being paranoid; it's about making smart, informed decisions. This tool exists to pull back the curtain, decoding all these different formats and presenting them in one clear view, so you know exactly what story your photos are telling before you share them.</p>
+                    </div>
+                </section>
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">◈</span>Frequently Asked Questions (FAQ)</h2>
+                    <div class="section-content">
+                        <div class="accordion-container">
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">◆</span>
+                                    <strong>Is it truly safe to use my personal photos here?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Absolutely. The tool operates entirely on your computer. Once the page is loaded, you could disconnect from the internet and it would still work perfectly. Your files are never uploaded, so your privacy is guaranteed.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">◈</span>
+                                    <strong>Why should I even care about image metadata?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Primarily for privacy. Sharing a photo online with GPS data can reveal sensitive locations. But it's also a goldmine for photographers wanting to review camera settings (Aperture, ISO, Shutter Speed). It can even help verify details about a photo's origin.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">■</span>
+                                    <strong>What image formats does this tool support?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>It handles the usual suspects like JPEG, PNG, HEIC, and WEBP. More importantly, it's built to parse many RAW camera formats, including .CR2 (Canon), .NEF (Nikon), .ARW (Sony), .DNG (Adobe), and others. If your camera shoots it, there's a good chance this tool can read it.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">✕</span>
+                                    <strong>Can this tool remove metadata from my image?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Yes, but only for JPEG images. For JPEGs, a 'Remove Metadata' button will appear, allowing you to download a clean version. For all other formats (PNG, RAW, etc.), this tool is a 'viewer' only and cannot alter the file.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">✦</span>
+                                    <strong>Will removing metadata reduce my image quality?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>No. The removal process for jpgs is completely 'lossless'. It works by identifying and discarding the data blocks containing metadata, then stitching the file back together with only the essential image data. The picture itself is not re-compressed or altered in any way.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">◈</span>
+                                    <strong>I uploaded an image and it said 'No EXIF metadata found'. Why?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>This usually means the metadata was never there or was scrubbed. Many social media sites automatically remove metadata when you upload photos. Also, simple images created with basic graphics editors often don't contain any camera-related metadata to begin with.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">RAW</span>
+                                    <strong>My RAW file's metadata showed up, but the image preview is blank. Is it broken?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Not at all. Some RAW formats are like a camera's digital negative and can't be displayed directly by web browsers. The tool can still read the metadata perfectly, which is the main event. For a visual, you'd need specialized software, but for data-checking, you're in the right place.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">◎</span>
+                                    <strong>What's the 'Export as JSON' button for?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>For the data hoarders and developers. This button lets you download all the extracted metadata as a clean, structured JSON file. You can keep it for your records, use it in a script, or analyze it further in other applications. It's your data, so you should be able to take it with you.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        
+        <!--
+          HTML TEMPLATES
+          These are inert blocks of HTML that our JavaScript will use to build the sections.
+          This keeps the structure of our content out of the JavaScript file.
+        -->
+        
+        <!-- Template for a single feature or how-to step item -->
+        <template id="template-feature-item">
+            <li class="feature-item">
+                <span class="feature-icon"></span>
+                <div class="feature-text">
+                    <strong></strong>
+                    <p></p>
+                </div>
+            </li>
+        </template>
+        
+        <!-- Template for a single FAQ accordion item -->
+        <template id="template-faq-item">
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <span class="accordion-icon"></span>
+                    <strong></strong>
+                    <span class="arrow-icon"></span>
+                </button>
+                <div class="accordion-content">
+                    <p></p>
+                </div>
+            </div>
+        </template>
+        
+        <!-- Template for a generic section wrapper -->
+        <template id="template-section">
+            <section class="tool-text-section">
+                <h2><span class="section-icon"></span></h2>
+                <div class="section-content">
+                    <!-- Content (intro, lists, paragraphs) will be injected here -->
+                </div>
+            </section>
+        </template>
         </main>
     </div>
 
@@ -246,7 +498,50 @@
         </div>
     </div>
 
-    <footer data-include="footer"></footer>
+    <footer data-include="footer" data-static="footer">
+    <!-- The TOOLLINKS comment is replaced with a crawlable tool directory by build.js -->
+    <nav class="footer-tools" aria-label="All ToolThump tools">
+        <div class="footer-tools-col">
+            <h3>security</h3>
+            <ul>
+                <li><a href="/tools/security/password-generator/password-generator.html">Password Generator</a></li>
+                <li><a href="/tools/security/password-strength-checker/password-strength-checker.html">Password Strength Checker</a></li>
+                <li><a href="/tools/security/encoder-decoder/encoder-decoder.html">Encoder / Decoder</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>text</h3>
+            <ul>
+                <li><a href="/tools/text/text-comparison/text-comparison.html">Text Comparison</a></li>
+                <li><a href="/tools/text/text-converter/text-converter.html">Text Case Converter</a></li>
+                <li><a href="/tools/text/duplicate-words-finder/duplicate-words-finder.html">Duplicate Words Finder</a></li>
+                <li><a href="/tools/text/markdown-editor/markdown-editor.html">Markdown Editor</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>image</h3>
+            <ul>
+                <li><a href="/tools/images/image-converter/image-converter.html">Image Converter</a></li>
+                <li><a href="/tools/images/image-resizer/image-resizer.html">Image Resizer</a></li>
+                <li><a href="/tools/images/color-picker/color-picker.html">Image Color Picker</a></li>
+                <li><a href="/tools/images/bg-remover/bg-remover.html">Background Remover</a></li>
+            </ul>
+        </div>
+        <div class="footer-tools-col">
+            <h3>data</h3>
+            <ul>
+                <li><a href="/tools/data/qr-code-generator/qr-code-generator.html">QR Code Generator</a></li>
+                <li><a href="/tools/data/image-metadata-viewer/image-metadata-viewer.html">Image Metadata Viewer</a></li>
+                <li><a href="/tools/data/file-comparison/file-comparison.html">File Comparison</a></li>
+                <li><a href="/tools/data/video-subtitles-generator/video-subtitles-generator.html">Video Subtitles Generator</a></li>
+            </ul>
+        </div>
+    </nav>
+    <p class="footer-tagline">100% free &middot; no sign-up &middot; every tool runs entirely in your browser.</p>
+    <footer>
+        <p>© <span id="current-year"></span> ToolThump. All rights reserved. | <a href="/pages/about.html">About ToolThump</a> | <a href="/pages/privacy.html">Privacy Policy</a></p>
+    </footer>
+    </footer>
 
     <!-- Data Island for the text sections -->
     <script type="application/json" id="tool-text-data">{

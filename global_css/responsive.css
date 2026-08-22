@@ -1,6 +1,6 @@
 @media (max-width: 768px) {
     html { font-size: 14px; }
-    main#tool-container { padding: var(--spacing-sm); }
+    .content-wrapper > main { padding: var(--spacing-sm); }
     .tool-content { padding: var(--spacing-md); }
     h1 { font-size: 1.3rem; }
     .tool-content h2 { font-size: 1.1rem; }
@@ -9,7 +9,7 @@
 }
 @media (max-width: 480px) {
     html { font-size: 13px; }
-    main#tool-container { padding: var(--spacing-xs); }
+    .content-wrapper > main { padding: var(--spacing-xs); }
     .tool-content { padding: var(--spacing-sm); }
     body { padding: 2px; margin: 2px; }
 }
