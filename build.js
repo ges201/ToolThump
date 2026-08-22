@@ -285,46 +285,46 @@ const HUB_COPY = {
     title: 'All Free Online Tools - Private, No Signup | ToolThump',
     description: 'Browse every free ToolThump utility: security, text, image and data tools that run entirely in your browser. No signup, no uploads, no tracking.',
     h1: 'All Tools',
-    intro: [
-      'ToolThump is a collection of free online utilities organized into four categories: security, text, image and data. Every tool runs entirely in your browser - the files you open, the passwords you generate and the text you paste are never uploaded to a server.',
-      'There is no account to create and nothing to install: open a tool, use it, close the tab. Browse the full list below or jump straight to a category.'
-    ]
+intro: [
+'ToolThump is a collection of <strong>free online utilities</strong> organized into four categories: security, text, image and data. Every tool runs entirely in your browser - the files you open, the passwords you generate and the text you paste are <strong>never uploaded to a server</strong>.',
+'There is no account to create and nothing to install: open a tool, use it, close the tab. Browse the full list below or jump straight to a category.'
+]
   },
   Security: {
     title: 'Free Online Security Tools - Passwords & Encoding | ToolThump',
     description: 'Free browser-based security tools: generate strong passwords, test password strength and encode or decode Base64 and URLs. Everything runs locally on your device.',
     h1: 'Security Tools',
-    intro: [
-      'Good security hygiene does not require trusting someone else\'s web server. These browser-based tools handle passwords and encoding entirely on your own device - nothing you type or paste ever leaves your browser.',
-      'Generate a strong random password with custom length and character sets, check how resistant an existing password is to common cracking attacks, or encode and decode data in formats like Base64 and URL percent-encoding.'
-    ]
+intro: [
+'Good security hygiene does not require trusting someone else\'s web server. These browser-based tools handle passwords and encoding <strong>entirely on your own device</strong> - nothing you type or paste ever <strong>leaves your browser</strong>.',
+'Generate a strong random password with custom length and character sets, check how resistant an existing password is to common cracking attacks, or encode and decode data in formats like Base64 and URL percent-encoding.'
+]
   },
   'Text Tools': {
     title: 'Free Text Tools - Compare, Convert & Clean Text | ToolThump',
     description: 'Compare texts side by side, convert letter case, find duplicate words and write Markdown - free text tools that run entirely in your browser.',
     h1: 'Text Tools',
-    intro: [
-      'Writing and editing goes faster with the right utilities, and these text tools run completely in your browser so drafts, logs and notes stay private on your machine.',
-      'Spot every difference between two versions of a document, convert letter case between uppercase, lowercase and title case, hunt down repeated words before publishing, or draft formatted documents in a distraction-free Markdown editor with live preview.'
-    ]
+intro: [
+'Writing and editing goes faster with the right utilities, and these text tools run <strong>completely in your browser</strong> so drafts, logs and notes stay <strong>private on your machine</strong>.',
+'Spot every difference between two versions of a document, convert letter case between uppercase, lowercase and title case, hunt down repeated words before publishing, or draft formatted documents in a distraction-free Markdown editor with live preview.'
+]
   },
   'Image Tools': {
     title: 'Free Image Tools - Convert, Resize & Edit in Browser | ToolThump',
     description: 'Convert images between PNG, JPG, GIF and WebP, resize photos in batches, pick colors and remove backgrounds - free image tools that never upload your files.',
     h1: 'Image Tools',
-    intro: [
-      'Most online image converters ask you to upload personal photos to a stranger\'s server first. These image tools process files directly in your browser using canvas technology, so pictures of your family, your products and your documents never leave your device.',
-      'Convert between PNG, JPG, GIF and WebP with batch support across whole folders, resize images to exact pixel dimensions, sample colors from any point of a design, or erase photo backgrounds instantly for clean cutouts.'
-    ]
+intro: [
+'Most online image converters ask you to upload personal photos to a stranger\'s server first. These image tools process files <strong>directly in your browser</strong> using canvas technology, so pictures of your family, your products and your documents <strong>never leave your device</strong>.',
+'Convert between PNG, JPG, GIF and WebP with batch support across whole folders, resize images to exact pixel dimensions, sample colors from any point of a design, or erase photo backgrounds instantly for clean cutouts.'
+]
   },
   'Data Tools': {
     title: 'Free Data Tools - QR Codes, File Diff & Subtitles | ToolThump',
     description: 'Generate QR codes, inspect image EXIF metadata, compare binary files byte by byte and auto-generate video subtitles - free data tools running fully client-side.',
     h1: 'Data Tools',
-    intro: [
-      'From QR codes to subtitle tracks, these data tools handle files and formats that most websites insist on uploading first. Everything here parses and processes locally in JavaScript - even large binaries are compared byte by byte on your own machine.',
-      'Create custom QR codes for links, Wi-Fi and contact cards, read the EXIF metadata hidden inside photos, diff two binary or text files to see exactly where they differ, or turn any video into timed SRT subtitles automatically.'
-    ]
+intro: [
+'From QR codes to subtitle tracks, these data tools handle files and formats that most websites insist on uploading first. Everything here parses and processes <strong>locally in JavaScript</strong> - even large binaries are compared byte by byte <strong>on your own machine</strong>.',
+'Create custom QR codes for links, Wi-Fi and contact cards, read the EXIF metadata hidden inside photos, diff two binary or text files to see exactly where they differ, or turn any video into timed SRT subtitles automatically.'
+]
   }
 };
 
