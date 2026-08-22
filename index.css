@@ -129,6 +129,8 @@
 .result-name { font-size: 0.9rem; font-weight: 700; color: var(--fg-bright); }
 .result-link:hover .result-name { color: var(--text-on-accent-bg); }
 .result-category { font-size: 0.75rem; color: var(--fg-dim); }
+.result-link:hover .result-category,
+.result-link:focus .result-category { color: var(--text-on-accent-bg); opacity: 0.85; }
 .no-results { text-align: left; color: var(--fg-dim); font-size: 0.9rem; padding: var(--spacing-md); font-family: var(--font); }
 .no-results strong { color: var(--yellow); font-weight: 700; }
 

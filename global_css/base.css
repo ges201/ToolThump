@@ -95,6 +95,11 @@ button:disabled:hover, .btn:disabled:hover, .btn-secondary:disabled:hover {
 ul, ol { list-style: none; }
 .tool-icon, .most-used-icon, .result-icon { filter: var(--icon-filter); }
 
+/* Icons on solid accent hover backgrounds (search results, header dropdowns,
+   any link) must match the text color instead of keeping their accent tint. */
+a:hover .tool-icon, a:focus .tool-icon,
+a:hover .result-icon, a:focus .result-icon { filter: var(--icon-on-accent-filter); opacity: 1; }
+
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
 
 ::-webkit-scrollbar { width: 6px; }
