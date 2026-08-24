@@ -85,25 +85,25 @@
 
     --green: #166e18;
     --red: #b52b2b;
-    --yellow: #7c5c00;
+    --yellow: #7f5e00;
     --cyan: #006668;
     --magenta: #982463;
     --blue: #1b53a8;
 
-    --accent: var(--cyan);
-    --accent-hover: #004a4c;
+    --accent: var(--green);
+    --accent-hover: #0f5511;
 
     --titlebar-bg: #c4c4c4;
 
     --icon-filter: brightness(0) saturate(100%) invert(24%) sepia(91%) saturate(1600%) hue-rotate(80deg) brightness(90%) contrast(92%);
 
-    /* white icons on the dark-teal hover background */
+    /* white icons on the dark-green hover background */
     --icon-on-accent-filter: brightness(0) invert(1);
 
     --accent-color: var(--accent);
-    --accent-color-dark: #004a4c;
-    --accent-color-rgb: 0, 102, 104;
-    --accent-color-bg-hover: rgba(0, 102, 104, 0.12);
+    --accent-color-dark: #0f5511;
+    --accent-color-rgb: 22, 110, 24;
+    --accent-color-bg-hover: rgba(22, 110, 24, 0.12);
     --text-primary-color: var(--fg);
     --text-secondary-color: var(--fg-dim);
     --text-heading-color: var(--fg-bright);
@@ -120,9 +120,9 @@
     --error-color: var(--red);
     --warning-color: var(--yellow);
     --info-color: var(--cyan);
-    --focus-outline-color: rgba(0,102,104,0.4);
+    --focus-outline-color: rgba(22,110,24,0.4);
     --border-color-light: #888888;
     --text-muted: var(--fg-dim);
     --button-border: #808080;
-    --shadow-hard: 2px 2px 0 rgba(20, 20, 20, 0.45); --shadow-hard-inset: inset 2px 2px 0 rgba(0, 0, 0, 0.10);
+    --shadow-hard: 2px 2px 0 rgba(22, 110, 24, 0.45); --shadow-hard-inset: inset 2px 2px 0 rgba(0, 0, 0, 0.10);
 }
