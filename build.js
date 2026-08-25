@@ -107,7 +107,7 @@ function extractFaqs(html) {
     const data = JSON.parse(m[1]);
     const faqs = [];
     for (const section of data.sections || []) {
-      if (section.type === 'faq') {
+        if (section.type === 'faq' || section.faqs) {
         for (const f of section.faqs || []) {
           faqs.push({ q: decodeEntities(f.question), a: decodeEntities(f.answer) });
         }
