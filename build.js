@@ -584,6 +584,10 @@ function inlineIncludes(html, tool, tools) {
       html = html.replace(ttRe, () => indentBlock(include, 8));
       inlined++;
     }
+    if (!html.includes('/_includes/tool-text-section.css')) {
+      html = html.replace(/<\/head>/i, () =>
+        '    <link rel="stylesheet" href="/_includes/tool-text-section.css">\n\n</head>');
+    }
   }
 
   return { html, inlined };

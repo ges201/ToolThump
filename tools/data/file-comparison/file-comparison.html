@@ -4,25 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bit-by-Bit File Comparator - Check if Files are Identical | ToolThump</title>
+    <title>Binary File Compare Online - Check if Two Files Are Identical | ToolThump</title>
     <meta name="description"
-        content="Securely compare two files to see if they are identical. The tool performs a bit-by-bit comparison entirely in your browser. No files are uploaded.">
+        content="Compare two binary files online, free. Check if two files are identical with a bit-by-bit comparison that runs entirely in your browser. No files are uploaded.">
     <link rel="canonical" href="https://toolthump.com/tools/data/file-comparison/file-comparison.html">
     <meta name="robots" content="index, follow">
 
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://toolthump.com/tools/data/file-comparison/file-comparison.html">
-    <meta property="og:title" content="Bit-by-Bit File Comparator | ToolThump">
+    <meta property="og:title" content="Binary File Compare Online - Check if Two Files Are Identical | ToolThump">
     <meta property="og:description"
-        content="Securely compare two files to see if they are identical. The tool performs a bit-by-bit comparison entirely in your browser. No files are uploaded.">
+        content="Compare two binary files online, free. Check if two files are identical with a bit-by-bit comparison that runs entirely in your browser. No files are uploaded.">
     <meta property="og:image" content="https://toolthump.com/icons/file-comparison.png">
     <meta property="og:site_name" content="ToolThump" />
 
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://toolthump.com/tools/data/file-comparison/file-comparison.html">
-    <meta property="twitter:title" content="Bit-by-Bit File Comparator | ToolThump">
+    <meta property="twitter:title" content="Binary File Compare Online - Check if Two Files Are Identical | ToolThump">
     <meta property="twitter:description"
-        content="Securely compare two files to see if they are identical. The tool performs a bit-by-bit comparison entirely in your browser. No files are uploaded.">
+        content="Compare two binary files online, free. Check if two files are identical with a bit-by-bit comparison that runs entirely in your browser. No files are uploaded.">
     <meta property="twitter:image" content="https://toolthump.com/icons/file-comparison.png">
 
     <!-- Common Stylesheets (paths relative to root) -->
@@ -45,7 +45,7 @@
           "@id": "https://toolthump.com/tools/data/file-comparison/file-comparison.html#webapp",
           "name": "File Comparison",
           "url": "https://toolthump.com/tools/data/file-comparison/file-comparison.html",
-          "description": "Securely compare two files to see if they are identical. The tool performs a bit-by-bit comparison entirely in your browser. No files are uploaded.",
+          "description": "Compare two binary files online, free. Check if two files are identical with a bit-by-bit comparison that runs entirely in your browser. No files are uploaded.",
           "applicationCategory": "UtilityApplication",
           "operatingSystem": "Any",
           "browserRequirements": "Requires JavaScript. All processing runs client-side in your browser.",
@@ -121,6 +121,14 @@
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "It's useful for verifying file integrity. For example: confirming that a file you downloaded is not corrupt by comparing it to a trusted copy, ensuring a file was copied correctly to a USB drive, or checking that a backup file is an exact duplicate of the original."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can it compare binary files, not just text?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes - that is exactly what this tool is built for. It compares the raw bytes of any two files: executables, images, videos, PDFs, archives, firmware or any other binary format. If the binary content is identical byte for byte, the tool reports the files as identical, even if the filenames differ."
               }
             },
             {
@@ -536,6 +544,11 @@
                 },
                 {
                     "icon": "&#x25c6;",
+                    "question": "Can it compare binary files, not just text?",
+                    "answer": "Yes - that is exactly what this tool is built for. It compares the raw bytes of any two files: executables, images, videos, PDFs, archives, firmware or any other binary format. If the binary content is identical byte for byte, the tool reports the files as identical, even if the filenames differ."
+                },
+                {
+                    "icon": "&#x25a0;",
                     "question": "What does 'bit-by-bit' comparison actually mean?",
                     "answer": "It means the tool reads both files and checks if the first byte of File A is the same as the first byte of File B, then the second byte, and so on, all the way to the end. This is the most thorough way to confirm two files are exact copies, unlike just checking file sizes."
                 }

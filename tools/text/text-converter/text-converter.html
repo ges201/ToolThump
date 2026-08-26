@@ -90,6 +90,60 @@
               "name": "Text Case Converter"
             }
           ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://toolthump.com/tools/text/text-converter/text-converter.html#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is a text case converter?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A text case converter changes the capitalization of any text you paste in: UPPERCASE, lowercase or Title Case. It is a free online tool for formatting titles, headings, emails, code comments and any other text that needs consistent casing."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I convert text to uppercase or lowercase?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Paste your text into the Input box, then click UPPERCASE, lowercase or Title Case. The converted result appears instantly in the Output box and you can copy it with one click. All conversion happens in your browser."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is this case converter free to use?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. The tool is completely free, requires no sign-up or account, and has no limits on text length or usage. Paste, convert, copy - as often as you need."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Will my text be uploaded to a server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. Conversion runs entirely in your browser with JavaScript. Your text never leaves your device, so it is safe to use with drafts, work documents and any confidential writing."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is Title Case?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Title Case capitalizes the first letter of every word, like 'The Quick Brown Fox'. It is commonly used for article headlines, book titles and section headings. Some style guides leave short words like 'and' or 'the' lowercase - you can fix those with one click after converting."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it handle numbers, symbols and accented characters?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Only the letters are re-cased - numbers, punctuation, spaces and accented characters like é or ü are preserved exactly as you typed them."
+              }
+            }
+          ]
         }
       ]
     }
@@ -115,6 +169,8 @@
     <meta name="theme-color" content="#ffffff">
 
     <link rel="stylesheet" href="/_includes/header.css">
+
+    <link rel="stylesheet" href="/_includes/tool-text-section.css">
 
 </head>
 
@@ -268,6 +324,118 @@
                 </div>
 
             </section>
+        <!-- FAQ (generated from tool-text-data by build.js) -->
+                <!-- Main container where sections will be rendered -->
+        <div id="tool-text-sections-container" data-static="true">
+                <section class="tool-text-section">
+                    <h2><span class="section-icon">◈</span>Frequently Asked Questions (FAQ)</h2>
+                    <div class="section-content">
+                        <div class="accordion-container">
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">◆</span>
+                                    <strong>What is a text case converter?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>A text case converter changes the capitalization of any text you paste in: UPPERCASE, lowercase or Title Case. It is a free online tool for formatting titles, headings, emails, code comments and any other text that needs consistent casing.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">❶</span>
+                                    <strong>How do I convert text to uppercase or lowercase?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Paste your text into the Input box, then click UPPERCASE, lowercase or Title Case. The converted result appears instantly in the Output box and you can copy it with one click. All conversion happens in your browser.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">✦</span>
+                                    <strong>Is this case converter free to use?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Yes. The tool is completely free, requires no sign-up or account, and has no limits on text length or usage. Paste, convert, copy - as often as you need.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">◈</span>
+                                    <strong>Will my text be uploaded to a server?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>No. Conversion runs entirely in your browser with JavaScript. Your text never leaves your device, so it is safe to use with drafts, work documents and any confidential writing.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">●</span>
+                                    <strong>What is Title Case?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Title Case capitalizes the first letter of every word, like 'The Quick Brown Fox'. It is commonly used for article headlines, book titles and section headings. Some style guides leave short words like 'and' or 'the' lowercase - you can fix those with one click after converting.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span class="accordion-icon">▸</span>
+                                    <strong>Does it handle numbers, symbols and accented characters?</strong>
+                                    <span class="arrow-icon"></span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Yes. Only the letters are re-cased - numbers, punctuation, spaces and accented characters like é or ü are preserved exactly as you typed them.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        
+        <!--
+          HTML TEMPLATES
+          These are inert blocks of HTML that our JavaScript will use to build the sections.
+          This keeps the structure of our content out of the JavaScript file.
+        -->
+        
+        <!-- Template for a single feature or how-to step item -->
+        <template id="template-feature-item">
+            <li class="feature-item">
+                <span class="feature-icon"></span>
+                <div class="feature-text">
+                    <strong></strong>
+                    <p></p>
+                </div>
+            </li>
+        </template>
+        
+        <!-- Template for a single FAQ accordion item -->
+        <template id="template-faq-item">
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <span class="accordion-icon"></span>
+                    <strong></strong>
+                    <span class="arrow-icon"></span>
+                </button>
+                <div class="accordion-content">
+                    <p></p>
+                </div>
+            </div>
+        </template>
+        
+        <!-- Template for a generic section wrapper -->
+        <template id="template-section">
+            <section class="tool-text-section">
+                <h2><span class="section-icon"></span></h2>
+                <div class="section-content">
+                    <!-- Content (intro, lists, paragraphs) will be injected here -->
+                </div>
+            </section>
+        </template>
         <!-- Related tools (generated by build.js - do not edit manually) -->
                 <nav class="related-tools" aria-label="Related tools">
                     <h2>related text tools</h2>
@@ -326,6 +494,48 @@
     </footer>
     </footer>
     <!-- Note: Corrected script path to be root-relative -->
+    <script type="application/json" id="tool-text-data">{
+    "sections": [
+        {
+            "type": "faq",
+            "title": "Frequently Asked Questions (FAQ)",
+            "icon": "&#x25c8;",
+            "faqs": [
+                {
+                    "icon": "&#x25c6;",
+                    "question": "What is a text case converter?",
+                    "answer": "A text case converter changes the capitalization of any text you paste in: UPPERCASE, lowercase or Title Case. It is a free online tool for formatting titles, headings, emails, code comments and any other text that needs consistent casing."
+                },
+                {
+                    "icon": "&#x2776;",
+                    "question": "How do I convert text to uppercase or lowercase?",
+                    "answer": "Paste your text into the Input box, then click UPPERCASE, lowercase or Title Case. The converted result appears instantly in the Output box and you can copy it with one click. All conversion happens in your browser."
+                },
+                {
+                    "icon": "&#x2726;",
+                    "question": "Is this case converter free to use?",
+                    "answer": "Yes. The tool is completely free, requires no sign-up or account, and has no limits on text length or usage. Paste, convert, copy - as often as you need."
+                },
+                {
+                    "icon": "&#x25c8;",
+                    "question": "Will my text be uploaded to a server?",
+                    "answer": "No. Conversion runs entirely in your browser with JavaScript. Your text never leaves your device, so it is safe to use with drafts, work documents and any confidential writing."
+                },
+                {
+                    "icon": "&#x25cf;",
+                    "question": "What is Title Case?",
+                    "answer": "Title Case capitalizes the first letter of every word, like 'The Quick Brown Fox'. It is commonly used for article headlines, book titles and section headings. Some style guides leave short words like 'and' or 'the' lowercase - you can fix those with one click after converting."
+                },
+                {
+                    "icon": "&#x25b8;",
+                    "question": "Does it handle numbers, symbols and accented characters?",
+                    "answer": "Yes. Only the letters are re-cased - numbers, punctuation, spaces and accented characters like é or ü are preserved exactly as you typed them."
+                }
+            ]
+        }
+    ]
+    }</script>
+
     <script src="/main.js"></script>
     <script src="textConverter.js"></script>
 </body>
