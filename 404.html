@@ -7,25 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex">
     <link rel="stylesheet" href="/global_css/theme.css">
-    <link rel="stylesheet" href="/global_css/base.css">
-    <link rel="stylesheet" href="/global_css/components.css">
     <style>
-        .error-container {
-            max-width: 520px;
-            padding: var(--spacing-xl);
-            background-color: var(--bg);
-            border-radius: 0;
-            border: 1px solid var(--border-color);
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg);
+            color: var(--fg);
             font-family: var(--font);
+            text-align: center;
         }
 
-        .error-prompt { color: var(--yellow); margin-bottom: var(--spacing-lg); }
-        .error-prompt::before { content: '$ '; color: var(--cyan); }
-
-        h1 { font-size: 2.5rem; color: var(--red); margin-bottom: var(--spacing-sm); text-align: left; }
-        h1::before { display: none; }
-        p { font-size: 0.9rem; color: var(--fg-dim); margin-bottom: var(--spacing-xl); line-height: 1.5; }
-        p em { color: var(--yellow); font-style: normal; }
+        .code { font-size: 4rem; color: var(--red); margin-bottom: var(--spacing-sm); }
+        .err::before { content: 'sh: '; color: var(--cyan); }
+        .err { color: var(--yellow); margin-bottom: var(--spacing-sm); }
+        p { color: var(--fg-dim); margin-bottom: var(--spacing-xl); }
+        a { color: var(--cyan); }
     </style>
 </head>
 
@@ -41,26 +40,12 @@
         if (redirects[path]) { window.location.replace('https://toolthump.com' + redirects[path]); }
     </script>
 
-    <script src="/main.js"></script>
-    <div class="error-container">
-        <p class="error-prompt">cd /pages/this-page</p>
-        <h1>404: Not Found</h1>
-        <p><em>sh: this-page:</em> No such file or directory <span id="redirect-message"></span></p>
-        <a href="/" class="btn btn-secondary">cd /home</a>
+    <div>
+        <div class="code">404</div>
+        <div class="err">this page: no such file or directory</div>
+        <p>the tools are still here, though:</p>
+        <a href="/">back to toolthump</a>
     </div>
-
-    <script>
-      (function() {
-        var count = 10;
-        var el = document.getElementById('redirect-message');
-        el.textContent = 'redirecting to /home in ' + count + 's...';
-        var interval = setInterval(function() {
-          count--;
-          el.textContent = 'redirecting to /home in ' + count + 's...';
-          if (count <= 0) { clearInterval(interval); window.location.href = '/'; }
-        }, 1000);
-      })();
-    </script>
 
 </body>
 
