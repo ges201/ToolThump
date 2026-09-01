@@ -70,10 +70,22 @@ const onnxModel = {
     outputName: null,
     isInitialized: false,
 
+    loadRuntime: function () {
+        if (window.ort) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+            const s = document.createElement('script');
+            s.src = 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js';
+            s.onload = () => resolve();
+            s.onerror = () => reject(new Error('Failed to load the ONNX runtime.'));
+            document.head.appendChild(s);
+        });
+    },
+
     init: async function (statusCallback, progressCallback) {
         if (this.isInitialized) return true;
 
         try {
+            await this.loadRuntime();
             ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/';
             
             let modelBuffer = await modelCache.get(this.modelPath);

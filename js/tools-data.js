@@ -107,7 +107,7 @@ const toolsData = [
         htmlPath: "/tools/images/bg-remover/bg-remover.html",
         cssPaths: ["/tools/images/bg-remover/bg-remover.css"],
         jsPath: "/tools/images/bg-remover/bgRemover.js",
-        keywords: ["background", "remover", "image", "photo", "editor", "transparent", "cut out"]
+        keywords: ["remove background from image", "no upload background remover", "transparent png", "client-side photo editing", "private image editor", "product photo background removal", "white background passport photo", "no signup background remover"]
     },
     {
         id: "qr-code-generator",
