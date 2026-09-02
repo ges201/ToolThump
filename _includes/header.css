@@ -81,15 +81,9 @@
     .header-brand { margin-right: auto; }
     #theme-toggle { margin-left: auto; }
     #top-navigation { order: 2; width: 100%; position: relative; }
-    .category-list {
-        flex-direction: row; flex-wrap: nowrap; width: 100%;
-        overflow-x: auto; gap: var(--spacing-xs);
-        scrollbar-width: none;
-    }
-    .category-list::-webkit-scrollbar { display: none; }
+    .category-list { flex-direction: row; flex-wrap: wrap; width: 100%; gap: var(--spacing-xs); }
     .category-item { position: static; }
-    .category-button { flex-shrink: 0; white-space: nowrap; padding: var(--spacing-xs); font-size: 0.8rem; }
-    .category-button::before { content: ''; }
+    .category-button { white-space: nowrap; padding: var(--spacing-xs) var(--spacing-sm); font-size: 0.8rem; }
     .dropdown-menu {
         position: absolute; left: 0; right: 0; top: calc(100% + 2px);
         width: auto; border-color: var(--cyan); border-left: none; border-right: none; margin-top: 0;
