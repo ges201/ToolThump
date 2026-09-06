@@ -2,7 +2,8 @@ import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers
 
 env.allowLocalModels = false;
 env.useBrowserCache = true;
-env.backends.onnx.wasm.numThreads = 1;
+// ponytail: multithreaded ONNX needs SharedArrayBuffer, i.e. crossOriginIsolated (served via coi-serviceworker). Cap at 4 threads - beyond that Whisper gains little and memory climbs.
+env.backends.onnx.wasm.numThreads = window.crossOriginIsolated ? Math.max(1, Math.min(4, navigator.hardwareConcurrency || 1)) : 1;
 env.backends.onnx.wasm.simd = true;
 
 export class Transcriber {
@@ -24,6 +25,7 @@ export class Transcriber {
 
         try {
             if (!this.transcriber || this.currentModel !== modelName) {
+                console.time('whisper-model-download');
                 this.transcriber = await pipeline('automatic-speech-recognition', modelName, {
                     progress_callback: (data) => {
                         if (data.status === 'progress') {
@@ -33,6 +35,7 @@ export class Transcriber {
                         }
                     }
                 });
+                console.timeEnd('whisper-model-download');
                 this.currentModel = modelName;
             }
 
@@ -52,7 +55,9 @@ export class Transcriber {
 
             if (language !== 'auto') options.language = language;
 
+            console.time('whisper-inference');
             const output = await this.transcriber(fileUrl, options);
+            console.timeEnd('whisper-inference');
             URL.revokeObjectURL(fileUrl);
 
             const srtContent = this.srt.convertToSRT(output);

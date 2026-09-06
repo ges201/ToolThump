@@ -11,6 +11,7 @@ export class FFmpegManager {
 
     async load() {
         if (this.loaded) return true;
+        console.time('ffmpeg-engine-load');
 
         try {
             const isIsolated = window.crossOriginIsolated;
@@ -83,6 +84,7 @@ export class FFmpegManager {
             }
 
             this.loaded = true;
+            console.timeEnd('ffmpeg-engine-load');
             this.ui.setProgressBarIndeterminate(false);
             return true;
         } catch (error) {
@@ -107,6 +109,8 @@ export class FFmpegManager {
         this.ui.setProgressMessage('Your video is being processed locally. Keep this tab open.');
 
         try {
+            console.time('ffmpeg-render');
+            const threads = Math.max(2, Math.min(4, navigator.hardwareConcurrency || 2));
             const ext = videoFile.name.split('.').pop().toLowerCase() || 'mp4';
             const inputName = `input.${ext}`;
 
@@ -125,7 +129,7 @@ export class FFmpegManager {
                 '-vf', 'subtitles=subtitles.srt:fontsdir=/tmp:force_style=Fontname=Arial',
                 '-c:v', 'libx264',
                 '-preset', 'ultrafast',
-                '-threads', '2',
+                '-threads', String(threads),
                 '-c:a', 'aac',
                 '-b:a', '128k',
                 'output.mp4'
@@ -157,6 +161,7 @@ export class FFmpegManager {
 
             this.ui.setProgressComplete('Success!', 'Your video has been saved to your downloads.');
             this.ui.updateProgressStatus('Complete.');
+            console.timeEnd('ffmpeg-render');
 
             return { success: true };
         } catch (error) {
@@ -178,6 +183,7 @@ export class FFmpegManager {
         }
 
         try {
+            console.time('ffmpeg-mkv-export');
             const ext = videoFile.name.split('.').pop().toLowerCase() || 'mp4';
             const inputName = `input.${ext}`;
 
@@ -236,6 +242,7 @@ export class FFmpegManager {
 
             this.ui.setProgressComplete('Success!', 'Your MKV file has been saved.');
             this.ui.updateProgressStatus('Complete.');
+            console.timeEnd('ffmpeg-mkv-export');
 
             return { success: true };
         } catch (error) {
