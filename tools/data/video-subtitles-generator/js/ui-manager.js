@@ -12,6 +12,7 @@ export class UIManager {
             languageSelect: document.getElementById('language-select'),
             modelSelect: document.getElementById('model-select'),
             progressArea: document.getElementById('progress-area'),
+            progressSpinner: document.getElementById('progress-spinner'),
             progressTitle: document.getElementById('progress-title'),
             progressMessage: document.getElementById('progress-message'),
             progressBar: document.getElementById('progress-bar'),
@@ -105,6 +106,7 @@ export class UIManager {
         this.elements.progressArea.style.display = 'block';
         this.elements.resultsArea.style.display = 'none';
         this.elements.generateBtn.disabled = true;
+        this.elements.progressSpinner.style.display = 'block';
     }
 
     showResults(srtContent) {
@@ -112,6 +114,7 @@ export class UIManager {
         this.elements.progressArea.style.display = 'none';
         this.elements.resultsArea.style.display = 'block';
         this.elements.generateBtn.disabled = false;
+        this.elements.progressSpinner.style.display = 'none';
     }
 
     showError(message) {
@@ -120,6 +123,14 @@ export class UIManager {
         this.elements.progressBar.style.width = '0%';
         this.elements.progressBar.classList.remove('indeterminate');
         this.elements.generateBtn.disabled = false;
+        this.elements.progressSpinner.style.display = 'none';
+    }
+
+    setProgressComplete(title, message) {
+        this.setProgressTitle(title);
+        this.setProgressMessage(message);
+        this.elements.progressBar.style.width = '100%';
+        this.elements.progressSpinner.style.display = 'none';
     }
 
     setProgressTitle(text) {

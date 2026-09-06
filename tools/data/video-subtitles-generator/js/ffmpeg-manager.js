@@ -155,9 +155,7 @@ export class FFmpegManager {
             a.click();
             document.body.removeChild(a);
 
-            this.ui.setProgressTitle('Success!');
-            this.ui.setProgressMessage('Your video has been saved to your downloads.');
-            this.ui.setProgressBarWidth('100%');
+            this.ui.setProgressComplete('Success!', 'Your video has been saved to your downloads.');
             this.ui.updateProgressStatus('Complete.');
 
             return { success: true };
@@ -236,9 +234,7 @@ export class FFmpegManager {
             a.click();
             document.body.removeChild(a);
 
-            this.ui.setProgressTitle('Success!');
-            this.ui.setProgressMessage('Your MKV file has been saved.');
-            this.ui.setProgressBarWidth('100%');
+            this.ui.setProgressComplete('Success!', 'Your MKV file has been saved.');
             this.ui.updateProgressStatus('Complete.');
 
             return { success: true };

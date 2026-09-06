@@ -54,6 +54,7 @@ Thumbs.db
 .vscode/
 *.sublime-project
 *.sublime-workspace
+*.mp4
 
 # Editor-specific files
 .idea
