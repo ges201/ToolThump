@@ -74,13 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             state.isProcessing = false;
             ui.setProgressBarIndeterminate(false);
-        },
-
-        onReset() {
-            state.videoFile = null;
-            state.isProcessing = false;
-            state.srtContent = null;
-            ui.reset();
         }
     };
 

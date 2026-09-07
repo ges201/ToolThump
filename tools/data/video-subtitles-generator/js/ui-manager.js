@@ -21,13 +21,13 @@ export class UIManager {
             subtitlePreview: document.getElementById('subtitle-preview'),
             downloadBtn: document.getElementById('vsg-download-btn'),
             mkvExportBtn: document.getElementById('vsg-mkv-export-btn'),
-            renderBtn: document.getElementById('vsg-render-btn'),
-            resetBtn: document.getElementById('vsg-reset-btn')
+            renderBtn: document.getElementById('vsg-render-btn')
         };
+        this.previewUrl = null;
     }
 
     addEventListeners(handlers) {
-        const { dropZone, fileInput, generateBtn, downloadBtn, mkvExportBtn, renderBtn, resetBtn } = this.elements;
+        const { dropZone, fileInput, generateBtn, downloadBtn, mkvExportBtn, renderBtn } = this.elements;
 
         dropZone.addEventListener('click', (e) => {
             if (e.target.tagName === 'BUTTON' || e.target === fileInput) return;
@@ -61,7 +61,6 @@ export class UIManager {
         downloadBtn.addEventListener('click', () => handlers.onDownload());
         mkvExportBtn.addEventListener('click', () => handlers.onMkvExport());
         renderBtn.addEventListener('click', () => handlers.onRender());
-        resetBtn.addEventListener('click', () => handlers.onReset());
     }
 
     handleFileSelect(file) {
@@ -86,8 +85,13 @@ export class UIManager {
 
     updateVideoPreview(file) {
         const { videoPreview } = this.elements;
+        if (this.previewUrl) {
+            URL.revokeObjectURL(this.previewUrl);
+            this.previewUrl = null;
+        }
         if (file && file.type.startsWith('video/')) {
-            videoPreview.src = URL.createObjectURL(file);
+            this.previewUrl = URL.createObjectURL(file);
+            videoPreview.src = this.previewUrl;
             videoPreview.style.display = 'block';
         } else {
             videoPreview.style.display = 'none';
@@ -163,26 +167,24 @@ export class UIManager {
         this.elements.progressStatus.textContent = text;
     }
 
-    downloadSubtitles(srtContent, videoFile) {
-        const blob = new Blob([srtContent], { type: 'text/plain' });
+    baseName(file, fallback) {
+        const name = file?.name || '';
+        return name.split('.').slice(0, -1).join('.') || fallback;
+    }
+
+    downloadBlob(blob, filename) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        const baseName = videoFile?.name.split('.').slice(0, -1).join('.') || 'subtitles';
-        a.download = `${baseName}.srt`;
+        a.download = filename;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     }
 
-    reset() {
-        this.elements.fileInput.value = '';
-        this.updateFileInfo(null);
-        this.updateVideoPreview(null);
-        this.showProcessingOptions(false);
-        this.setGenerateButtonDisabled(true);
-        this.elements.progressArea.style.display = 'none';
-        this.elements.resultsArea.style.display = 'none';
+    downloadSubtitles(srtContent, videoFile) {
+        const blob = new Blob([srtContent], { type: 'text/plain' });
+        this.downloadBlob(blob, `${this.baseName(videoFile, 'subtitles')}.srt`);
     }
 }

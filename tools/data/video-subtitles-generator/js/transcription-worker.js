@@ -1,5 +1,5 @@
 import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
-import { SRTFormatter } from './srt-formatter.js';
+import { SRTFormatter } from './srt-formatter.mjs';
 
 env.useBrowserCache = true;
 // ponytail: multithreaded ONNX needs SharedArrayBuffer, i.e. crossOriginIsolated. Cap at 4 threads - beyond that Whisper gains little and memory climbs.

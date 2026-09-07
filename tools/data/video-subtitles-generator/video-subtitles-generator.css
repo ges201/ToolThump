@@ -68,10 +68,6 @@
     display: none;
 }
 
-.video-preview-container:empty {
-    display: none;
-}
-
 .file-input {
     position: absolute;
     top: 0;
@@ -84,13 +80,6 @@
 
 .file-drop-zone.file-loaded .file-input {
     display: none;
-}
-
-.file-info .file-placeholder-icon {
-    font-size: 3rem;
-    color: var(--text-secondary-color);
-    margin-bottom: var(--spacing-sm);
-    display: block;
 }
 
 /* Uploaded Video Name Container (moved outside drop zone) */
@@ -138,75 +127,6 @@
 /* When file is loaded, hide the placeholder and show video preview */
 .file-drop-zone.file-loaded .file-info {
     display: none;
-}
-
-/* File Details Wrapper */
-.file-details-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 500px;
-    background-color: var(--surface-bg-color);
-    padding: var(--spacing-md);
-    border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-sm);
-    gap: var(--spacing-md);
-}
-
-.file-details {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    text-align: left;
-    flex: 1;
-    min-width: 0; /* Enable text truncation */
-}
-
-.file-icon {
-    font-size: 2rem;
-}
-
-.file-name-size {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
-
-.file-name {
-    font-weight: 600;
-    color: var(--text-primary-color);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.file-size {
-    font-size: 0.85rem;
-    color: var(--text-secondary-color);
-}
-
-.remove-file-button {
-    background: transparent;
-    border: none;
-    color: var(--text-secondary-color);
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: var(--spacing-xs);
-    line-height: 1;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    transition: none;
-    min-width: unset; /* Override default button min-width if any */
-}
-
-.remove-file-button:hover {
-    background-color: var(--hover-bg-color);
-    color: var(--error-color, #e74c3c);
 }
 
 /* Processing Options */
@@ -312,9 +232,11 @@
     transition: width 0.3s ease;
 }
 
-/* Indeterminate Animation */
-.vsg-progress-bar-inner.indeterminate {
-    width: 100% !important;
+/* Working-state stripes shared by both progress modes; the indeterminate
+   variant always fills the bar, the active shimmer respects its width
+   (runs on the compositor thread, so it moves even while JS is busy) */
+.vsg-progress-bar-inner.indeterminate,
+.vsg-progress-bar-inner.active {
     background-image: linear-gradient(
         45deg,
         rgba(255, 255, 255, 0.15) 25%,
@@ -329,21 +251,8 @@
     animation: indeterminate-stripe 1.5s linear infinite;
 }
 
-/* Working-state shimmer that respects the determinate width (runs on the
-   compositor thread, so it keeps moving even while JS is busy) */
-.vsg-progress-bar-inner.active {
-    background-image: linear-gradient(
-        45deg,
-        rgba(255, 255, 255, 0.15) 25%,
-        transparent 25%,
-        transparent 50%,
-        rgba(255, 255, 255, 0.15) 50%,
-        rgba(255, 255, 255, 0.15) 75%,
-        transparent 75%,
-        transparent
-    );
-    background-size: 40px 40px;
-    animation: indeterminate-stripe 1.5s linear infinite;
+.vsg-progress-bar-inner.indeterminate {
+    width: 100% !important;
 }
 
 @keyframes indeterminate-stripe {
@@ -421,18 +330,6 @@
     color: var(--accent-color);
 }
 
-/* Primary button styling for render button */
-.vsg-download-section .btn-primary {
-    background-color: var(--accent-color);
-    color: white;
-    border-color: var(--accent-color);
-}
-
-.vsg-download-section .btn-primary:hover {
-    background-color: var(--accent-color-hover);
-    border-color: var(--accent-color-hover);
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
     .vsg-container {
@@ -443,10 +340,6 @@
         padding: var(--spacing-lg);
         min-height: 200px;
         height: 200px;
-    }
-    
-    .file-info .file-placeholder-icon {
-        font-size: 2rem;
     }
     
     .vsg-download-section {

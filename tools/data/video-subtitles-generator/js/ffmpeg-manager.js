@@ -95,109 +95,34 @@ export class FFmpegManager {
     }
 
     async renderWithSubtitles(videoFile, srtContent) {
-        this.ui.showProgressArea();
-        this.ui.setProgressTitle('Preparing Video');
-        this.ui.setProgressMessage('Initializing the processing engine...');
-        this.ui.setProgressBarWidth('0%');
-
-        const loaded = await this.load();
-        if (!loaded) {
-            return { success: false };
-        }
-
-        this.ui.setProgressTitle('Baking Subtitles');
-        this.ui.setProgressMessage('Your video is being processed locally. Keep this tab open.');
-
-        try {
-            console.time('ffmpeg-render');
-            const threads = Math.max(2, Math.min(4, navigator.hardwareConcurrency || 2));
-            const ext = videoFile.name.split('.').pop().toLowerCase() || 'mp4';
-            const inputName = `input.${ext}`;
-
-            this.ui.updateProgressStatus('Transferring video file... (May take a moment for larger videos)');
-            await this.ffmpeg.writeFile(inputName, await fetchFile(videoFile));
-
-            this.ui.updateProgressStatus('Transferring subtitle data...');
-            await this.ffmpeg.writeFile('subtitles.srt', srtContent);
-
-            this.ui.updateProgressStatus('Starting rendering process...');
-            this.ui.setProgressBarWidth('10%');
-
-            const exitCode = await this.ffmpeg.exec([
+        return this.runJob({
+            title: 'Preparing Video',
+            initialMessage: 'Initializing the processing engine...',
+            activeMessage: 'Your video is being processed locally. Keep this tab open.',
+            execArgs: (inputName) => [
                 '-y',
                 '-i', inputName,
                 '-vf', 'subtitles=subtitles.srt:fontsdir=/tmp:force_style=Fontname=Arial',
                 '-c:v', 'libx264',
                 '-preset', 'ultrafast',
-                '-threads', String(threads),
+                '-threads', String(this.threadCount()),
                 '-c:a', 'aac',
                 '-b:a', '128k',
                 'output.mp4'
-            ]);
-
-            if (exitCode !== 0) {
-                throw new Error(`FFmpeg process failed (Code ${exitCode}). Check browser console for details.`);
-            }
-
-            this.ui.setProgressMessage('Finalizing file...');
-            this.ui.updateProgressStatus('Reading result...');
-
-            const data = await this.ffmpeg.readFile('output.mp4');
-
-            await this.ffmpeg.deleteFile(inputName);
-            await this.ffmpeg.deleteFile('subtitles.srt');
-            await this.ffmpeg.deleteFile('output.mp4');
-
-            const blob = new Blob([data], { type: 'video/mp4' });
-            const url = URL.createObjectURL(blob);
-            const baseName = videoFile.name.split('.').slice(0, -1).join('.') || 'video';
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${baseName}-subtitled.mp4`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-
-            this.ui.setProgressComplete('Success!', 'Your video has been saved to your downloads.');
-            this.ui.updateProgressStatus('Complete.');
-            console.timeEnd('ffmpeg-render');
-
-            return { success: true };
-        } catch (error) {
-            console.error('Rendering failed:', error);
-            this.ui.showError(`Rendering Error: ${error.message}`);
-            return { success: false, error };
-        }
+            ],
+            outputName: 'output.mp4',
+            outputMime: 'video/mp4',
+            downloadName: (baseName) => `${baseName}-subtitled.mp4`,
+            completeMessage: 'Your video has been saved to your downloads.'
+        }, videoFile, srtContent);
     }
 
     async exportMkv(videoFile, srtContent) {
-        this.ui.showProgressArea();
-        this.ui.setProgressTitle('Exporting MKV');
-        this.ui.setProgressMessage('Muxing video with subtitles (no re-encoding)...');
-        this.ui.setProgressBarWidth('0%');
-
-        const loaded = await this.load();
-        if (!loaded) {
-            return { success: false };
-        }
-
-        try {
-            console.time('ffmpeg-mkv-export');
-            const ext = videoFile.name.split('.').pop().toLowerCase() || 'mp4';
-            const inputName = `input.${ext}`;
-
-            this.ui.updateProgressStatus('Transferring video file...');
-            await this.ffmpeg.writeFile(inputName, await fetchFile(videoFile));
-
-            this.ui.updateProgressStatus('Transferring subtitle data...');
-            await this.ffmpeg.writeFile('subtitles.srt', srtContent);
-            console.log('SRT content preview:', srtContent.substring(0, 500));
-
-            this.ui.updateProgressStatus('Muxing streams...');
-            this.ui.setProgressBarIndeterminate(true);
-
-            const exitCode = await this.ffmpeg.exec([
+        return this.runJob({
+            title: 'Exporting MKV',
+            initialMessage: 'Muxing video with subtitles (no re-encoding)...',
+            activeMessage: 'Muxing streams...',
+            execArgs: (inputName) => [
                 '-y',
                 '-hide_banner',
                 '-i', inputName,
@@ -211,43 +136,77 @@ export class FFmpegManager {
                 '-metadata:s:s:0', 'language=eng',
                 '-disposition:s:0', 'default',
                 'output.mkv'
-            ]);
+            ],
+            outputName: 'output.mkv',
+            outputMime: 'video/x-matroska',
+            downloadName: (baseName) => `${baseName}.mkv`,
+            indeterminate: true,
+            verifyOutput: true,
+            completeMessage: 'Your MKV file has been saved.'
+        }, videoFile, srtContent);
+    }
 
+    threadCount() {
+        return Math.max(2, Math.min(4, navigator.hardwareConcurrency || 2));
+    }
+
+    async runJob({ title, initialMessage, activeMessage, execArgs, outputName, outputMime, downloadName, indeterminate = false, verifyOutput = false, completeMessage }, videoFile, srtContent) {
+        this.ui.showProgressArea();
+        this.ui.setProgressTitle(title);
+        this.ui.setProgressMessage(initialMessage);
+        this.ui.setProgressBarWidth('0%');
+
+        const loaded = await this.load();
+        if (!loaded) {
+            return { success: false };
+        }
+
+        this.ui.setProgressMessage(activeMessage);
+        // Copy-muxing emits no progress events; fall back to indeterminate stripes.
+        this.ui.setProgressBarIndeterminate(indeterminate);
+
+        try {
+            const ext = videoFile.name.split('.').pop().toLowerCase() || 'mp4';
+            const inputName = `input.${ext}`;
+
+            this.ui.updateProgressStatus('Transferring video file... (May take a moment for larger videos)');
+            await this.ffmpeg.writeFile(inputName, await fetchFile(videoFile));
+
+            this.ui.updateProgressStatus('Transferring subtitle data...');
+            await this.ffmpeg.writeFile('subtitles.srt', srtContent);
+
+            this.ui.updateProgressStatus('Starting processing...');
+            this.ui.setProgressBarWidth('10%');
+
+            const exitCode = await this.ffmpeg.exec(execArgs(inputName));
             if (exitCode !== 0) {
                 throw new Error(`FFmpeg process failed (Code ${exitCode}). Check browser console for details.`);
             }
 
-            this.ui.updateProgressStatus('Verifying output...');
-            await this.ffmpeg.exec(['-hide_banner', '-i', 'output.mkv']);
+            if (verifyOutput) {
+                this.ui.updateProgressStatus('Verifying output...');
+                await this.ffmpeg.exec(['-hide_banner', '-i', outputName]);
+            }
 
             this.ui.setProgressMessage('Finalizing file...');
             this.ui.updateProgressStatus('Reading result...');
 
-            const data = await this.ffmpeg.readFile('output.mkv');
+            const data = await this.ffmpeg.readFile(outputName);
 
             await this.ffmpeg.deleteFile(inputName);
             await this.ffmpeg.deleteFile('subtitles.srt');
-            await this.ffmpeg.deleteFile('output.mkv');
+            await this.ffmpeg.deleteFile(outputName);
 
-            const blob = new Blob([data], { type: 'video/x-matroska' });
-            const url = URL.createObjectURL(blob);
-            const baseName = videoFile.name.split('.').slice(0, -1).join('.') || 'video';
+            const blob = new Blob([data], { type: outputMime });
+            this.ui.downloadBlob(blob, downloadName(this.ui.baseName(videoFile, 'video')));
 
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${baseName}.mkv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-
-            this.ui.setProgressComplete('Success!', 'Your MKV file has been saved.');
+            this.ui.setProgressComplete('Success!', completeMessage);
             this.ui.updateProgressStatus('Complete.');
-            console.timeEnd('ffmpeg-mkv-export');
 
             return { success: true };
         } catch (error) {
-            console.error('MKV export failed:', error);
-            this.ui.showError(`Export Error: ${error.message}`);
+            console.error('FFmpeg job failed:', error);
+            this.ui.showError(`${title} Error: ${error.message}`);
             return { success: false, error };
         }
     }
