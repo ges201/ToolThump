@@ -1,11 +1,9 @@
 import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
 import { SRTFormatter } from './srt-formatter.js';
 
-env.allowLocalModels = false;
 env.useBrowserCache = true;
 // ponytail: multithreaded ONNX needs SharedArrayBuffer, i.e. crossOriginIsolated. Cap at 4 threads - beyond that Whisper gains little and memory climbs.
 env.backends.onnx.wasm.numThreads = self.crossOriginIsolated ? Math.max(1, Math.min(4, navigator.hardwareConcurrency || 1)) : 1;
-env.backends.onnx.wasm.simd = true;
 
 // Whisper advances its window by (chunk_length - 2*stride) per pass.
 const CHUNK_LEN_S = 29;
@@ -31,54 +29,85 @@ function fmtTime(totalSec) {
 
 let transcriber = null;
 let currentModel = null;
-const srt = new SRTFormatter();
+let currentDevice = 'wasm';
 
-self.onmessage = async (event) => {
-    const { audio, language, modelSize, duration } = event.data;
-    const modelName = `Xenova/whisper-${modelSize}`;
+// Jobs run one at a time so a transcribe arriving mid-download waits for it.
+let queue = Promise.resolve();
+self.onmessage = (event) => {
+    const data = event.data;
+    queue = queue.then(() => handleMessage(data));
+    queue.catch(() => {});
+};
 
+async function handleMessage(data) {
     try {
-        if (!transcriber || currentModel !== modelName) {
-            // progress_callback reports bytes per file, downloaded sequentially
-            // or in parallel, so sum loaded/total across every file seen so far
-            // for an overall percentage (brief dips when a new file joins the
-            // denominator - the dominant model file climbs monotonically).
-            const files = new Map();
-            let lastPost = 0;
-            transcriber = await pipeline('automatic-speech-recognition', modelName, {
-                progress_callback: (data) => {
-                    if (data.status !== 'progress' || !data.total) return;
-                    files.set(data.file, { loaded: data.loaded, total: data.total });
-                    let loaded = 0;
-                    let total = 0;
-                    for (const f of files.values()) {
-                        loaded += f.loaded;
-                        total += f.total;
-                    }
-                    const now = performance.now();
-                    if (now - lastPost < 100) return;
-                    lastPost = now;
-                    self.postMessage({
-                        type: 'download',
-                        pct: Math.round(DOWNLOAD_END * loaded / total),
-                        file: data.file.split('/').pop(),
-                        perFile: Math.round(data.progress)
-                    });
-                }
-            });
-            currentModel = modelName;
+        const modelName = `Xenova/whisper-${data.modelSize}`;
+        if (data.type === 'load') {
+            await loadModel(modelName);
+        } else if (data.type === 'transcribe') {
+            if (!transcriber || currentModel !== modelName) await loadModel(modelName);
+            await transcribe(modelName, data);
         }
+    } catch (error) {
+        console.error('Transcription failed:', error);
+        self.postMessage({ type: 'error', message: error.message || String(error) });
+    }
+}
 
+async function loadModel(modelName) {
+    if (transcriber && currentModel === modelName) return;
+
+    // Sum loaded/total across all files seen so far for an overall
+    // percentage (brief dips when a new file joins the denominator).
+    const files = new Map();
+    let lastPost = 0;
+    const create = (options) => pipeline('automatic-speech-recognition', modelName, {
+        ...options,
+        progress_callback: (data) => {
+            if (data.status !== 'progress' || !data.total) return;
+            files.set(data.file, { loaded: data.loaded, total: data.total });
+            let loaded = 0;
+            let total = 0;
+            for (const f of files.values()) {
+                loaded += f.loaded;
+                total += f.total;
+            }
+            const now = performance.now();
+            if (now - lastPost < 100) return;
+            lastPost = now;
+            self.postMessage({
+                type: 'download',
+                pct: Math.round(DOWNLOAD_END * loaded / total),
+                file: data.file.split('/').pop(),
+                perFile: Math.round(data.progress)
+            });
+        }
+    });
+
+    transcriber = null;
+    let device = 'wasm';
+    if (navigator.gpu) {
+        try {
+            transcriber = await create({ device: 'webgpu' });
+            device = 'webgpu';
+        } catch (error) {
+            console.warn('WebGPU unavailable, falling back to WASM:', error);
+        }
+    }
+    if (!transcriber) transcriber = await create({});
+    console.log(`Whisper backend: ${device}`);
+    currentDevice = device;
+    currentModel = modelName;
+}
+
+async function transcribe(modelName, { audio, language, duration }) {
+    try {
         self.postMessage({ type: 'preparing', pct: DOWNLOAD_END, status: 'Loading model into memory...' });
 
-        // Raw 16kHz mono audio arrives from the main thread (workers have no
-        // AudioContext, so the waveform is decoded there); the pipeline accepts
-        // a Float32Array directly and skips read_audio.
-
-        // 'word' timestamps give us granular control over SRT cue boundaries.
-        // Chunking only engages when the audio is longer than the chunk; scale
-        // the window down for short clips so progress updates are frequent.
-        const isShortClip = duration !== null && duration < SHORT_CLIP_S;
+        // 16kHz mono audio decoded on the main thread (workers lack AudioContext);
+        // 'word' timestamps feed the SRT cue boundaries. Shorter chunks on
+        // small clips keep progress updates frequent.
+        const isShortClip = duration < SHORT_CLIP_S;
         const chunkLen = isShortClip ? SHORT_CHUNK_S : CHUNK_LEN_S;
         const strideLen = isShortClip ? SHORT_STRIDE_S : STRIDE_LEN_S;
         const step = chunkLen - 2 * strideLen;
@@ -92,37 +121,40 @@ self.onmessage = async (event) => {
 
         // Real-time transcription progress: the pipeline fires chunk_callback
         // once per processed chunk, so count against the chunks the duration
-        // implies. If duration is unknown, the UI falls back to indeterminate.
-        const totalChunks = duration === null ? null
-            : (duration >= chunkLen ? Math.max(1, Math.ceil(duration / step)) : 1);
-        if (totalChunks) {
-            let chunksDone = 0;
-            options.chunk_callback = () => {
-                chunksDone++;
-                const frac = Math.min(1, chunksDone / totalChunks);
-                const pct = Math.round(TRANSCRIBE_START + (TRANSCRIBE_END - TRANSCRIBE_START) * frac);
-                self.postMessage({
-                    type: 'transcribe',
-                    pct,
-                    status: `Transcribing: ${fmtTime(Math.min(duration, chunksDone * step))} / ${fmtTime(duration)}`
-                });
-            };
-        }
+        // implies (duration always comes from the decoded audio).
+        const totalChunks = duration >= chunkLen ? Math.max(1, Math.ceil(duration / step)) : 1;
+        let chunksDone = 0;
+        options.chunk_callback = () => {
+            chunksDone++;
+            const frac = Math.min(1, chunksDone / totalChunks);
+            const pct = Math.round(TRANSCRIBE_START + (TRANSCRIBE_END - TRANSCRIBE_START) * frac);
+            self.postMessage({
+                type: 'transcribe',
+                pct,
+                status: `Transcribing: ${fmtTime(Math.min(duration, chunksDone * step))} / ${fmtTime(duration)}`
+            });
+        };
 
         self.postMessage({
             type: 'transcribe-start',
             pct: TRANSCRIBE_START,
-            indeterminate: totalChunks === null,
             status: 'Analyzing audio...'
         });
 
         const output = await transcriber(audio, options);
 
-        self.postMessage({ type: 'finalize', pct: 90, status: '' });
-        const srtContent = srt.convertToSRT(output);
+        self.postMessage({ type: 'finalize', pct: 90 });
+        const srtContent = new SRTFormatter().convertToSRT(output);
         self.postMessage({ type: 'done', srt: srtContent });
     } catch (error) {
-        console.error('Transcription failed:', error);
-        self.postMessage({ type: 'error', message: error.message || String(error) });
+        if (currentDevice === 'webgpu') {
+            // Some ops can choke on the WebGPU backend (ORT 1.17); retry once on WASM.
+            console.warn('WebGPU inference failed, retrying on WASM:', error);
+            transcriber = null;
+            currentModel = null;
+            await loadModel(modelName);
+            return transcribe(modelName, { audio, language, duration });
+        }
+        throw error;
     }
-};
+}

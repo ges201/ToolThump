@@ -26,6 +26,10 @@ export class Transcriber {
             const decoder = new OfflineAudioContext(1, 1, WHISPER_SAMPLE_RATE);
             const decoded = await decoder.decodeAudioData(buf);
 
+            if (decoded.sampleRate === WHISPER_SAMPLE_RATE && decoded.numberOfChannels === 1) {
+                return { audio: decoded.getChannelData(0), duration: decoded.duration };
+            }
+
             const frameCount = Math.max(1, Math.ceil(decoded.duration * WHISPER_SAMPLE_RATE));
             const offline = new OfflineAudioContext(1, frameCount, WHISPER_SAMPLE_RATE);
             const source = offline.createBufferSource();
@@ -53,52 +57,55 @@ export class Transcriber {
             const worker = this.ensureWorker();
             if (this.workerError) throw new Error(this.workerError);
 
-            this.ui.updateProgressStatus('Decoding audio track...');
-            const { audio, duration } = await this.decodeAudioFile(videoFile);
-
-            return await new Promise((resolve) => {
+            return new Promise((resolve) => {
                 worker.onmessage = (e) => {
-                    const { type, srt, message } = e.data;
-                    switch (type) {
+                    const data = e.data;
+                    if (data.pct !== undefined) this.ui.setProgressBarWidth(`${data.pct}%`);
+                    switch (data.type) {
                         case 'download':
-                            this.ui.setProgressBarWidth(`${e.data.pct}%`);
-                            this.ui.updateProgressStatus(`Model Download: ${e.data.file} ${e.data.perFile}%`);
+                            this.ui.updateProgressStatus(`Model Download: ${data.file} ${data.perFile}%`);
                             break;
                         case 'preparing':
-                            this.ui.setProgressBarWidth(`${e.data.pct}%`);
                             this.ui.setProgressMessage('Preparing transcription engine...');
-                            this.ui.updateProgressStatus(e.data.status);
+                            this.ui.updateProgressStatus(data.status);
                             break;
                         case 'transcribe-start':
                             this.ui.setProgressMessage('Transcribing audio...');
-                            this.ui.setProgressBarWidth(`${e.data.pct}%`);
-                            this.ui.setProgressBarIndeterminate(e.data.indeterminate);
-                            this.ui.setProgressActive(!e.data.indeterminate);
-                            this.ui.updateProgressStatus(e.data.status);
+                            this.ui.setProgressActive(true);
+                            this.ui.updateProgressStatus(data.status);
                             break;
                         case 'transcribe':
-                            this.ui.setProgressBarWidth(`${e.data.pct}%`);
-                            this.ui.updateProgressStatus(e.data.status);
+                            this.ui.updateProgressStatus(data.status);
                             break;
                         case 'finalize':
                             this.ui.setProgressActive(false);
-                            this.ui.setProgressBarIndeterminate(false);
-                            this.ui.setProgressBarWidth(`${e.data.pct}%`);
                             this.ui.setProgressMessage('Formatting subtitles...');
                             this.ui.updateProgressStatus('');
                             break;
                         case 'done':
-                            this.ui.showResults(srt);
-                            resolve({ success: true, srtContent: srt });
+                            this.ui.showResults(data.srt);
+                            resolve({ success: true, srtContent: data.srt });
                             break;
                         case 'error':
-                            this.ui.showError(`AI Error: ${message}`);
-                            resolve({ success: false, error: new Error(message) });
+                            this.ui.showError(`AI Error: ${data.message}`);
+                            resolve({ success: false, error: new Error(data.message) });
                             break;
                     }
                 };
 
-                worker.postMessage({ audio, language, modelSize, duration }, [audio.buffer]);
+                // Model download runs in the worker while the audio decodes here.
+                worker.postMessage({ type: 'load', modelSize });
+
+                this.ui.updateProgressStatus('Decoding audio track...');
+                this.decodeAudioFile(videoFile).then(
+                    ({ audio, duration }) => {
+                        worker.postMessage({ type: 'transcribe', audio, language, duration, modelSize }, [audio.buffer]);
+                    },
+                    (error) => {
+                        this.ui.showError(`AI Error: ${error.message}`);
+                        resolve({ success: false, error });
+                    }
+                );
             });
         } catch (error) {
             console.error('Transcription failed:', error);

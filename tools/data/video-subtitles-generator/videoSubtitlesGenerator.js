@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             state.isProcessing = false;
-            ui.setProgressBarIndeterminate(false);
         },
 
         onDownload() {
@@ -87,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     ui.addEventListeners(handlers);
 
-    console.log('Video Subtitles Generator (Refactored) Initializing...');
     console.log('Cross-Origin Isolated:', window.crossOriginIsolated);
 
     window.videoSubtitlesGenerator = {
