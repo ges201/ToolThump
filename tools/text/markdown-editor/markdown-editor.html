@@ -263,26 +263,23 @@
                 <!-- Main container where sections will be rendered -->
         <div id="tool-text-sections-container" data-static="true">
                 <section class="tool-text-section">
-                    <h2><span class="section-icon">◈</span>How to Use the Markdown Editor</h2>
+                    <h2>How to Use the Markdown Editor</h2>
                     <div class="section-content">
                         <p>Using this editor is as simple as it gets. Just type on the left and see the magic happen on the right.</p>
                         <ul class="features-list">
                             <li class="feature-item">
-                                <span class="feature-icon">⎯</span>
                                 <div class="feature-text">
                                     <strong>Write Markdown</strong>
                                     <p>Start typing in the left-hand pane. Use standard Markdown syntax to format your text (e.g., `# Heading`, `*bold*`, `[link](https://toolthump.com)).</p>
                                 </div>
                             </li>
                             <li class="feature-item">
-                                <span class="feature-icon">◎</span>
                                 <div class="feature-text">
                                     <strong>See Live Preview</strong>
                                     <p>As you type, the right-hand pane will instantly update with a preview of the rendered HTML. No buttons to press, no waiting.</p>
                                 </div>
                             </li>
                             <li class="feature-item">
-                                <span class="feature-icon">✕</span>
                                 <div class="feature-text">
                                     <strong>Clear or Export</strong>
                                     <p>Use the 'Clear' button to wipe the editor clean. When you're done, click 'Export .md' to download your raw Markdown text as a file.</p>
@@ -292,32 +289,28 @@
                     </div>
                 </section>
                 <section class="tool-text-section">
-                    <h2><span class="section-icon">✦</span>Core Features</h2>
+                    <h2>Core Features</h2>
                     <div class="section-content">
                         <ul class="features-list">
                             <li class="feature-item">
-                                <span class="feature-icon">⚡</span>
                                 <div class="feature-text">
                                     <strong>Instant Real-Time Preview</strong>
                                     <p>The editor renders your Markdown as you type. This immediate feedback loop helps you write faster and spot formatting errors instantly.</p>
                                 </div>
                             </li>
                             <li class="feature-item">
-                                <span class="feature-icon">✕</span>
                                 <div class="feature-text">
                                     <strong>One-Click Clear &amp; Export</strong>
                                     <p>Easily clear the editor or save your work by exporting the raw Markdown to a `.md` file directly from the interface.</p>
                                 </div>
                             </li>
                             <li class="feature-item">
-                                <span class="feature-icon">◆</span>
                                 <div class="feature-text">
                                     <strong>Completely Client-Side</strong>
                                     <p>Your text never leaves your browser. All parsing and rendering happens on your machine, ensuring your work remains 100% private.</p>
                                 </div>
                             </li>
                             <li class="feature-item">
-                                <span class="feature-icon">◆</span>
                                 <div class="feature-text">
                                     <strong>Secure &amp; Sanitized Output</strong>
                                     <p>The tool uses DOMPurify to sanitize the HTML output, preventing any potential cross-site scripting (XSS) issues. You can be sure the output is safe to use anywhere.</p>
@@ -327,12 +320,11 @@
                     </div>
                 </section>
                 <section class="tool-text-section">
-                    <h2><span class="section-icon">◈</span>Frequently Asked Questions</h2>
+                    <h2>Frequently Asked Questions</h2>
                     <div class="section-content">
                         <div class="accordion-container">
                             <div class="accordion-item">
                                 <button class="accordion-header">
-                                    <span class="accordion-icon">◎</span>
                                     <strong>What is Markdown?</strong>
                                     <span class="arrow-icon"></span>
                                 </button>
@@ -342,7 +334,6 @@
                             </div>
                             <div class="accordion-item">
                                 <button class="accordion-header">
-                                    <span class="accordion-icon">●</span>
                                     <strong>Is this tool really free?</strong>
                                     <span class="arrow-icon"></span>
                                 </button>
@@ -352,7 +343,6 @@
                             </div>
                             <div class="accordion-item">
                                 <button class="accordion-header">
-                                    <span class="accordion-icon">◇</span>
                                     <strong>What libraries does this tool use?</strong>
                                     <span class="arrow-icon"></span>
                                 </button>
@@ -374,7 +364,6 @@
         <!-- Template for a single feature or how-to step item -->
         <template id="template-feature-item">
             <li class="feature-item">
-                <span class="feature-icon"></span>
                 <div class="feature-text">
                     <strong></strong>
                     <p></p>
@@ -386,7 +375,6 @@
         <template id="template-faq-item">
             <div class="accordion-item">
                 <button class="accordion-header">
-                    <span class="accordion-icon"></span>
                     <strong></strong>
                     <span class="arrow-icon"></span>
                 </button>
@@ -399,7 +387,7 @@
         <!-- Template for a generic section wrapper -->
         <template id="template-section">
             <section class="tool-text-section">
-                <h2><span class="section-icon"></span></h2>
+                <h2></h2>
                 <div class="section-content">
                     <!-- Content (intro, lists, paragraphs) will be injected here -->
                 </div>
@@ -468,22 +456,18 @@
         "sections": [
             {
                 "type": "how-to",
-                "icon": "&#x25c8;",
                 "title": "How to Use the Markdown Editor",
                 "intro": "Using this editor is as simple as it gets. Just type on the left and see the magic happen on the right.",
                 "steps": [
                     {
-                        "icon": "&#x23af;",
                         "title": "Write Markdown",
                         "description": "Start typing in the left-hand pane. Use standard Markdown syntax to format your text (e.g., `# Heading`, `*bold*`, `[link](https://toolthump.com))."
                     },
                     {
-                        "icon": "&#x25ce;",
                         "title": "See Live Preview",
                         "description": "As you type, the right-hand pane will instantly update with a preview of the rendered HTML. No buttons to press, no waiting."
                     },
                     {
-                        "icon": "&#x2715;",
                         "title": "Clear or Export",
                         "description": "Use the 'Clear' button to wipe the editor clean. When you're done, click 'Export .md' to download your raw Markdown text as a file."
                     }
@@ -491,26 +475,21 @@
             },
             {
                 "type": "features",
-                "icon": "&#x2726;",
                 "title": "Core Features",
                 "features": [
                     {
-                        "icon": "&#x26a1;",
                         "title": "Instant Real-Time Preview",
                         "description": "The editor renders your Markdown as you type. This immediate feedback loop helps you write faster and spot formatting errors instantly."
                     },
                     {
-                        "icon": "&#x2715;",
                         "title": "One-Click Clear & Export",
                         "description": "Easily clear the editor or save your work by exporting the raw Markdown to a `.md` file directly from the interface."
                     },
                     {
-                        "icon": "&#x25c6;",
                         "title": "Completely Client-Side",
                         "description": "Your text never leaves your browser. All parsing and rendering happens on your machine, ensuring your work remains 100% private."
                     },
                     {
-                        "icon": "&#x25c6;",
                         "title": "Secure & Sanitized Output",
                         "description": "The tool uses DOMPurify to sanitize the HTML output, preventing any potential cross-site scripting (XSS) issues. You can be sure the output is safe to use anywhere."
                     }
@@ -518,21 +497,17 @@
             },
             {
                 "type": "faq",
-                "icon": "&#x25c8;",
                 "title": "Frequently Asked Questions",
                 "faqs": [
                     {
-                        "icon": "&#x25ce;",
                         "question": "What is Markdown?",
                         "answer": "Markdown is a lightweight markup language with plain-text-formatting syntax. It's designed so that it can be converted to HTML and many other formats. It's often used for writing README files, forum posts, and quick documentation."
                     },
                     {
-                        "icon": "&#x25cf;",
                         "question": "Is this tool really free?",
                         "answer": "Yes, completely. No ads, no subscriptions, no hidden costs. Just a useful tool for anyone who needs it."
                     },
                     {
-                        "icon": "&#x25c7;",
                         "question": "What libraries does this tool use?",
                         "answer": "This editor is powered by two excellent open-source libraries: 'marked.js' for the fast Markdown parsing and 'DOMPurify' for ensuring the rendered HTML is secure. All credit to their creators."
                     }

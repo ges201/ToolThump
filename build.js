@@ -225,7 +225,7 @@ function renderToolTextSections(data, baseIndent = 12) {
   const out = [];
   for (const section of data.sections || []) {
     out.push('<section class="tool-text-section">');
-    out.push(`    <h2><span class="section-icon">${escapeHtml(decodeEntities(section.icon))}</span>${escapeHtml(section.title)}</h2>`);
+    out.push(`    <h2>${escapeHtml(section.title)}</h2>`);
     out.push('    <div class="section-content">');
     if (section.intro) {
       out.push(`        <p>${escapeHtml(section.intro)}</p>`);
@@ -235,7 +235,6 @@ function renderToolTextSections(data, baseIndent = 12) {
       out.push('        <ul class="features-list">');
       for (const item of items) {
         out.push('            <li class="feature-item">');
-        out.push(`                <span class="feature-icon">${escapeHtml(decodeEntities(item.icon))}</span>`);
         out.push('                <div class="feature-text">');
         out.push(`                    <strong>${escapeHtml(item.title)}</strong>`);
         out.push(`                    <p>${escapeHtml(item.description)}</p>`);
@@ -252,7 +251,6 @@ function renderToolTextSections(data, baseIndent = 12) {
       for (const faq of section.faqs) {
         out.push('            <div class="accordion-item">');
         out.push('                <button class="accordion-header">');
-        out.push(`                    <span class="accordion-icon">${escapeHtml(decodeEntities(faq.icon))}</span>`);
         out.push(`                    <strong>${escapeHtml(faq.question)}</strong>`);
         out.push('                    <span class="arrow-icon"></span>');
         out.push('                </button>');

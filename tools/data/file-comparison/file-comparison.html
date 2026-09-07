@@ -259,26 +259,23 @@
                     <!-- Main container where sections will be rendered -->
         <div id="tool-text-sections-container" data-static="true">
                 <section class="tool-text-section">
-                    <h2><span class="section-icon">▸</span>How to Compare Two Files</h2>
+                    <h2>How to Compare Two Files</h2>
                     <div class="section-content">
                         <p>Verifying if two files are identical is a simple, three-step process.</p>
                         <ul class="features-list">
                             <li class="feature-item">
-                                <span class="feature-icon">❶</span>
                                 <div class="feature-text">
                                     <strong>Select Your Files</strong>
                                     <p>Drag and drop each file into one of the boxes, or click on a box to open the file selector. You must select two files to proceed.</p>
                                 </div>
                             </li>
                             <li class="feature-item">
-                                <span class="feature-icon">❷</span>
                                 <div class="feature-text">
                                     <strong>Start the Comparison</strong>
                                     <p>Once two files are selected, the 'Compare Files' button will become active. Click it to begin the bit-by-bit comparison.</p>
                                 </div>
                             </li>
                             <li class="feature-item">
-                                <span class="feature-icon">❸</span>
                                 <div class="feature-text">
                                     <strong>View the Result</strong>
                                     <p>The tool will instantly tell you if the files are identical or different. For large files, a progress bar will show the status. No data ever leaves your computer.</p>
@@ -288,32 +285,28 @@
                     </div>
                 </section>
                 <section class="tool-text-section">
-                    <h2><span class="section-icon">✦</span>Key Features &amp; Guarantees</h2>
+                    <h2>Key Features &amp; Guarantees</h2>
                     <div class="section-content">
                         <ul class="features-list">
                             <li class="feature-item">
-                                <span class="feature-icon">◆</span>
                                 <div class="feature-text">
                                     <strong>100% Client-Side &amp; Private</strong>
                                     <p>Files are read and compared directly in your browser. They are never uploaded to any server, ensuring complete privacy and security.</p>
                                 </div>
                             </li>
                             <li class="feature-item">
-                                <span class="feature-icon">◆</span>
                                 <div class="feature-text">
                                     <strong>Bit-by-Bit Accuracy</strong>
                                     <p>This isn't a superficial check. The tool reads the entire binary content of both files to ensure they are truly identical, byte for byte.</p>
                                 </div>
                             </li>
                             <li class="feature-item">
-                                <span class="feature-icon">✦</span>
                                 <div class="feature-text">
                                     <strong>Large File Support</strong>
                                     <p>By processing files in chunks, the tool can handle large files (many GBs) without crashing your browser, which is a common issue with other client-side tools.</p>
                                 </div>
                             </li>
                             <li class="feature-item">
-                                <span class="feature-icon">■</span>
                                 <div class="feature-text">
                                     <strong>Any File Type</strong>
                                     <p>It doesn't matter if it's an image, a video, a PDF, or a program executable. The tool compares the raw data, making it universally compatible.</p>
@@ -323,12 +316,11 @@
                     </div>
                 </section>
                 <section class="tool-text-section">
-                    <h2><span class="section-icon">◈</span>Frequently Asked Questions (FAQ)</h2>
+                    <h2>Frequently Asked Questions (FAQ)</h2>
                     <div class="section-content">
                         <div class="accordion-container">
                             <div class="accordion-item">
                                 <button class="accordion-header">
-                                    <span class="accordion-icon">◆</span>
                                     <strong>Are my files *really* kept private?</strong>
                                     <span class="arrow-icon"></span>
                                 </button>
@@ -338,7 +330,6 @@
                             </div>
                             <div class="accordion-item">
                                 <button class="accordion-header">
-                                    <span class="accordion-icon">→</span>
                                     <strong>What exactly gets compared? Just the content?</strong>
                                     <span class="arrow-icon"></span>
                                 </button>
@@ -348,7 +339,6 @@
                             </div>
                             <div class="accordion-item">
                                 <button class="accordion-header">
-                                    <span class="accordion-icon">▸</span>
                                     <strong>What is a practical use for this?</strong>
                                     <span class="arrow-icon"></span>
                                 </button>
@@ -358,7 +348,6 @@
                             </div>
                             <div class="accordion-item">
                                 <button class="accordion-header">
-                                    <span class="accordion-icon">◆</span>
                                     <strong>What does 'bit-by-bit' comparison actually mean?</strong>
                                     <span class="arrow-icon"></span>
                                 </button>
@@ -380,7 +369,6 @@
         <!-- Template for a single feature or how-to step item -->
         <template id="template-feature-item">
             <li class="feature-item">
-                <span class="feature-icon"></span>
                 <div class="feature-text">
                     <strong></strong>
                     <p></p>
@@ -392,7 +380,6 @@
         <template id="template-faq-item">
             <div class="accordion-item">
                 <button class="accordion-header">
-                    <span class="accordion-icon"></span>
                     <strong></strong>
                     <span class="arrow-icon"></span>
                 </button>
@@ -405,7 +392,7 @@
         <!-- Template for a generic section wrapper -->
         <template id="template-section">
             <section class="tool-text-section">
-                <h2><span class="section-icon"></span></h2>
+                <h2></h2>
                 <div class="section-content">
                     <!-- Content (intro, lists, paragraphs) will be injected here -->
                 </div>
@@ -475,21 +462,17 @@
         {
             "type": "how-to",
             "title": "How to Compare Two Files",
-            "icon": "&#x25b8;",
             "intro": "Verifying if two files are identical is a simple, three-step process.",
             "steps": [
                 {
-                    "icon": "&#x2776;",
                     "title": "Select Your Files",
                     "description": "Drag and drop each file into one of the boxes, or click on a box to open the file selector. You must select two files to proceed."
                 },
                 {
-                    "icon": "&#x2777;",
                     "title": "Start the Comparison",
                     "description": "Once two files are selected, the 'Compare Files' button will become active. Click it to begin the bit-by-bit comparison."
                 },
                 {
-                    "icon": "&#x2778;",
                     "title": "View the Result",
                     "description": "The tool will instantly tell you if the files are identical or different. For large files, a progress bar will show the status. No data ever leaves your computer."
                 }
@@ -498,25 +481,20 @@
         {
             "type": "features",
             "title": "Key Features & Guarantees",
-            "icon": "&#x2726;",
             "features": [
                 {
-                    "icon": "&#x25c6;",
                     "title": "100% Client-Side & Private",
                     "description": "Files are read and compared directly in your browser. They are never uploaded to any server, ensuring complete privacy and security."
                 },
                 {
-                    "icon": "&#x25c6;",
                     "title": "Bit-by-Bit Accuracy",
                     "description": "This isn't a superficial check. The tool reads the entire binary content of both files to ensure they are truly identical, byte for byte."
                 },
                 {
-                    "icon": "&#x2726;",
                     "title": "Large File Support",
                     "description": "By processing files in chunks, the tool can handle large files (many GBs) without crashing your browser, which is a common issue with other client-side tools."
                 },
                 {
-                    "icon": "&#x25a0;",
                     "title": "Any File Type",
                     "description": "It doesn't matter if it's an image, a video, a PDF, or a program executable. The tool compares the raw data, making it universally compatible."
                 }
@@ -525,30 +503,24 @@
         {
             "type": "faq",
             "title": "Frequently Asked Questions (FAQ)",
-            "icon": "&#x25c8;",
             "faqs": [
                 {
-                    "icon": "&#x25c6;",
                     "question": "Are my files *really* kept private?",
                     "answer": "Yes. The comparison happens entirely within your browser. Your files are not uploaded to any server. The code uses standard browser APIs to read file content into memory for comparison. After you close the page, it's gone. You can even disconnect from the internet after the page loads and the tool will still work."
                 },
                 {
-                    "icon": "&#x2192;",
                     "question": "What exactly gets compared? Just the content?",
                     "answer": "Only the binary content of the files is compared. File names, creation dates, modification dates, and other metadata are completely ignored. If two files have different names but identical content, this tool will report them as 'Identical'."
                 },
                 {
-                    "icon": "&#x25b8;",
                     "question": "What is a practical use for this?",
                     "answer": "It's useful for verifying file integrity. For example: confirming that a file you downloaded is not corrupt by comparing it to a trusted copy, ensuring a file was copied correctly to a USB drive, or checking that a backup file is an exact duplicate of the original."
                 },
                 {
-                    "icon": "&#x25c6;",
                     "question": "Can it compare binary files, not just text?",
                     "answer": "Yes - that is exactly what this tool is built for. It compares the raw bytes of any two files: executables, images, videos, PDFs, archives, firmware or any other binary format. If the binary content is identical byte for byte, the tool reports the files as identical, even if the filenames differ."
                 },
                 {
-                    "icon": "&#x25a0;",
                     "question": "What does 'bit-by-bit' comparison actually mean?",
                     "answer": "It means the tool reads both files and checks if the first byte of File A is the same as the first byte of File B, then the second byte, and so on, all the way to the end. This is the most thorough way to confirm two files are exact copies, unlike just checking file sizes."
                 }

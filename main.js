@@ -127,12 +127,6 @@ function addBlinkingCursor() {
 // TOOL TEXT SECTIONS
 // =================================================================
 
-function decodeEntities(str) {
-    const el = document.createElement('span');
-    el.innerHTML = str;
-    return el.textContent;
-}
-
 function initializeToolTextSections() {
     const container = $('#tool-text-sections-container');
     if (!container) return;
@@ -180,7 +174,6 @@ function initializeToolTextSections() {
             const h2 = $('h2', clone);
             const content = $('.section-content', clone);
 
-            $('.section-icon', h2).textContent = decodeEntities(section.icon);
             h2.append(section.title);
 
             section.intro && content.appendChild(Object.assign(document.createElement('p'), { textContent: section.intro }));
@@ -190,7 +183,6 @@ function initializeToolTextSections() {
                 const list = Object.assign(document.createElement('ul'), { className: 'features-list' });
                 items.forEach(item => {
                     const itemClone = templates.feature.content.cloneNode(true);
-                    $('.feature-icon', itemClone).textContent = decodeEntities(item.icon);
                     $('strong', itemClone).textContent = item.title;
                     $('p', itemClone).textContent = item.description;
                     list.appendChild(itemClone);
@@ -206,7 +198,6 @@ function initializeToolTextSections() {
                 const accordion = Object.assign(document.createElement('div'), { className: 'accordion-container' });
                 section.faqs.forEach(faq => {
                     const faqClone = templates.faq.content.cloneNode(true);
-                    $('.accordion-icon', faqClone).textContent = decodeEntities(faq.icon);
                     $('strong', faqClone).textContent = faq.question;
                     $('.accordion-content p', faqClone).innerHTML = faq.answer;
                     accordion.appendChild(faqClone);
