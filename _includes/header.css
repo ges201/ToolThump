@@ -31,8 +31,6 @@
     padding: var(--spacing-xs) var(--spacing-sm);
 }
 .category-button[aria-expanded="true"] { background: var(--cyan); color: var(--text-on-accent-bg); border-color: var(--cyan); }
-.category-button::before { content: './'; color: var(--fg-dim); }
-.category-button[aria-expanded="true"]::before { color: var(--text-on-accent-bg); }
 
 .dropdown-arrow { display: none; }
 
