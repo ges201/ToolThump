@@ -24,8 +24,6 @@
     --shadow: none;
     --radius: 0px;
 
-    --titlebar-bg: #141418;
-
     --spacing-xs: 4px;
     --spacing-sm: 8px;
     --spacing-md: 12px;
@@ -92,8 +90,6 @@
 
     --accent: var(--green);
     --accent-hover: #0f5511;
-
-    --titlebar-bg: #c4c4c4;
 
     --icon-filter: brightness(0) saturate(100%) invert(24%) sepia(91%) saturate(1600%) hue-rotate(80deg) brightness(90%) contrast(92%);
 

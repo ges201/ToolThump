@@ -46,20 +46,13 @@
     letter-spacing: 0;
 }
 
-.hero-subtitle {
-    color: var(--fg-dim);
-    font-size: 0.9rem;
-    margin-bottom: var(--spacing-md);
-    font-family: var(--font);
-}
-.hero-subtitle::before { content: '$ '; color: var(--cyan); }
-
 .hero-description {
     font-size: 0.9rem; font-weight: 400;
     color: var(--fg-dim); text-align: left;
     margin-bottom: 0; max-width: 620px; line-height: 1.5;
     font-family: var(--font);
 }
+.hero-description::before { content: '> '; color: var(--green); font-weight: 700; }
 
 .home-section { margin-bottom: calc(var(--spacing-xl) * 2); }
 
@@ -73,10 +66,14 @@
 /* === Search === */
 .search-wrapper { position: relative; max-width: 520px; margin: 0 0 var(--spacing-xl) 0; width: 100%; }
 
+.search-bar-row {
+    display: flex; width: 100%;
+}
+
 .search-bar-container {
-    display: flex; width: 100%; border: 1px solid var(--border-color);
-    border-radius: 0; overflow: hidden; position: relative; z-index: 101;
-    background-color: var(--bg);
+    display: flex; flex-grow: 1; min-width: 0;
+    border: 1px solid var(--border-color); border-right: none;
+    background-color: var(--bg); position: relative; z-index: 101;
 }
 .search-bar-container:focus-within { border-color: var(--cyan); }
 
@@ -95,12 +92,11 @@
 #home-search-input:focus { outline: none; box-shadow: none; }
 #home-search-input::placeholder { color: var(--fg-dim); }
 
+/* The enter button is a regular site button (see .btn-secondary in base.css);
+   it only needs to keep its size inside the flex row, and paint above the
+   field when its hover lift shifts it up-left. */
 #home-search-button {
-    flex-shrink: 0; border: none; border-left: 1px solid var(--border-color);
-    background-color: transparent; color: var(--fg-dim);
-    padding: var(--spacing-sm) var(--spacing-md); cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 0; font-family: var(--font); font-size: 0.8rem;
+    flex-shrink: 0; position: relative; z-index: 102;
 }
 
 /* === Results dropdown === */

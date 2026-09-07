@@ -28,22 +28,9 @@ function buildTerminalChrome() {
     const win = document.createElement('div');
     win.className = 'terminal-window';
 
-    const titlebar = document.createElement('div');
-    titlebar.className = 'terminal-titlebar';
-    titlebar.innerHTML = `
-        <span class="terminal-dots">
-            <span class="dot-close"></span>
-            <span class="dot-min"></span>
-            <span class="dot-max"></span>
-        </span>
-        <span class="terminal-title">toolthump — bash — 80×24</span>
-        <span></span>
-    `;
-
     const tbody = document.createElement('div');
     tbody.className = 'terminal-body';
 
-    win.appendChild(titlebar);
     win.appendChild(tbody);
     body.appendChild(win);
 
@@ -276,11 +263,7 @@ function applyTheme(theme) {
     const sun = $('#theme-icon-sun');
     const moon = $('#theme-icon-moon');
 
-    const themeName = isDark ? 'green' : 'amber';
     toggle && attr(toggle, 'aria-label', `Switch to ${isDark ? 'amber' : 'green'} theme`);
-
-    const titleEl = $('.terminal-title');
-    if (titleEl) titleEl.textContent = `toolthump — ${themeName} — 80×24`;
 
     sun?.classList.toggle('hidden', isDark);
     moon?.classList.toggle('hidden', !isDark);

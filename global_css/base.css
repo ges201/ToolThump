@@ -26,23 +26,6 @@ body {
     background: var(--bg);
 }
 
-.terminal-titlebar {
-    display: flex; align-items: center;
-    padding: 0 var(--spacing-md); height: 28px;
-    background: var(--titlebar-bg); color: var(--fg-dim);
-    font-size: 0.8rem; font-weight: 700;
-    letter-spacing: 0.5px; gap: var(--spacing-md);
-    flex-shrink: 0; font-family: var(--font); user-select: none;
-}
-
-.terminal-dots { display: flex; gap: 6px; flex-shrink: 0; }
-.terminal-dots span { width: 10px; height: 10px; border-radius: 50%; display: block; }
-.terminal-dots .dot-close { background: var(--red); }
-.terminal-dots .dot-min { background: var(--yellow); }
-.terminal-dots .dot-max { background: var(--green); }
-
-.terminal-title { flex: 1; text-align: center; opacity: 0.7; }
-
 .terminal-body { flex: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; }
 
 h1, h2, h3, h4, h5, h6 { font-family: var(--font); }

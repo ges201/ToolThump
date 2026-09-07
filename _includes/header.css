@@ -23,7 +23,11 @@
 .logo-link:hover .text-logo { color: var(--green); }
 
 .category-list { display: flex; gap: 2px; }
-.category-item { position: relative; }
+.category-item { position: relative; display: flex; align-items: center; }
+.category-item + .category-item::before {
+    content: '|'; color: var(--fg-dim); opacity: 0.6;
+    margin-right: var(--spacing-xs); user-select: none;
+}
 
 .category-button {
     gap: var(--spacing-xs); font-size: 0.85rem; font-family: var(--font);
