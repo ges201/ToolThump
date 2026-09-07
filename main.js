@@ -286,8 +286,25 @@ initializeTheme();
 
 // Bind the toggle exactly once - the script runs at the end of <body>,
 // so the header button already exists in the DOM.
+let crtTimer = 0;
 $('#theme-toggle')?.addEventListener('click', () => {
-    applyTheme(attr(document.documentElement, 'data-theme') === 'dark' ? 'light' : 'dark');
+    const nextTheme = attr(document.documentElement, 'data-theme') === 'dark' ? 'light' : 'dark';
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        applyTheme(nextTheme);
+        return;
+    }
+    applyTheme(nextTheme);
+    let overlay = $('.crt-switch-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'crt-switch-overlay';
+        document.body.appendChild(overlay);
+    }
+    overlay.classList.remove('playing');
+    void overlay.offsetWidth;
+    overlay.classList.add('playing');
+    clearTimeout(crtTimer);
+    crtTimer = setTimeout(() => overlay.classList.remove('playing'), 500);
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
