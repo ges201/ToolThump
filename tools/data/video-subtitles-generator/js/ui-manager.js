@@ -115,6 +115,7 @@ export class UIManager {
         this.elements.resultsArea.style.display = 'block';
         this.elements.generateBtn.disabled = false;
         this.elements.progressSpinner.style.display = 'none';
+        this.elements.progressBar.classList.remove('active');
     }
 
     showError(message) {
@@ -122,6 +123,7 @@ export class UIManager {
         this.elements.progressMessage.textContent = message;
         this.elements.progressBar.style.width = '0%';
         this.elements.progressBar.classList.remove('indeterminate');
+        this.elements.progressBar.classList.remove('active');
         this.elements.generateBtn.disabled = false;
         this.elements.progressSpinner.style.display = 'none';
     }
@@ -151,6 +153,10 @@ export class UIManager {
         } else {
             this.elements.progressBar.classList.remove('indeterminate');
         }
+    }
+
+    setProgressActive(active) {
+        this.elements.progressBar.classList.toggle('active', active);
     }
 
     updateProgressStatus(text) {

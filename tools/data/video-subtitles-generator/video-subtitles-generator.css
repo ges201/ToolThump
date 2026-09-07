@@ -309,12 +309,29 @@
     height: 100%;
     width: 0;
     background-color: var(--accent-color);
-    transition: none;
+    transition: width 0.3s ease;
 }
 
 /* Indeterminate Animation */
 .vsg-progress-bar-inner.indeterminate {
     width: 100% !important;
+    background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.15) 75%,
+        transparent 75%,
+        transparent
+    );
+    background-size: 40px 40px;
+    animation: indeterminate-stripe 1.5s linear infinite;
+}
+
+/* Working-state shimmer that respects the determinate width (runs on the
+   compositor thread, so it keeps moving even while JS is busy) */
+.vsg-progress-bar-inner.active {
     background-image: linear-gradient(
         45deg,
         rgba(255, 255, 255, 0.15) 25%,

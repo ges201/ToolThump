@@ -1,12 +1,10 @@
 import { UIManager } from './js/ui-manager.js';
-import { SRTFormatter } from './js/srt-formatter.js';
 import { Transcriber } from './js/transcriber.js';
 import { FFmpegManager } from './js/ffmpeg-manager.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const ui = new UIManager();
-    const srtFormatter = new SRTFormatter();
-    const transcriber = new Transcriber(ui, srtFormatter);
+    const transcriber = new Transcriber(ui);
     const ffmpegManager = new FFmpegManager(ui);
 
     const state = {
