@@ -97,7 +97,9 @@ function setupHeader() {
         });
     });
 
-    document.addEventListener('click', e => !header.contains(e.target) && closeDropdowns());
+    // Clicks anywhere that are not on a category button or an open menu
+    // (both stopPropagation) close every open dropdown.
+    document.addEventListener('click', () => closeDropdowns());
 
     $$('.dropdown-menu', header).forEach(m => m.addEventListener('click', e => e.stopPropagation()));
 

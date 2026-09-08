@@ -34,7 +34,6 @@
     border: 1px solid transparent; background: transparent; color: var(--fg);
     padding: var(--spacing-xs) var(--spacing-sm);
 }
-.category-button[aria-expanded="true"] { background: var(--cyan); color: var(--text-on-accent-bg); border-color: var(--cyan); }
 
 .dropdown-arrow { display: none; }
 
