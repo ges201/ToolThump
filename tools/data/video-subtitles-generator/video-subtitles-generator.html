@@ -358,9 +358,18 @@
 
                     <!-- Results Area -->
                     <div class="vsg-results-area" id="results-area" style="display: none;">
-                        <h3>Generated Subtitles</h3>
+                        <div class="vsg-results-header">
+                            <h3>Generated Subtitles</h3>
+                            <button id="vsg-edit-btn" class="btn-secondary" aria-label="Edit subtitles">Edit</button>
+                        </div>
                         <div class="vsg-subtitle-preview">
                             <pre id="subtitle-preview" class="vsg-subtitle-text"></pre>
+                            <textarea id="subtitle-editor" class="vsg-subtitle-editor" style="display: none;" spellcheck="false"
+                                aria-label="Edit subtitles"></textarea>
+                        </div>
+                        <div class="vsg-edit-actions" id="subtitle-edit-actions" style="display: none;">
+                            <button id="vsg-save-edit-btn" class="btn-secondary">Save Changes</button>
+                            <button id="vsg-cancel-edit-btn" class="btn-secondary">Cancel</button>
                         </div>
                         <div class="vsg-download-section">
                             <button id="vsg-download-btn" class="btn-secondary">Download SRT File</button>
@@ -467,7 +476,7 @@
                                     <span class="arrow-icon"></span>
                                 </button>
                                 <div class="accordion-content">
-                                    <p>The tool generates basic subtitles. For advanced editing, download the SRT file and use dedicated subtitle editing software like Aegisub or Subtitle Edit.</p>
+                                    <p>Yes. Use the Edit button in the generated subtitles box to change the text, then click Save Changes before downloading the SRT or exporting the video.</p>
                                 </div>
                             </div>
                         </div>
@@ -633,7 +642,7 @@
                 },
                 {
                     "question": "Can I edit the generated subtitles?",
-                    "answer": "The tool generates basic subtitles. For advanced editing, download the SRT file and use dedicated subtitle editing software like Aegisub or Subtitle Edit."
+                    "answer": "Yes. Use the Edit button in the generated subtitles box to change the text, then click Save Changes before downloading the SRT or exporting the video."
                 }
             ]
         }

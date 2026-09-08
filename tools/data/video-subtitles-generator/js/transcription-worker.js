@@ -144,8 +144,8 @@ async function transcribe(modelName, { audio, language, duration }) {
         const output = await transcriber(audio, options);
 
         self.postMessage({ type: 'finalize', pct: 90 });
-        const srtContent = new SRTFormatter().convertToSRT(output);
-        self.postMessage({ type: 'done', srt: srtContent });
+        const { srt, cues } = new SRTFormatter().format(output);
+        self.postMessage({ type: 'done', srt, cues });
     } catch (error) {
         if (currentDevice === 'webgpu') {
             // Some ops can choke on the WebGPU backend (ORT 1.17); retry once on WASM.

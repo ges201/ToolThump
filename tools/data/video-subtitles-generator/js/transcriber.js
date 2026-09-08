@@ -83,8 +83,8 @@ export class Transcriber {
                             this.ui.updateProgressStatus('');
                             break;
                         case 'done':
-                            this.ui.showResults(data.srt);
-                            resolve({ success: true, srtContent: data.srt });
+                            this.ui.showResults(data.srt, data.cues);
+                            resolve({ success: true, srtContent: data.srt, cues: data.cues });
                             break;
                         case 'error':
                             this.ui.showError(`AI Error: ${data.message}`);

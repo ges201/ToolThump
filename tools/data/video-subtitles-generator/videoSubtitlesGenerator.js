@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const state = {
         videoFile: null,
         isProcessing: false,
-        srtContent: null
+        srtContent: null,
+        cues: null
     };
 
     const handlers = {
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (result.success) {
                 state.srtContent = result.srtContent;
+                state.cues = result.cues;
             }
 
             state.isProcessing = false;
@@ -74,6 +76,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             state.isProcessing = false;
             ui.setProgressBarIndeterminate(false);
+        },
+
+        onEdit() {
+            ui.enterEditMode();
+        },
+
+        onSaveEdit() {
+            const srt = ui.saveEdit();
+            if (srt !== null) state.srtContent = srt;
+        },
+
+        onCancelEdit() {
+            ui.cancelEdit();
         }
     };
 

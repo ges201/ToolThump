@@ -281,6 +281,57 @@
     color: var(--text-primary-color);
 }
 
+.vsg-results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+}
+
+.vsg-results-header h3 {
+    margin-bottom: 0;
+}
+
+#vsg-edit-btn {
+    padding: 4px 18px;
+    font-size: 0.9rem;
+    min-width: 0;
+}
+
+.vsg-subtitle-editor {
+    display: block;
+    width: 100%;
+    min-height: 180px;
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--input-bg-color);
+    color: var(--text-primary-color);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.vsg-edit-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: var(--spacing-lg);
+}
+
+.vsg-edit-actions .btn-secondary {
+    min-width: 140px;
+}
+
+#vsg-save-edit-btn {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
 .vsg-subtitle-preview {
     background-color: var(--input-bg-color);
     border: 1px solid var(--border-color);
@@ -289,16 +340,41 @@
     margin-bottom: var(--spacing-lg);
     max-height: 300px;
     overflow-y: auto;
+    /* Offset parent for cue scroll positioning */
+    position: relative;
 }
 
 .vsg-subtitle-text {
     margin: 0;
-    font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
-    line-height: 1.4;
+    font-size: 0.95rem;
+    line-height: 1.6;
     color: var(--text-primary-color);
     white-space: pre-wrap;
     word-wrap: break-word;
+}
+
+/* Karaoke cues rendered inside the preview; the active cue and word track playback */
+.vsg-preview-cue {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+.vsg-preview-cue:last-child {
+    margin-bottom: 0;
+}
+
+/* Non-active cues recede while one is highlighted during playback */
+.vsg-preview-cue.dim {
+    opacity: 0.4;
+}
+
+.vsg-preview-word {
+    margin-right: 0.35em;
+}
+
+.vsg-preview-word.active {
+    color: var(--accent-color);
+    font-weight: 700;
 }
 
 .vsg-download-section {

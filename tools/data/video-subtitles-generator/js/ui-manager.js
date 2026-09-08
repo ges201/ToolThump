@@ -1,3 +1,7 @@
+import { SRTFormatter } from './srt-formatter.mjs';
+
+const srtFormatter = new SRTFormatter();
+
 export class UIManager {
     constructor() {
         this.elements = {
@@ -19,15 +23,34 @@ export class UIManager {
             progressStatus: document.getElementById('progress-status'),
             resultsArea: document.getElementById('results-area'),
             subtitlePreview: document.getElementById('subtitle-preview'),
+            subtitleEditor: document.getElementById('subtitle-editor'),
+            editBtn: document.getElementById('vsg-edit-btn'),
+            saveEditBtn: document.getElementById('vsg-save-edit-btn'),
+            cancelEditBtn: document.getElementById('vsg-cancel-edit-btn'),
+            editActions: document.getElementById('subtitle-edit-actions'),
             downloadBtn: document.getElementById('vsg-download-btn'),
             mkvExportBtn: document.getElementById('vsg-mkv-export-btn'),
             renderBtn: document.getElementById('vsg-render-btn')
         };
         this.previewUrl = null;
+        this.generatedSrt = null;
+        this.generatedCues = null;
+        this.srtContent = null;
+        this.cues = null;
+        this.cueEls = [];
+        this.activeCueIndex = -1;
+        this.rafId = 0;
+
+        // Word-highlight sync: a rAF loop while playing keeps words in step
+        // (timeupdate alone fires too rarely for word-length cues).
+        const video = this.elements.videoPreview;
+        video.addEventListener('play', () => this.startCaptionSync());
+        video.addEventListener('pause', () => this.stopCaptionSync());
+        video.addEventListener('seeked', () => this.syncCaptions());
     }
 
     addEventListeners(handlers) {
-        const { dropZone, fileInput, generateBtn, downloadBtn, mkvExportBtn, renderBtn } = this.elements;
+        const { dropZone, fileInput, generateBtn, downloadBtn, mkvExportBtn, renderBtn, editBtn, saveEditBtn, cancelEditBtn } = this.elements;
 
         dropZone.addEventListener('click', (e) => {
             if (e.target.tagName === 'BUTTON' || e.target === fileInput) return;
@@ -61,6 +84,9 @@ export class UIManager {
         downloadBtn.addEventListener('click', () => handlers.onDownload());
         mkvExportBtn.addEventListener('click', () => handlers.onMkvExport());
         renderBtn.addEventListener('click', () => handlers.onRender());
+        editBtn.addEventListener('click', () => handlers.onEdit());
+        saveEditBtn.addEventListener('click', () => handlers.onSaveEdit());
+        cancelEditBtn.addEventListener('click', () => handlers.onCancelEdit());
     }
 
     handleFileSelect(file) {
@@ -85,6 +111,10 @@ export class UIManager {
 
     updateVideoPreview(file) {
         const { videoPreview } = this.elements;
+        // A new file invalidates any captions synced to the previous video.
+        this.cues = null;
+        this.cueEls = [];
+        this.activeCueIndex = -1;
         if (this.previewUrl) {
             URL.revokeObjectURL(this.previewUrl);
             this.previewUrl = null;
@@ -113,13 +143,44 @@ export class UIManager {
         this.elements.progressSpinner.style.display = 'block';
     }
 
-    showResults(srtContent) {
-        this.elements.subtitlePreview.textContent = srtContent;
+    showResults(srtContent, cues) {
+        this.generatedSrt = srtContent;
+        this.generatedCues = cues || null;
+        this.srtContent = srtContent;
+        this.cues = cues || null;
+        this.cueEls = [];
+        this.activeCueIndex = -1;
+        this.renderSubtitlePreview();
+        this.setEditMode(false);
         this.elements.progressArea.style.display = 'none';
         this.elements.resultsArea.style.display = 'block';
         this.elements.generateBtn.disabled = false;
         this.elements.progressSpinner.style.display = 'none';
         this.elements.progressBar.classList.remove('active');
+    }
+
+    // The preview doubles as the karaoke view: each cue is rendered as spans
+    // so a single word can light up during playback. Falls back to the raw
+    // SRT text when no word timings survived transcription.
+    renderSubtitlePreview() {
+        const preview = this.elements.subtitlePreview;
+        preview.textContent = '';
+        if (!this.cues || !this.cues.length) {
+            preview.textContent = this.srtContent;
+            return;
+        }
+        for (const cue of this.cues) {
+            const cueEl = document.createElement('span');
+            cueEl.className = 'vsg-preview-cue';
+            for (const w of cue.words) {
+                const wordEl = document.createElement('span');
+                wordEl.className = 'vsg-preview-word';
+                wordEl.textContent = w.word;
+                cueEl.appendChild(wordEl);
+            }
+            preview.appendChild(cueEl);
+            this.cueEls.push(cueEl);
+        }
     }
 
     showError(message) {
@@ -186,5 +247,102 @@ export class UIManager {
     downloadSubtitles(srtContent, videoFile) {
         const blob = new Blob([srtContent], { type: 'text/plain' });
         this.downloadBlob(blob, `${this.baseName(videoFile, 'subtitles')}.srt`);
+    }
+
+    startCaptionSync() {
+        this.stopCaptionSync();
+        const loop = () => {
+            this.syncCaptions();
+            this.rafId = requestAnimationFrame(loop);
+        };
+        this.rafId = requestAnimationFrame(loop);
+    }
+
+    stopCaptionSync() {
+        if (this.rafId) {
+            cancelAnimationFrame(this.rafId);
+            this.rafId = 0;
+        }
+    }
+
+    syncCaptions() {
+        const { videoPreview } = this.elements;
+        if (!this.cues || !this.cues.length) return;
+        const t = videoPreview.currentTime;
+        const cues = this.cues;
+
+        if (t < cues[0].start) {
+            this.activeCueIndex = -1;
+            this.clearActiveWords();
+            this.cueEls.forEach((el) => el.classList.remove('dim'));
+            return;
+        }
+
+        // Cues are time-sorted; walk from the last known cue so a frame costs
+        // a step or two, not a scan of the whole list.
+        let i = this.activeCueIndex < 0 ? 0 : this.activeCueIndex;
+        while (i > 0 && t < cues[i].start) i--;
+        while (i < cues.length - 1 && t >= cues[i + 1].start) i++;
+
+        if (i !== this.activeCueIndex) {
+            // Unlight the previous cue's word before moving on.
+            this.clearActiveWords();
+            this.activeCueIndex = i;
+            this.cueEls.forEach((el, k) => el.classList.toggle('dim', k !== i));
+            this.cueEls[i].scrollIntoView({ block: 'nearest' });
+        }
+
+        const cue = cues[i];
+        const words = this.cueEls[i].querySelectorAll('.vsg-preview-word');
+        words.forEach((el, j) => {
+            const w = cue.words[j];
+            el.classList.toggle('active', t >= w.start && t < w.end);
+        });
+    }
+
+    clearActiveWords() {
+        this.cueEls.forEach((el) => {
+            el.querySelectorAll('.vsg-preview-word.active').forEach((w) => w.classList.remove('active'));
+        });
+    }
+
+    setEditMode(editing) {
+        const { subtitlePreview, subtitleEditor, editBtn, editActions } = this.elements;
+        subtitlePreview.style.display = editing ? 'none' : 'block';
+        subtitleEditor.style.display = editing ? 'block' : 'none';
+        editBtn.style.display = editing ? 'none' : 'inline-block';
+        editActions.style.display = editing ? 'flex' : 'none';
+    }
+
+    enterEditMode() {
+        this.elements.subtitleEditor.value = this.srtContent || '';
+        this.setEditMode(true);
+        this.elements.subtitleEditor.focus();
+    }
+
+    // Returns the edited SRT, or null if the user cleared everything (stays in edit mode).
+    saveEdit() {
+        const srt = this.elements.subtitleEditor.value;
+        if (!srt.trim()) {
+            alert('Subtitles cannot be empty.');
+            return null;
+        }
+        this.srtContent = srt;
+        // Rebuild karaoke from the edited text: unedited cues keep their exact
+        // word timings; changed cues keep timing for words that survived the
+        // edit. Unparseable SRT (a pasted block without timestamps) falls back
+        // to the plain text view.
+        if (srt !== this.generatedSrt) {
+            this.cues = srtFormatter.parseSRT(srt, this.generatedCues);
+            this.cueEls = [];
+            this.activeCueIndex = -1;
+            this.renderSubtitlePreview();
+        }
+        this.setEditMode(false);
+        return srt;
+    }
+
+    cancelEdit() {
+        this.setEditMode(false);
     }
 }
