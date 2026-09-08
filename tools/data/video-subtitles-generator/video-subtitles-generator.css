@@ -1,7 +1,7 @@
 /* Video Subtitles Generator Styles */
 
 .vsg-container {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -453,5 +453,23 @@
     
     .vsg-option-group {
         margin-bottom: var(--spacing-sm);
+    }
+}
+
+/* Wide screens: split into two columns once a video is loaded so the
+   subtitles appear next to the preview instead of below the fold.
+   :has() unsupported browsers simply keep the stacked single column. */
+@media (min-width: 1200px) {
+    .vsg-container:has(.file-drop-zone.file-loaded) {
+        max-width: 1400px;
+        display: grid;
+        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+        column-gap: var(--spacing-xl);
+        align-items: start;
+    }
+
+    .vsg-col-left,
+    .vsg-col-right {
+        min-width: 0;
     }
 }
