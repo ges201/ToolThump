@@ -287,6 +287,32 @@
     font-size: 1.5rem;
 }
 
+/* --- Zoom Controls --- */
+.br-zoom-controls {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 12;
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.br-zoom-controls button {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    line-height: 1;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#br-zoom-level {
+    width: 58px;
+    font-size: 0.8rem;
+}
+
 .br-progress-bar-container {
     width: 80%;
     background-color: var(--surface-bg-color);
@@ -400,11 +426,40 @@
     margin-right: var(--spacing-sm);
 }
 
-/* Style for the active brush button to make it look pressed */
-#br-brush-activate-btn.active {
+/* Brush toggle: sticks out while off, green + pressed in while on */
+#br-brush-activate-btn:not(.active) {
+    background: var(--bg);
+    color: var(--fg);
+    border-color: var(--border-color);
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-hard);
+}
+
+#br-brush-activate-btn:not(.active):hover {
+    background: var(--accent-color-bg-hover);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+#br-brush-activate-btn:not(.active):active {
+    transform: translate(0, 0);
+    box-shadow: var(--shadow-hard-inset);
+}
+
+#br-brush-activate-btn:not(.active):focus-visible {
+    outline: 1px dashed var(--accent-color);
+    outline-offset: 2px;
+}
+
+#br-brush-activate-btn.active,
+#br-brush-activate-btn.active:hover,
+#br-brush-activate-btn.active:focus,
+#br-brush-activate-btn.active:active {
     background-color: var(--accent-color-bg-hover);
     color: var(--accent-color);
     border-color: var(--accent-color);
+    transform: translate(0, 0);
+    box-shadow: var(--shadow-hard-inset);
 }
 
 .br-slider {

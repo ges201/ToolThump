@@ -12,9 +12,14 @@ const canvasEditor = {
     isPanning: false,
     viewTransform: { x: 0, y: 0, scale: 1 },
     lastPanMidpoint: null,
+    lastPinchDistance: null,
     brushCursor: null,
+    zoomLabel: null,
+    minZoom: 1,
+    maxZoom: 8,
 
     init: function() {
+        this.zoomLabel = document.getElementById('br-zoom-level');
         this.createBrushCursor();
         this.addCanvasListeners();
     },
@@ -68,11 +73,12 @@ const canvasEditor = {
             if (this.brushCursor) this.brushCursor.style.display = 'none';
         });
 
-        // Mouse events for drawing
-        canvas.addEventListener('mousedown', (e) => this.startDrawing(e));
-        canvas.addEventListener('mouseup', () => this.stopDrawing());
-        canvas.addEventListener('mousemove', (e) => this.draw(e));
-        canvas.addEventListener('mouseleave', () => this.stopDrawing());
+        // Mouse events for drawing, panning and zooming
+        canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+        canvas.addEventListener('mouseup', () => this.stopMouseAction());
+        canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+        canvas.addEventListener('mouseleave', () => this.stopMouseAction());
+        canvas.addEventListener('wheel', (e) => this.handleWheel(e), { passive: false });
 
         // Touch events for drawing and panning
         canvas.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: false });
@@ -87,10 +93,9 @@ const canvasEditor = {
             br.outputCanvas.style.cursor = 'none';
             br.outputCanvas.classList.add('brush-active');
         } else {
-            br.outputCanvas.style.cursor = 'default';
+            br.outputCanvas.style.cursor = 'grab';
             if (this.brushCursor) this.brushCursor.style.display = 'none';
             br.outputCanvas.classList.remove('brush-active');
-            this.resetTransform();
         }
     },
 
@@ -120,23 +125,104 @@ const canvasEditor = {
         this.brushCursor.style.height = `${cursorSize}px`;
     },
 
+    // Untransformed element box in screen coordinates; getBoundingClientRect()
+    // returns the zoomed box, so undo the translate/scale (origin is the center).
+    getBaseRect: function () {
+        const canvas = br.outputCanvas;
+        if (!canvas) return null;
+        const rect = canvas.getBoundingClientRect();
+        const scale = this.viewTransform.scale;
+        const width = rect.width / scale;
+        const height = rect.height / scale;
+        return {
+            left: rect.left + rect.width / 2 - this.viewTransform.x - width / 2,
+            top: rect.top + rect.height / 2 - this.viewTransform.y - height / 2,
+            width: width,
+            height: height
+        };
+    },
+
     getCanvasCoordinates: function (e) {
         const canvas = br.outputCanvas;
-        const rect = canvas.getBoundingClientRect();
+        const base = this.getBaseRect();
+        if (!base || base.width === 0 || base.height === 0) return { x: 0, y: 0 };
         const point = e.touches ? e.touches[0] : e;
 
-        const viewX = point.clientX - rect.left;
-        const viewY = point.clientY - rect.top;
+        const originX = base.left + base.width / 2;
+        const originY = base.top + base.height / 2;
+        const localX = originX + (point.clientX - originX - this.viewTransform.x) / this.viewTransform.scale;
+        const localY = originY + (point.clientY - originY - this.viewTransform.y) / this.viewTransform.scale;
 
-        const scale = (canvas.width / canvas.height > rect.width / rect.height)
-            ? rect.width / canvas.width
-            : rect.height / canvas.height;
-        const offsetX = (rect.width - canvas.width * scale) / 2;
-        const offsetY = (rect.height - canvas.height * scale) / 2;
+        const viewX = localX - base.left;
+        const viewY = localY - base.top;
+
+        const scale = (canvas.width / canvas.height > base.width / base.height)
+            ? base.width / canvas.width
+            : base.height / canvas.height;
+        const offsetX = (base.width - canvas.width * scale) / 2;
+        const offsetY = (base.height - canvas.height * scale) / 2;
 
         const x = (viewX - offsetX) / scale;
         const y = (viewY - offsetY) / scale;
         return { x, y };
+    },
+
+    zoomAt: function (clientX, clientY, factor) {
+        const base = this.getBaseRect();
+        if (!base || base.width === 0) return;
+        const originX = base.left + base.width / 2;
+        const originY = base.top + base.height / 2;
+        const oldScale = this.viewTransform.scale;
+        const newScale = Math.min(this.maxZoom, Math.max(this.minZoom, oldScale * factor));
+        if (newScale === oldScale) return;
+
+        // Keep the point under the cursor/pinch midpoint fixed
+        const localX = originX + (clientX - originX - this.viewTransform.x) / oldScale;
+        const localY = originY + (clientY - originY - this.viewTransform.y) / oldScale;
+
+        this.viewTransform.scale = newScale;
+        this.viewTransform.x = clientX - originX - newScale * (localX - originX);
+        this.viewTransform.y = clientY - originY - newScale * (localY - originY);
+
+        this.applyTransform();
+        this.setBrushCursorSize();
+    },
+
+    zoomBy: function (factor) {
+        const base = this.getBaseRect();
+        if (!base) return;
+        this.zoomAt(base.left + base.width / 2, base.top + base.height / 2, factor);
+    },
+
+    handleWheel: function (e) {
+        e.preventDefault();
+        const unit = e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? 100 : 1;
+        this.zoomAt(e.clientX, e.clientY, Math.pow(1.0015, -e.deltaY * unit));
+    },
+
+    handleMouseDown: function (e) {
+        if (e.button !== 0 && e.button !== 1) return;
+        if (e.button === 1 || !this.isBrushActive) {
+            e.preventDefault();
+            this.startPanning(e);
+        } else {
+            this.startDrawing(e);
+        }
+    },
+
+    handleMouseMove: function (e) {
+        if (this.isPanning) {
+            this.pan(e);
+        } else {
+            this.draw(e);
+        }
+    },
+
+    stopMouseAction: function () {
+        this.stopDrawing();
+        this.isPanning = false;
+        this.lastPanMidpoint = null;
+        this.lastPinchDistance = null;
     },
 
     startDrawing: function (e) {
@@ -222,6 +308,7 @@ const canvasEditor = {
         if (this.isPanning && e.touches.length < 2) {
             this.isPanning = false;
             this.lastPanMidpoint = null;
+            this.lastPinchDistance = null;
         }
         if (this.isDrawing && e.touches.length < 1) {
             this.stopDrawing();
@@ -230,20 +317,29 @@ const canvasEditor = {
 
     startPanning: function (e) {
         this.isPanning = true;
-        this.lastPanMidpoint = this.getMidpoint(e.touches);
+        this.lastPanMidpoint = this.getGesturePoint(e);
+        this.lastPinchDistance = e.touches && e.touches.length >= 2 ? this.getDistance(e.touches) : null;
     },
 
     pan: function (e) {
         if (!this.lastPanMidpoint) return;
-        const currentMidpoint = this.getMidpoint(e.touches);
-        const deltaX = currentMidpoint.x - this.lastPanMidpoint.x;
-        const deltaY = currentMidpoint.y - this.lastPanMidpoint.y;
+        const point = this.getGesturePoint(e);
 
-        this.viewTransform.x += deltaX;
-        this.viewTransform.y += deltaY;
+        if (e.touches && e.touches.length >= 2 && this.lastPinchDistance) {
+            const distance = this.getDistance(e.touches);
+            if (distance > 0) this.zoomAt(point.x, point.y, distance / this.lastPinchDistance);
+            this.lastPinchDistance = distance;
+        }
+
+        this.viewTransform.x += point.x - this.lastPanMidpoint.x;
+        this.viewTransform.y += point.y - this.lastPanMidpoint.y;
 
         this.applyTransform();
-        this.lastPanMidpoint = currentMidpoint;
+        this.lastPanMidpoint = point;
+    },
+
+    getGesturePoint: function (e) {
+        return e.touches ? this.getMidpoint(e.touches) : { x: e.clientX, y: e.clientY };
     },
 
     getMidpoint: function (touches) {
@@ -255,13 +351,24 @@ const canvasEditor = {
         };
     },
 
+    getDistance: function (touches) {
+        return Math.hypot(
+            touches[0].clientX - touches[1].clientX,
+            touches[0].clientY - touches[1].clientY
+        );
+    },
+
     applyTransform: function () {
         const transform = `translate(${this.viewTransform.x}px, ${this.viewTransform.y}px) scale(${this.viewTransform.scale})`;
         br.outputCanvas.style.transform = transform;
+        if (this.zoomLabel) {
+            this.zoomLabel.textContent = `${Math.round(this.viewTransform.scale * 100)}%`;
+        }
     },
 
     resetTransform: function () {
         this.viewTransform = { x: 0, y: 0, scale: 1 };
         this.applyTransform();
+        this.setBrushCursorSize();
     }
 };

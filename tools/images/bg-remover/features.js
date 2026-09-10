@@ -9,6 +9,7 @@ const brFeatures = {
     outlineColorPicker: null, outlineColorSwatches: null, outlineThicknessSlider: null, outlineThicknessValue: null,
     outlineFeatherSlider: null, outlineFeatherValue: null,
     alphaThresholdCheckbox: null,
+    zoomControls: null, zoomInBtn: null, zoomOutBtn: null, zoomLevelBtn: null,
 
     // State
     selectedColor: 'transparent',
@@ -49,6 +50,10 @@ const brFeatures = {
         this.outlineFeatherSlider = document.getElementById('br-outline-feather-slider');
         this.outlineFeatherValue = document.getElementById('br-outline-feather-value');
         this.alphaThresholdCheckbox = document.getElementById('br-alpha-threshold-checkbox');
+        this.zoomControls = document.getElementById('br-zoom-controls');
+        this.zoomInBtn = document.getElementById('br-zoom-in');
+        this.zoomOutBtn = document.getElementById('br-zoom-out');
+        this.zoomLevelBtn = document.getElementById('br-zoom-level');
     },
 
     // ponytail: reuse canvases instead of allocating full-size ones per event;
@@ -150,6 +155,12 @@ const brFeatures = {
                     this.setDirty();
                 });
             }
+        }
+
+        if (this.zoomControls) {
+            this.zoomInBtn.addEventListener('click', () => canvasEditor.zoomBy(1.25));
+            this.zoomOutBtn.addEventListener('click', () => canvasEditor.zoomBy(0.8));
+            this.zoomLevelBtn.addEventListener('click', () => canvasEditor.resetTransform());
         }
     },
 
@@ -480,6 +491,7 @@ const brFeatures = {
     show: function () {
         if (this.featuresContainer) {
             this.featuresContainer.style.display = 'block';
+            if (this.zoomControls) this.zoomControls.style.display = 'flex';
             canvasEditor.setBrushCursorSize();
             if (br.resetBtn) {
                 br.resetBtn.style.display = 'inline-flex';
@@ -490,6 +502,8 @@ const brFeatures = {
     hide: function () {
         if (this.featuresContainer) {
             this.featuresContainer.style.display = 'none';
+            if (this.zoomControls) this.zoomControls.style.display = 'none';
+            canvasEditor.resetTransform();
             if (canvasEditor.isBrushActive) this.toggleBrushActive();
             if (br.resetBtn) {
                 br.resetBtn.style.display = 'none';
