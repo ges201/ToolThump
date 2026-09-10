@@ -19,6 +19,10 @@ const brFeatures = {
     outlineFeather: 0,
     useAlphaThreshold: false,
     originalMask: null,
+    sourceCanvas: null,
+    scratch: {},
+    pendingUpdate: false,
+    pendingRedraw: false,
     isDirty: false,
 
     fetchElements: function () {
@@ -45,6 +49,42 @@ const brFeatures = {
         this.outlineFeatherSlider = document.getElementById('br-outline-feather-slider');
         this.outlineFeatherValue = document.getElementById('br-outline-feather-value');
         this.alphaThresholdCheckbox = document.getElementById('br-alpha-threshold-checkbox');
+    },
+
+    // ponytail: reuse canvases instead of allocating full-size ones per event;
+    // Safari/Firefox retain canvas elements and mobile canvas memory is capped.
+    getScratch: function (key, width, height) {
+        const canvas = this.scratch[key] || (this.scratch[key] = document.createElement('canvas'));
+        if (canvas.width !== width || canvas.height !== height) {
+            canvas.width = width;
+            canvas.height = height;
+        }
+        const ctx = canvas.getContext('2d');
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.filter = 'none';
+        ctx.clearRect(0, 0, width, height);
+        return canvas;
+    },
+
+    scheduleUpdate: function () {
+        this.pendingRedraw = false;
+        if (this.pendingUpdate) return;
+        this.pendingUpdate = true;
+        requestAnimationFrame(() => {
+            this.pendingUpdate = false;
+            this.updateProcessedImage();
+            this.applyBackgroundColor();
+        });
+    },
+
+    scheduleRedraw: function () {
+        if (this.pendingRedraw) return;
+        this.pendingRedraw = true;
+        requestAnimationFrame(() => {
+            if (!this.pendingRedraw) return;
+            this.pendingRedraw = false;
+            this.redrawOutputCanvas();
+        });
     },
 
     init: function () {
@@ -88,8 +128,7 @@ const brFeatures = {
             if (this.outlineThicknessSlider) {
                 this.outlineColorPicker.addEventListener('input', (e) => {
                     this.outlineColor = e.target.value;
-                    this.updateProcessedImage();
-                    this.applyBackgroundColor();
+                    this.scheduleUpdate();
                     this.setDirty();
                 });
                 this.outlineColorSwatches.addEventListener('click', (e) => {
@@ -97,8 +136,7 @@ const brFeatures = {
                     if (color) {
                         this.outlineColor = color;
                         this.outlineColorPicker.value = color;
-                        this.updateProcessedImage();
-                        this.applyBackgroundColor();
+                        this.scheduleUpdate();
                         this.setDirty();
                     }
                 });
@@ -108,8 +146,7 @@ const brFeatures = {
             if (this.alphaThresholdCheckbox) {
                 this.alphaThresholdCheckbox.addEventListener('change', (e) => {
                     this.useAlphaThreshold = e.target.checked;
-                    this.updateProcessedImage();
-                    this.applyBackgroundColor();
+                    this.scheduleUpdate();
                     this.setDirty();
                 });
             }
@@ -121,6 +158,17 @@ const brFeatures = {
         this.originalMask.width = maskCanvas.width;
         this.originalMask.height = maskCanvas.height;
         this.originalMask.getContext('2d').drawImage(maskCanvas, 0, 0);
+
+        // Working-resolution copy of the source, so composites never rescale the full-res image
+        const full = br.originalImage;
+        if (maskCanvas.width === full.naturalWidth && maskCanvas.height === full.naturalHeight) {
+            this.sourceCanvas = full;
+        } else {
+            this.sourceCanvas = document.createElement('canvas');
+            this.sourceCanvas.width = maskCanvas.width;
+            this.sourceCanvas.height = maskCanvas.height;
+            this.sourceCanvas.getContext('2d').drawImage(full, 0, 0, maskCanvas.width, maskCanvas.height);
+        }
     },
 
     setDirty: function () {
@@ -204,39 +252,33 @@ const brFeatures = {
     setMaskAdjust: function (value) {
         this.maskAdjust = parseInt(value, 10);
         this.maskAdjustValue.textContent = value;
-        this.updateProcessedImage();
-        this.applyBackgroundColor();
+        this.scheduleUpdate();
         this.setDirty();
     },
 
     setFeatherEdges: function (value) {
         this.featherEdges = parseInt(value, 10);
         this.featherEdgesValue.textContent = value;
-        this.updateProcessedImage();
-        this.applyBackgroundColor();
+        this.scheduleUpdate();
         this.setDirty();
     },
 
     setOutlineThickness: function (value) {
         this.outlineThickness = parseInt(value, 10);
         this.outlineThicknessValue.textContent = value;
-        this.updateProcessedImage();
-        this.applyBackgroundColor();
+        this.scheduleUpdate();
         this.setDirty();
     },
 
     setOutlineFeather: function (value) {
         this.outlineFeather = parseInt(value, 10);
         this.outlineFeatherValue.textContent = value;
-        this.updateProcessedImage();
-        this.applyBackgroundColor();
+        this.scheduleUpdate();
         this.setDirty();
     },
 
     createDilatedMask: function (inputCanvas, radius) {
-        const dilatedCanvas = document.createElement('canvas');
-        dilatedCanvas.width = inputCanvas.width;
-        dilatedCanvas.height = inputCanvas.height;
+        const dilatedCanvas = this.getScratch('dilatedMask', inputCanvas.width, inputCanvas.height);
         const dilatedCtx = dilatedCanvas.getContext('2d');
 
         if (radius <= 0) {
@@ -258,9 +300,7 @@ const brFeatures = {
         }
 
         const scaledRadius = Math.max(1, Math.round(radius * scale));
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = procWidth;
-        tempCanvas.height = procHeight;
+        const tempCanvas = this.getScratch('dilateTemp', procWidth, procHeight);
         const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
 
         tempCtx.drawImage(inputCanvas, 0, 0, procWidth, procHeight);
@@ -301,12 +341,13 @@ const brFeatures = {
     },
 
     updateProcessedImage: function () {
-        if (!br.originalImage || !br.maskCanvas) return;
+        if (!br.originalImage || !br.maskCanvas || !this.sourceCanvas) return;
+
+        const workWidth = br.maskCanvas.width;
+        const workHeight = br.maskCanvas.height;
 
         // --- Stage 1: Apply Shrink/Expand to an intermediate canvas ---
-        const adjustedMask = document.createElement('canvas');
-        adjustedMask.width = br.maskCanvas.width;
-        adjustedMask.height = br.maskCanvas.height;
+        const adjustedMask = this.getScratch('adjustedMask', workWidth, workHeight);
         const adjustedMaskCtx = adjustedMask.getContext('2d');
 
         const baseRadius = Math.round(Math.abs(this.maskAdjust) / 100 * 30);
@@ -327,9 +368,7 @@ const brFeatures = {
             }
 
             const radius = Math.max(1, Math.round(baseRadius * scale));
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = procWidth;
-            tempCanvas.height = procHeight;
+            const tempCanvas = this.getScratch('maskMorphTemp', procWidth, procHeight);
             const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
 
             tempCtx.drawImage(br.maskCanvas, 0, 0, procWidth, procHeight);
@@ -378,9 +417,7 @@ const brFeatures = {
         }
 
         // --- Stage 2: Apply Feather Edges to Subject Mask ---
-        const finalMask = document.createElement('canvas');
-        finalMask.width = br.maskCanvas.width;
-        finalMask.height = br.maskCanvas.height;
+        const finalMask = this.getScratch('finalMask', workWidth, workHeight);
         const finalMaskCtx = finalMask.getContext('2d');
 
         if (this.featherEdges > 0) {
@@ -404,20 +441,16 @@ const brFeatures = {
         }
 
         // --- Stage 3: Final Clipping of Subject ---
-        const subjectCanvas = document.createElement('canvas');
-        subjectCanvas.width = br.originalImage.naturalWidth;
-        subjectCanvas.height = br.originalImage.naturalHeight;
+        const subjectCanvas = this.getScratch('subjectCanvas', workWidth, workHeight);
         const subjectCtx = subjectCanvas.getContext('2d');
-        subjectCtx.drawImage(br.originalImage, 0, 0);
+        subjectCtx.drawImage(this.sourceCanvas, 0, 0);
         subjectCtx.globalCompositeOperation = 'destination-in';
         subjectCtx.drawImage(finalMask, 0, 0);
         subjectCtx.globalCompositeOperation = 'source-over';
 
         // --- Stage 4: Apply Outline ---
         if (this.outlineThickness > 0) {
-            const outlinedCanvas = document.createElement('canvas');
-            outlinedCanvas.width = subjectCanvas.width;
-            outlinedCanvas.height = subjectCanvas.height;
+            const outlinedCanvas = this.getScratch('outlinedCanvas', workWidth, workHeight);
             const outlinedCtx = outlinedCanvas.getContext('2d');
 
             // Generate outline from the sharp, adjusted mask
@@ -462,6 +495,16 @@ const brFeatures = {
                 br.resetBtn.style.display = 'none';
             }
             this.isDirty = false;
+            Object.values(this.scratch).forEach(canvas => {
+                canvas.width = 1;
+                canvas.height = 1;
+            });
+            if (this.originalMask) {
+                this.originalMask.width = 1;
+                this.originalMask.height = 1;
+                this.originalMask = null;
+            }
+            this.sourceCanvas = null;
         }
     },
 
@@ -478,15 +521,15 @@ const brFeatures = {
     },
 
     redrawOutputCanvas: function() {
-        if (!br.outputCanvas || !br.originalImage || !br.maskCanvas) return;
+        if (!br.outputCanvas || !this.sourceCanvas || !br.maskCanvas) return;
 
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = br.originalImage.naturalWidth;
-        tempCanvas.height = br.originalImage.naturalHeight;
+        const width = br.maskCanvas.width;
+        const height = br.maskCanvas.height;
+        const tempCanvas = this.getScratch('redrawTemp', width, height);
         const tempCtx = tempCanvas.getContext('2d');
 
-        // Clip original image with the current mask
-        tempCtx.drawImage(br.originalImage, 0, 0);
+        // Clip the working-resolution source with the current mask
+        tempCtx.drawImage(this.sourceCanvas, 0, 0);
         tempCtx.globalCompositeOperation = 'destination-in';
         tempCtx.drawImage(br.maskCanvas, 0, 0);
         

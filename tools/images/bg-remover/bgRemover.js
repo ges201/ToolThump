@@ -64,8 +64,8 @@ const br = {
                 this.processedImage = result.processedImage;
                 this.maskCanvas = result.maskCanvas;
 
-                this.outputCanvas.width = this.originalImage.naturalWidth;
-                this.outputCanvas.height = this.originalImage.naturalHeight;
+                this.outputCanvas.width = this.maskCanvas.width;
+                this.outputCanvas.height = this.maskCanvas.height;
                 this.outputCanvas.getContext('2d').drawImage(this.processedImage, 0, 0);
 
                 this.imageContainer.style.display = 'none';
@@ -188,6 +188,19 @@ const br = {
         if (this.cropCheckbox.checked) {
             const cropped = this.cropCanvas(this.outputCanvas);
             if (cropped) sourceCanvas = cropped;
+        }
+
+        // ponytail: edits run at capped resolution on touch devices; upscale once on export
+        if (this.outputCanvas.width < this.originalImage.naturalWidth) {
+            const scale = this.originalImage.naturalWidth / this.outputCanvas.width;
+            const upscaled = document.createElement('canvas');
+            upscaled.width = this.originalImage.naturalWidth;
+            upscaled.height = Math.round(sourceCanvas.height * scale);
+            const upCtx = upscaled.getContext('2d');
+            upCtx.imageSmoothingEnabled = true;
+            upCtx.imageSmoothingQuality = 'high';
+            upCtx.drawImage(sourceCanvas, 0, 0, upscaled.width, upscaled.height);
+            sourceCanvas = upscaled;
         }
 
         sourceCanvas.toBlob(blob => {

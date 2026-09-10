@@ -66,6 +66,9 @@ const onnxModel = {
     ortSession: null,
     modelPath: '/tools/images/bg-remover/rmbg14-quant.onnx',
     modelInputSize: 1024,
+    // ponytail: cap edit canvases on touch devices; the AI mask is 1024px native,
+    // and full-res canvases blow mobile canvas-memory limits. Desktop stays uncapped.
+    maxWorkDim: window.matchMedia('(pointer: coarse)').matches ? 2048 : Infinity,
     inputName: null,
     outputName: null,
     isInitialized: false,
@@ -213,6 +216,10 @@ const onnxModel = {
         const pred = this._normPRED(tensor.data);
         const size = this.modelInputSize;
 
+        const scale = Math.min(1, this.maxWorkDim / Math.max(originalWidth, originalHeight));
+        const width = Math.max(1, Math.round(originalWidth * scale));
+        const height = Math.max(1, Math.round(originalHeight * scale));
+
         const tempMaskCanvas = document.createElement('canvas');
         tempMaskCanvas.width = size;
         tempMaskCanvas.height = size;
@@ -225,20 +232,21 @@ const onnxModel = {
         tempMaskCtx.putImageData(maskImageData, 0, 0);
 
         const maskCanvas = document.createElement('canvas');
-        maskCanvas.width = originalWidth;
-        maskCanvas.height = originalHeight;
+        maskCanvas.width = width;
+        maskCanvas.height = height;
         const storedMaskCtx = maskCanvas.getContext('2d');
         storedMaskCtx.imageSmoothingEnabled = true;
         storedMaskCtx.imageSmoothingQuality = 'high';
-        storedMaskCtx.drawImage(tempMaskCanvas, 0, 0, originalWidth, originalHeight);
+        storedMaskCtx.drawImage(tempMaskCanvas, 0, 0, width, height);
+        console.assert(width <= this.maxWorkDim && height <= this.maxWorkDim, 'Edit canvas exceeds maxWorkDim');
 
         const resultCanvas = document.createElement('canvas');
-        resultCanvas.width = originalWidth;
-        resultCanvas.height = originalHeight;
+        resultCanvas.width = width;
+        resultCanvas.height = height;
         const ctx = resultCanvas.getContext('2d');
-        ctx.drawImage(originalImage, 0, 0, originalWidth, originalHeight);
+        ctx.drawImage(originalImage, 0, 0, width, height);
         ctx.globalCompositeOperation = 'destination-in';
-        ctx.drawImage(maskCanvas, 0, 0, originalWidth, originalHeight);
+        ctx.drawImage(maskCanvas, 0, 0, width, height);
 
         return {
             processedImage: resultCanvas,
