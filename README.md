@@ -1,92 +1,62 @@
-# ToolThump 🛠️
+# ToolThump
 
-**ToolThump** is a collection of free, fast, and privacy-focused client-side utilities.[[1](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQF2rqNSYLfYj1vZtADSYDhOsW8HPj8SIJUmpcjEkloBN0vOsGxwPXiCdtZDyLNcPf-4gLKwfgmdqD43KoS0Se6UpwkpVU0EvL85uSIVVZrI-IOhsXJ9ozWXKbjG3l7Booc%3D)][[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)] Whether you need to resize an image, compare text, or generate a secure password, ToolThump handles everything directly in your browser.[[1](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQF2rqNSYLfYj1vZtADSYDhOsW8HPj8SIJUmpcjEkloBN0vOsGxwPXiCdtZDyLNcPf-4gLKwfgmdqD43KoS0Se6UpwkpVU0EvL85uSIVVZrI-IOhsXJ9ozWXKbjG3l7Booc%3D)][[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)] 
+Free, privacy-focused utilities that run entirely in your browser. Nothing is uploaded to a server, and there's no sign-up or ads.
 
-**Live Site:** [toolthump.com](https://toolthump.com/)[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
+Live site: [toolthump.com](https://toolthump.com/)
 
----
+## Tools
 
-## 🌟 Core Principles
+**Security**
+- Password Generator
+- Password Strength Checker
+- Encoder / Decoder (Base64, URL encoding)
 
-- **Privacy First:** Your data never leaves your device.[[1](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQF2rqNSYLfYj1vZtADSYDhOsW8HPj8SIJUmpcjEkloBN0vOsGxwPXiCdtZDyLNcPf-4gLKwfgmdqD43KoS0Se6UpwkpVU0EvL85uSIVVZrI-IOhsXJ9ozWXKbjG3l7Booc%3D)][[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)] Every tool is built to run entirely client-side; nothing is ever uploaded to a server.[[1](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQF2rqNSYLfYj1vZtADSYDhOsW8HPj8SIJUmpcjEkloBN0vOsGxwPXiCdtZDyLNcPf-4gLKwfgmdqD43KoS0Se6UpwkpVU0EvL85uSIVVZrI-IOhsXJ9ozWXKbjG3l7Booc%3D)][[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-- **Free & Accessible:** No ads, no subscriptions, and no registration required.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)] Just tools.
-- **Transparent:** Fully open-source and built with standard web technologies (HTML/JS/CSS) so anyone can inspect the code.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
+**Text**
+- Text Comparison
+- Text Case Converter
+- Duplicate Words Finder
+- Markdown Editor
 
----
+**Images**
+- Image Converter
+- Image Resizer
+- Color Picker
+- Background Remover
 
-## 🛠 Available Tools
+**Data & Files**
+- QR Code Generator
+- Image Metadata Viewer
+- File Comparison
+- Video Subtitles Generator
 
-ToolThump offers a wide variety of utilities categorized for ease of use:
+## Running locally
 
-### 🔐 Security
-*   **Password Generator:** Create strong, secure passwords.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-*   **Password Strength Checker:** Analyze the entropy and security of your credentials.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-*   **Encoder/Decoder:** Base64, URL encoding, and more.
+ToolThump is a static site, so there's no build step required just to view it. Serve the project folder:
 
-### 📝 Text Tools
-*   **Text Comparison:** Side-by-side diffing to find changes between two texts.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-*   **Text Case Converter:** Quickly switch between UPPERCASE, lowercase, CamelCase, etc.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-*   **Duplicate Words Finder:** Clean up your writing by identifying repetition.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-*   **Markdown Editor:** A simple, real-time previewer for Markdown files.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
+```bash
+# with Python
+python3 -m http.server 8000
 
-### 🖼️ Image Tools
-*   **Image Converter:** Convert between common formats (PNG, JPG, WebP).[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-*   **Image Resizer:** Change dimensions without losing quality.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-*   **Color Picker:** Extract colors from images or use a visual wheel.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-*   **Background Remover:** Remove image backgrounds using browser-based AI/processing.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
+# or with Node
+npx http-server
+```
 
-### 📊 Data & Files[[1](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQF2rqNSYLfYj1vZtADSYDhOsW8HPj8SIJUmpcjEkloBN0vOsGxwPXiCdtZDyLNcPf-4gLKwfgmdqD43KoS0Se6UpwkpVU0EvL85uSIVVZrI-IOhsXJ9ozWXKbjG3l7Booc%3D)][[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-*   **QR Code Generator:** Turn URLs or text into scan-ready codes.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-*   **Image Metadata Viewer:** Inspect EXIF data hidden inside your photos.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-*   **File Comparison:** Check if two files are identical at the binary level.
+Then open [http://localhost:8000](http://localhost:8000). Opening `index.html` directly works too, but a local server is recommended so Service Workers function correctly.
 
----
+### build.js
 
-## 💻 Local Development
+`node build.js` regenerates the SEO artifacts:
 
-Since ToolThump is a static site, you can run it locally without a complex build process.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
+- `sitemap.xml`, with last-modified dates pulled from git history
+- JSON-LD structured data (`WebApplication`, `BreadcrumbList`, `FAQPage`) and `og:image` tags on every tool page
+- inlined header, footer, and tool text in each page, so navigation links, FAQs, features, and how-to sections are visible to crawlers without executing JavaScript
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/ges201/ToolThump.git
-    cd ToolThump
-    ```[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
+Run it after adding or editing a tool. Generated blocks are marked "generated by build.js" — edit `js/tools-data.js`, `_includes/*`, or the page JSON islands instead of the generated output.
 
-2.  **Serve the site:**
-    You can simply open `index.html` in your browser, but for features like Service Workers to function correctly, it is recommended to use a local server:
-    ```bash
-    # If you have Python installed
-    python3 -m http.server 8000
+## Contributing
 
-    # Or if you have Node.js/npm
-    npx http-server
-    ```
+Fork the repo, create a branch, make your change, and open a pull request.
 
-3.  **Regenerate SEO artifacts & static includes (optional):**
-    `build.js` regenerates `sitemap.xml` (with real last-modified dates from git history), refreshes the JSON-LD structured data (`WebApplication` / `BreadcrumbList` / `FAQPage`) plus `og:image` tags on every tool page, and inlines the header/footer/tool-text includes into each page's raw HTML (nav links, FAQs, features and how-to sections become visible to crawlers without executing JavaScript). Run it after adding or editing any tool:
-    ```bash
-    node build.js
-    ```
-    Schema blocks and inlined sections are marked "generated by build.js" - edit `js/tools-data.js`, `_includes/*` or the page JSON islands instead of hand-editing generated output.
+## License
 
-4.  **Access the tools:**
-    Navigate to `http://localhost:8000` in your web browser.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! If you want to add a new tool or improve an existing one:
-1. Fork the Project.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-2. Create your Feature Branch (`git checkout -b feature/AmazingTool`).[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-3. Commit your Changes (`git commit -m 'Add some AmazingTool'`).[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-4. Push to the Branch (`git push origin feature/AmazingTool`).[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-5. Open a Pull Request.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)]
-
----
-
-## 📜 License
-
-Distributed under the MIT License.[[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fgithub.com%2Fges201%2FToolThump)] See `LICENSE` for more information.
-
----
+MIT.
