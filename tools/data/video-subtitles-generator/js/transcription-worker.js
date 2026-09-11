@@ -22,6 +22,11 @@ const DOWNLOAD_END = 25;
 const TRANSCRIBE_START = 30;
 const TRANSCRIBE_END = 90;
 
+// WebGPU stays off until transformers.js ships the Whisper VRAM leak fix
+// (huggingface/transformers.js#1739, PR #1755): every 30s chunk leaks GPU
+// memory until multi-chunk audio stalls. Flip to true when a release has it.
+const ENABLE_WEBGPU = false;
+
 function fmtTime(totalSec) {
     const s = Math.floor(totalSec);
     const m = Math.floor(s / 60);
@@ -32,6 +37,9 @@ function fmtTime(totalSec) {
 
 let transcriber = null;
 let currentModel = null;
+let currentDevice = 'wasm';
+// Set when a WebGPU inference throws, so the reload takes the WASM path.
+let webgpuFailed = false;
 // Chunk progress state, only set while a transcription is running.
 let progress = null;
 // Display name of the auto-detected language, while a transcription runs.
@@ -60,8 +68,8 @@ async function handleMessage(data) {
     }
 }
 
-// v4 runs the chunk loop internally with no per-chunk callback, but it calls
-// the processor once per chunk, so count those calls for the progress bar.
+// v4 dropped v2's chunk_callback; the pipeline calls model.generate once per
+// chunk in its generation loop, so count completed generations.
 function reportChunkProgress() {
     if (!progress) return;
     const { duration, step, total, done } = progress;
@@ -76,7 +84,7 @@ function reportChunkProgress() {
 // v4's Whisper silently forces English when no language is given, so "auto"
 // runs Whisper's own detection: one decoder step from <|startoftranscript|>
 // over the first 30s, argmax across the language tokens. Called before chunk
-// progress is armed, so the processor proxy stays quiet.
+// progress is armed, so the generate hook stays quiet.
 async function detectLanguage(audio) {
     const generation = transcriber.model.generation_config;
     if (!generation?.is_multilingual || !generation.lang_to_id) return null;
@@ -105,6 +113,15 @@ function languageDisplayName(code) {
     }
 }
 
+async function hasWebGPUAdapter() {
+    if (!navigator.gpu) return false;
+    try {
+        return !!(await navigator.gpu.requestAdapter());
+    } catch {
+        return false;
+    }
+}
+
 async function loadModel(modelName) {
     if (transcriber && currentModel === modelName) return;
 
@@ -112,45 +129,76 @@ async function loadModel(modelName) {
     // percentage (brief dips when a new file joins the denominator).
     const files = new Map();
     let lastPost = 0;
-    // WASM q8 is the accuracy/speed sweet spot and WebGPU fp16 is known to
-    // produce broken Whisper output, so always run on WASM. The basic
-    // optimization level sidesteps an ONNX Runtime 1.26 bug where the extended
-    // QDQ pass fails to create the quantized Whisper decoder session
-    // (TransposeDQWeightsForMatMulNBits missing required scale).
-    transcriber = await pipeline('automatic-speech-recognition', modelName, {
-        device: 'wasm',
-        dtype: 'q8',
-        session_options: { graphOptimizationLevel: 'basic' },
-        progress_callback: (data) => {
-            if (data.status !== 'progress' || !data.total) return;
-            files.set(data.file, { loaded: data.loaded, total: data.total });
-            let loaded = 0;
-            let total = 0;
-            for (const f of files.values()) {
-                loaded += f.loaded;
-                total += f.total;
-            }
-            const now = performance.now();
-            if (now - lastPost < 100) return;
-            lastPost = now;
-            self.postMessage({
-                type: 'download',
-                pct: Math.round(DOWNLOAD_END * loaded / total),
-                file: data.file.split('/').pop(),
-                perFile: Math.round(data.progress)
+    const progressCallback = (data) => {
+        if (data.status !== 'progress' || !data.total) return;
+        files.set(data.file, { loaded: data.loaded, total: data.total });
+        let loaded = 0;
+        let total = 0;
+        for (const f of files.values()) {
+            loaded += f.loaded;
+            total += f.total;
+        }
+        const now = performance.now();
+        if (now - lastPost < 100) return;
+        lastPost = now;
+        self.postMessage({
+            type: 'download',
+            pct: Math.round(DOWNLOAD_END * loaded / total),
+            file: data.file.split('/').pop(),
+            perFile: Math.round(data.progress)
+        });
+    };
+
+    // WebGPU first when enabled and an adapter exists. fp16 encoders produce
+    // broken Whisper output (transformers.js#1590), and q8 maps to int8 files
+    // that are slow on GPU, so the proven GPU combo is fp32 encoder + q4
+    // decoder.
+    if (ENABLE_WEBGPU && !webgpuFailed && await hasWebGPUAdapter()) {
+        try {
+            transcriber = await pipeline('automatic-speech-recognition', modelName, {
+                device: 'webgpu',
+                dtype: { encoder_model: 'fp32', decoder_model_merged: 'q4' },
+                progress_callback: progressCallback
             });
+            currentDevice = 'webgpu';
+        } catch (error) {
+            console.warn('WebGPU unavailable, falling back to WASM:', error);
+            transcriber = null;
         }
-    });
+    }
 
-    const processor = transcriber.processor;
-    transcriber.processor = new Proxy(processor, {
+    if (!transcriber) {
+        // Fallback path. WASM q8 is the accuracy/speed sweet spot here. The
+        // basic optimization level sidesteps an ONNX Runtime 1.26 bug where
+        // the extended QDQ pass fails to create the quantized Whisper decoder
+        // session (TransposeDQWeightsForMatMulNBits missing required scale).
+        transcriber = await pipeline('automatic-speech-recognition', modelName, {
+            device: 'wasm',
+            dtype: 'q8',
+            session_options: { graphOptimizationLevel: 'basic' },
+            progress_callback: progressCallback
+        });
+        currentDevice = 'wasm';
+    }
+
+    const generate = transcriber.model.generate;
+    transcriber.model.generate = new Proxy(generate, {
         apply(target, thisArg, args) {
-            reportChunkProgress();
-            return Reflect.apply(target, thisArg, args);
+            const result = Reflect.apply(target, thisArg, args);
+            result.then(
+                () => {
+                    // Language detection generates before progress is armed.
+                    if (!progress) return;
+                    progress.done++;
+                    reportChunkProgress();
+                },
+                () => {}
+            );
+            return result;
         }
     });
 
-    console.log('Whisper backend: wasm');
+    console.log(`Whisper backend: ${currentDevice}`);
     currentModel = modelName;
 }
 
@@ -192,7 +240,7 @@ async function transcribe(modelName, { audio, language, duration }) {
         status: 'Analyzing audio...'
     });
 
-    // Count against the chunks the duration implies for the processor hook.
+    // Count against the chunks the duration implies for the generate hook.
     progress = {
         duration,
         step,
@@ -212,7 +260,18 @@ async function transcribe(modelName, { audio, language, duration }) {
 
     let output;
     try {
-        output = await transcriber(audio, options);
+        try {
+            output = await transcriber(audio, options);
+        } catch (error) {
+            if (currentDevice !== 'webgpu') throw error;
+            console.warn('WebGPU inference failed, retrying on WASM:', error);
+            webgpuFailed = true;
+            transcriber = null;
+            currentModel = null;
+            progress.done = 0;
+            await loadModel(modelName);
+            output = await transcriber(audio, options);
+        }
     } finally {
         clearInterval(ticker);
     }

@@ -1,4 +1,4 @@
-import { fetchFile, toBlobURL } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js';
+import { fetchFile, toBlobURL } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.2/dist/esm/index.js';
 
 let FFmpegClass = null;
 
@@ -22,7 +22,7 @@ export class FFmpegManager {
 
             if (!FFmpegClass) {
                 try {
-                    const module = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
+                    const module = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/esm/index.js');
                     FFmpegClass = module.FFmpeg || module.default;
                 } catch (e) {
                     console.error('Failed to load classes.js:', e);
@@ -60,7 +60,7 @@ export class FFmpegManager {
             const wasmURL = await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm');
             const loadConfig = { coreURL, wasmURL };
 
-            const workerCode = `import "https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/worker.js";`;
+            const workerCode = `import "https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/esm/worker.js";`;
             loadConfig.classWorkerURL = URL.createObjectURL(new Blob([workerCode], { type: 'text/javascript' }));
 
             if (isIsolated) {
