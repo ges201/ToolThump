@@ -1,5 +1,7 @@
-import { pipeline, env, Tensor } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0';
-import { SRTFormatter } from './srt-formatter.mjs';
+// Pinned to v3: v4.2.0's Whisper generation corrupts whisper-small's decoder
+// (special-token loops, dropped audio). Revisit when v4 ships a fix.
+import { pipeline, env, Tensor } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.5';
+import { SRTFormatter, fmtTime } from './srt-formatter.mjs';
 
 env.useBrowserCache = true;
 // The site ships no /models/ directory, so skip the local-file probes and
@@ -22,18 +24,9 @@ const DOWNLOAD_END = 25;
 const TRANSCRIBE_START = 30;
 const TRANSCRIBE_END = 90;
 
-// WebGPU stays off until transformers.js ships the Whisper VRAM leak fix
-// (huggingface/transformers.js#1739, PR #1755): every 30s chunk leaks GPU
-// memory until multi-chunk audio stalls. Flip to true when a release has it.
+// WebGPU stays off until it is validated against the pinned runtime; the
+// attention output path used during word timestamps is the fragile part.
 const ENABLE_WEBGPU = false;
-
-function fmtTime(totalSec) {
-    const s = Math.floor(totalSec);
-    const m = Math.floor(s / 60);
-    const h = Math.floor(m / 60);
-    const ss = String(s % 60).padStart(2, '0');
-    return h ? `${h}:${String(m % 60).padStart(2, '0')}:${ss}` : `${m}:${ss}`;
-}
 
 let transcriber = null;
 let currentModel = null;
@@ -72,12 +65,18 @@ async function handleMessage(data) {
 // chunk in its generation loop, so count completed generations.
 function reportChunkProgress() {
     if (!progress) return;
-    const { duration, step, total, done } = progress;
+    const { duration, step, total, done, startedAt } = progress;
     const frac = Math.min(1, done / total);
+    const label = detectedLanguage ? ` (${detectedLanguage})` : '';
+    let status = `Transcribing${label}: ${fmtTime(Math.min(duration, done * step))} / ${fmtTime(duration)}`;
+    if (done > 0 && done < total) {
+        const eta = ((performance.now() - startedAt) / 1000 / done) * (total - done);
+        status += ` · ~${fmtTime(eta)} left`;
+    }
     self.postMessage({
         type: 'transcribe',
         pct: Math.round(TRANSCRIBE_START + (TRANSCRIBE_END - TRANSCRIBE_START) * frac),
-        status: `Transcribing: ${fmtTime(Math.min(duration, done * step))} / ${fmtTime(duration)}`
+        status
     });
 }
 
@@ -124,6 +123,13 @@ async function hasWebGPUAdapter() {
 
 async function loadModel(modelName) {
     if (transcriber && currentModel === modelName) return;
+
+    // The WASM branch below only builds when no pipeline exists, so a model
+    // switch has to release the old one first.
+    if (transcriber) {
+        await transcriber.dispose();
+        transcriber = null;
+    }
 
     // Sum loaded/total across all files seen so far for an overall
     // percentage (brief dips when a new file joins the denominator).
@@ -175,7 +181,6 @@ async function loadModel(modelName) {
         transcriber = await pipeline('automatic-speech-recognition', modelName, {
             device: 'wasm',
             dtype: 'q8',
-            session_options: { graphOptimizationLevel: 'basic' },
             progress_callback: progressCallback
         });
         currentDevice = 'wasm';
@@ -200,6 +205,45 @@ async function loadModel(modelName) {
 
     console.log(`Whisper backend: ${currentDevice}`);
     currentModel = modelName;
+}
+
+// Whisper sometimes emits EOS before the chunk's audio ends, which silently
+// truncates the subtitles. Retry the uncovered tail here, bounded, until it
+// stops making progress.
+async function recoverSkippedAudio(transcriber, audio, duration, options, output) {
+    const endOf = (chunk, fallback) => chunk.timestamp[1] ?? fallback;
+    const chunks = (output.chunks ?? []).filter((c) => c.timestamp[0] !== null && c.timestamp[0] <= duration + 0.5);
+    let coveredEnd = chunks.reduce((max, c) => Math.max(max, endOf(c, c.timestamp[0] + 0.5)), 0);
+
+    // Segment timestamps for the retries: cheaper than word timestamps and
+    // enough to fill the gap. Short chunks keep each retry's generation brief.
+    const recoveryOptions = {
+        ...options,
+        return_timestamps: true,
+        chunk_length_s: SHORT_CHUNK_S,
+        stride_length_s: SHORT_STRIDE_S
+    };
+    for (let attempt = 0; attempt < 8 && duration - coveredEnd > 2; attempt++) {
+        const start = Math.max(0, coveredEnd - 1);
+        const tail = audio.subarray(Math.floor(start * 16000));
+        const sliceEnd = start + tail.length / 16000;
+        const result = await transcriber(tail, recoveryOptions);
+        const recovered = (result.chunks ?? [])
+            .filter((c) => c.timestamp[0] !== null && start + c.timestamp[0] <= duration + 0.5)
+            .map((c) => ({
+                ...c,
+                timestamp: [start + c.timestamp[0], c.timestamp[1] === null ? null : start + c.timestamp[1]]
+            }))
+            .filter((c) => endOf(c, sliceEnd) > coveredEnd + 0.05);
+
+        if (!recovered.length) break;
+        const newEnd = recovered.reduce((max, c) => Math.max(max, endOf(c, sliceEnd)), coveredEnd);
+        if (newEnd <= coveredEnd + 0.5) break;
+        chunks.push(...recovered);
+        coveredEnd = newEnd;
+    }
+
+    return { ...output, chunks };
 }
 
 async function transcribe(modelName, { audio, language, duration }) {
@@ -241,40 +285,33 @@ async function transcribe(modelName, { audio, language, duration }) {
     });
 
     // Count against the chunks the duration implies for the generate hook.
+    // startedAt feeds the ETA once the first chunk lands; the elapsed clock
+    // itself lives on the main thread, which keeps ticking while WASM blocks
+    // this one.
     progress = {
         duration,
         step,
         total: duration >= chunkLen ? Math.max(1, Math.ceil(duration / step)) : 1,
-        done: 0
+        done: 0,
+        startedAt: performance.now()
     };
-
-    const startedAt = performance.now();
-    const ticker = setInterval(() => {
-        if (!progress) return;
-        const label = detectedLanguage ? ` (${detectedLanguage})` : '';
-        self.postMessage({
-            type: 'transcribe',
-            status: `Transcribing${label}: ${fmtTime(Math.min(duration, progress.done * step))} / ${fmtTime(duration)} (${fmtTime((performance.now() - startedAt) / 1000)} elapsed)`
-        });
-    }, 1000);
 
     let output;
     try {
-        try {
-            output = await transcriber(audio, options);
-        } catch (error) {
-            if (currentDevice !== 'webgpu') throw error;
-            console.warn('WebGPU inference failed, retrying on WASM:', error);
-            webgpuFailed = true;
-            transcriber = null;
-            currentModel = null;
-            progress.done = 0;
-            await loadModel(modelName);
-            output = await transcriber(audio, options);
-        }
-    } finally {
-        clearInterval(ticker);
+        output = await transcriber(audio, options);
+    } catch (error) {
+        if (currentDevice !== 'webgpu') throw error;
+        console.warn('WebGPU inference failed, retrying on WASM:', error);
+        webgpuFailed = true;
+        transcriber = null;
+        currentModel = null;
+        progress.done = 0;
+        progress.startedAt = performance.now();
+        await loadModel(modelName);
+        output = await transcriber(audio, options);
     }
+
+    output = await recoverSkippedAudio(transcriber, audio, duration, options, output);
 
     reportChunkProgress();
     progress = null;

@@ -1,3 +1,13 @@
+// Seconds -> M:SS (or H:MM:SS). Shared by the worker's status messages and
+// the main thread's elapsed clock.
+export function fmtTime(totalSec) {
+    const s = Math.floor(totalSec);
+    const m = Math.floor(s / 60);
+    const h = Math.floor(m / 60);
+    const ss = String(s % 60).padStart(2, '0');
+    return h ? `${h}:${String(m % 60).padStart(2, '0')}:${ss}` : `${m}:${ss}`;
+}
+
 export class SRTFormatter {
     // Group whisper word-chunks into subtitle cues. The cues keep each word
     // with its own timestamps so playback can highlight word by word.

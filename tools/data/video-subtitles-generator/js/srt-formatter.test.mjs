@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { SRTFormatter } from './srt-formatter.mjs';
+import { SRTFormatter, fmtTime } from './srt-formatter.mjs';
 
 const formatter = new SRTFormatter();
 
@@ -48,6 +48,13 @@ test('splits when the combined text exceeds 80 characters', () => {
 test('formats timestamps with hours, minutes, seconds and milliseconds', () => {
     assert.equal(formatter.formatTimestamp(0), '00:00:00,000');
     assert.equal(formatter.formatTimestamp(3661.25), '01:01:01,250');
+});
+
+test('fmtTime formats seconds as M:SS or H:MM:SS', () => {
+    assert.equal(fmtTime(0), '0:00');
+    assert.equal(fmtTime(59.9), '0:59');
+    assert.equal(fmtTime(61), '1:01');
+    assert.equal(fmtTime(3661), '1:01:01');
 });
 
 test('returns empty string for missing output', () => {

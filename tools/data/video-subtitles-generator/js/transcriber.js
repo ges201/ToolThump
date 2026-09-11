@@ -1,4 +1,5 @@
 import { downmixToMono } from './audio-utils.mjs';
+import { fmtTime } from './srt-formatter.mjs';
 
 const WHISPER_SAMPLE_RATE = 16000;
 
@@ -59,6 +60,24 @@ export class Transcriber {
         this.ui.setProgressBarIndeterminate(false);
         this.ui.setProgressActive(false);
 
+        // ONNX WASM blocks the transcription worker's event loop, so timers in
+        // the worker freeze during a chunk. Tick elapsed here on the main
+        // thread and append it to whatever status the worker last reported.
+        const startedAt = performance.now();
+        let statusBase = 'Preparing audio...';
+        let elapsedTimer = setInterval(() => {
+            const elapsed = fmtTime((performance.now() - startedAt) / 1000);
+            this.ui.updateProgressStatus(`${statusBase} · ${elapsed} elapsed`);
+        }, 1000);
+        const setStatus = (text) => {
+            statusBase = text;
+            this.ui.updateProgressStatus(text);
+        };
+        const stopElapsed = () => {
+            clearInterval(elapsedTimer);
+            elapsedTimer = null;
+        };
+
         try {
             const worker = this.ensureWorker();
             if (this.workerError) throw new Error(this.workerError);
@@ -69,30 +88,33 @@ export class Transcriber {
                     if (data.pct !== undefined) this.ui.setProgressBarWidth(`${data.pct}%`);
                     switch (data.type) {
                         case 'download':
-                            this.ui.updateProgressStatus(`Model Download: ${data.file} ${data.perFile}%`);
+                            setStatus(`Model Download: ${data.file} ${data.perFile}%`);
                             break;
                         case 'preparing':
                             this.ui.setProgressMessage('Preparing transcription engine...');
-                            this.ui.updateProgressStatus(data.status);
+                            setStatus(data.status);
                             break;
                         case 'transcribe-start':
                             this.ui.setProgressMessage('Transcribing audio...');
                             this.ui.setProgressActive(true);
-                            this.ui.updateProgressStatus(data.status);
+                            setStatus(data.status);
                             break;
                         case 'transcribe':
-                            this.ui.updateProgressStatus(data.status);
+                            setStatus(data.status);
                             break;
                         case 'finalize':
+                            stopElapsed();
                             this.ui.setProgressActive(false);
                             this.ui.setProgressMessage('Formatting subtitles...');
                             this.ui.updateProgressStatus('');
                             break;
                         case 'done':
+                            stopElapsed();
                             this.ui.showResults(data.srt, data.cues);
                             resolve({ success: true, srtContent: data.srt, cues: data.cues });
                             break;
                         case 'error':
+                            stopElapsed();
                             this.ui.showError(`AI Error: ${data.message}`);
                             resolve({ success: false, error: new Error(data.message) });
                             break;
@@ -102,18 +124,20 @@ export class Transcriber {
                 // Model download runs in the worker while the audio decodes here.
                 worker.postMessage({ type: 'load', modelSize });
 
-                this.ui.updateProgressStatus('Decoding audio track...');
+                setStatus('Decoding audio track...');
                 this.decodeAudioFile(videoFile).then(
                     ({ audio, duration }) => {
                         worker.postMessage({ type: 'transcribe', audio, language, duration, modelSize }, [audio.buffer]);
                     },
                     (error) => {
+                        stopElapsed();
                         this.ui.showError(`AI Error: ${error.message}`);
                         resolve({ success: false, error });
                     }
                 );
             });
         } catch (error) {
+            stopElapsed();
             console.error('Transcription failed:', error);
             this.ui.showError(`AI Error: ${error.message}`);
             return { success: false, error };
