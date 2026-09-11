@@ -1,3 +1,5 @@
+import { downmixToMono } from './audio-utils.mjs';
+
 const WHISPER_SAMPLE_RATE = 16000;
 
 export class Transcriber {
@@ -26,8 +28,12 @@ export class Transcriber {
             const decoder = new OfflineAudioContext(1, 1, WHISPER_SAMPLE_RATE);
             const decoded = await decoder.decodeAudioData(buf);
 
-            if (decoded.sampleRate === WHISPER_SAMPLE_RATE && decoded.numberOfChannels === 1) {
-                return { audio: decoded.getChannelData(0), duration: decoded.duration };
+            // decodeAudioData resamples to the context rate, so mono/stereo
+            // sources need no render pass - only the stereo down-mix.
+            if (decoded.sampleRate === WHISPER_SAMPLE_RATE && decoded.numberOfChannels <= 2) {
+                const audio = decoded.getChannelData(0);
+                if (decoded.numberOfChannels === 2) downmixToMono(audio, decoded.getChannelData(1));
+                return { audio, duration: decoded.duration };
             }
 
             const frameCount = Math.max(1, Math.ceil(decoded.duration * WHISPER_SAMPLE_RATE));

@@ -1,14 +1,17 @@
-import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
+import { pipeline, env, Tensor } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0';
 import { SRTFormatter } from './srt-formatter.mjs';
 
 env.useBrowserCache = true;
+// The site ships no /models/ directory, so skip the local-file probes and
+// fetch straight from the Hub.
+env.allowLocalModels = false;
 // ponytail: multithreaded ONNX needs SharedArrayBuffer, i.e. crossOriginIsolated. Cap at 4 threads - beyond that Whisper gains little and memory climbs.
 env.backends.onnx.wasm.numThreads = self.crossOriginIsolated ? Math.max(1, Math.min(4, navigator.hardwareConcurrency || 1)) : 1;
 
 // Whisper advances its window by (chunk_length - 2*stride) per pass.
 const CHUNK_LEN_S = 29;
 const STRIDE_LEN_S = 5;
-// Short clips get smaller chunks so the bar advances during transcription.
+// Short clips get smaller chunks so progress updates land sooner.
 const SHORT_CLIP_S = 30;
 const SHORT_CHUNK_S = 12;
 const SHORT_STRIDE_S = 3;
@@ -29,7 +32,10 @@ function fmtTime(totalSec) {
 
 let transcriber = null;
 let currentModel = null;
-let currentDevice = 'wasm';
+// Chunk progress state, only set while a transcription is running.
+let progress = null;
+// Display name of the auto-detected language, while a transcription runs.
+let detectedLanguage = null;
 
 // Jobs run one at a time so a transcribe arriving mid-download waits for it.
 let queue = Promise.resolve();
@@ -54,6 +60,51 @@ async function handleMessage(data) {
     }
 }
 
+// v4 runs the chunk loop internally with no per-chunk callback, but it calls
+// the processor once per chunk, so count those calls for the progress bar.
+function reportChunkProgress() {
+    if (!progress) return;
+    const { duration, step, total, done } = progress;
+    const frac = Math.min(1, done / total);
+    self.postMessage({
+        type: 'transcribe',
+        pct: Math.round(TRANSCRIBE_START + (TRANSCRIBE_END - TRANSCRIBE_START) * frac),
+        status: `Transcribing: ${fmtTime(Math.min(duration, done * step))} / ${fmtTime(duration)}`
+    });
+}
+
+// v4's Whisper silently forces English when no language is given, so "auto"
+// runs Whisper's own detection: one decoder step from <|startoftranscript|>
+// over the first 30s, argmax across the language tokens. Called before chunk
+// progress is armed, so the processor proxy stays quiet.
+async function detectLanguage(audio) {
+    const generation = transcriber.model.generation_config;
+    if (!generation?.is_multilingual || !generation.lang_to_id) return null;
+
+    const { input_features } = await transcriber.processor(audio.subarray(0, 30 * 16000));
+    const sot = generation.decoder_start_token_id ?? transcriber.model.config.decoder_start_token_id;
+    const output = await transcriber.model.generate({
+        inputs: input_features,
+        decoder_input_ids: new Tensor('int64', BigInt64Array.from([BigInt(sot)]), [1, 1]),
+        max_new_tokens: 1,
+        return_timestamps: false
+    });
+    const sequence = output.tolist()[0];
+    const tokenId = Number(sequence[sequence.length - 1]);
+    for (const [token, id] of Object.entries(generation.lang_to_id)) {
+        if (id === tokenId) return token.slice(2, -2); // "<|it|>" -> "it"
+    }
+    return null;
+}
+
+function languageDisplayName(code) {
+    try {
+        return new Intl.DisplayNames(['en'], { type: 'language' }).of(code) || code;
+    } catch {
+        return code;
+    }
+}
+
 async function loadModel(modelName) {
     if (transcriber && currentModel === modelName) return;
 
@@ -61,8 +112,15 @@ async function loadModel(modelName) {
     // percentage (brief dips when a new file joins the denominator).
     const files = new Map();
     let lastPost = 0;
-    const create = (options) => pipeline('automatic-speech-recognition', modelName, {
-        ...options,
+    // WASM q8 is the accuracy/speed sweet spot and WebGPU fp16 is known to
+    // produce broken Whisper output, so always run on WASM. The basic
+    // optimization level sidesteps an ONNX Runtime 1.26 bug where the extended
+    // QDQ pass fails to create the quantized Whisper decoder session
+    // (TransposeDQWeightsForMatMulNBits missing required scale).
+    transcriber = await pipeline('automatic-speech-recognition', modelName, {
+        device: 'wasm',
+        dtype: 'q8',
+        session_options: { graphOptimizationLevel: 'basic' },
         progress_callback: (data) => {
             if (data.status !== 'progress' || !data.total) return;
             files.set(data.file, { loaded: data.loaded, total: data.total });
@@ -84,77 +142,85 @@ async function loadModel(modelName) {
         }
     });
 
-    transcriber = null;
-    let device = 'wasm';
-    if (navigator.gpu) {
-        try {
-            transcriber = await create({ device: 'webgpu' });
-            device = 'webgpu';
-        } catch (error) {
-            console.warn('WebGPU unavailable, falling back to WASM:', error);
+    const processor = transcriber.processor;
+    transcriber.processor = new Proxy(processor, {
+        apply(target, thisArg, args) {
+            reportChunkProgress();
+            return Reflect.apply(target, thisArg, args);
         }
-    }
-    if (!transcriber) transcriber = await create({});
-    console.log(`Whisper backend: ${device}`);
-    currentDevice = device;
+    });
+
+    console.log('Whisper backend: wasm');
     currentModel = modelName;
 }
 
 async function transcribe(modelName, { audio, language, duration }) {
-    try {
-        self.postMessage({ type: 'preparing', pct: DOWNLOAD_END, status: 'Loading model into memory...' });
+    self.postMessage({ type: 'preparing', pct: DOWNLOAD_END, status: 'Loading model into memory...' });
 
-        // 16kHz mono audio decoded on the main thread (workers lack AudioContext);
-        // 'word' timestamps feed the SRT cue boundaries. Shorter chunks on
-        // small clips keep progress updates frequent.
-        const isShortClip = duration < SHORT_CLIP_S;
-        const chunkLen = isShortClip ? SHORT_CHUNK_S : CHUNK_LEN_S;
-        const strideLen = isShortClip ? SHORT_STRIDE_S : STRIDE_LEN_S;
-        const step = chunkLen - 2 * strideLen;
-        const options = {
-            return_timestamps: 'word',
-            chunk_length_s: chunkLen,
-            stride_length_s: strideLen
-        };
+    // 16kHz mono audio decoded on the main thread (workers lack AudioContext);
+    // 'word' timestamps feed the SRT cue boundaries. Shorter chunks on
+    // small clips keep progress updates frequent.
+    const isShortClip = duration < SHORT_CLIP_S;
+    const chunkLen = isShortClip ? SHORT_CHUNK_S : CHUNK_LEN_S;
+    const strideLen = isShortClip ? SHORT_STRIDE_S : STRIDE_LEN_S;
+    const step = chunkLen - 2 * strideLen;
+    const options = {
+        return_timestamps: 'word',
+        chunk_length_s: chunkLen,
+        stride_length_s: strideLen
+    };
 
-        if (language !== 'auto') options.language = language;
-
-        // Real-time transcription progress: the pipeline fires chunk_callback
-        // once per processed chunk, so count against the chunks the duration
-        // implies (duration always comes from the decoded audio).
-        const totalChunks = duration >= chunkLen ? Math.max(1, Math.ceil(duration / step)) : 1;
-        let chunksDone = 0;
-        options.chunk_callback = () => {
-            chunksDone++;
-            const frac = Math.min(1, chunksDone / totalChunks);
-            const pct = Math.round(TRANSCRIBE_START + (TRANSCRIBE_END - TRANSCRIBE_START) * frac);
-            self.postMessage({
-                type: 'transcribe',
-                pct,
-                status: `Transcribing: ${fmtTime(Math.min(duration, chunksDone * step))} / ${fmtTime(duration)}`
-            });
-        };
-
-        self.postMessage({
-            type: 'transcribe-start',
-            pct: TRANSCRIBE_START,
-            status: 'Analyzing audio...'
-        });
-
-        const output = await transcriber(audio, options);
-
-        self.postMessage({ type: 'finalize', pct: 90 });
-        const { srt, cues } = new SRTFormatter().format(output);
-        self.postMessage({ type: 'done', srt, cues });
-    } catch (error) {
-        if (currentDevice === 'webgpu') {
-            // Some ops can choke on the WebGPU backend (ORT 1.17); retry once on WASM.
-            console.warn('WebGPU inference failed, retrying on WASM:', error);
-            transcriber = null;
-            currentModel = null;
-            await loadModel(modelName);
-            return transcribe(modelName, { audio, language, duration });
+    detectedLanguage = null;
+    if (language !== 'auto') {
+        options.language = language;
+    } else {
+        try {
+            const detected = await detectLanguage(audio);
+            if (detected) {
+                options.language = detected;
+                detectedLanguage = languageDisplayName(detected);
+                console.log('Detected language:', detected);
+            }
+        } catch (error) {
+            console.warn('Language detection failed, using the model default:', error);
         }
-        throw error;
     }
+
+    self.postMessage({
+        type: 'transcribe-start',
+        pct: TRANSCRIBE_START,
+        status: 'Analyzing audio...'
+    });
+
+    // Count against the chunks the duration implies for the processor hook.
+    progress = {
+        duration,
+        step,
+        total: duration >= chunkLen ? Math.max(1, Math.ceil(duration / step)) : 1,
+        done: 0
+    };
+
+    const startedAt = performance.now();
+    const ticker = setInterval(() => {
+        if (!progress) return;
+        const label = detectedLanguage ? ` (${detectedLanguage})` : '';
+        self.postMessage({
+            type: 'transcribe',
+            status: `Transcribing${label}: ${fmtTime(Math.min(duration, progress.done * step))} / ${fmtTime(duration)} (${fmtTime((performance.now() - startedAt) / 1000)} elapsed)`
+        });
+    }, 1000);
+
+    let output;
+    try {
+        output = await transcriber(audio, options);
+    } finally {
+        clearInterval(ticker);
+    }
+
+    reportChunkProgress();
+    progress = null;
+
+    self.postMessage({ type: 'finalize', pct: TRANSCRIBE_END });
+    const { srt, cues } = new SRTFormatter().format(output);
+    self.postMessage({ type: 'done', srt, cues });
 }
