@@ -259,7 +259,12 @@ async function transcribe(modelName, { audio, language, duration }) {
     const options = {
         return_timestamps: 'word',
         chunk_length_s: chunkLen,
-        stride_length_s: strideLen
+        stride_length_s: strideLen,
+        // Mobile WASM runs different kernels (fewer threads), so a near-tie in
+        // greedy decoding can flip one token and spiral into Whisper's
+        // repetition loop until max_length (448). Banning repeated 3-grams
+        // cuts the loop. Options also flow into recoverSkippedAudio's retries.
+        no_repeat_ngram_size: 3
     };
 
     detectedLanguage = null;
