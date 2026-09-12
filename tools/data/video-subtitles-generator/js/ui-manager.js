@@ -24,6 +24,7 @@ export class UIManager {
             progressStatus: document.getElementById('progress-status'),
             progressBackBtn: document.getElementById('vsg-progress-back-btn'),
             resultsArea: document.getElementById('results-area'),
+            exportArea: document.getElementById('export-area'),
             subtitlePreview: document.getElementById('subtitle-preview'),
             subtitleEditor: document.getElementById('subtitle-editor'),
             editBtn: document.getElementById('vsg-edit-btn'),
@@ -228,6 +229,7 @@ export class UIManager {
     showProgressArea() {
         this.elements.progressArea.style.display = 'block';
         this.elements.resultsArea.style.display = 'none';
+        this.elements.exportArea.style.display = 'none';
         this.elements.generateBtn.disabled = true;
         this.elements.progressSpinner.style.display = 'block';
         this.elements.progressBackBtn.style.display = 'none';
@@ -236,6 +238,7 @@ export class UIManager {
     returnToResults() {
         this.elements.progressArea.style.display = 'none';
         this.elements.resultsArea.style.display = 'block';
+        this.elements.exportArea.style.display = 'block';
     }
 
     showResults(srtContent, cues) {
@@ -249,6 +252,7 @@ export class UIManager {
         this.setEditMode(false);
         this.elements.progressArea.style.display = 'none';
         this.elements.resultsArea.style.display = 'block';
+        this.elements.exportArea.style.display = 'block';
         this.elements.generateBtn.disabled = false;
         this.elements.progressSpinner.style.display = 'none';
         this.elements.progressBar.classList.remove('active');

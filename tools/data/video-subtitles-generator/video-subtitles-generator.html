@@ -297,6 +297,23 @@
                             </span>
                         </span>
                     </div>
+
+                    <!-- Results Area (under the video) -->
+                    <div class="vsg-results-area" id="results-area" style="display: none;">
+                        <div class="vsg-results-header">
+                            <h3>Generated Subtitles</h3>
+                            <button id="vsg-edit-btn" class="btn-secondary" aria-label="Edit subtitles">Edit</button>
+                        </div>
+                        <div class="vsg-subtitle-preview">
+                            <pre id="subtitle-preview" class="vsg-subtitle-text"></pre>
+                            <textarea id="subtitle-editor" class="vsg-subtitle-editor" style="display: none;" spellcheck="false"
+                                aria-label="Edit subtitles"></textarea>
+                        </div>
+                        <div class="vsg-edit-actions" id="subtitle-edit-actions" style="display: none;">
+                            <button id="vsg-save-edit-btn" class="btn-secondary">Save Changes</button>
+                            <button id="vsg-cancel-edit-btn" class="btn-secondary">Cancel</button>
+                        </div>
+                    </div>
                     </div>
 
                     <div class="vsg-col-right">
@@ -359,21 +376,8 @@
                         </div>
                     </div>
 
-                    <!-- Results Area -->
-                    <div class="vsg-results-area" id="results-area" style="display: none;">
-                        <div class="vsg-results-header">
-                            <h3>Generated Subtitles</h3>
-                            <button id="vsg-edit-btn" class="btn-secondary" aria-label="Edit subtitles">Edit</button>
-                        </div>
-                        <div class="vsg-subtitle-preview">
-                            <pre id="subtitle-preview" class="vsg-subtitle-text"></pre>
-                            <textarea id="subtitle-editor" class="vsg-subtitle-editor" style="display: none;" spellcheck="false"
-                                aria-label="Edit subtitles"></textarea>
-                        </div>
-                        <div class="vsg-edit-actions" id="subtitle-edit-actions" style="display: none;">
-                            <button id="vsg-save-edit-btn" class="btn-secondary">Save Changes</button>
-                            <button id="vsg-cancel-edit-btn" class="btn-secondary">Cancel</button>
-                        </div>
+                    <!-- Export Options (style + download) -->
+                    <div id="export-area" style="display: none;">
                         <div class="vsg-style-panel" id="subtitle-style-panel">
                             <div class="vsg-style-header">
                                 <h3>Subtitle Style</h3>

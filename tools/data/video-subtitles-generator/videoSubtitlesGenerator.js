@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ui.showProcessingOptions(true);
             ui.setGenerateButtonDisabled(false);
             ui.elements.resultsArea.style.display = 'none';
+            ui.elements.exportArea.style.display = 'none';
             ui.elements.progressArea.style.display = 'none';
         },
 
