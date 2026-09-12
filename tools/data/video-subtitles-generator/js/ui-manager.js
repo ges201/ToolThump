@@ -45,6 +45,7 @@ export class UIManager {
             styleOutline: document.getElementById('style-outline'),
             styleOutlineValue: document.getElementById('style-outline-value'),
             styleOutlineColor: document.getElementById('style-outline-color'),
+            styleHighlightColor: document.getElementById('style-highlight-color'),
             styleBox: document.getElementById('style-box'),
             styleBoxColor: document.getElementById('style-box-color')
         };
@@ -168,6 +169,7 @@ export class UIManager {
             position: e.stylePosition.value,
             outline: Number(e.styleOutline.value),
             outlineColor: e.styleOutlineColor.value,
+            highlight: e.styleHighlightColor.value,
             box: e.styleBox.checked,
             boxColor: e.styleBoxColor.value
         };
@@ -193,6 +195,7 @@ export class UIManager {
         styleBoxColor.disabled = !s.box;
         styleOutlineColor.disabled = s.box;
         stylePreview.dataset.position = s.position;
+        this.elements.subtitlePreview.style.setProperty('--vsg-karaoke-highlight', s.highlight);
 
         const scale = (v) => `${(v / 2.88).toFixed(2)}cqh`;
         stylePreviewText.style.fontFamily = `'${s.font}', sans-serif`;

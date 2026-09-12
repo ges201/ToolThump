@@ -134,22 +134,27 @@ export class FFmpegManager {
             outputMime: 'video/mp4',
             downloadName: (baseName) => `${baseName}-subtitled.mp4`,
             completeMessage: 'Your video has been saved to your downloads.'
-        }, videoFile, buildAss(srtContent, style, width, height));
+        }, videoFile, buildAss(srtContent, style, width, height, this.ui.cues));
     }
 
-    async exportMkv(videoFile, srtContent) {
+    // The soft-sub track carries the same karaoke ASS as the render, so
+    // libass-based players highlight words too. Fonts are not embedded;
+    // players substitute missing ones.
+    async exportMkv(videoFile, srtContent, style = {}) {
+        const { width, height } = this.ui.getVideoSize();
         return this.runJob({
             title: 'Exporting MKV',
             initialMessage: 'Muxing video with subtitles (no re-encoding)...',
             activeMessage: 'Muxing streams...',
+            subtitleName: 'subtitles.ass',
             execArgs: (inputName) => [
                 '-y',
                 '-hide_banner',
                 '-i', inputName,
-                '-i', 'subtitles.srt',
+                '-i', 'subtitles.ass',
                 '-c:v', 'copy',
                 '-c:a', 'copy',
-                '-c:s', 'srt',
+                '-c:s', 'copy',
                 '-map', '0:v',
                 '-map', '0:a',
                 '-map', '1:s',
@@ -163,7 +168,7 @@ export class FFmpegManager {
             indeterminate: true,
             verifyOutput: true,
             completeMessage: 'Your MKV file has been saved.'
-        }, videoFile, srtContent);
+        }, videoFile, buildAss(srtContent, style, width, height, this.ui.cues));
     }
 
     threadCount() {

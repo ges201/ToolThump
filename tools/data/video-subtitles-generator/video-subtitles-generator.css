@@ -378,7 +378,7 @@
 }
 
 .vsg-preview-word.active {
-    color: var(--accent-color);
+    color: var(--vsg-karaoke-highlight, var(--accent-color));
     font-weight: 700;
 }
 

@@ -54,3 +54,27 @@ test('tolerates dot millisecond separators and skips malformed blocks', () => {
     assert.match(ass, /Dialogue: 0,0:00:01\.25,0:00:02\.75,Default,,0,0,0,,Dots/);
     assert.doesNotMatch(ass, /ignored/);
 });
+
+test('word-timed cues render per-word karaoke events with gap fillers', () => {
+    const cues = [{
+        start: 0,
+        end: 2,
+        text: 'Hello world',
+        words: [
+            { word: 'Hello', start: 0.1, end: 0.8 },
+            { word: 'world', start: 1.2, end: 2.0 }
+        ]
+    }];
+    const ass = buildAss('', { highlight: '#FFD700' }, 1280, 720, cues);
+    assert.ok(ass.includes('Dialogue: 0,0:00:00.00,0:00:00.10,Default,,0,0,0,,Hello world'), ass);
+    assert.ok(ass.includes('Dialogue: 0,0:00:00.10,0:00:00.80,Default,,0,0,0,,{\\1c&H0000D7FF&}Hello{\\1c&H00FFFFFF&} world'), ass);
+    assert.ok(ass.includes('Dialogue: 0,0:00:00.80,0:00:01.20,Default,,0,0,0,,Hello world'), ass);
+    assert.ok(ass.includes('Dialogue: 0,0:00:01.20,0:00:02.00,Default,,0,0,0,,Hello {\\1c&H0000D7FF&}world{\\1c&H00FFFFFF&}'), ass);
+});
+
+test('cues without word timings fall back to plain SRT events', () => {
+    const srt = '1\n00:00:00,000 --> 00:00:01,000\nPlain\n';
+    const ass = buildAss(srt, {}, 1280, 720, [{ start: 0, end: 1, text: 'Plain', words: [] }]);
+    assert.match(ass, /Dialogue: 0,0:00:00\.00,0:00:01\.00,Default,,0,0,0,,Plain/);
+    assert.doesNotMatch(ass, /\\1c/);
+});

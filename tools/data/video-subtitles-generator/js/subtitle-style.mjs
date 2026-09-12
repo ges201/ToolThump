@@ -74,9 +74,48 @@ const escapeAssText = (text) => text
     .replace(/[{}]/g, (c) => `\\${c}`)
     .replace(/\n/g, '\\N');
 
-export function buildAss(srt, style, width, height) {
-    const events = parseSrt(srt).map((cue) =>
-        `Dialogue: 0,${cue.start},${cue.end},Default,,0,0,0,,${escapeAssText(cue.text)}`);
+// Centiseconds (ASS time base) -> H:MM:SS.cc
+function assTime(cs) {
+    const c = Math.max(0, Math.round(cs));
+    const s = Math.floor(c / 100);
+    const m = Math.floor(s / 60);
+    const h = Math.floor(m / 60);
+    return `${h}:${String(m % 60).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}.${String(c % 100).padStart(2, '0')}`;
+}
+
+// One event per word window: the whole line is redrawn with only the word
+// being spoken recoloured, so the highlight clears on the next event. Plain
+// events cover the gaps between words, keeping the line on screen throughout.
+// ponytail: no \k tags — same visual in any ASS renderer, at the cost of a
+// redrawn event per word.
+function karaokeEvents(cue, style) {
+    const highlight = `{\\1c${hexToAss(style.highlight || '#FFD700')}&}`;
+    const base = `{\\1c${hexToAss(style.color || '#FFFFFF')}&}`;
+    const texts = cue.words.map((w) => escapeAssText(w.word));
+    const plain = texts.join(' ');
+    const cs = (t) => Math.round(t * 100);
+
+    const events = [];
+    let cursor = cs(cue.start);
+    cue.words.forEach((word, j) => {
+        const start = Math.max(cursor, cs(word.start));
+        const end = Math.max(start + 1, cs(word.end));
+        if (start > cursor) events.push([cursor, start, plain]);
+        events.push([start, end, texts.map((t, k) => (k === j ? highlight + t + base : t)).join(' ')]);
+        cursor = end;
+    });
+    const end = Math.max(cursor, cs(cue.end));
+    if (end > cursor) events.push([cursor, end, plain]);
+    return events;
+}
+
+export function buildAss(srt, style, width, height, cues) {
+    const canKaraoke = Array.isArray(cues) && cues.every((cue) => cue.words && cue.words.length);
+    const events = canKaraoke
+        ? cues.flatMap((cue) => karaokeEvents(cue, style))
+            .map(([start, end, text]) => `Dialogue: 0,${assTime(start)},${assTime(end)},Default,,0,0,0,,${text}`)
+        : parseSrt(srt).map((cue) =>
+            `Dialogue: 0,${cue.start},${cue.end},Default,,0,0,0,,${escapeAssText(cue.text)}`);
     return [
         '[Script Info]',
         'ScriptType: v4.00+',
