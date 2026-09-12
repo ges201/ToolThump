@@ -34,15 +34,86 @@ test('splits after sentence-ending punctuation', () => {
     assert.match(out, /1\n00:00:00,000 --> 00:00:00,500\nHi\.\n\n2\n00:00:00,500 --> 00:00:01,000\nnext\n/);
 });
 
-test('splits when the combined text exceeds 80 characters', () => {
-    const long = ' word'.repeat(16); // 80 chars
-    const tail = ' tail'; // combined 85 > 80
+test('splits when the combined text exceeds 64 characters', () => {
+    const long = ' word'.repeat(12); // 60 chars
+    const tail = ' tail'; // combined 65 > 64
     const chunks = [
         { timestamp: [0.0, 0.1], text: long },
         { timestamp: [0.1, 0.2], text: tail }
     ];
     const out = formatter.convertToSRT({ chunks });
     assert.equal((out.match(/-->/g) || []).length, 2);
+});
+
+test('splits recovered multi-word chunks into capped, word-timed cues', () => {
+    const text = ' ' + Array.from({ length: 20 }, (_, i) => `word${i}`).join(' ');
+    const { cues } = formatter.format({ chunks: [{ timestamp: [0.0, 20.0], text }] });
+    assert.ok(cues.length > 1, 'expected the long recovered segment to split');
+    for (const cue of cues) {
+        assert.ok(cue.text.length <= 64, `cue too long: "${cue.text}"`);
+        assert.ok(cue.words.every((w) => typeof w.start === 'number' && typeof w.end === 'number'));
+    }
+    // Even timings: word i spans [i, i+1) over the 20s segment.
+    assert.deepEqual(cues[0].words[0], { word: 'word0', start: 0.0, end: 1.0 });
+});
+
+test('splits when the punctuation is closed by a quote', () => {
+    for (const q of ['"', "'", '”', ')']) {
+        const out = formatter.convertToSRT({
+            chunks: [
+                { timestamp: [0.0, 0.5], text: ` Hi!${q}` },
+                { timestamp: [0.5, 1.0], text: ' next' }
+            ]
+        });
+        assert.equal((out.match(/-->/g) || []).length, 2, `expected a split after "${q}"`);
+    }
+});
+
+test('splits on ellipsis and CJK full stop', () => {
+    for (const end of ['…', '。', '？']) {
+        const out = formatter.convertToSRT({
+            chunks: [
+                { timestamp: [0.0, 0.5], text: ` Hello${end}` },
+                { timestamp: [0.5, 1.0], text: ' next' }
+            ]
+        });
+        assert.equal((out.match(/-->/g) || []).length, 2, `expected a split after "${end}"`);
+    }
+});
+
+test('does not split after abbreviations or initials', () => {
+    const out = formatter.convertToSRT({
+        chunks: [
+            { timestamp: [0.0, 0.5], text: ' Mr.' },
+            { timestamp: [0.5, 1.0], text: ' Smith' }
+        ]
+    });
+    assert.equal(out, '1\n00:00:00,000 --> 00:00:01,000\nMr. Smith\n');
+});
+
+test('breaks at a clause mark once the line is already long', () => {
+    const chunks = [];
+    let t = 0;
+    for (let i = 0; i < 6; i++) {
+        chunks.push({ timestamp: [t, t + 0.1], text: ' word' });
+        t += 0.1;
+    }
+    chunks.push({ timestamp: [t, t + 0.1], text: ' word,' }); // line now 42 chars, past CLAUSE_AT
+    t += 0.1;
+    chunks.push({ timestamp: [t, t + 0.1], text: ' next' }); // 47 combined, under the 64 cap
+    const out = formatter.convertToSRT({ chunks });
+    assert.equal((out.match(/-->/g) || []).length, 2);
+    assert.match(out, /word,\n\n2\n/);
+});
+
+test('keeps short clauses in the same cue', () => {
+    const out = formatter.convertToSRT({
+        chunks: [
+            { timestamp: [0.0, 0.5], text: ' hi,' },
+            { timestamp: [0.5, 1.0], text: ' there' }
+        ]
+    });
+    assert.equal((out.match(/-->/g) || []).length, 1);
 });
 
 test('formats timestamps with hours, minutes, seconds and milliseconds', () => {

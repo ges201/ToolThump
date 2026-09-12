@@ -8,6 +8,45 @@ export function fmtTime(totalSec) {
     return h ? `${h}:${String(m % 60).padStart(2, '0')}:${ss}` : `${m}:${ss}`;
 }
 
+const SENTENCE_END = /[.!?…。！？]$/;
+const CLOSERS = /["'”’»」』）)\]]+$/;
+// Dotted abbreviations that shouldn't end a cue on their own dot.
+const ABBREVIATIONS = /^(?:[a-z]|mr|mrs|ms|dr|prof|st|vs|etc|no|fig|jr|sr|e\.g|i\.e|a\.m|p\.m|u\.s)\.$/i;
+
+function isSentenceEnd(text) {
+    const bare = text.replace(CLOSERS, '');
+    if (!SENTENCE_END.test(bare)) return false;
+    if (!bare.endsWith('.')) return true;
+    return !ABBREVIATIONS.test(bare.split(/\s+/).pop());
+}
+
+// Whisper word chunks are single words, but recovery retries emit whole
+// segment phrases. Expand every chunk into word entries with even timings so
+// the grouping caps apply to recovered text and karaoke keeps per-word times.
+function flattenWords(chunks) {
+    const words = [];
+    for (const chunk of chunks) {
+        const start = chunk.timestamp[0];
+        // Sometimes the very last word lacks an end timestamp, fallback to +0.5s
+        const end = chunk.timestamp[1] !== null ? chunk.timestamp[1] : start + 0.5;
+        const tokens = chunk.text.trim().split(/\s+/).filter(Boolean);
+        if (tokens.length <= 1) {
+            words.push({ word: tokens[0] ?? '', text: chunk.text, start, end });
+            continue;
+        }
+        const lead = chunk.text.match(/^\s*/)[0];
+        tokens.forEach((token, i) => {
+            words.push({
+                word: token,
+                text: (i === 0 ? lead : ' ') + token,
+                start: start + (end - start) * i / tokens.length,
+                end: start + (end - start) * (i + 1) / tokens.length
+            });
+        });
+    }
+    return words;
+}
+
 export class SRTFormatter {
     // Group whisper word-chunks into subtitle cues. The cues keep each word
     // with its own timestamps so playback can highlight word by word.
@@ -18,55 +57,52 @@ export class SRTFormatter {
         let currentLine = { text: '', start: null, end: null, words: [] };
 
         // Subtitle grouping rules (Tweak these if you want shorter/longer captions)
-        const MAX_CHARS = 80;        // Max characters per subtitle block
+        const MAX_CHARS = 64;        // Max characters per subtitle block
         const MAX_DURATION = 4.0;    // Max seconds a subtitle stays on screen
         const MAX_PAUSE = 1.0;       // Start a new subtitle if there's a > 1 second pause
+        const CLAUSE_AT = MAX_CHARS * 0.6; // Break at a clause mark once the line is this long
 
-        for (const chunk of output.chunks) {
-            const chunkStart = chunk.timestamp[0];
-            // Sometimes the very last word lacks an end timestamp, fallback to +0.5s
-            const chunkEnd = chunk.timestamp[1] !== null ? chunk.timestamp[1] : chunkStart + 0.5;
-            const chunkText = chunk.text;
-            const word = { word: chunkText.trim(), start: chunkStart, end: chunkEnd };
-
+        for (const { word, text, start, end } of flattenWords(output.chunks)) {
             // Initialize the first word of a new line
             if (currentLine.start === null) {
-                currentLine.start = chunkStart;
-                currentLine.end = chunkEnd;
-                currentLine.text = chunkText;
-                currentLine.words = [word];
+                currentLine.start = start;
+                currentLine.end = end;
+                currentLine.text = text;
+                currentLine.words = [{ word, start, end }];
                 continue;
             }
 
-            const duration = chunkEnd - currentLine.start;
-            const pause = chunkStart - currentLine.end;
-            const futureLength = currentLine.text.length + chunkText.length;
+            const duration = end - currentLine.start;
+            const pause = start - currentLine.end;
+            const futureLength = currentLine.text.length + text.length;
 
-            // Look for end-of-sentence punctuation to naturally break the subtitle
-            const endsWithPunctuation = /[.!?]$/.test(currentLine.text.trim());
+            // Look for end-of-sentence punctuation or a clause mark to split at
+            const trimmed = currentLine.text.trim();
+            const clauseEnd = /[,;:—–]$/.test(trimmed);
 
             // Check if we should split and start a new subtitle block
             if (
                 duration > MAX_DURATION ||
                 futureLength > MAX_CHARS ||
                 pause > MAX_PAUSE ||
-                endsWithPunctuation
+                isSentenceEnd(trimmed) ||
+                (clauseEnd && futureLength > CLAUSE_AT)
             ) {
                 // Save current line
                 lines.push(currentLine);
 
                 // Start a new line
                 currentLine = {
-                    start: chunkStart,
-                    end: chunkEnd,
-                    text: chunkText.trimStart(), // Remove leading space on new line
-                    words: [word]
+                    start,
+                    end,
+                    text: text.trimStart(), // Remove leading space on new line
+                    words: [{ word, start, end }]
                 };
             } else {
                 // Append word to current line
-                currentLine.text += chunkText;
-                currentLine.end = chunkEnd;
-                currentLine.words.push(word);
+                currentLine.text += text;
+                currentLine.end = end;
+                currentLine.words.push({ word, start, end });
             }
         }
 
