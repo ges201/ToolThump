@@ -55,6 +55,7 @@ Thumbs.db
 *.sublime-project
 *.sublime-workspace
 *.mp4
+test-videos/
 
 # Editor-specific files
 .idea

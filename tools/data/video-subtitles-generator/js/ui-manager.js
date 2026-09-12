@@ -1,5 +1,5 @@
 import { SRTFormatter } from './srt-formatter.mjs';
-import { FONT_URLS, hexToRgb } from './subtitle-style.mjs';
+import { FONT_URLS, fitScale, hexToRgb } from './subtitle-style.mjs';
 
 const srtFormatter = new SRTFormatter();
 
@@ -53,8 +53,10 @@ export class UIManager {
             styleBox: document.getElementById('style-box'),
             styleBoxColor: document.getElementById('style-box-color')
         };
-        this.previewFonts = new Set();
+        this.previewFonts = new Map();
         this.previewUrl = null;
+        this.videoRatio = null;
+        this.measureCtx = null;
         this.generatedSrt = null;
         this.generatedCues = null;
         this.srtContent = null;
@@ -218,8 +220,19 @@ export class UIManager {
         stylePreviewHighlight.style.color = s.highlightWords ? s.highlight : 'inherit';
 
         const scale = (v) => `${(v / 2.88).toFixed(2)}cqh`;
+        // Same auto-fit as the export (sizes in PlayRes units at the 288-high
+        // basis): shrink until the widest word and the wrapped lines fit the
+        // frame, so no size setting can push the sample over the borders.
+        const ratio = this.videoRatio || 16 / 9;
+        const fit = fitScale(
+            stylePreviewText.textContent.trim().split(/\s+/),
+            s.size,
+            288 * ratio - 20 - 2 * s.outline,
+            288 - 20 - 2 * s.outline,
+            (text, fontPx) => this.measureStyleText(s, text, fontPx)
+        );
         stylePreviewText.style.fontFamily = `'${s.font}', sans-serif`;
-        stylePreviewText.style.fontSize = scale(s.size);
+        stylePreviewText.style.fontSize = scale(s.size * fit);
         stylePreviewText.style.color = s.color;
         stylePreviewText.style.fontWeight = s.bold ? '700' : '400';
         // Box mode has no glyph outline; Outline becomes box padding.
@@ -245,6 +258,10 @@ export class UIManager {
             if (!panelWidth) return;
 
             const ratio = video.videoWidth ? video.videoWidth / video.videoHeight : 16 / 9;
+            if (ratio !== this.videoRatio) {
+                this.videoRatio = ratio;
+                this.updateStylePreview();
+            }
             let width = Math.min(panelWidth, 420);
             let height = width / ratio;
             const maxHeight = 320;
@@ -273,18 +290,31 @@ export class UIManager {
     }
 
     // Browsers only fetch a webfont when it is actually used; load the chosen
-    // one so the sample box matches the burned-in result.
-    async ensurePreviewFont(name) {
-        if (name === 'Arial' || this.previewFonts.has(name)) return;
-        this.previewFonts.add(name);
-        try {
-            const face = new FontFace(name, `url(${FONT_URLS[name]})`);
-            await face.load();
-            document.fonts.add(face);
-            this.updateStylePreview();
-        } catch (e) {
-            console.warn(`Preview font ${name} failed to load:`, e);
+    // one so the sample and the export's text fitting see the real metrics.
+    // Returns the in-flight promise so callers can await the metrics.
+    ensurePreviewFont(name) {
+        if (name === 'Arial') return Promise.resolve();
+        if (!this.previewFonts.has(name)) {
+            this.previewFonts.set(name, (async () => {
+                try {
+                    const face = new FontFace(name, `url(${FONT_URLS[name]})`);
+                    await face.load();
+                    document.fonts.add(face);
+                    this.updateStylePreview();
+                } catch (e) {
+                    console.warn(`Preview font ${name} failed to load:`, e);
+                }
+            })());
         }
+        return this.previewFonts.get(name);
+    }
+
+    // Canvas text width in frame pixels for the style's font; the export's fit
+    // math uses the same metrics libass wraps with.
+    measureStyleText(style, text, fontPx) {
+        const ctx = this.measureCtx || (this.measureCtx = document.createElement('canvas').getContext('2d'));
+        ctx.font = `${style.bold ? 'bold ' : ''}${fontPx}px "${style.font || 'Arial'}"`;
+        return ctx.measureText(text).width;
     }
 
     showProgressArea() {

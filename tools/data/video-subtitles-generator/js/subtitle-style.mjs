@@ -74,6 +74,44 @@ const escapeAssText = (text) => text
     .replace(/[{}]/g, (c) => `\\${c}`)
     .replace(/\n/g, '\\N');
 
+// Largest font scale <= 1 that keeps a cue inside the frame. libass wraps at
+// spaces but clips a word wider than the frame, and a long cue wrapped at a
+// large size can run off the top. Widths are measured once at fontPx; every
+// candidate scale is arithmetic, so shrinking never needs a re-measure.
+// ponytail: line height is estimated, not measured — the spare line below
+// covers fonts that run taller.
+const LINE_HEIGHT = 1.25;
+
+export function fitScale(words, fontPx, maxWidth, maxHeight, measure) {
+    if (!words.length) return 1;
+    const widths = words.map((word) => measure(word, fontPx));
+    const space = measure(' ', fontPx) || fontPx * 0.3;
+    let scale = Math.min(1, maxWidth / Math.max(...widths));
+
+    // Wrap greedily at the candidate scale and settle on a size whose lines
+    // fit vertically too; one correction lands because line count only drops
+    // as the font shrinks (the loop is only a safety net).
+    for (let i = 0; i < 4; i++) {
+        let lines = 1;
+        let used = widths[0] * scale;
+        for (const width of widths.slice(1)) {
+            const word = width * scale;
+            if (used + space * scale + word > maxWidth) {
+                lines++;
+                used = word;
+            } else {
+                used += space * scale + word;
+            }
+        }
+        // One spare line: libass balances lines and may break one later than
+        // a greedy wrap does.
+        const needed = (lines > 1 ? lines + 1 : 1) * fontPx * scale * LINE_HEIGHT;
+        if (needed <= maxHeight) break;
+        scale *= maxHeight / needed;
+    }
+    return scale;
+}
+
 // Centiseconds (ASS time base) -> H:MM:SS.cc
 function assTime(cs) {
     const c = Math.max(0, Math.round(cs));
@@ -88,11 +126,11 @@ function assTime(cs) {
 // events cover the gaps between words, keeping the line on screen throughout.
 // ponytail: no \k tags — same visual in any ASS renderer, at the cost of a
 // redrawn event per word.
-function karaokeEvents(cue, style) {
+function karaokeEvents(cue, style, sizeTag = '') {
     const highlight = `{\\1c${hexToAss(style.highlight || '#FFD700')}&}`;
     const base = `{\\1c${hexToAss(style.color || '#FFFFFF')}&}`;
     const texts = cue.words.map((w) => escapeAssText(w.word));
-    const plain = texts.join(' ');
+    const plain = sizeTag + texts.join(' ');
     const cs = (t) => Math.round(t * 100);
 
     const events = [];
@@ -101,7 +139,7 @@ function karaokeEvents(cue, style) {
         const start = Math.max(cursor, cs(word.start));
         const end = Math.max(start + 1, cs(word.end));
         if (start > cursor) events.push([cursor, start, plain]);
-        events.push([start, end, texts.map((t, k) => (k === j ? highlight + t + base : t)).join(' ')]);
+        events.push([start, end, sizeTag + texts.map((t, k) => (k === j ? highlight + t + base : t)).join(' ')]);
         cursor = end;
     });
     const end = Math.max(cursor, cs(cue.end));
@@ -109,14 +147,29 @@ function karaokeEvents(cue, style) {
     return events;
 }
 
-export function buildAss(srt, style, width, height, cues) {
+// The optional measure(text, fontPx) -> width callback lets the browser cap
+// each cue's size so no line can cross the frame edges. Without it (tests,
+// callers that don't care) sizes are emitted exactly as authored.
+export function buildAss(srt, style, width, height, cues, measure) {
     const canKaraoke = style.highlightWords !== false
         && Array.isArray(cues) && cues.every((cue) => cue.words && cue.words.length);
+    const px = (v) => Math.round((v / REF_HEIGHT) * height);
+    const fontPx = px(style.size ?? 16);
+    // Outline sits outside the glyph box, so the text budget is the frame
+    // minus margins and outline.
+    const maxWidth = width - 2 * (px(10) + px(style.outline ?? 2));
+    const maxHeight = height - 2 * (px(10) + px(style.outline ?? 2));
+    // 0.98 covers canvas-vs-libass metric drift on the shrunk size.
+    const sizeTag = (words) => {
+        if (!measure || !words.length) return '';
+        const scale = fitScale(words, fontPx, maxWidth, maxHeight, measure);
+        return scale < 1 ? `{\\fs${Math.max(1, Math.floor(fontPx * scale * 0.98))}}` : '';
+    };
     const events = canKaraoke
-        ? cues.flatMap((cue) => karaokeEvents(cue, style))
+        ? cues.flatMap((cue) => karaokeEvents(cue, style, sizeTag(cue.words.map((w) => w.word))))
             .map(([start, end, text]) => `Dialogue: 0,${assTime(start)},${assTime(end)},Default,,0,0,0,,${text}`)
         : parseSrt(srt).map((cue) =>
-            `Dialogue: 0,${cue.start},${cue.end},Default,,0,0,0,,${escapeAssText(cue.text)}`);
+            `Dialogue: 0,${cue.start},${cue.end},Default,,0,0,0,,${sizeTag(cue.text.split(/\s+/))}${escapeAssText(cue.text)}`);
     return [
         '[Script Info]',
         'ScriptType: v4.00+',

@@ -79,6 +79,45 @@ test('cues without word timings fall back to plain SRT events', () => {
     assert.doesNotMatch(ass, /\\1c/);
 });
 
+test('oversized words are shrunk until they fit inside the frame', () => {
+    // Stub metrics: every glyph 30 units wide, a space 10, at any font size.
+    const measure = (text) => (text === ' ' ? 10 : text.length * 30);
+    const word = 'x'.repeat(50); // 1500 units, frame budget is 976
+    const ass = buildAss(`1\n00:00:00,000 --> 00:00:01,000\n${word}\n`, {}, 1000, 288, null, measure);
+    // 976 / 1500 * 16 * 0.98 = 10.2 -> 10.
+    assert.ok(ass.includes(`,,{\\fs10}${word}`), ass);
+});
+
+test('long wrapped cues are shrunk until their lines fit vertically', () => {
+    const measure = (text) => (text === ' ' ? 10 : text.length * 30);
+    const words = Array(100).fill('aaaa').join(' '); // 1 line would fit, wrap does not
+    const ass = buildAss(`1\n00:00:00,000 --> 00:00:01,000\n${words}\n`, {}, 1000, 288, null, measure);
+    assert.ok(ass.includes('{\\fs12}'), ass);
+});
+
+test('every karaoke event for an oversized cue carries the fit override', () => {
+    const measure = (text) => (text === ' ' ? 10 : text.length * 30);
+    const cue = {
+        start: 0,
+        end: 2,
+        text: '',
+        words: [
+            { word: 'x'.repeat(50), start: 0.1, end: 0.8 },
+            { word: 'y', start: 1.2, end: 2.0 }
+        ]
+    };
+    const ass = buildAss('', {}, 1000, 288, [cue], measure);
+    const dialogues = ass.split('\n').filter((line) => line.startsWith('Dialogue'));
+    assert.equal(dialogues.length, 4);
+    for (const line of dialogues) assert.ok(line.includes('{\\fs10}'), line);
+});
+
+test('text that fits gets no size override', () => {
+    const measure = (text) => (text === ' ' ? 10 : text.length * 30);
+    const ass = buildAss('1\n00:00:00,000 --> 00:00:01,000\nHello world\n', {}, 1000, 288, null, measure);
+    assert.doesNotMatch(ass, /\\fs/);
+});
+
 test('highlightWords off renders plain events even with word timings', () => {
     const srt = '1\n00:00:00,000 --> 00:00:02,000\nHello world\n';
     const cues = [{

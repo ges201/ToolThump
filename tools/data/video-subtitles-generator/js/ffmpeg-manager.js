@@ -111,6 +111,8 @@ export class FFmpegManager {
 
         this.ui.updateProgressStatus('Loading subtitle font...');
         await this.ensureFont(style.font || 'Arial');
+        // Fitting measures with the in-document font, so wait for its metrics.
+        await this.ui.ensurePreviewFont(style.font || 'Arial');
 
         const { width, height } = this.ui.getVideoSize();
 
@@ -134,7 +136,12 @@ export class FFmpegManager {
             outputMime: 'video/mp4',
             downloadName: (baseName) => `${baseName}-subtitled.mp4`,
             completeMessage: 'Your video has been saved to your downloads.'
-        }, videoFile, buildAss(srtContent, style, width, height, this.ui.cues));
+        }, videoFile, buildAss(srtContent, style, width, height, this.ui.cues, this.measure(style)));
+    }
+
+    // Per-cue fitting: cap sizes so no line can cross the frame borders.
+    measure(style) {
+        return (text, fontPx) => this.ui.measureStyleText(style, text, fontPx);
     }
 
     // The soft-sub track carries the same karaoke ASS as the render, so
@@ -142,6 +149,7 @@ export class FFmpegManager {
     // players substitute missing ones.
     async exportMkv(videoFile, srtContent, style = {}) {
         const { width, height } = this.ui.getVideoSize();
+        await this.ui.ensurePreviewFont(style.font || 'Arial');
         return this.runJob({
             title: 'Exporting MKV',
             initialMessage: 'Muxing video with subtitles (no re-encoding)...',
@@ -168,7 +176,7 @@ export class FFmpegManager {
             indeterminate: true,
             verifyOutput: true,
             completeMessage: 'Your MKV file has been saved.'
-        }, videoFile, buildAss(srtContent, style, width, height, this.ui.cues));
+        }, videoFile, buildAss(srtContent, style, width, height, this.ui.cues, this.measure(style)));
     }
 
     threadCount() {
