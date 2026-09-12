@@ -373,6 +373,57 @@
                             <button id="vsg-save-edit-btn" class="btn-secondary">Save Changes</button>
                             <button id="vsg-cancel-edit-btn" class="btn-secondary">Cancel</button>
                         </div>
+                        <div class="vsg-style-panel" id="subtitle-style-panel">
+                            <div class="vsg-style-header">
+                                <h3>Subtitle Style</h3>
+                                <span class="vsg-style-note">Applies to Render Video</span>
+                            </div>
+                            <div class="vsg-style-preview" id="style-preview" data-position="bottom" aria-hidden="true">
+                                <span class="vsg-style-preview-text" id="style-preview-text">Sample subtitle</span>
+                            </div>
+                            <div class="vsg-style-grid">
+                                <div class="vsg-option-group">
+                                    <label for="style-font">Font</label>
+                                    <select id="style-font">
+                                        <option value="Arial" selected>Arial</option>
+                                        <option value="Lato">Lato</option>
+                                        <option value="Montserrat">Montserrat</option>
+                                        <option value="Bangers">Bangers</option>
+                                    </select>
+                                </div>
+                                <div class="vsg-option-group">
+                                    <label for="style-position">Position</label>
+                                    <select id="style-position">
+                                        <option value="bottom" selected>Bottom</option>
+                                        <option value="middle">Middle</option>
+                                        <option value="top">Top</option>
+                                    </select>
+                                </div>
+                                <div class="vsg-option-group">
+                                    <label for="style-size">Font Size (<span id="style-size-value">16</span>)</label>
+                                    <input type="range" id="style-size" min="10" max="48" value="16">
+                                </div>
+                                <div class="vsg-option-group">
+                                    <label for="style-outline">Outline (<span id="style-outline-value">2</span>)</label>
+                                    <input type="range" id="style-outline" min="0" max="6" value="2">
+                                </div>
+                                <div class="vsg-option-group vsg-option-inline">
+                                    <label for="style-color">Text Color</label>
+                                    <input type="color" id="style-color" value="#FFFFFF">
+                                </div>
+                                <div class="vsg-option-group vsg-option-inline">
+                                    <label for="style-outline-color">Outline Color</label>
+                                    <input type="color" id="style-outline-color" value="#000000">
+                                </div>
+                                <div class="vsg-option-group vsg-option-inline">
+                                    <label for="style-bold"><input type="checkbox" id="style-bold"> Bold</label>
+                                </div>
+                                <div class="vsg-option-group vsg-option-inline">
+                                    <label for="style-box"><input type="checkbox" id="style-box"> Background Box</label>
+                                    <input type="color" id="style-box-color" value="#000000" aria-label="Box color" disabled>
+                                </div>
+                            </div>
+                        </div>
                         <div class="vsg-download-section">
                             <button id="vsg-download-btn" class="btn-secondary">Download SRT File</button>
                             <button id="vsg-mkv-export-btn" class="btn-secondary">Export Video (.mkv)</button>

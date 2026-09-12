@@ -382,6 +382,110 @@
     font-weight: 700;
 }
 
+/* Subtitle Style (applies to the burned-in render) */
+.vsg-style-panel {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.vsg-style-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.vsg-style-header h3 {
+    margin: 0;
+}
+
+.vsg-style-note {
+    font-size: 0.85rem;
+    color: var(--text-secondary-color);
+}
+
+/* Sample box: cqh units keep the text at the same scale libass uses
+   (PlayResY=288, so font size / 2.88 cqh); container query units on
+   descendants only, hence the % padding here. */
+.vsg-style-preview {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    aspect-ratio: 16 / 9;
+    max-width: 420px;
+    margin: 0 auto var(--spacing-md);
+    padding: 3%;
+    box-sizing: border-box;
+    background: #111;
+    border-radius: var(--border-radius-sm);
+    container-type: size;
+    overflow: hidden;
+}
+
+.vsg-style-preview[data-position="middle"] {
+    align-items: center;
+}
+
+.vsg-style-preview[data-position="top"] {
+    align-items: flex-start;
+}
+
+.vsg-style-preview-text {
+    font-family: Arial, sans-serif;
+    font-size: 5.56cqh;
+    line-height: 1.25;
+    text-align: center;
+    white-space: nowrap;
+    paint-order: stroke fill;
+}
+
+.vsg-style-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-sm) var(--spacing-lg);
+}
+
+.vsg-style-grid .vsg-option-group {
+    margin-bottom: 0;
+}
+
+.vsg-option-inline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+}
+
+.vsg-option-inline label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-bottom: 0;
+}
+
+.vsg-style-grid input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent-color);
+}
+
+.vsg-style-grid input[type="color"] {
+    width: 48px;
+    height: 32px;
+    padding: 0 2px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--surface-bg-color);
+    cursor: pointer;
+}
+
+.vsg-style-grid input[type="color"]:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
 .vsg-download-section {
     display: flex;
     gap: var(--spacing-md);
@@ -427,7 +531,7 @@
         max-height: min(50vh, 500px);
     }
     
-    .vsg-download-section {
+.vsg-download-section {
         flex-direction: column;
         align-items: center;
     }

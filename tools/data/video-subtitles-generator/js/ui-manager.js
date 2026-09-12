@@ -1,4 +1,5 @@
 import { SRTFormatter } from './srt-formatter.mjs';
+import { FONT_URLS, hexToRgb } from './subtitle-style.mjs';
 
 const srtFormatter = new SRTFormatter();
 
@@ -30,8 +31,23 @@ export class UIManager {
             editActions: document.getElementById('subtitle-edit-actions'),
             downloadBtn: document.getElementById('vsg-download-btn'),
             mkvExportBtn: document.getElementById('vsg-mkv-export-btn'),
-            renderBtn: document.getElementById('vsg-render-btn')
+            renderBtn: document.getElementById('vsg-render-btn'),
+            stylePanel: document.getElementById('subtitle-style-panel'),
+            stylePreview: document.getElementById('style-preview'),
+            stylePreviewText: document.getElementById('style-preview-text'),
+            styleFont: document.getElementById('style-font'),
+            styleSize: document.getElementById('style-size'),
+            styleSizeValue: document.getElementById('style-size-value'),
+            styleColor: document.getElementById('style-color'),
+            styleBold: document.getElementById('style-bold'),
+            stylePosition: document.getElementById('style-position'),
+            styleOutline: document.getElementById('style-outline'),
+            styleOutlineValue: document.getElementById('style-outline-value'),
+            styleOutlineColor: document.getElementById('style-outline-color'),
+            styleBox: document.getElementById('style-box'),
+            styleBoxColor: document.getElementById('style-box-color')
         };
+        this.previewFonts = new Set();
         this.previewUrl = null;
         this.generatedSrt = null;
         this.generatedCues = null;
@@ -47,6 +63,10 @@ export class UIManager {
         video.addEventListener('play', () => this.startCaptionSync());
         video.addEventListener('pause', () => this.stopCaptionSync());
         video.addEventListener('seeked', () => this.syncCaptions());
+
+        // One delegated listener covers all style controls.
+        this.elements.stylePanel.addEventListener('input', () => this.updateStylePreview());
+        this.updateStylePreview();
     }
 
     addEventListeners(handlers) {
@@ -134,6 +154,61 @@ export class UIManager {
 
     setGenerateButtonDisabled(disabled) {
         this.elements.generateBtn.disabled = disabled;
+    }
+
+    getSubtitleStyle() {
+        const e = this.elements;
+        return {
+            font: e.styleFont.value,
+            size: Number(e.styleSize.value),
+            color: e.styleColor.value,
+            bold: e.styleBold.checked,
+            position: e.stylePosition.value,
+            outline: Number(e.styleOutline.value),
+            outlineColor: e.styleOutlineColor.value,
+            box: e.styleBox.checked,
+            boxColor: e.styleBoxColor.value
+        };
+    }
+
+    // Paint the 16:9 sample with the same knobs libass uses. ASS sizes are in
+    // script units relative to PlayResY=288, hence /2.88 to get cqh (1% of the
+    // preview box height).
+    updateStylePreview() {
+        const s = this.getSubtitleStyle();
+        const { stylePreview, stylePreviewText, styleSizeValue, styleOutlineValue, styleBoxColor, styleOutlineColor } = this.elements;
+        styleSizeValue.textContent = s.size;
+        styleOutlineValue.textContent = s.outline;
+        styleBoxColor.disabled = !s.box;
+        styleOutlineColor.disabled = s.box;
+        stylePreview.dataset.position = s.position;
+
+        const scale = (v) => `${(v / 2.88).toFixed(2)}cqh`;
+        stylePreviewText.style.fontFamily = `'${s.font}', sans-serif`;
+        stylePreviewText.style.fontSize = scale(s.size);
+        stylePreviewText.style.color = s.color;
+        stylePreviewText.style.fontWeight = s.bold ? '700' : '400';
+        // Box mode has no glyph outline; Outline becomes box padding.
+        stylePreviewText.style.webkitTextStroke = !s.box && s.outline > 0 ? `${scale(s.outline)} ${s.outlineColor}` : '';
+        stylePreviewText.style.background = s.box ? `rgba(${hexToRgb(s.boxColor).join(', ')}, 0.5)` : 'transparent';
+        stylePreviewText.style.padding = s.box ? `${scale(s.outline)} ${scale(s.outline * 2)}` : '0';
+
+        this.ensurePreviewFont(s.font);
+    }
+
+    // Browsers only fetch a webfont when it is actually used; load the chosen
+    // one so the sample box matches the burned-in result.
+    async ensurePreviewFont(name) {
+        if (name === 'Arial' || this.previewFonts.has(name)) return;
+        this.previewFonts.add(name);
+        try {
+            const face = new FontFace(name, `url(${FONT_URLS[name]})`);
+            await face.load();
+            document.fonts.add(face);
+            this.updateStylePreview();
+        } catch (e) {
+            console.warn(`Preview font ${name} failed to load:`, e);
+        }
     }
 
     showProgressArea() {

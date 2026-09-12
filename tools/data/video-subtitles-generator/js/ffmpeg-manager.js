@@ -1,4 +1,5 @@
 import { fetchFile, toBlobURL } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.2/dist/esm/index.js';
+import { buildForceStyle, FONT_URLS } from './subtitle-style.mjs';
 
 let FFmpegClass = null;
 
@@ -7,6 +8,7 @@ export class FFmpegManager {
         this.ui = uiManager;
         this.ffmpeg = null;
         this.loaded = false;
+        this.loadedFonts = new Set();
     }
 
     async load() {
@@ -75,13 +77,7 @@ export class FFmpegManager {
             await this.ffmpeg.load(loadConfig);
 
             this.ui.updateProgressStatus('Setting up fonts...');
-            try {
-                const fontURL = 'https://cdn.jsdelivr.net/gh/ffmpegwasm/testdata@master/arial.ttf';
-                const fontData = await fetchFile(fontURL);
-                await this.ffmpeg.writeFile('/tmp/Arial.ttf', fontData);
-            } catch (e) {
-                console.warn('Font load failed:', e);
-            }
+            await this.ensureFont('Arial');
 
             this.loaded = true;
             console.timeEnd('ffmpeg-engine-load');
@@ -94,7 +90,28 @@ export class FFmpegManager {
         }
     }
 
-    async renderWithSubtitles(videoFile, srtContent) {
+    // Fetches a subtitle font on first use and drops it in fontsdir. A missing
+    // font is not fatal: libass falls back to whatever is available.
+    async ensureFont(name) {
+        if (this.loadedFonts.has(name)) return;
+        this.loadedFonts.add(name);
+        try {
+            const fontData = await fetchFile(FONT_URLS[name]);
+            await this.ffmpeg.writeFile(`/tmp/${name}.ttf`, fontData);
+        } catch (e) {
+            console.warn(`Font ${name} load failed, falling back to Arial:`, e);
+        }
+    }
+
+    async renderWithSubtitles(videoFile, srtContent, style = {}) {
+        const loaded = await this.load();
+        if (!loaded) {
+            return { success: false };
+        }
+
+        this.ui.updateProgressStatus('Loading subtitle font...');
+        await this.ensureFont(style.font || 'Arial');
+
         return this.runJob({
             title: 'Preparing Video',
             initialMessage: 'Initializing the processing engine...',
@@ -102,7 +119,9 @@ export class FFmpegManager {
             execArgs: (inputName) => [
                 '-y',
                 '-i', inputName,
-                '-vf', 'subtitles=subtitles.srt:fontsdir=/tmp:force_style=Fontname=Arial',
+                // Commas inside force_style must be escaped or the filtergraph
+                // parser treats them as filter separators.
+                '-vf', `subtitles=subtitles.srt:fontsdir=/tmp:force_style=${buildForceStyle(style).replaceAll(',', '\\,')}`,
                 '-c:v', 'libx264',
                 '-preset', 'ultrafast',
                 '-threads', String(this.threadCount()),

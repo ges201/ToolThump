@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (state.isProcessing) return;
             state.isProcessing = true;
 
-            const result = await ffmpegManager.renderWithSubtitles(state.videoFile, state.srtContent);
+            const result = await ffmpegManager.renderWithSubtitles(state.videoFile, state.srtContent, ui.getSubtitleStyle());
 
             state.isProcessing = false;
             ui.setProgressBarIndeterminate(false);
