@@ -110,7 +110,8 @@ function karaokeEvents(cue, style) {
 }
 
 export function buildAss(srt, style, width, height, cues) {
-    const canKaraoke = Array.isArray(cues) && cues.every((cue) => cue.words && cue.words.length);
+    const canKaraoke = style.highlightWords !== false
+        && Array.isArray(cues) && cues.every((cue) => cue.words && cue.words.length);
     const events = canKaraoke
         ? cues.flatMap((cue) => karaokeEvents(cue, style))
             .map(([start, end, text]) => `Dialogue: 0,${assTime(start)},${assTime(end)},Default,,0,0,0,,${text}`)

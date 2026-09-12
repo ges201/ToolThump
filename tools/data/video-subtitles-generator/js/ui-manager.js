@@ -36,7 +36,9 @@ export class UIManager {
             renderBtn: document.getElementById('vsg-render-btn'),
             stylePanel: document.getElementById('subtitle-style-panel'),
             stylePreview: document.getElementById('style-preview'),
+            stylePreviewCanvas: document.getElementById('style-preview-canvas'),
             stylePreviewText: document.getElementById('style-preview-text'),
+            stylePreviewHighlight: document.getElementById('style-preview-highlight'),
             styleFont: document.getElementById('style-font'),
             styleSize: document.getElementById('style-size'),
             styleSizeValue: document.getElementById('style-size-value'),
@@ -47,6 +49,7 @@ export class UIManager {
             styleOutlineValue: document.getElementById('style-outline-value'),
             styleOutlineColor: document.getElementById('style-outline-color'),
             styleHighlightColor: document.getElementById('style-highlight-color'),
+            styleHighlightWords: document.getElementById('style-highlight-words'),
             styleBox: document.getElementById('style-box'),
             styleBoxColor: document.getElementById('style-box-color')
         };
@@ -59,13 +62,25 @@ export class UIManager {
         this.cueEls = [];
         this.activeCueIndex = -1;
         this.rafId = 0;
+        this.stylePreviewRaf = 0;
 
         // Word-highlight sync: a rAF loop while playing keeps words in step
         // (timeupdate alone fires too rarely for word-length cues).
         const video = this.elements.videoPreview;
         video.addEventListener('play', () => this.startCaptionSync());
         video.addEventListener('pause', () => this.stopCaptionSync());
-        video.addEventListener('seeked', () => this.syncCaptions());
+        video.addEventListener('seeked', () => {
+            this.syncCaptions();
+            this.drawStylePreviewFrame();
+        });
+        video.addEventListener('loadeddata', () => this.drawStylePreviewFrame());
+        video.addEventListener('timeupdate', () => this.drawStylePreviewFrame());
+        // Chromium hands drawImage no frame until the video has seeked at least
+        // once; a hair past zero is imperceptible and warms the decoder.
+        video.addEventListener('loadedmetadata', () => {
+            if (video.currentTime === 0) video.currentTime = 0.001;
+        });
+        window.addEventListener('resize', () => this.drawStylePreviewFrame());
 
         // One delegated listener covers all style controls.
         this.elements.stylePanel.addEventListener('input', () => this.updateStylePreview());
@@ -171,6 +186,7 @@ export class UIManager {
             outline: Number(e.styleOutline.value),
             outlineColor: e.styleOutlineColor.value,
             highlight: e.styleHighlightColor.value,
+            highlightWords: e.styleHighlightWords.checked,
             box: e.styleBox.checked,
             boxColor: e.styleBoxColor.value
         };
@@ -190,13 +206,16 @@ export class UIManager {
     // preview box height).
     updateStylePreview() {
         const s = this.getSubtitleStyle();
-        const { stylePreview, stylePreviewText, styleSizeValue, styleOutlineValue, styleBoxColor, styleOutlineColor } = this.elements;
+        const { stylePreview, stylePreviewText, stylePreviewHighlight, styleHighlightColor, styleSizeValue, styleOutlineValue, styleBoxColor, styleOutlineColor } = this.elements;
         styleSizeValue.textContent = s.size;
         styleOutlineValue.textContent = s.outline;
         styleBoxColor.disabled = !s.box;
         styleOutlineColor.disabled = s.box;
+        styleHighlightColor.disabled = !s.highlightWords;
         stylePreview.dataset.position = s.position;
-        this.elements.subtitlePreview.style.setProperty('--vsg-karaoke-highlight', s.highlight);
+        // Playback preview: falls back to the text colour when highlighting is off.
+        this.elements.subtitlePreview.style.setProperty('--vsg-karaoke-highlight', s.highlightWords ? s.highlight : s.color);
+        stylePreviewHighlight.style.color = s.highlightWords ? s.highlight : 'inherit';
 
         const scale = (v) => `${(v / 2.88).toFixed(2)}cqh`;
         stylePreviewText.style.fontFamily = `'${s.font}', sans-serif`;
@@ -209,6 +228,48 @@ export class UIManager {
         stylePreviewText.style.padding = s.box ? `${scale(s.outline)} ${scale(s.outline * 2)}` : '0';
 
         this.ensurePreviewFont(s.font);
+    }
+
+    // Paint the current video frame behind the sample text so style choices
+    // are judged against the real video. Both the box (video ratio) and the
+    // text inset (ASS MarginV, 10/288 of the frame height) come from the
+    // video, so the cqh-scaled text lands where libass puts it.
+    // Deferred one frame: a just-shown canvas paints blank until the next frame.
+    drawStylePreviewFrame() {
+        cancelAnimationFrame(this.stylePreviewRaf);
+        this.stylePreviewRaf = requestAnimationFrame(() => {
+            const { videoPreview: video, stylePreview, stylePreviewCanvas: canvas } = this.elements;
+            const panel = stylePreview.parentElement;
+            const panelStyle = getComputedStyle(panel);
+            const panelWidth = panel.clientWidth - parseFloat(panelStyle.paddingLeft) - parseFloat(panelStyle.paddingRight);
+            if (!panelWidth) return;
+
+            const ratio = video.videoWidth ? video.videoWidth / video.videoHeight : 16 / 9;
+            let width = Math.min(panelWidth, 420);
+            let height = width / ratio;
+            const maxHeight = 320;
+            if (height > maxHeight) {
+                height = maxHeight;
+                width = height * ratio;
+            }
+            stylePreview.style.width = `${Math.round(width)}px`;
+            stylePreview.style.height = `${Math.round(height)}px`;
+            stylePreview.style.setProperty('--vsg-safe', `${((height * 10) / 288).toFixed(1)}px`);
+
+            const dpr = window.devicePixelRatio || 1;
+            const canvasWidth = Math.max(1, Math.round(stylePreview.clientWidth * dpr));
+            const canvasHeight = Math.max(1, Math.round(stylePreview.clientHeight * dpr));
+            if (canvas.width !== canvasWidth) canvas.width = canvasWidth;
+            if (canvas.height !== canvasHeight) canvas.height = canvasHeight;
+            const ctx = canvas.getContext('2d');
+            if (!video.videoWidth || video.readyState < 2) {
+                // No frame yet (still loading, or audio-only): gray fallback.
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+            // Box ratio is the video ratio, so the frame fills it uncropped.
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        });
     }
 
     // Browsers only fetch a webfont when it is actually used; load the chosen
@@ -239,6 +300,7 @@ export class UIManager {
         this.elements.progressArea.style.display = 'none';
         this.elements.resultsArea.style.display = 'block';
         this.elements.exportArea.style.display = 'block';
+        this.drawStylePreviewFrame();
     }
 
     showResults(srtContent, cues) {
@@ -253,6 +315,7 @@ export class UIManager {
         this.elements.progressArea.style.display = 'none';
         this.elements.resultsArea.style.display = 'block';
         this.elements.exportArea.style.display = 'block';
+        this.drawStylePreviewFrame();
         this.elements.generateBtn.disabled = false;
         this.elements.progressSpinner.style.display = 'none';
         this.elements.progressBar.classList.remove('active');

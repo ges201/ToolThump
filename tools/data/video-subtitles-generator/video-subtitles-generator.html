@@ -384,7 +384,10 @@
                                 <span class="vsg-style-note">Applies to exported videos</span>
                             </div>
                             <div class="vsg-style-preview" id="style-preview" data-position="bottom" aria-hidden="true">
-                                <span class="vsg-style-preview-text" id="style-preview-text">Sample subtitle</span>
+                                <canvas class="vsg-style-preview-canvas" id="style-preview-canvas"></canvas>
+                                <div class="vsg-style-preview-safe">
+                                    <span class="vsg-style-preview-text" id="style-preview-text">Sample <span class="vsg-style-preview-highlight" id="style-preview-highlight">subtitle</span></span>
+                                </div>
                             </div>
                             <div class="vsg-style-grid">
                                 <div class="vsg-option-group">
@@ -423,6 +426,9 @@
                                 <div class="vsg-option-group vsg-option-inline">
                                     <label for="style-highlight-color">Highlight Color</label>
                                     <input type="color" id="style-highlight-color" value="#FFD700">
+                                </div>
+                                <div class="vsg-option-group vsg-option-inline">
+                                    <label for="style-highlight-words"><input type="checkbox" id="style-highlight-words" checked> Highlight Words</label>
                                 </div>
                                 <div class="vsg-option-group vsg-option-inline">
                                     <label for="style-bold"><input type="checkbox" id="style-bold"> Bold</label>

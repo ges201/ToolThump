@@ -78,3 +78,19 @@ test('cues without word timings fall back to plain SRT events', () => {
     assert.match(ass, /Dialogue: 0,0:00:00\.00,0:00:01\.00,Default,,0,0,0,,Plain/);
     assert.doesNotMatch(ass, /\\1c/);
 });
+
+test('highlightWords off renders plain events even with word timings', () => {
+    const srt = '1\n00:00:00,000 --> 00:00:02,000\nHello world\n';
+    const cues = [{
+        start: 0,
+        end: 2,
+        text: 'Hello world',
+        words: [
+            { word: 'Hello', start: 0.1, end: 0.8 },
+            { word: 'world', start: 1.2, end: 2.0 }
+        ]
+    }];
+    const ass = buildAss(srt, { highlightWords: false }, 1280, 720, cues);
+    assert.match(ass, /Dialogue: 0,0:00:00\.00,0:00:02\.00,Default,,0,0,0,,Hello world/);
+    assert.doesNotMatch(ass, /\\1c/);
+});

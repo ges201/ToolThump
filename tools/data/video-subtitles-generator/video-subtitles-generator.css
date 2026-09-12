@@ -407,17 +407,12 @@
     color: var(--text-secondary-color);
 }
 
-/* Sample box: cqh units keep the text at the same scale libass uses
-   (PlayResY=288, so font size / 2.88 cqh); container query units on
-   descendants only, hence the % padding here. */
+/* Sample box: JS sizes it to the video's frame ratio (and the ASS margin), so
+   the drawn frame and the cqh-scaled text match the burned-in result on any
+   aspect ratio. */
 .vsg-style-preview {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    aspect-ratio: 16 / 9;
-    max-width: 420px;
+    position: relative;
     margin: 0 auto var(--spacing-md);
-    padding: 3%;
     box-sizing: border-box;
     background: #111;
     border-radius: var(--border-radius-sm);
@@ -425,11 +420,30 @@
     overflow: hidden;
 }
 
-.vsg-style-preview[data-position="middle"] {
+/* Real video frame painted behind the sample text; #111 above shows until
+   the first frame is drawn and when no video is loaded. */
+.vsg-style-preview-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ASS MarginV (10/288 of the frame height) as an inset on the positioned
+   layer, not the container, so cqh still measures the full frame height. */
+.vsg-style-preview-safe {
+    position: absolute;
+    inset: var(--vsg-safe, 3%);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.vsg-style-preview[data-position="middle"] .vsg-style-preview-safe {
     align-items: center;
 }
 
-.vsg-style-preview[data-position="top"] {
+.vsg-style-preview[data-position="top"] .vsg-style-preview-safe {
     align-items: flex-start;
 }
 
@@ -438,7 +452,6 @@
     font-size: 5.56cqh;
     line-height: 1.25;
     text-align: center;
-    white-space: nowrap;
     paint-order: stroke fill;
 }
 
