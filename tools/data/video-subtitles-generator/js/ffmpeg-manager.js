@@ -1,5 +1,5 @@
 import { fetchFile, toBlobURL } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.2/dist/esm/index.js';
-import { buildForceStyle, FONT_URLS } from './subtitle-style.mjs';
+import { buildAss, FONT_URLS } from './subtitle-style.mjs';
 
 let FFmpegClass = null;
 
@@ -112,16 +112,17 @@ export class FFmpegManager {
         this.ui.updateProgressStatus('Loading subtitle font...');
         await this.ensureFont(style.font || 'Arial');
 
+        const { width, height } = this.ui.getVideoSize();
+
         return this.runJob({
             title: 'Preparing Video',
             initialMessage: 'Initializing the processing engine...',
             activeMessage: 'Your video is being processed locally. Keep this tab open.',
+            subtitleName: 'subtitles.ass',
             execArgs: (inputName) => [
                 '-y',
                 '-i', inputName,
-                // Commas inside force_style must be escaped or the filtergraph
-                // parser treats them as filter separators.
-                '-vf', `subtitles=subtitles.srt:fontsdir=/tmp:force_style=${buildForceStyle(style).replaceAll(',', '\\,')}`,
+                '-vf', 'subtitles=subtitles.ass:fontsdir=/tmp',
                 '-c:v', 'libx264',
                 '-preset', 'ultrafast',
                 '-threads', String(this.threadCount()),
@@ -133,7 +134,7 @@ export class FFmpegManager {
             outputMime: 'video/mp4',
             downloadName: (baseName) => `${baseName}-subtitled.mp4`,
             completeMessage: 'Your video has been saved to your downloads.'
-        }, videoFile, srtContent);
+        }, videoFile, buildAss(srtContent, style, width, height));
     }
 
     async exportMkv(videoFile, srtContent) {
@@ -169,7 +170,7 @@ export class FFmpegManager {
         return Math.max(2, Math.min(4, navigator.hardwareConcurrency || 2));
     }
 
-    async runJob({ title, initialMessage, activeMessage, execArgs, outputName, outputMime, downloadName, indeterminate = false, verifyOutput = false, completeMessage }, videoFile, srtContent) {
+    async runJob({ title, initialMessage, activeMessage, execArgs, outputName, outputMime, downloadName, subtitleName = 'subtitles.srt', indeterminate = false, verifyOutput = false, completeMessage }, videoFile, subtitleContent) {
         this.ui.showProgressArea();
         this.ui.setProgressTitle(title);
         this.ui.setProgressMessage(initialMessage);
@@ -192,7 +193,7 @@ export class FFmpegManager {
             await this.ffmpeg.writeFile(inputName, await fetchFile(videoFile));
 
             this.ui.updateProgressStatus('Transferring subtitle data...');
-            await this.ffmpeg.writeFile('subtitles.srt', srtContent);
+            await this.ffmpeg.writeFile(subtitleName, subtitleContent);
 
             this.ui.updateProgressStatus('Starting processing...');
             this.ui.setProgressBarWidth('10%');
@@ -213,7 +214,7 @@ export class FFmpegManager {
             const data = await this.ffmpeg.readFile(outputName);
 
             await this.ffmpeg.deleteFile(inputName);
-            await this.ffmpeg.deleteFile('subtitles.srt');
+            await this.ffmpeg.deleteFile(subtitleName);
             await this.ffmpeg.deleteFile(outputName);
 
             const blob = new Blob([data], { type: outputMime });

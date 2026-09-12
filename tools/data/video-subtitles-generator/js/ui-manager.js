@@ -171,6 +171,15 @@ export class UIManager {
         };
     }
 
+    // Render sizes depend on the real frame; the preview is loaded before rendering.
+    getVideoSize() {
+        const { videoPreview } = this.elements;
+        return {
+            width: videoPreview.videoWidth || 1280,
+            height: videoPreview.videoHeight || 720
+        };
+    }
+
     // Paint the 16:9 sample with the same knobs libass uses. ASS sizes are in
     // script units relative to PlayResY=288, hence /2.88 to get cqh (1% of the
     // preview box height).
