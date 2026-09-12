@@ -22,6 +22,7 @@ export class UIManager {
             progressMessage: document.getElementById('progress-message'),
             progressBar: document.getElementById('progress-bar'),
             progressStatus: document.getElementById('progress-status'),
+            progressBackBtn: document.getElementById('vsg-progress-back-btn'),
             resultsArea: document.getElementById('results-area'),
             subtitlePreview: document.getElementById('subtitle-preview'),
             subtitleEditor: document.getElementById('subtitle-editor'),
@@ -70,7 +71,7 @@ export class UIManager {
     }
 
     addEventListeners(handlers) {
-        const { dropZone, fileInput, generateBtn, downloadBtn, mkvExportBtn, renderBtn, editBtn, saveEditBtn, cancelEditBtn } = this.elements;
+        const { dropZone, fileInput, generateBtn, downloadBtn, mkvExportBtn, renderBtn, editBtn, saveEditBtn, cancelEditBtn, progressBackBtn } = this.elements;
 
         dropZone.addEventListener('click', (e) => {
             if (e.target.tagName === 'BUTTON' || e.target === fileInput) return;
@@ -107,6 +108,7 @@ export class UIManager {
         editBtn.addEventListener('click', () => handlers.onEdit());
         saveEditBtn.addEventListener('click', () => handlers.onSaveEdit());
         cancelEditBtn.addEventListener('click', () => handlers.onCancelEdit());
+        progressBackBtn.addEventListener('click', () => this.returnToResults());
     }
 
     handleFileSelect(file) {
@@ -225,6 +227,12 @@ export class UIManager {
         this.elements.resultsArea.style.display = 'none';
         this.elements.generateBtn.disabled = true;
         this.elements.progressSpinner.style.display = 'block';
+        this.elements.progressBackBtn.style.display = 'none';
+    }
+
+    returnToResults() {
+        this.elements.progressArea.style.display = 'none';
+        this.elements.resultsArea.style.display = 'block';
     }
 
     showResults(srtContent, cues) {
@@ -282,6 +290,8 @@ export class UIManager {
         this.setProgressMessage(message);
         this.elements.progressBar.style.width = '100%';
         this.elements.progressSpinner.style.display = 'none';
+        this.elements.progressBackBtn.style.display = 'inline-block';
+        this.elements.generateBtn.disabled = false;
     }
 
     setProgressTitle(text) {
