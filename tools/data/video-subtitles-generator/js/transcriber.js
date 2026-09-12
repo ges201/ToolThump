@@ -52,7 +52,7 @@ export class Transcriber {
         }
     }
 
-    async generate(videoFile, language, modelSize) {
+    async generate(videoFile, language, modelSize, maxWords) {
         this.ui.showProgressArea();
         this.ui.setProgressTitle('Generating Subtitles');
         this.ui.setProgressMessage('Preparing audio...');
@@ -127,7 +127,7 @@ export class Transcriber {
                 setStatus('Decoding audio track...');
                 this.decodeAudioFile(videoFile).then(
                     ({ audio, duration }) => {
-                        worker.postMessage({ type: 'transcribe', audio, language, duration, modelSize }, [audio.buffer]);
+                        worker.postMessage({ type: 'transcribe', audio, language, duration, modelSize, maxWords }, [audio.buffer]);
                     },
                     (error) => {
                         stopElapsed();

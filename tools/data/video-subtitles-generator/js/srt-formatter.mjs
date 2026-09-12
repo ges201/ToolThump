@@ -50,7 +50,7 @@ function flattenWords(chunks) {
 export class SRTFormatter {
     // Group whisper word-chunks into subtitle cues. The cues keep each word
     // with its own timestamps so playback can highlight word by word.
-    buildLines(output) {
+    buildLines(output, options = {}) {
         if (!output || !output.chunks) return [];
 
         const lines = [];
@@ -58,6 +58,7 @@ export class SRTFormatter {
 
         // Subtitle grouping rules (Tweak these if you want shorter/longer captions)
         const MAX_CHARS = 64;        // Max characters per subtitle block
+        const MAX_WORDS = options.maxWords ?? 10; // Max words per subtitle block
         const MAX_DURATION = 4.0;    // Max seconds a subtitle stays on screen
         const MAX_PAUSE = 1.0;       // Start a new subtitle if there's a > 1 second pause
         const CLAUSE_AT = MAX_CHARS * 0.6; // Break at a clause mark once the line is this long
@@ -84,6 +85,7 @@ export class SRTFormatter {
             if (
                 duration > MAX_DURATION ||
                 futureLength > MAX_CHARS ||
+                currentLine.words.length >= MAX_WORDS ||
                 pause > MAX_PAUSE ||
                 isSentenceEnd(trimmed) ||
                 (clauseEnd && futureLength > CLAUSE_AT)
@@ -114,8 +116,8 @@ export class SRTFormatter {
         return lines;
     }
 
-    format(output) {
-        const lines = this.buildLines(output);
+    format(output, options) {
+        const lines = this.buildLines(output, options);
         return {
             srt: lines.map((line, index) => {
                 const start = this.formatTimestamp(line.start);
@@ -131,8 +133,8 @@ export class SRTFormatter {
         };
     }
 
-    convertToSRT(output) {
-        return this.format(output).srt;
+    convertToSRT(output, options) {
+        return this.format(output, options).srt;
     }
 
     // Rebuild cues from (possibly edited) SRT text. Cue boundaries stay exact;

@@ -33,8 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const language = ui.elements.languageSelect.value;
             const modelSize = ui.elements.modelSelect.value;
+            const maxWords = Number(ui.elements.subtitleLength.value);
 
-            const result = await transcriber.generate(state.videoFile, language, modelSize);
+            const result = await transcriber.generate(state.videoFile, language, modelSize, maxWords);
             
             if (result.success) {
                 state.srtContent = result.srtContent;

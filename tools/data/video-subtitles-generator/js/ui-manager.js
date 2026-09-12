@@ -16,6 +16,8 @@ export class UIManager {
             generateBtn: document.getElementById('vsg-generate-btn'),
             languageSelect: document.getElementById('language-select'),
             modelSelect: document.getElementById('model-select'),
+            subtitleLength: document.getElementById('subtitle-length'),
+            subtitleLengthValue: document.getElementById('subtitle-length-value'),
             progressArea: document.getElementById('progress-area'),
             progressSpinner: document.getElementById('progress-spinner'),
             progressTitle: document.getElementById('progress-title'),
@@ -86,6 +88,9 @@ export class UIManager {
 
         // One delegated listener covers all style controls.
         this.elements.stylePanel.addEventListener('input', () => this.updateStylePreview());
+        this.elements.subtitleLength.addEventListener('input', () => {
+            this.elements.subtitleLengthValue.textContent = this.elements.subtitleLength.value;
+        });
         this.updateStylePreview();
     }
 

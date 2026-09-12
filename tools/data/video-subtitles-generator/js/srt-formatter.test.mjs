@@ -45,6 +45,34 @@ test('splits when the combined text exceeds 64 characters', () => {
     assert.equal((out.match(/-->/g) || []).length, 2);
 });
 
+test('caps cues at the configured max words', () => {
+    const chunks = [' one', ' two', ' three', ' four', ' five', ' six'].map((text, i) => ({
+        timestamp: [i * 0.5, (i + 1) * 0.5],
+        text
+    }));
+    const { cues } = formatter.format({ chunks }, { maxWords: 2 });
+    assert.deepEqual(cues.map((c) => c.text), ['one two', 'three four', 'five six']);
+});
+
+test('maxWords 1 shows one word per cue', () => {
+    const chunks = [' one', ' two', ' three'].map((text, i) => ({
+        timestamp: [i * 0.5, (i + 1) * 0.5],
+        text
+    }));
+    const { cues } = formatter.format({ chunks }, { maxWords: 1 });
+    assert.deepEqual(cues.map((c) => c.text), ['one', 'two', 'three']);
+});
+
+test('sentence end still splits under a high maxWords', () => {
+    const out = formatter.convertToSRT({
+        chunks: [
+            { timestamp: [0.0, 0.5], text: ' Hi.' },
+            { timestamp: [0.5, 1.0], text: ' next' }
+        ]
+    }, { maxWords: 10 });
+    assert.equal((out.match(/-->/g) || []).length, 2);
+});
+
 test('splits recovered multi-word chunks into capped, word-timed cues', () => {
     const text = ' ' + Array.from({ length: 20 }, (_, i) => `word${i}`).join(' ');
     const { cues } = formatter.format({ chunks: [{ timestamp: [0.0, 20.0], text }] });

@@ -246,7 +246,7 @@ async function recoverSkippedAudio(transcriber, audio, duration, options, output
     return { ...output, chunks };
 }
 
-async function transcribe(modelName, { audio, language, duration }) {
+async function transcribe(modelName, { audio, language, duration, maxWords }) {
     self.postMessage({ type: 'preparing', pct: DOWNLOAD_END, status: 'Loading model into memory...' });
 
     // 16kHz mono audio decoded on the main thread (workers lack AudioContext);
@@ -322,6 +322,6 @@ async function transcribe(modelName, { audio, language, duration }) {
     progress = null;
 
     self.postMessage({ type: 'finalize', pct: TRANSCRIBE_END });
-    const { srt, cues } = new SRTFormatter().format(output);
+    const { srt, cues } = new SRTFormatter().format(output, { maxWords });
     self.postMessage({ type: 'done', srt, cues });
 }

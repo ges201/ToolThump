@@ -479,7 +479,8 @@
     margin-bottom: 0;
 }
 
-.vsg-style-grid input[type="range"] {
+.vsg-style-grid input[type="range"],
+.vsg-options input[type="range"] {
     width: 100%;
     accent-color: var(--accent-color);
 }
