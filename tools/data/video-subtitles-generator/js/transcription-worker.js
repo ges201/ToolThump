@@ -262,9 +262,11 @@ async function transcribe(modelName, { audio, language, duration, maxWords }) {
         stride_length_s: strideLen,
         // Mobile WASM runs different kernels (fewer threads), so a near-tie in
         // greedy decoding can flip one token and spiral into Whisper's
-        // repetition loop until max_length (448). Banning repeated 3-grams
-        // cuts the loop. Options also flow into recoverSkippedAudio's retries.
-        no_repeat_ngram_size: 3
+        // repetition loop until max_length (448). An 8-gram ban still breaks
+        // those loops but leaves natural short-phrase repetition alone (the
+        // 3-gram ban cost 3.5 WER points on a talk that repeats phrases on
+        // purpose). Options also flow into recoverSkippedAudio's retries.
+        no_repeat_ngram_size: 8
     };
 
     detectedLanguage = null;
